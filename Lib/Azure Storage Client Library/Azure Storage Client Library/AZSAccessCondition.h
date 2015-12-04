@@ -52,7 +52,7 @@ AZS_ASSUME_NONNULL_BEGIN
  
  @param eTag The ETag that must match on the service; otherwise the request will fail.
  */
--(instancetype) initWithIfMatchCondition:(NSString*)eTag AZS_DESIGNATED_INITIALIZER;
+-(instancetype) initWithIfMatchCondition:(NSString* __AZSNullable)eTag AZS_DESIGNATED_INITIALIZER;
 
 /** Initialize a new AZSAccessCondition object with a 'If-None-Match' condition.
  

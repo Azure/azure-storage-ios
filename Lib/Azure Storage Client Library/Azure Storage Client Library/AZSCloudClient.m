@@ -25,9 +25,16 @@
     AZSStorageCredentials *_credentials;
 }
 
+-(instancetype)init AZS_DESIGNATED_INITIALIZER;
+
 @end
 
 @implementation AZSCloudClient
+
+- (instancetype)init
+{
+    return nil;
+}
 
 - (instancetype)initWithStorageUri:(AZSStorageUri *)storageUri credentials:(AZSStorageCredentials *)credentials
 {

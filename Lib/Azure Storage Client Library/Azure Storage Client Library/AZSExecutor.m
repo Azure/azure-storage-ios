@@ -47,13 +47,19 @@
 @property (strong, readonly) AZSOperationContext *operationContext;
 @property (strong) NSError *streamError;
 
--(instancetype)initWithStream:(NSOutputStream *)stream maxSizeToBuffer:(NSUInteger)maxSizeToBuffer calculateMD5:(BOOL)calculateMD5 AZS_DESIGNATED_INITIALIZER operationContext:(AZSOperationContext *)operationContext;
+-(instancetype)init AZS_DESIGNATED_INITIALIZER;
+-(instancetype)initWithStream:(NSOutputStream *)stream maxSizeToBuffer:(NSUInteger)maxSizeToBuffer calculateMD5:(BOOL)calculateMD5 operationContext:(AZSOperationContext *)operationContext AZS_DESIGNATED_INITIALIZER;
 -(void)stream:(NSStream *)stream handleEvent:(NSStreamEvent)eventCode;
 -(void)writeData:(NSData *)data;
 
 @end
 
 @implementation AZSStreamDownloadBuffer
+
+-(instancetype)init
+{
+    return nil;
+}
 
 -(instancetype)initWithStream:(NSOutputStream *)stream maxSizeToBuffer:(NSUInteger)maxSizeToBuffer calculateMD5:(BOOL)calculateMD5 operationContext:(AZSOperationContext *)operationContext
 {
@@ -300,7 +306,8 @@
 @property (strong) NSError *preProcessError;
 @property NSUInteger retryCount;
 
-- (instancetype)initWithCommand:(AZSStorageCommand *)storageCommand requestOptions:(AZSRequestOptions *)requestOptions operationContext:(AZSOperationContext *) operationContext completionHandler:(void (^)(NSError *, id))completionHandler AZS_DESIGNATED_INITIALIZER;
+-(instancetype)init AZS_DESIGNATED_INITIALIZER;
+-(instancetype)initWithCommand:(AZSStorageCommand *)storageCommand requestOptions:(AZSRequestOptions *)requestOptions operationContext:(AZSOperationContext *) operationContext completionHandler:(void (^)(NSError *, id))completionHandler AZS_DESIGNATED_INITIALIZER;
 @end
 
 @implementation AZSExecutor
@@ -357,7 +364,7 @@
 
         // TODO: make this static, so that we're not querying the OS each time
         NSString *operationSystemVersionString = [NSProcessInfo processInfo].operatingSystemVersionString;
-        [self.request setValue:[NSString stringWithFormat:@"Azure-Storage/0.0.1-preview (iOS %@)",operationSystemVersionString] forHTTPHeaderField:@"User-Agent"];
+        [self.request setValue:[NSString stringWithFormat:@"Azure-Storage/0.1.1-preview (iOS %@)",operationSystemVersionString] forHTTPHeaderField:@"User-Agent"];
         
         // Add the user headers, if they exist.
         if (self.operationContext.userHeaders)
@@ -681,6 +688,11 @@
         self.operationContext.endTime = [NSDate date];
         self.completionHandler(error, retval);
     }
+}
+
+-(instancetype)init
+{
+    return nil;
 }
 
 -(instancetype) initWithCommand:(AZSStorageCommand *)storageCommand requestOptions:(AZSRequestOptions *)requestOptions operationContext:(AZSOperationContext *) operationContext completionHandler:(void (^)(NSError *, id))completionHandler

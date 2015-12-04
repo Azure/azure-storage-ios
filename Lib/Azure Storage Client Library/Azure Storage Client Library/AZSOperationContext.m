@@ -37,18 +37,6 @@ static NSCondition *_globalLogCondition;
     }
 }
 
--(instancetype)init
-{
-    self = [super init];
-    if (self)
-    {
-        _clientRequestId = [[NSUUID UUID] UUIDString];
-        _requestResults = [NSMutableArray arrayWithCapacity:1];
-    }
-    
-    return self;
-}
-
 +(AZSLogLevel)globalLogLevel
 {
     return _globalLogLevel;
@@ -77,6 +65,18 @@ static NSCondition *_globalLogCondition;
 +(void(^)(AZSLogLevel logLevel, NSString * stringToLog)) globalLogFunction
 {
     return _globalLogFunction;
+}
+
+-(instancetype)init
+{
+    self = [super init];
+    if (self)
+    {
+        _clientRequestId = [[NSUUID UUID] UUIDString];
+        _requestResults = [NSMutableArray arrayWithCapacity:1];
+    }
+    
+    return self;
 }
 
 -(aslclient)logger

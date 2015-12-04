@@ -29,6 +29,8 @@
 @property BOOL explicitEndpoints;
 @property BOOL useHttps;
 
+-(instancetype)init AZS_DESIGNATED_INITIALIZER;
+
 @end
 
 @implementation AZSCloudStorageAccount
@@ -131,12 +133,16 @@
     return [[AZSStorageUri alloc] initWithPrimaryUri:[NSURL URLWithString:primaryUriString] secondaryUri:[NSURL URLWithString:secondaryUriString]];
 }
 
+-(instancetype) init
+{
+    return nil;
+}
+
 -(instancetype) initWithCredentials:(AZSStorageCredentials *)storageCredentials blobEndpoint:(AZSStorageUri *)blobEndpoint tableEndpoint:(AZSStorageUri *)tableEndpoint queueEndpoint:(AZSStorageUri *)queueEndpoint fileEndpoint:(AZSStorageUri *)fileEndpoint
 {
-    self = [super init];
+    self = [self initWithCredentials:storageCredentials useHttps:NO endpointSuffix: nil];
     if (self)
     {
-        _storageCredentials = storageCredentials;
         _blob_endpoint = blobEndpoint;
         _explicitEndpoints = YES;
     }
@@ -146,14 +152,7 @@
 
 -(instancetype) initWithCredentials:(AZSStorageCredentials *)storageCredentials useHttps:(BOOL)useHttps
 {
-    self = [super init];
-    if (self)
-    {
-        _storageCredentials = storageCredentials;
-        _blob_endpoint = [self constructDefaultEndpointWithScheme:(useHttps ? @"https" : @"http") hostnamePrefix:@"blob" endpointSuffix:@"core.windows.net"];
-        _explicitEndpoints = NO;
-        _useHttps = useHttps;
-    }
+    self = [self initWithCredentials:storageCredentials useHttps:useHttps endpointSuffix: @"core.windows.net"];
     
     return self;
 }

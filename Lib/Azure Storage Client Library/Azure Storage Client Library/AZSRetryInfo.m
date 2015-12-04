@@ -18,7 +18,18 @@
 #import "AZSRetryInfo.h"
 #import "AZSRetryContext.h"
 
+@interface AZSRetryInfo()
+
+-(instancetype)init AZS_DESIGNATED_INITIALIZER;
+
+@end
+
 @implementation AZSRetryInfo
+
+-(instancetype)init
+{
+    return nil;
+}
 
 -(instancetype)initWithShouldRetry:(BOOL)shouldRetry targetLocation:(AZSStorageLocation)targetLocation updatedLocationMode:(AZSStorageLocationMode)updatedLocationMode retryInterval:(NSTimeInterval)retryInterval
 {

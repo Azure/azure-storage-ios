@@ -48,9 +48,9 @@
  @param useHttps Whether requests should use HTTPS or HTTP
  @return The freshly allocated AZSCloudStorageAccount.
  */
--(instancetype)initWithCredentials:(AZSStorageCredentials *)storageCredentials useHttps:(BOOL) useHttps AZS_DESIGNATED_INITIALIZER;
+-(instancetype)initWithCredentials:(AZSStorageCredentials *)storageCredentials useHttps:(BOOL) useHttps;
 -(instancetype) initWithCredentials:(AZSStorageCredentials *)storageCredentials blobEndpoint:(AZSStorageUri *)blobEndpoint tableEndpoint:(AZSStorageUri *)tableEndpoint queueEndpoint:(AZSStorageUri *)queueEndpoint fileEndpoint:(AZSStorageUri *)fileEndpoint;
--(instancetype) initWithCredentials:(AZSStorageCredentials *)storageCredentials useHttps:(BOOL)useHttps endpointSuffix:(NSString *)endpointSuffix ;
+-(instancetype) initWithCredentials:(AZSStorageCredentials *)storageCredentials useHttps:(BOOL)useHttps endpointSuffix:(NSString *)endpointSuffix AZS_DESIGNATED_INITIALIZER;
 
 
 /** Create an AZSCloudBlobClient object

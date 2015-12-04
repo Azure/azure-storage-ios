@@ -17,7 +17,18 @@
 
 #import "AZSBlockListItem.h"
 
+@interface AZSBlockListItem()
+
+-(instancetype) init AZS_DESIGNATED_INITIALIZER;
+
+@end
+
 @implementation AZSBlockListItem
+
+-(instancetype) init
+{
+    return nil;
+}
 
 -(instancetype) initWithBlockID:(NSString *)blockID blockListMode:(AZSBlockListMode)blockListMode
 {

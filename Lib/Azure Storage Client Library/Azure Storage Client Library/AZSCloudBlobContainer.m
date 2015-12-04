@@ -37,7 +37,18 @@
 #import "AZSNavigationUtil.h"
 #import "AZSErrors.h"
 
+@interface AZSCloudBlobContainer()
+
+-(instancetype)init AZS_DESIGNATED_INITIALIZER;
+
+@end
+
 @implementation AZSCloudBlobContainer
+
+-(instancetype)init
+{
+    return nil;
+}
 
 - (instancetype)initWithUrl:(NSURL *)containerAbsoluteUrl
 {
@@ -57,7 +68,6 @@
 - (instancetype)initWithStorageUri:(AZSStorageUri *)containerAbsoluteUrl credentials:(AZSStorageCredentials *)credentials
 {
     self = [super init];
-    
     if (self)
     {
         [self parseQueryAndVerifyWithUri:containerAbsoluteUrl credentials:credentials];

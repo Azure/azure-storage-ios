@@ -18,18 +18,22 @@
 #import "AZSAccessCondition.h"
 #import "AZSUtil.h"
 
+@interface AZSAccessCondition()
+
+-(instancetype)init AZS_DESIGNATED_INITIALIZER;
+
+@end
+
 @implementation AZSAccessCondition
 
 -(instancetype) init
 {
-    self = [super init];
-    
-    return self;
+    return nil;
 }
 
 -(instancetype) initWithIfMatchCondition:(NSString*)eTag
 {
-    self = [self init];
+    self = [super init];
     if (self)
     {
         _ifMatchETag = eTag;
@@ -40,7 +44,7 @@
 
 -(instancetype) initWithIfNoneMatchCondition:(NSString*)eTag
 {
-    self = [self init];
+    self = [super init];
     if (self)
     {
         _ifNoneMatchETag = eTag;
@@ -51,7 +55,7 @@
 
 -(instancetype) initWithIfModifiedSinceCondition:(NSDate*)modifiedDate
 {
-    self = [self init];
+    self = [super init];
     if (self)
     {
         _ifModifiedSinceDate = modifiedDate;
@@ -62,7 +66,7 @@
 
 -(instancetype) initWithIfNotModifiedSinceCondition:(NSDate*)modifiedDate
 {
-    self = [self init];
+    self = [super init];
     if (self)
     {
         _ifNotModifiedSinceDate = modifiedDate;
@@ -73,7 +77,7 @@
 
 -(instancetype) initWithLeaseId:(NSString*)leaseId
 {
-    self = [self init];
+    self = [super init];
     if (self)
     {
         _leaseId = leaseId;

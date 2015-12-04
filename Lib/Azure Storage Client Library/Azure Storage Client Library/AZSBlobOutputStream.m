@@ -33,6 +33,15 @@
 @property BOOL hasStreamErrorEventFired;
 @property (strong) AZSBlobUploadHelper *blobUploadHelper;
 
+// This method should never be called. It is only here to comply with subclassing requirements.
+-(instancetype)initToMemory AZS_DESIGNATED_INITIALIZER;
+
+// This method should never be called. It is only here to comply with subclassing requirements.
+-(instancetype)initToBuffer:(uint8_t *)buffer capacity:(NSUInteger)capacity AZS_DESIGNATED_INITIALIZER;
+
+// This method should never be called. It is only here to comply with subclassing requirements.
+-(instancetype)initWithURL:(NSURL *)url append:(BOOL)shouldAppend AZS_DESIGNATED_INITIALIZER;
+
 
 @end
 
@@ -113,9 +122,29 @@ void AZSBlobOutputStreamRunLoopSourcePerformRoutine (void *info)
 @synthesize delegate = _delegate;
 @synthesize hasSpaceAvailable = _hasSpaceAvailable;
 
+-(instancetype)initToMemory
+{
+    self = [super initToMemory];
+    return nil;
+}
+
+-(instancetype)initToBuffer:(uint8_t *)buffer capacity:(NSUInteger)capacity
+{
+    self = [super initToBuffer:buffer capacity:0];
+    return nil;
+}
+
+-(instancetype)initWithURL:(NSURL *)url append:(BOOL)shouldAppend
+{
+    self = [super initWithURL:url append:NO];
+    return nil;
+}
+
 -(instancetype)initToBlockBlob:(AZSCloudBlockBlob *)blockBlob accessCondition:(AZSAccessCondition *)accessCondition requestOptions:(AZSBlobRequestOptions *)requestOptions operationContext:(AZSOperationContext *)operationContext
 {
-    self = [super init];
+    // A designated initializer must make a super call to a designated initializer of the super class.
+    uint8_t temp;
+    self = [super initToBuffer:&temp capacity:0];
     if (self)
     {
         _blobUploadHelper = [[AZSBlobUploadHelper alloc] initToBlockBlob:blockBlob accessCondition:accessCondition requestOptions:requestOptions operationContext:operationContext completionHandler:nil];
