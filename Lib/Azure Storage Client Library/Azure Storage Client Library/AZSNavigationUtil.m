@@ -30,8 +30,12 @@
         return nil;
     }
     
-    NSURL *authority = [[NSURL alloc] initWithScheme:addressUri.scheme host:addressUri.host path:addressUri.path];
-
+    NSURLComponents *authorityComponents = [[NSURLComponents alloc] init];
+    authorityComponents.host = addressUri.host;
+    authorityComponents.scheme = addressUri.scheme;
+    authorityComponents.path = addressUri.path;
+    NSURL *authority = authorityComponents.URL;
+    
     if (usePathStyle)
     {
         /*
@@ -93,9 +97,13 @@
         creds = [[AZSStorageCredentials alloc] init];
     }
     
-    NSURL *url = [[NSURL alloc] initWithScheme:[blobAddress scheme] host:[blobAddress host] path:[blobAddress path]];
+    NSURLComponents *urlComponents = [[NSURLComponents alloc] init];
+    urlComponents.scheme = blobAddress.scheme;
+    urlComponents.host = blobAddress.host;
+    urlComponents.path = blobAddress.path;
+    NSURL *url = urlComponents.URL;
     
-//    NSMutableArray *result = [[NSMutableArray alloc] initWithObjects:url, creds, snapshotString, nil];
+    // NSMutableArray *result = [[NSMutableArray alloc] initWithObjects:url, creds, snapshotString, nil];
     NSMutableArray *result = [[NSMutableArray alloc] initWithArray:@[url ? url : [NSNull null], creds ? creds : [NSNull null], snapshotString ? snapshotString : [NSNull null]]];
     
     return result;

@@ -43,7 +43,7 @@ AZS_ASSUME_NONNULL_BEGIN
 /** The SAS token used to access. */
 @property (copy, readonly, AZSNullable) NSString *sasToken;
 
-/** Initializes a newly allocated AZSStorageCredentials object
+/** Initializes a newly allocated AZSStorageCredentials object for shared key access
  
  @param accountName The name of the account.
  @param accountKey The account key used for signing requests.
@@ -51,7 +51,7 @@ AZS_ASSUME_NONNULL_BEGIN
  */
 -(instancetype)initWithAccountName:(NSString *)accountName accountKey:(NSString *) accountKey AZS_DESIGNATED_INITIALIZER;
 
-/** Initializes a newly allocated AZSStorageCredentials object
+/** Initializes a newly allocated AZSStorageCredentials object for sas access
  
  @param sasToken The Shared Access Signature token used for access.
  @return The newly allocated instance.

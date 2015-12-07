@@ -18,7 +18,18 @@
 #include <time.h>
 #import "AZSRequestResult.h"
 
+@interface AZSRequestResult()
+
+-(instancetype)init AZS_DESIGNATED_INITIALIZER;
+
+@end
+
 @implementation AZSRequestResult
+
+- (instancetype)init
+{
+    return nil;
+}
 
 -(instancetype) initWithStartTime:(NSDate *)startTime location:(AZSStorageLocation)targetLocation
 {
@@ -34,7 +45,7 @@
     return self;
 }
 
--(instancetype) initWithStartTime:(NSDate *)startTime location:(AZSStorageLocation)targetLocation response:(NSHTTPURLResponse *)response error:(NSError *)error
+-(instancetype) initWithStartTime:(NSDate *)startTime location:(AZSStorageLocation)targetLocation response:(NSHTTPURLResponse *)response error:(NSError * __AZSNullable)error
 {
     self = [super init];
     if (self)

@@ -74,10 +74,8 @@ AZS_ASSUME_NONNULL_BEGIN
 // NSStreamDelegate:
 - (void)stream:(NSStream *)stream handleEvent:(NSStreamEvent)eventCode;
 
-
 // Specific blob methods:
 -(instancetype)initToBlockBlob:(AZSCloudBlockBlob *)blockBlob accessCondition:(AZSNullable AZSAccessCondition *)accessCondition requestOptions:(AZSNullable AZSBlobRequestOptions *)requestOptions operationContext:(AZSNullable AZSOperationContext *)operationContext AZS_DESIGNATED_INITIALIZER;
-
 
 @end
 

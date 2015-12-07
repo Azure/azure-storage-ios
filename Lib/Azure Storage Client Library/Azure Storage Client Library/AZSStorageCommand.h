@@ -41,7 +41,7 @@
 @property (strong, nonatomic) NSOutputStream *destinationStream;
 
 -(instancetype) initWithStorageCredentials:(AZSStorageCredentials *)credentials storageUri:(AZSStorageUri *)storageUri operationContext:(AZSOperationContext *)operationContext;
--(instancetype) initWithStorageCredentials:(AZSStorageCredentials *)credentials storageUri:(AZSStorageUri *)storageUri calculateResponseMD5:(BOOL)calculateResponseMD5 AZS_DESIGNATED_INITIALIZER operationContext:(AZSOperationContext *)operationContext;
+-(instancetype) initWithStorageCredentials:(AZSStorageCredentials *)credentials storageUri:(AZSStorageUri *)storageUri calculateResponseMD5:(BOOL)calculateResponseMD5 operationContext:(AZSOperationContext *)operationContext AZS_DESIGNATED_INITIALIZER;
 -(void) setAuthenticationHandler:(id<AZSAuthenticationHandler>)authenticationHandler;
 
 @end

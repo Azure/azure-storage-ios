@@ -24,6 +24,12 @@
 #import "AZSEnums.h"
 #import "AZSOperationContext.h"
 
+@interface AZSSharedKeyBlobAuthenticationHandler()
+
+-(instancetype)init AZS_DESIGNATED_INITIALIZER;
+
+@end
+
 @implementation AZSSharedKeyBlobAuthenticationHandler
 
 -(void) appendWithNewlineToString:(NSMutableString *)string stringToAppend:(NSString *)stringToAppend
@@ -156,6 +162,10 @@
     [request setValue:[NSString stringWithFormat:@"SharedKey %@:%@",self.storageCredentials.accountName,signature] forHTTPHeaderField:@"Authorization"];
 }
 
+-(instancetype)init
+{
+    return nil;
+}
 
 -(instancetype) initWithStorageCredentials:(AZSStorageCredentials *)storageCredentials
 {

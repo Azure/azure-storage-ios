@@ -71,8 +71,8 @@ AZS_ASSUME_NONNULL_BEGIN
 
 // TODO: Should we also include the uploaded MD5?
 
--(instancetype) initWithStartTime:(NSDate *)startTime location:(AZSStorageLocation)currentLocation;
--(instancetype) initWithStartTime:(NSDate *)startTime location:(AZSStorageLocation)currentLocation response:(NSHTTPURLResponse *)response error:(NSError *)error AZS_DESIGNATED_INITIALIZER;
+-(instancetype) initWithStartTime:(NSDate *)startTime location:(AZSStorageLocation)currentLocation AZS_DESIGNATED_INITIALIZER;
+-(instancetype) initWithStartTime:(NSDate *)startTime location:(AZSStorageLocation)currentLocation response:(NSHTTPURLResponse * __AZSNullable)response error:(NSError * __AZSNullable)error AZS_DESIGNATED_INITIALIZER;
 @end
 
 AZS_ASSUME_NONNULL_END

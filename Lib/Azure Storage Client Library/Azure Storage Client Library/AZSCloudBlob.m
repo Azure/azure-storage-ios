@@ -36,7 +36,18 @@
 #import "AZSStorageCredentials.h"
 #import "AZSBlobResponseParser.h"
 
+@interface AZSCloudBlob()
+
+- (instancetype)init AZS_DESIGNATED_INITIALIZER;
+
+@end
+
 @implementation AZSCloudBlob
+
+- (instancetype)init
+{
+    return nil;
+}
 
 - (instancetype)initWithUrl:(NSURL *)blobAbsoluteUrl
 {
