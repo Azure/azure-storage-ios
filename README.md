@@ -73,7 +73,7 @@ Here is a small code sample that creates and deletes a blob:
     // Pause the method until the above operations complete.
     dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
 }
-```objc
+```
 
 In general, all methods in the Storage Client that make service calls are asynchronous, roughly in the style of NSURLSession.  When you call methods on the Storage Client that interact with the Storage Service, you need to pass in a completion handler block to handle the results of the operation.  Service calls will return before the operation is complete.
 
