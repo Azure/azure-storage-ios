@@ -199,8 +199,7 @@
     }];
     [self barrierOnLock:lock donePtr:&done];
     
-    AZSAccessCondition *condition = [[AZSAccessCondition alloc] init];
-    [condition setLeaseId:leaseID];
+    AZSAccessCondition *condition = [[AZSAccessCondition alloc] initWithLeaseId:leaseID];
     [blobContainer releaseLeaseWithAccessCondition:condition requestOptions:nil operationContext:opCtxt completionHandler:^(NSError* err){
         [self atomicOnLock:lock donePtr:&done operation:^void{
             XCTAssertTrue(err == nil, @"Error in leasing.  Error code = %ld, error domain = %@, error userinfo = %@", (long)err.code, err.domain, err.userInfo);
@@ -244,8 +243,7 @@
     XCTAssertTrue([leaseID isEqualToString:leaseID2]);
     
     // Cleanup
-    condition = [[AZSAccessCondition alloc] init];
-    [condition setLeaseId:leaseID];
+    condition = [[AZSAccessCondition alloc] initWithLeaseId:leaseID];
     [blobContainer releaseLeaseWithAccessCondition:condition completionHandler:^void(NSError* err){
         [self atomicOnLock:lock donePtr:&done operation:^void{
             XCTAssertTrue(err == nil, @"Error in leasing.  Error code = %ld, error domain = %@, error userinfo = %@", (long)err.code, err.domain, err.userInfo);
@@ -290,8 +288,7 @@
     }];
     [self barrierOnLock:lock donePtr:&done];
     
-    AZSAccessCondition *condition = [[AZSAccessCondition alloc] init];
-    [condition setLeaseId:leaseID];
+    AZSAccessCondition *condition = [[AZSAccessCondition alloc] initWithLeaseId:leaseID];
     [blob releaseLeaseWithAccessCondition:condition requestOptions:nil operationContext:opCtxt completionHandler:^(NSError* err){
         [self atomicOnLock:lock donePtr:&done operation:^void{
             XCTAssertTrue(err == nil, @"Error in leasing.  Error code = %ld, error domain = %@, error userinfo = %@", (long)err.code, err.domain, err.userInfo);
@@ -345,8 +342,7 @@
     XCTAssertTrue([leaseID isEqualToString:leaseID2]);
     
     // Cleanup
-    condition = [[AZSAccessCondition alloc] init];
-    [condition setLeaseId:leaseID];
+    condition = [[AZSAccessCondition alloc] initWithLeaseId:leaseID];
     [blob releaseLeaseWithAccessCondition:condition completionHandler:^void(NSError* err){
         [self atomicOnLock:lock donePtr:&done operation:^void{
             XCTAssertTrue(err == nil, @"Error in leasing.  Error code = %ld, error domain = %@, error userinfo = %@", (long)err.code, err.domain, err.userInfo);
@@ -371,8 +367,7 @@
     }];
     [self barrierOnLock:lock donePtr:&done];
     
-    AZSAccessCondition *condition = [[AZSAccessCondition alloc] init];
-    [condition setLeaseId:leaseID];
+    AZSAccessCondition *condition = [[AZSAccessCondition alloc] initWithLeaseId:leaseID];
     AZSOperationContext *opCtxt = [[AZSOperationContext alloc] init];
     [self.blobContainer releaseLeaseWithAccessCondition:condition requestOptions:nil operationContext:opCtxt completionHandler:^(NSError* err){
         [self atomicOnLock:lock donePtr:&done operation:^void{
@@ -392,8 +387,7 @@
     }];
     [self barrierOnLock:lock donePtr:&done];
     
-    condition = [[AZSAccessCondition alloc] init];
-    [condition setLeaseId:leaseID];
+    condition = [[AZSAccessCondition alloc] initWithLeaseId:leaseID];
     opCtxt = [[AZSOperationContext alloc] init];
     [self.blobContainer releaseLeaseWithAccessCondition:condition requestOptions:nil operationContext:opCtxt completionHandler:^(NSError* err){
         [self atomicOnLock:lock donePtr:&done operation:^void{
@@ -431,8 +425,7 @@
     }];
     [self barrierOnLock:lock donePtr:&done];
     
-    AZSAccessCondition *condition = [[AZSAccessCondition alloc] init];
-    [condition setLeaseId:leaseID];
+    AZSAccessCondition *condition = [[AZSAccessCondition alloc] initWithLeaseId:leaseID];
     AZSOperationContext *opCtxt = [[AZSOperationContext alloc] init];
     [blob releaseLeaseWithAccessCondition:condition requestOptions:nil operationContext:opCtxt completionHandler:^(NSError* err){
         [self atomicOnLock:lock donePtr:&done operation:^void{
@@ -452,8 +445,7 @@
     }];
     [self barrierOnLock:lock donePtr:&done];
     
-    condition = [[AZSAccessCondition alloc] init];
-    [condition setLeaseId:leaseID];
+    condition = [[AZSAccessCondition alloc] initWithLeaseId:leaseID];
     opCtxt = [[AZSOperationContext alloc] init];
     [blob releaseLeaseWithAccessCondition:condition requestOptions:nil operationContext:opCtxt completionHandler:^(NSError* err){
         [self atomicOnLock:lock donePtr:&done operation:^void{
@@ -482,8 +474,7 @@
     }];
     [self barrierOnLock:lock donePtr:&done];
     
-    AZSAccessCondition *condition = [[AZSAccessCondition alloc] init];
-    [condition setLeaseId:leaseID];
+    AZSAccessCondition *condition = [[AZSAccessCondition alloc] initWithLeaseId:leaseID];
     AZSOperationContext *opCtxt = [[AZSOperationContext alloc] init];
     [self.blobContainer breakLeaseWithBreakPeriod:[[NSNumber alloc] initWithInt:0] accessCondition:condition requestOptions:nil operationContext:opCtxt completionHandler:^(NSError* err, NSNumber* leaseBreakTime){
         [self atomicOnLock:lock donePtr:&done operation:^void{
@@ -504,8 +495,7 @@
     }];
     [self barrierOnLock:lock donePtr:&done];
     
-    condition = [[AZSAccessCondition alloc] init];
-    [condition setLeaseId:leaseID];
+    condition = [[AZSAccessCondition alloc] initWithLeaseId:leaseID];
     opCtxt = [[AZSOperationContext alloc] init];
     [self.blobContainer breakLeaseWithBreakPeriod:[[NSNumber alloc] initWithInt:0] accessCondition:condition requestOptions:nil operationContext:opCtxt completionHandler:^(NSError* err, NSNumber* leaseBreakTime){
         [self atomicOnLock:lock donePtr:&done operation:^void{
@@ -517,8 +507,7 @@
     XCTAssertTrue([result response].statusCode == 202);
     
     // Cleanup
-    condition = [[AZSAccessCondition alloc] init];
-    [condition setLeaseId:leaseID];
+    condition = [[AZSAccessCondition alloc] initWithLeaseId:leaseID];
     [self.blobContainer releaseLeaseWithAccessCondition:condition completionHandler:^void(NSError* err){
         [self atomicOnLock:lock donePtr:&done operation:^void{
             XCTAssertTrue(err == nil, @"Error in leasing.  Error code = %ld, error domain = %@, error userinfo = %@", (long)err.code, err.domain, err.userInfo);
@@ -551,8 +540,7 @@
     }];
     [self barrierOnLock:lock donePtr:&done];
     
-    AZSAccessCondition *condition = [[AZSAccessCondition alloc] init];
-    [condition setLeaseId:leaseID];
+    AZSAccessCondition *condition = [[AZSAccessCondition alloc] initWithLeaseId:leaseID];
     AZSOperationContext *opCtxt = [[AZSOperationContext alloc] init];
     [blob breakLeaseWithBreakPeriod:[[NSNumber alloc] initWithInt:0] accessCondition:condition requestOptions:nil operationContext:opCtxt completionHandler:^(NSError* err, NSNumber* leaseBreakTime){
         [self atomicOnLock:lock donePtr:&done operation:^void{
@@ -573,8 +561,7 @@
     }];
     [self barrierOnLock:lock donePtr:&done];
     
-    condition = [[AZSAccessCondition alloc] init];
-    [condition setLeaseId:leaseID];
+    condition = [[AZSAccessCondition alloc] initWithLeaseId:leaseID];
     opCtxt = [[AZSOperationContext alloc] init];
     [blob breakLeaseWithBreakPeriod:[[NSNumber alloc] initWithInt:0] accessCondition:condition requestOptions:nil operationContext:opCtxt completionHandler:^(NSError* err, NSNumber* leaseBreakTime){
         [self atomicOnLock:lock donePtr:&done operation:^void{
@@ -586,8 +573,7 @@
     XCTAssertTrue([result response].statusCode == 202);
     
     // Cleanup
-    condition = [[AZSAccessCondition alloc] init];
-    [condition setLeaseId:leaseID];
+    condition = [[AZSAccessCondition alloc] initWithLeaseId:leaseID];
     [blob releaseLeaseWithAccessCondition:condition completionHandler:^void(NSError* err){
         [self atomicOnLock:lock donePtr:&done operation:^void{
             XCTAssertTrue(err == nil, @"Error in leasing.  Error code = %ld, error domain = %@, error userinfo = %@", (long)err.code, err.domain, err.userInfo);
@@ -612,8 +598,7 @@
     }];
     [self barrierOnLock:lock donePtr:&done];
     
-    AZSAccessCondition *condition = [[AZSAccessCondition alloc] init];
-    [condition setLeaseId:leaseID];
+    AZSAccessCondition *condition = [[AZSAccessCondition alloc] initWithLeaseId:leaseID];
     AZSOperationContext *opCtxt = [[AZSOperationContext alloc] init];
     [self.blobContainer renewLeaseWithAccessCondition:condition requestOptions:nil operationContext:opCtxt completionHandler:^(NSError* err){
         [self atomicOnLock:lock donePtr:&done operation:^(void){
@@ -640,8 +625,7 @@
     }];
     [self barrierOnLock:lock donePtr:&done];
     
-    condition = [[AZSAccessCondition alloc] init];
-    [condition setLeaseId:leaseID];
+    condition = [[AZSAccessCondition alloc] initWithLeaseId:leaseID];
     opCtxt = [[AZSOperationContext alloc] init];
     [self.blobContainer renewLeaseWithAccessCondition:condition requestOptions:nil operationContext:opCtxt completionHandler:^(NSError* err){
         [self atomicOnLock:lock donePtr:&done operation:^(void){
@@ -653,8 +637,7 @@
     XCTAssertTrue([result response].statusCode == 200);
     
     // Cleanup
-    condition = [[AZSAccessCondition alloc] init];
-    [condition setLeaseId:leaseID];
+    condition = [[AZSAccessCondition alloc] initWithLeaseId:leaseID];
     [self.blobContainer releaseLeaseWithAccessCondition:condition completionHandler:^void(NSError* err){
         [self atomicOnLock:lock donePtr:&done operation:^void{
             XCTAssertTrue(err == nil, @"Error in leasing.  Error code = %ld, error domain = %@, error userinfo = %@", (long)err.code, err.domain, err.userInfo);
@@ -687,8 +670,7 @@
     }];
     [self barrierOnLock:lock donePtr:&done];
     
-    AZSAccessCondition *condition = [[AZSAccessCondition alloc] init];
-    [condition setLeaseId:leaseID];
+    AZSAccessCondition *condition = [[AZSAccessCondition alloc] initWithLeaseId:leaseID];
     AZSOperationContext *opCtxt = [[AZSOperationContext alloc] init];
     [blob renewLeaseWithAccessCondition:condition requestOptions:nil operationContext:opCtxt completionHandler:^(NSError* err){
         [self atomicOnLock:lock donePtr:&done operation:^(void){
@@ -715,8 +697,7 @@
     }];
     [self barrierOnLock:lock donePtr:&done];
     
-    condition = [[AZSAccessCondition alloc] init];
-    [condition setLeaseId:leaseID];
+    condition = [[AZSAccessCondition alloc] initWithLeaseId:leaseID];
     opCtxt = [[AZSOperationContext alloc] init];
     [blob renewLeaseWithAccessCondition:condition requestOptions:nil operationContext:opCtxt completionHandler:^(NSError* err){
         [self atomicOnLock:lock donePtr:&done operation:^(void){
@@ -728,8 +709,7 @@
     XCTAssertTrue([result response].statusCode == 200);
     
     // Cleanup
-    condition = [[AZSAccessCondition alloc] init];
-    [condition setLeaseId:leaseID];
+    condition = [[AZSAccessCondition alloc] initWithLeaseId:leaseID];
     [blob releaseLeaseWithAccessCondition:condition completionHandler:^void(NSError* err){
         [self atomicOnLock:lock donePtr:&done operation:^void{
             XCTAssertTrue(err == nil, @"Error in leasing.  Error code = %ld, error domain = %@, error userinfo = %@", (long)err.code, err.domain, err.userInfo);
@@ -759,8 +739,7 @@
     
     //Change leased state with idempotent change
     NSString *proposedLeaseID1 = [[NSUUID UUID] UUIDString];
-    AZSAccessCondition *condition = [[AZSAccessCondition alloc] init];
-    [condition setLeaseId:leaseID1];
+    AZSAccessCondition *condition = [[AZSAccessCondition alloc] initWithLeaseId:leaseID1];
     [self.blobContainer changeLeaseWithProposedLeaseId:proposedLeaseID1 accessCondition:condition completionHandler:^(NSError * err, NSString *resultLeaseID){
         [self atomicOnLock:lock donePtr:&done operation:^(void){
             XCTAssertTrue(err == nil, @"Error in leasing.  Error code = %ld, error domain = %@, error userinfo = %@", (long)err.code, err.domain, err.userInfo);
@@ -778,8 +757,7 @@
     [self barrierOnLock:lock donePtr:&done];
     
     //Change lease state with same proposed ID but different lease ID
-    condition = [[AZSAccessCondition alloc] init];
-    [condition setLeaseId:leaseID2];
+    condition = [[AZSAccessCondition alloc] initWithLeaseId:leaseID2];
     [self.blobContainer changeLeaseWithProposedLeaseId:proposedLeaseID1 accessCondition:condition completionHandler:^(NSError * err, NSString *resultLeaseID){
         [self atomicOnLock:lock donePtr:&done operation:^(void){
             XCTAssertTrue(err == nil, @"Error in leasing.  Error code = %ld, error domain = %@, error userinfo = %@", (long)err.code, err.domain, err.userInfo);
@@ -788,8 +766,7 @@
     }];
     [self barrierOnLock:lock donePtr:&done];
     
-    condition = [[AZSAccessCondition alloc] init];
-    [condition setLeaseId:leaseID1];
+    condition = [[AZSAccessCondition alloc] initWithLeaseId:leaseID1];
     [self.blobContainer changeLeaseWithProposedLeaseId:proposedLeaseID1 accessCondition:condition completionHandler:^(NSError * err, NSString *resultLeaseID){
         [self atomicOnLock:lock donePtr:&done operation:^(void){
             XCTAssertTrue(err == nil, @"Error in leasing.  Error code = %ld, error domain = %@, error userinfo = %@", (long)err.code, err.domain, err.userInfo);
@@ -800,8 +777,7 @@
     
     //Change lease (wrong lease ID specified)
     NSString *proposedLeaseID2 = [[NSUUID UUID] UUIDString];
-    condition = [[AZSAccessCondition alloc] init];
-    [condition setLeaseId:leaseID2];
+    condition = [[AZSAccessCondition alloc] initWithLeaseId:leaseID2];
     [self.blobContainer changeLeaseWithProposedLeaseId:proposedLeaseID2 accessCondition:condition completionHandler:^(NSError * err, NSString *resultLeaseID){
         [self atomicOnLock:lock donePtr:&done operation:^(void){
             XCTAssertTrue(err == nil, @"Error in leasing.  Error code = %ld, error domain = %@, error userinfo = %@", (long)err.code, err.domain, err.userInfo);
@@ -810,8 +786,7 @@
     }];
     [self barrierOnLock:lock donePtr:&done];
     
-    condition = [[AZSAccessCondition alloc] init];
-    [condition setLeaseId:leaseID1];
+    condition = [[AZSAccessCondition alloc] initWithLeaseId:leaseID1];
     [self.blobContainer changeLeaseWithProposedLeaseId:proposedLeaseID1 accessCondition:condition requestOptions:nil operationContext:opCtxt completionHandler:^(NSError * err, NSString *resultLeaseID){
         [self atomicOnLock:lock donePtr:&done operation:^(void){
             XCTAssertTrue(err != nil, @"Error in leasing.  Error code = %ld, error domain = %@, error userinfo = %@", (long)err.code, err.domain, err.userInfo);
@@ -822,8 +797,7 @@
     XCTAssertTrue([result response].statusCode == 409);
     
     // Change released lease
-    condition = [[AZSAccessCondition alloc] init];
-    [condition setLeaseId:leaseID2];
+    condition = [[AZSAccessCondition alloc] initWithLeaseId:leaseID2];
     [self.blobContainer releaseLeaseWithAccessCondition:condition completionHandler:^void(NSError* err){
         [self atomicOnLock:lock donePtr:&done operation:^void{
             XCTAssertTrue(err == nil, @"Error in leasing.  Error code = %ld, error domain = %@, error userinfo = %@", (long)err.code, err.domain, err.userInfo);
@@ -831,8 +805,7 @@
     }];
     [self barrierOnLock:lock donePtr:&done];
     
-    condition = [[AZSAccessCondition alloc] init];
-    [condition setLeaseId:leaseID2];
+    condition = [[AZSAccessCondition alloc] initWithLeaseId:leaseID2];
     [self.blobContainer changeLeaseWithProposedLeaseId:proposedLeaseID2 accessCondition:condition requestOptions:nil operationContext:opCtxt completionHandler:^(NSError * err, NSString *resultLeaseID){
         [self atomicOnLock:lock donePtr:&done operation:^(void){
             XCTAssertTrue(err != nil, @"Error in leasing.  Error code = %ld, error domain = %@, error userinfo = %@", (long)err.code, err.domain, err.userInfo);
@@ -858,8 +831,7 @@
     }];
     [self barrierOnLock:lock donePtr:&done];
     
-    condition = [[AZSAccessCondition alloc] init];
-    [condition setLeaseId:leaseID1];
+    condition = [[AZSAccessCondition alloc] initWithLeaseId:leaseID1];
     [self.blobContainer changeLeaseWithProposedLeaseId:proposedLeaseID1 accessCondition:condition requestOptions:nil operationContext:opCtxt completionHandler:^(NSError * err, NSString *resultLeaseID){
         [self atomicOnLock:lock donePtr:&done operation:^(void){
             XCTAssertTrue(err != nil, @"Error in leasing.  Error code = %ld, error domain = %@, error userinfo = %@", (long)err.code, err.domain, err.userInfo);
@@ -877,8 +849,7 @@
     }];
     [self barrierOnLock:lock donePtr:&done];
     
-    condition = [[AZSAccessCondition alloc] init];
-    [condition setLeaseId:leaseID1];
+    condition = [[AZSAccessCondition alloc] initWithLeaseId:leaseID1];
     [self.blobContainer changeLeaseWithProposedLeaseId:proposedLeaseID1 accessCondition:condition requestOptions:nil operationContext:opCtxt completionHandler:^(NSError * err, NSString *resultLeaseID){
         [self atomicOnLock:lock donePtr:&done operation:^(void){
             XCTAssertTrue(err != nil, @"Error in leasing.  Error code = %ld, error domain = %@, error userinfo = %@", (long)err.code, err.domain, err.userInfo);
@@ -904,8 +875,7 @@
     }];
     [self barrierOnLock:lock donePtr:&done];
     
-    condition = [[AZSAccessCondition alloc] init];
-    [condition setLeaseId:leaseID1];
+    condition = [[AZSAccessCondition alloc] initWithLeaseId:leaseID1];
     [self.blobContainer changeLeaseWithProposedLeaseId:leaseID1 accessCondition:condition requestOptions:nil operationContext:opCtxt completionHandler:^(NSError * err, NSString *resultLeaseID){
         [self atomicOnLock:lock donePtr:&done operation:^(void){
             XCTAssertTrue(err != nil, @"Error in leasing.  Error code = %ld, error domain = %@, error userinfo = %@", (long)err.code, err.domain, err.userInfo);
@@ -945,8 +915,7 @@
     
     //Change leased state with idempotent change
     NSString *proposedLeaseID1 = [[NSUUID UUID] UUIDString];
-    AZSAccessCondition *condition = [[AZSAccessCondition alloc] init];
-    [condition setLeaseId:leaseID1];
+    AZSAccessCondition *condition = [[AZSAccessCondition alloc] initWithLeaseId:leaseID1];
     [blob changeLeaseWithProposedLeaseId:proposedLeaseID1 accessCondition:condition completionHandler:^(NSError * err, NSString *resultLeaseID){
         [self atomicOnLock:lock donePtr:&done operation:^(void){
             XCTAssertTrue(err == nil, @"Error in leasing.  Error code = %ld, error domain = %@, error userinfo = %@", (long)err.code, err.domain, err.userInfo);
@@ -964,8 +933,7 @@
     [self barrierOnLock:lock donePtr:&done];
     
     //Change lease state with same proposed ID but different lease ID
-    condition = [[AZSAccessCondition alloc] init];
-    [condition setLeaseId:leaseID2];
+    condition = [[AZSAccessCondition alloc] initWithLeaseId:leaseID2];
     [blob changeLeaseWithProposedLeaseId:proposedLeaseID1 accessCondition:condition completionHandler:^(NSError * err, NSString *resultLeaseID){
         [self atomicOnLock:lock donePtr:&done operation:^(void){
             XCTAssertTrue(err == nil, @"Error in leasing.  Error code = %ld, error domain = %@, error userinfo = %@", (long)err.code, err.domain, err.userInfo);
@@ -974,8 +942,7 @@
     }];
     [self barrierOnLock:lock donePtr:&done];
     
-    condition = [[AZSAccessCondition alloc] init];
-    [condition setLeaseId:leaseID1];
+    condition = [[AZSAccessCondition alloc] initWithLeaseId:leaseID1];
     [blob changeLeaseWithProposedLeaseId:proposedLeaseID1 accessCondition:condition completionHandler:^(NSError * err, NSString *resultLeaseID){
         [self atomicOnLock:lock donePtr:&done operation:^(void){
             XCTAssertTrue(err == nil, @"Error in leasing.  Error code = %ld, error domain = %@, error userinfo = %@", (long)err.code, err.domain, err.userInfo);
@@ -986,8 +953,7 @@
     
     //Change lease (wrong lease ID specified)
     NSString *proposedLeaseID2 = [[NSUUID UUID] UUIDString];
-    condition = [[AZSAccessCondition alloc] init];
-    [condition setLeaseId:leaseID2];
+    condition = [[AZSAccessCondition alloc] initWithLeaseId:leaseID2];
     [blob changeLeaseWithProposedLeaseId:proposedLeaseID2 accessCondition:condition completionHandler:^(NSError * err, NSString *resultLeaseID){
         [self atomicOnLock:lock donePtr:&done operation:^(void){
             XCTAssertTrue(err == nil, @"Error in leasing.  Error code = %ld, error domain = %@, error userinfo = %@", (long)err.code, err.domain, err.userInfo);
@@ -996,8 +962,7 @@
     }];
     [self barrierOnLock:lock donePtr:&done];
     
-    condition = [[AZSAccessCondition alloc] init];
-    [condition setLeaseId:leaseID1];
+    condition = [[AZSAccessCondition alloc] initWithLeaseId:leaseID1];
     [blob changeLeaseWithProposedLeaseId:proposedLeaseID1 accessCondition:condition requestOptions:nil operationContext:opCtxt completionHandler:^(NSError * err, NSString *resultLeaseID){
         [self atomicOnLock:lock donePtr:&done operation:^(void){
             XCTAssertTrue(err != nil, @"Error in leasing.  Error code = %ld, error domain = %@, error userinfo = %@", (long)err.code, err.domain, err.userInfo);
@@ -1008,8 +973,7 @@
     XCTAssertTrue([result response].statusCode == 409);
     
     // Change released lease
-    condition = [[AZSAccessCondition alloc] init];
-    [condition setLeaseId:leaseID2];
+    condition = [[AZSAccessCondition alloc] initWithLeaseId:leaseID2];
     [blob releaseLeaseWithAccessCondition:condition completionHandler:^void(NSError* err){
         [self atomicOnLock:lock donePtr:&done operation:^void{
             XCTAssertTrue(err == nil, @"Error in leasing.  Error code = %ld, error domain = %@, error userinfo = %@", (long)err.code, err.domain, err.userInfo);
@@ -1017,8 +981,7 @@
     }];
     [self barrierOnLock:lock donePtr:&done];
     
-    condition = [[AZSAccessCondition alloc] init];
-    [condition setLeaseId:leaseID2];
+    condition = [[AZSAccessCondition alloc] initWithLeaseId:leaseID2];
     [blob changeLeaseWithProposedLeaseId:proposedLeaseID2 accessCondition:condition requestOptions:nil operationContext:opCtxt completionHandler:^(NSError * err, NSString *resultLeaseID){
         [self atomicOnLock:lock donePtr:&done operation:^(void){
             XCTAssertTrue(err != nil, @"Error in leasing.  Error code = %ld, error domain = %@, error userinfo = %@", (long)err.code, err.domain, err.userInfo);
@@ -1044,8 +1007,7 @@
     }];
     [self barrierOnLock:lock donePtr:&done];
     
-    condition = [[AZSAccessCondition alloc] init];
-    [condition setLeaseId:leaseID1];
+    condition = [[AZSAccessCondition alloc] initWithLeaseId:leaseID1];
     [blob changeLeaseWithProposedLeaseId:proposedLeaseID1 accessCondition:condition requestOptions:nil operationContext:opCtxt completionHandler:^(NSError * err, NSString *resultLeaseID){
         [self atomicOnLock:lock donePtr:&done operation:^(void){
             XCTAssertTrue(err != nil, @"Error in leasing.  Error code = %ld, error domain = %@, error userinfo = %@", (long)err.code, err.domain, err.userInfo);
@@ -1063,8 +1025,7 @@
     }];
     [self barrierOnLock:lock donePtr:&done];
     
-    condition = [[AZSAccessCondition alloc] init];
-    [condition setLeaseId:leaseID1];
+    condition = [[AZSAccessCondition alloc] initWithLeaseId:leaseID1];
     [blob changeLeaseWithProposedLeaseId:proposedLeaseID1 accessCondition:condition requestOptions:nil operationContext:opCtxt completionHandler:^(NSError * err, NSString *resultLeaseID){
         [self atomicOnLock:lock donePtr:&done operation:^(void){
             XCTAssertTrue(err != nil, @"Error in leasing.  Error code = %ld, error domain = %@, error userinfo = %@", (long)err.code, err.domain, err.userInfo);
@@ -1090,8 +1051,7 @@
     }];
     [self barrierOnLock:lock donePtr:&done];
     
-    condition = [[AZSAccessCondition alloc] init];
-    [condition setLeaseId:leaseID1];
+    condition = [[AZSAccessCondition alloc] initWithLeaseId:leaseID1];
     [blob changeLeaseWithProposedLeaseId:leaseID1 accessCondition:condition requestOptions:nil operationContext:opCtxt completionHandler:^(NSError * err, NSString *resultLeaseID){
         [self atomicOnLock:lock donePtr:&done operation:^(void){
             XCTAssertTrue(err != nil, @"Error in leasing.  Error code = %ld, error domain = %@, error userinfo = %@", (long)err.code, err.domain, err.userInfo);

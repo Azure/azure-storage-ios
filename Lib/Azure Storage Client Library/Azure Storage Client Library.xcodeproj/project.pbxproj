@@ -14,7 +14,6 @@
 				B082D17B1BAA962700A39C18 /* Multiplatform Build */,
 			);
 			dependencies = (
-				B082D17A1BAA961700A39C18 /* PBXTargetDependency */,
 			);
 			name = Framework;
 			productName = Framework;
@@ -92,7 +91,6 @@
 		B082D1971BB0D2DE00A39C18 /* AZSRetryPolicy.h in Headers */ = {isa = PBXBuildFile; fileRef = B058A4921B4F518C00BB0F57 /* AZSRetryPolicy.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		B0C0F5E81B44C8FC0080DC49 /* AZSResponseParser.m in Sources */ = {isa = PBXBuildFile; fileRef = B0C0F5E71B44C8FC0080DC49 /* AZSResponseParser.m */; };
 		BE4510441A9D252300C3F971 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE4510431A9D252300C3F971 /* Foundation.framework */; };
-		BE4510491A9D252300C3F971 /* Azure_Storage_Client_Library.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = BE4510481A9D252300C3F971 /* Azure_Storage_Client_Library.h */; };
 		BE45104B1A9D252300C3F971 /* Azure_Storage_Client_Library.m in Sources */ = {isa = PBXBuildFile; fileRef = BE45104A1A9D252300C3F971 /* Azure_Storage_Client_Library.m */; };
 		BE4510521A9D252300C3F971 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE4510511A9D252300C3F971 /* XCTest.framework */; };
 		BE4510531A9D252300C3F971 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE4510431A9D252300C3F971 /* Foundation.framework */; };
@@ -118,13 +116,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		B082D1791BAA961700A39C18 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = BE4510381A9D252300C3F971 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = BE45103F1A9D252300C3F971;
-			remoteInfo = "Azure Storage Client Library";
-		};
 		BE4510561A9D252300C3F971 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = BE4510381A9D252300C3F971 /* Project object */;
@@ -133,19 +124,6 @@
 			remoteInfo = "Azure Storage Client Library";
 		};
 /* End PBXContainerItemProxy section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		BE45103E1A9D252300C3F971 /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "include/$(PRODUCT_NAME)";
-			dstSubfolderSpec = 16;
-			files = (
-				BE4510491A9D252300C3F971 /* Azure_Storage_Client_Library.h in CopyFiles */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		69FF6EBE1B83C56200AF4FDE /* AZSLeaseTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AZSLeaseTests.m; sourceTree = "<group>"; };
@@ -229,7 +207,7 @@
 		BE4510471A9D252300C3F971 /* Azure Storage Client Library-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Azure Storage Client Library-Prefix.pch"; sourceTree = "<group>"; };
 		BE4510481A9D252300C3F971 /* Azure_Storage_Client_Library.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Azure_Storage_Client_Library.h; sourceTree = "<group>"; };
 		BE45104A1A9D252300C3F971 /* Azure_Storage_Client_Library.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Azure_Storage_Client_Library.m; sourceTree = "<group>"; };
-		BE4510501A9D252300C3F971 /* Azure Storage Client LibraryTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Azure Storage Client LibraryTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		BE4510501A9D252300C3F971 /* Azure Storage Client Library.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Azure Storage Client Library.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE4510511A9D252300C3F971 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		BE4510541A9D252300C3F971 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
 		BE45105B1A9D252300C3F971 /* Azure Storage Client LibraryTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Azure Storage Client LibraryTests-Info.plist"; sourceTree = "<group>"; };
@@ -367,7 +345,7 @@
 			isa = PBXGroup;
 			children = (
 				BE4510401A9D252300C3F971 /* libAzure Storage Client Library.a */,
-				BE4510501A9D252300C3F971 /* Azure Storage Client LibraryTests.xctest */,
+				BE4510501A9D252300C3F971 /* Azure Storage Client Library.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -548,7 +526,7 @@
 			);
 			name = "Azure Storage Client LibraryTests";
 			productName = "Azure Storage Client LibraryTests";
-			productReference = BE4510501A9D252300C3F971 /* Azure Storage Client LibraryTests.xctest */;
+			productReference = BE4510501A9D252300C3F971 /* Azure Storage Client Library.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -558,7 +536,7 @@
 			isa = PBXProject;
 			attributes = {
 				CLASSPREFIX = AZS;
-				LastUpgradeCheck = 0630;
+				LastUpgradeCheck = 0710;
 				ORGANIZATIONNAME = Microsoft;
 			};
 			buildConfigurationList = BE45103B1A9D252300C3F971 /* Build configuration list for PBXProject "Azure Storage Client Library" */;
@@ -698,11 +676,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		B082D17A1BAA961700A39C18 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = BE45103F1A9D252300C3F971 /* Azure Storage Client Library */;
-			targetProxy = B082D1791BAA961700A39C18 /* PBXContainerItemProxy */;
-		};
 		BE4510571A9D252300C3F971 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = BE45103F1A9D252300C3F971 /* Azure Storage Client Library */;
@@ -753,6 +726,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -817,7 +791,6 @@
 		BE4510641A9D252300C3F971 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				DEAD_CODE_STRIPPING = NO;
 				DSTROOT = /tmp/Azure_Storage_Client_Library.dst;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
@@ -828,9 +801,10 @@
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"$(SDKROOT)/usr/include/libxml2",
 				);
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "Azure Storage Client Library";
 				PUBLIC_HEADERS_FOLDER_PATH = "include/$(PROJECT_NAME)";
 				SKIP_INSTALL = YES;
 				STRIP_STYLE = "non-global";
@@ -841,7 +815,6 @@
 		BE4510651A9D252300C3F971 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = NO;
 				DSTROOT = /tmp/Azure_Storage_Client_Library.dst;
@@ -853,9 +826,10 @@
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"$(SDKROOT)/usr/include/libxml2",
 				);
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "Azure Storage Client Library";
 				PUBLIC_HEADERS_FOLDER_PATH = "include/$(PROJECT_NAME)";
 				SKIP_INSTALL = YES;
 				STRIP_STYLE = "non-global";
@@ -878,7 +852,9 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = "Azure Storage Client LibraryTests/Azure Storage Client LibraryTests-Info.plist";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "MS.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_NAME = "Azure Storage Client Library";
 				WRAPPER_EXTENSION = xctest;
 			};
 			name = Debug;
@@ -887,7 +863,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
 					"$(DEVELOPER_FRAMEWORKS_DIR)",
 				);

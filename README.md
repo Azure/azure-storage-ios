@@ -11,7 +11,7 @@ To use the library, clone the repo and open the XCode project.  Build the librar
 
 Here is a small code sample that creates and deletes a blob:
 
-```
+```objc
 -(void)createAndDeleteBlob
 {
     // Create a semaphore to prevent the method from exiting before all of the async operations finish.

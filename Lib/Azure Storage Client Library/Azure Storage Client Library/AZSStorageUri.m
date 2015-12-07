@@ -17,8 +17,13 @@
 
 #import "AZSStorageUri.h"
 
-@implementation AZSStorageUri
+@interface AZSStorageUri()
 
+-(instancetype)init AZS_DESIGNATED_INITIALIZER;
+
+@end
+
+@implementation AZSStorageUri
 
 + (NSURL *) appendToUrl:(NSURL *)url pathToAppend:(NSString *)pathToAppend
 {
@@ -40,6 +45,11 @@
 + (AZSStorageUri *) appendToStorageUri:(AZSStorageUri *)storageUri pathToAppend:(NSString *)pathToAppend
 {
     return [[AZSStorageUri alloc] initWithPrimaryUri:[AZSStorageUri appendToUrl:storageUri.primaryUri pathToAppend:pathToAppend] secondaryUri:[AZSStorageUri appendToUrl:storageUri.secondaryUri pathToAppend:pathToAppend]];
+}
+
+-(instancetype)init
+{
+    return nil;
 }
 
 -(instancetype) initWithPrimaryUri:(NSURL *)primaryUri

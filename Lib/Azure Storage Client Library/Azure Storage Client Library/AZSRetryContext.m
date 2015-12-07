@@ -17,7 +17,18 @@
 
 #import "AZSRetryContext.h"
 
+@interface AZSRetryContext()
+
+-(instancetype)init AZS_DESIGNATED_INITIALIZER;
+
+@end
+
 @implementation AZSRetryContext
+
+-(instancetype)init
+{
+    return nil;
+}
 
 -(instancetype)initWithCurrentRetryCount:(NSInteger)currentRetryCount lastRequestResult:(AZSRequestResult *)lastRequestResult nextLocation:(AZSStorageLocation)nextLocation currentLocationMode:(AZSStorageLocationMode)currentLocationMode
 {

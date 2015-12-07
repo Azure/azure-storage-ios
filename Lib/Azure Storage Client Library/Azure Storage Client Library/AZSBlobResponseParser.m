@@ -42,6 +42,7 @@
 @end
 
 @implementation AZSBlobListItem
+
 -(instancetype)init
 {
     self = [super init];
@@ -476,7 +477,7 @@
     parser.shouldProcessNamespaces = NO;
     
     __block NSMutableArray *blockList = [NSMutableArray arrayWithCapacity:10];
-    __block AZSBlockListItem *currentBlock = [[AZSBlockListItem alloc] init];
+    __block AZSBlockListItem *currentBlock = [[AZSBlockListItem alloc] initWithBlockID:@"" blockListMode:AZSBlockListModeLatest];
     __block NSMutableArray *elementStack = [NSMutableArray arrayWithCapacity:10];
     __block NSMutableString *builder = [[NSMutableString alloc] init];
 
@@ -520,13 +521,13 @@
         {
             currentBlock.blockListMode = AZSBlockListModeCommitted;
             [blockList addObject:currentBlock];
-            currentBlock = [[AZSBlockListItem alloc] init];
+            currentBlock = [[AZSBlockListItem alloc] initWithBlockID:@"" blockListMode:AZSBlockListModeLatest];
         }
         else if ([parentNode isEqualToString:@"UncommittedBlocks"])
         {
             currentBlock.blockListMode = AZSBlockListModeUncommitted;
             [blockList addObject:currentBlock];
-            currentBlock = [[AZSBlockListItem alloc] init];
+            currentBlock = [[AZSBlockListItem alloc] initWithBlockID:@"" blockListMode:AZSBlockListModeLatest];
         }
     };
 

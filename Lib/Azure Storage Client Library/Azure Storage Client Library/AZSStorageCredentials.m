@@ -24,10 +24,19 @@
 
 @property (strong) AZSUriQueryBuilder *queryBuilder;
 
+-(instancetype)init AZS_DESIGNATED_INITIALIZER;
+
 @end
 
 @implementation AZSStorageCredentials
 
+// This is currently the preferred way to create a StorageCredentials object representing public access, but
+// this will be changed in the near future.
+- (instancetype)init
+{
+    self = [super init];
+    return self;
+}
 
 -(instancetype) initWithAccountName:(NSString *)accountName accountKey:(NSString *)accountKeyString
 {

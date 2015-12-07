@@ -63,7 +63,7 @@
 
 -(AZSRetryContext *)generateRetryContextWithCurrentRetryCount:(NSInteger)currentRetryCount statusCode:(NSInteger)statusCode
 {
-    return [[AZSRetryContext alloc] initWithCurrentRetryCount:currentRetryCount lastRequestResult:[[AZSRequestResult alloc] initWithStartTime:nil location:AZSStorageLocationPrimary response:[[NSHTTPURLResponse alloc] initWithURL:nil statusCode:statusCode HTTPVersion:nil headerFields:nil] error:nil] nextLocation:AZSStorageLocationPrimary currentLocationMode:AZSStorageLocationModePrimaryOnly];
+    return [[AZSRetryContext alloc] initWithCurrentRetryCount:currentRetryCount lastRequestResult:[[AZSRequestResult alloc] initWithStartTime:[[NSDate alloc] initWithTimeIntervalSinceNow:0] location:AZSStorageLocationPrimary response:[[NSHTTPURLResponse alloc] initWithURL:[[NSURL alloc] init] statusCode:statusCode HTTPVersion:nil headerFields:nil] error:nil] nextLocation:AZSStorageLocationPrimary currentLocationMode:AZSStorageLocationModePrimaryOnly];
 }
 
 -(void)runRetryTestWithRetryPolicy:(id<AZSRetryPolicy>)retryPolicy retryCount:(NSInteger)retryCount statusCode:(NSInteger)statusCode shouldSucceed:(BOOL)shouldSucceed validateRetryInterval:(BOOL (^)(double))validateRetryInterval

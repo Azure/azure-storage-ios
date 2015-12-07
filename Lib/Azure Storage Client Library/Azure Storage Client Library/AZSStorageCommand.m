@@ -22,7 +22,18 @@
 #import "AZSResponseParser.h"
 #import "AZSStorageCredentials.h"
 
+@interface AZSStorageCommand()
+
+-(instancetype)init AZS_DESIGNATED_INITIALIZER;
+
+@end
+
 @implementation AZSStorageCommand
+
+-(instancetype)init
+{
+    return nil;
+}
 
 -(instancetype) initWithStorageCredentials:(AZSStorageCredentials *)credentials storageUri:(AZSStorageUri *)storageUri operationContext:(AZSOperationContext *)operationContext
 {

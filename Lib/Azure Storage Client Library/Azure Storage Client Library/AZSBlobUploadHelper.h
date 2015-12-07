@@ -31,7 +31,7 @@ AZS_ASSUME_NONNULL_BEGIN
 @property (strong) AZSOperationContext *operationContext;
 @property (strong) NSError *streamingError;
 
--(instancetype)initToBlockBlob:(AZSCloudBlockBlob *)blockBlob accessCondition:(AZSNullable AZSAccessCondition *)accessCondition requestOptions:(AZSNullable AZSBlobRequestOptions *)requestOptions operationContext:(AZSNullable AZSOperationContext *)operationContext completionHandler:(void (^)(NSError* __AZSNullable))completionHandler AZS_DESIGNATED_INITIALIZER;
+-(instancetype)initToBlockBlob:(AZSCloudBlockBlob *)blockBlob accessCondition:(AZSNullable AZSAccessCondition *)accessCondition requestOptions:(AZSNullable AZSBlobRequestOptions *)requestOptions operationContext:(AZSNullable AZSOperationContext *)operationContext completionHandler:(void (^ __AZSNullable)(NSError* __AZSNullable))completionHandler AZS_DESIGNATED_INITIALIZER;
 -(NSInteger)write:(const uint8_t *)buffer maxLength:(NSUInteger)length completionHandler:(void(^)())completionHandler;
 -(BOOL)closeWithCompletionHandler:(void(^)())completionHandler;
 -(BOOL)hasSpaceAvailable;
