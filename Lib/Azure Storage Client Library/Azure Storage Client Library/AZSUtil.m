@@ -15,14 +15,33 @@
 // </copyright>
 // -----------------------------------------------------------------------------------------
 
+#import <CommonCrypto/CommonHMAC.h>
+#import "AZSErrors.h"
+#import "AZSOperationContext.h"
 #import "AZSUtil.h"
-
+#import "AZSStorageCredentials.h"
 
 @implementation AZSUtil
 
-NSInteger pathStylePorts[20] = {10000, 10001, 10002, 10003, 10004, 10100, 10101, 10102, 10103, 10104, 11000, 11001, 11002, 11003, 10004, 11100, 11101, 11102, 11103, 11104};
+static NSDateFormatter *df = nil;
 
-+(void) addOptionalHeaderToRequest:(NSMutableURLRequest*)request header:(NSString*)header stringValue:(NSString*)value
+static NSInteger pathStylePorts[20] = {10000, 10001, 10002, 10003, 10004, 10100, 10101, 10102, 10103, 10104, 11000, 11001, 11002, 11003, 10004, 11100, 11101, 11102, 11103, 11104};
+
++(NSDateFormatter *) dateFormatterWithFormat:(NSString *)format
+{
+    NSDateFormatter *dateFormat = [df copy];
+    if (!df) {
+        df = [[NSDateFormatter alloc] init];
+        [df setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"]];
+        [df setTimeZone:[NSTimeZone timeZoneWithName:@"UTC"]];
+        dateFormat = [df copy];
+    }
+    
+    [dateFormat setDateFormat:format];
+    return dateFormat;
+}
+
++(void) addOptionalHeaderToRequest:(NSMutableURLRequest *)request header:(NSString *)header stringValue:(NSString *)value
 {
     if (value)
     {
@@ -30,7 +49,7 @@ NSInteger pathStylePorts[20] = {10000, 10001, 10002, 10003, 10004, 10100, 10101,
     }
 }
 
-+(void) addOptionalHeaderToRequest:(NSMutableURLRequest*)request header:(NSString*)header intValue:(NSNumber*)value
++(void) addOptionalHeaderToRequest:(NSMutableURLRequest *)request header:(NSString *)header intValue:(NSNumber *)value
 {
     if (value)
     {
@@ -38,7 +57,7 @@ NSInteger pathStylePorts[20] = {10000, 10001, 10002, 10003, 10004, 10100, 10101,
     }
 }
 
-+(NSString*) convertDateToHttpString:(NSDate*)date
++(NSString *) convertDateToHttpString:(NSDate *)date
 {
     if (date)
     {
@@ -50,24 +69,23 @@ NSInteger pathStylePorts[20] = {10000, 10001, 10002, 10003, 10004, 10100, 10101,
     }
 }
 
-+(NSDateFormatter*) dateFormatterWithRFCFormat
++(NSDateFormatter *) dateFormatterWithRFCFormat
 {
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    [dateFormatter setDateFormat:@"EEE, dd MMM yyyy HH':'mm':'ss 'GMT'"];
-    [dateFormatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"]];
-    [dateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
-    
-    return dateFormatter;
+    return [AZSUtil dateFormatterWithFormat:@"EEE, dd MMM yyyy HH':'mm':'ss 'GMT'"];
 }
 
-+(NSDateFormatter*) dateFormatterWithRoundtripFormat
++(NSDateFormatter *) dateFormatterWithRoundtripFormat
 {
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    [dateFormatter setDateFormat:@"yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fffffff'Z'"];
-    [dateFormatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"]];
-    [dateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
+    return [AZSUtil dateFormatterWithFormat:@"yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fffffff'Z'"];
+}
+
++(NSString *) utcTimeOrEmptyWithDate:(NSDate *)date
+{
+    if (!date) {
+        return @"";
+    }
     
-    return dateFormatter;
+    return [[AZSUtil dateFormatterWithFormat: /* ISO8601 format */ @"yyyy-MM-dd'T'HH:mm:ss'Z'"] stringFromDate:date];
 }
 
 +(BOOL)streamAvailable:(NSStream *)stream
@@ -77,22 +95,17 @@ NSInteger pathStylePorts[20] = {10000, 10001, 10002, 10003, 10004, 10100, 10101,
 }
 
 // This should be adequate for some parts of the query, but it's not accurate in all cases.
-// In particular, it won't work for all code points other than the ASCII set.
 // Either way, it's better than the built-in NSString percent encoding.
 // It should be fine for the values in a SAS token (including the sig), which is what we're currently using it for.
 +(NSString *) URLEncodedStringWithString:(NSString *)stringToConvert
 {
-    NSMutableString * encodedString = [NSMutableString string];
-    const unsigned char * sourceUTF8 = (const unsigned char *)[stringToConvert cStringUsingEncoding:NSUTF8StringEncoding];
-    unsigned long length = strlen((const char *)sourceUTF8);
+    NSMutableString *encodedString = [NSMutableString string];
+    const unsigned char *sourceUTF8 = (const unsigned char *) [stringToConvert cStringUsingEncoding:NSUTF8StringEncoding];
+    unsigned long length = strlen((const char *) sourceUTF8);
     for (int i = 0; i < length; ++i)
     {
         const unsigned char currentChar = sourceUTF8[i];
-        if (currentChar == ' ')
-        {
-            [encodedString appendString:@"+"];
-        }
-        else if (currentChar == '.' || currentChar == '-' || currentChar == '_' || currentChar == '~' ||
+        if (currentChar == '.' || currentChar == '-' || currentChar == '_' || currentChar == '~' ||
                    (currentChar >= 'a' && currentChar <= 'z') ||
                    (currentChar >= 'A' && currentChar <= 'Z') ||
                    (currentChar >= '0' && currentChar <= '9'))
@@ -108,7 +121,7 @@ NSInteger pathStylePorts[20] = {10000, 10001, 10002, 10003, 10004, 10100, 10101,
 }
 
 
-+(NSMutableDictionary*) parseQueryWithQueryString:(NSString*)query
++(NSMutableDictionary *) parseQueryWithQueryString:(NSString *)query
 {
     NSMutableDictionary *result = [[NSMutableDictionary alloc] init];
     
@@ -225,6 +238,39 @@ NSInteger pathStylePorts[20] = {10000, 10001, 10002, 10003, 10004, 10100, 10101,
     }
     
     return NO;
+}
+
++(NSString *) computeHmac256WithString:(NSString*)stringToSign credentials:(AZSStorageCredentials *)credentials
+{
+    const char* stringToSignChar = [stringToSign cStringUsingEncoding:NSUTF8StringEncoding];
+    unsigned char cHMAC[CC_SHA256_DIGEST_LENGTH];
+    CCHmac(kCCHmacAlgSHA256, [credentials.accountKey bytes], [credentials.accountKey length], stringToSignChar, strlen(stringToSignChar), cHMAC);
+    
+    NSData *hmac = [[NSData alloc] initWithBytes:cHMAC length:sizeof(cHMAC)];
+    return [hmac base64EncodedStringWithOptions:0];
+}
+
++(NSError *) createErrorFromError:(NSError *)err domain:(NSString *)domain code:(NSInteger)code userInfo:(NSDictionary*)userInfo
+{
+    if (!err) {
+        return [[NSError alloc] initWithDomain:domain code:code userInfo:userInfo];
+    }
+    
+    [err.userInfo setValue:[AZSUtil createErrorFromError:[err.userInfo objectForKey:@"Internal Error"] domain:domain code:code userInfo:userInfo] forKey:@"Internal Error"];
+    return err;
+}
+
++(AZSOperationContext *) operationlessContext
+{
+    /* Context used for logging when no service call is being made. */
+    static __strong AZSOperationContext *context = nil;
+    static dispatch_once_t allowOnce;
+    
+    dispatch_once(&allowOnce, ^{
+        context = [[AZSOperationContext alloc] init];
+    });
+
+    return context;
 }
 
 @end

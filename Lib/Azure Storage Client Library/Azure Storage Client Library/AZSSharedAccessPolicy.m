@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------------------------
-// <copyright file="AZSNavigationUtil.h" company="Microsoft">
+// <copyright file="AZSSharedAccessPolicy.m" company="Microsoft">
 //    Copyright 2015 Microsoft Corporation
 //
 //    Licensed under the MIT License;
@@ -15,21 +15,30 @@
 // </copyright>
 // -----------------------------------------------------------------------------------------
 
-#import <Foundation/Foundation.h>
+#import "AZSSharedAccessPolicy.h"
 
-@class AZSStorageCredentials;
-@class AZSStorageUri;
+@interface AZSSharedAccessPolicy()
 
-@interface AZSNavigationUtil : NSObject
+-(instancetype) init AZS_DESIGNATED_INITIALIZER;
 
-+(NSURL*)getServiceClientBaseAddressWithUri: (NSURL *)addressUri usePathStyle:(BOOL)usePathStyle;
-+(AZSStorageUri*)getServiceClientBaseAddressWithStorageUri: (AZSStorageUri*)storageUri usePathStyle:(BOOL)usePathStyle;
+@end
 
-+(AZSStorageCredentials*) parseSASQueryWithQueryParameters:(NSMutableDictionary*)queryParameters;
-+(NSMutableArray*)parseBlobQueryAndVerifyWithStorageUri:(AZSStorageUri*)blobAddress;
+@implementation AZSSharedAccessPolicy
 
-+(NSString *)getContainerNameWithContainerAddress:(NSURL*)uri isPathStyle:(BOOL)isPathStyle;
+-(instancetype) init
+{
+    return nil;
+}
 
-+(NSString *)getBlobNameWithBlobAddress:(NSURL*)uri isPathStyle:(BOOL)isPathStyle;
+-(instancetype) initWithIdentifier:(NSString *)identifier
+{
+    self = [super init];
+    if (self) {
+        _policyIdentifier = identifier;
+        _permissions = AZSSharedAccessPermissionsNone;
+    }
+    
+    return self;
+}
 
 @end

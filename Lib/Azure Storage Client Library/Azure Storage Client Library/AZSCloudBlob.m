@@ -26,6 +26,7 @@
 #import "AZSBlobRequestOptions.h"
 #import "AZSBlobProperties.h"
 #import "AZSCopyState.h"
+#import "AZSUriQueryBuilder.h"
 #import "AZSUtil.h"
 #import "AZSAccessCondition.h"
 #import "AZSResponseParser.h"
@@ -33,6 +34,7 @@
 #import "AZSRequestResult.h"
 #import "AZSErrors.h"
 #import "AZSRequestFactory.h"
+#import "AZSSharedAccessSignatureHelper.h"
 #import "AZSStorageCredentials.h"
 #import "AZSBlobResponseParser.h"
 
@@ -428,6 +430,30 @@
             completionHandler(nil, YES);
         }
     }];
+}
+
+-(NSString *) createSharedAccessSignatureWithParameters:(AZSSharedAccessBlobParameters*)parameters error:(NSError **)error
+{
+    if (![self.client.credentials isSharedKey]) {
+        *error = [NSError errorWithDomain:AZSErrorDomain code:AZSEInvalidArgument userInfo:nil];
+        [[AZSUtil operationlessContext] logAtLevel:AZSLogLevelError withMessage:@"Cannot create SAS without account key."];
+        return nil;
+    }
+    
+    NSString *signature = [AZSSharedAccessSignatureHelper sharedAccessSignatureHashForBlobWithParameters:parameters resourceName:[self createSharedAccessCanonicalName] client:self.client error:error];
+    
+    if (!signature) {
+        // An error occurred.
+        return nil;
+    }
+    
+    const AZSUriQueryBuilder *builder = [AZSSharedAccessSignatureHelper sharedAccessSignatureForBlobWithParameters:parameters resourceType:@"b" signature:signature error:error];
+    return [builder builderAsString];
+}
+
+- (NSString *)createSharedAccessCanonicalName
+{
+    return [NSString stringWithFormat:@"/%@/%@/%@/%@", @"blob", self.client.credentials.accountName, self.blobContainer.name, self.blobName];
 }
 
 - (void)acquireLeaseWithLeaseTime:(NSNumber *)leaseTime proposedLeaseId:(NSString *)proposedLeaseId completionHandler:(void (^)(NSError*, NSString *))completionHandler

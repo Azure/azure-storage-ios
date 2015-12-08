@@ -260,3 +260,36 @@ typedef NS_ENUM(NSInteger, AZSLogLevel)
     /** Log all messages, including debugging messages. */
     AZSLogLevelDebug
 };
+
+/** Specifies the set of possible permissions for a shared access policy. **/
+typedef NS_OPTIONS(NSUInteger, AZSSharedAccessPermissions)
+{
+    /** Specifies no access granted. **/
+    AZSSharedAccessPermissionsNone   = 0x0,
+    
+    /** Specifies Read access granted. **/
+    AZSSharedAccessPermissionsRead   = 0x1,
+    
+    /** Specifies Add access granted. **/
+    AZSSharedAccessPermissionsAdd    = 0x2,
+    
+    /** Specifies Create access granted. **/
+    AZSSharedAccessPermissionsCreate = 0x4,
+    
+    /** Specifies Write access granted. **/
+    AZSSharedAccessPermissionsWrite  = 0x8,
+    
+    /** Specifies Delete access granted. **/
+    AZSSharedAccessPermissionsDelete = 0x10,
+    
+    /** Specifies List access granted. **/
+    AZSSharedAccessPermissionsList   = 0x20,
+    
+    /** Specifies All access granted. **/
+    AZSSharedAccessPermissionsAll           = AZSSharedAccessPermissionsRead | AZSSharedAccessPermissionsAdd | AZSSharedAccessPermissionsCreate |
+            AZSSharedAccessPermissionsWrite | AZSSharedAccessPermissionsDelete | AZSSharedAccessPermissionsList,
+    
+    /** Specifies the permissions which are valid when used on the blob service. **/
+    AZSSharedAccessPermissionsBlobFull  = AZSSharedAccessPermissionsRead | AZSSharedAccessPermissionsAdd | AZSSharedAccessPermissionsCreate |
+            AZSSharedAccessPermissionsWrite | AZSSharedAccessPermissionsDelete | AZSSharedAccessPermissionsList
+};

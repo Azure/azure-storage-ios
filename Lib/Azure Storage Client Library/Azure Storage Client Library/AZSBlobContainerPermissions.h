@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------------------------
-// <copyright file="AZSNavigationUtil.h" company="Microsoft">
+// <copyright file="AZSBlobContainerPermissions.h" company="Microsoft">
 //    Copyright 2015 Microsoft Corporation
 //
 //    Licensed under the MIT License;
@@ -16,20 +16,21 @@
 // -----------------------------------------------------------------------------------------
 
 #import <Foundation/Foundation.h>
+#import "AZSEnums.h"
+#import "AZSMacros.h"
 
-@class AZSStorageCredentials;
-@class AZSStorageUri;
+AZS_ASSUME_NONNULL_BEGIN
 
-@interface AZSNavigationUtil : NSObject
+/** The shared access permissions to use for a container.*/
+@interface AZSBlobContainerPermissions : NSObject
 
-+(NSURL*)getServiceClientBaseAddressWithUri: (NSURL *)addressUri usePathStyle:(BOOL)usePathStyle;
-+(AZSStorageUri*)getServiceClientBaseAddressWithStorageUri: (AZSStorageUri*)storageUri usePathStyle:(BOOL)usePathStyle;
+/** A dictionary containing the shared access policies for the container.
+ Use the policy identifier as a key to access the stored AZSSharedAccessPolicy as a value. */
+@property (strong, readonly) NSMutableDictionary *sharedAccessPolicies;
 
-+(AZSStorageCredentials*) parseSASQueryWithQueryParameters:(NSMutableDictionary*)queryParameters;
-+(NSMutableArray*)parseBlobQueryAndVerifyWithStorageUri:(AZSStorageUri*)blobAddress;
-
-+(NSString *)getContainerNameWithContainerAddress:(NSURL*)uri isPathStyle:(BOOL)isPathStyle;
-
-+(NSString *)getBlobNameWithBlobAddress:(NSURL*)uri isPathStyle:(BOOL)isPathStyle;
+/** The public access setting of the container. */
+@property AZSContainerPublicAccessType publicAccess;
 
 @end
+
+AZS_ASSUME_NONNULL_END

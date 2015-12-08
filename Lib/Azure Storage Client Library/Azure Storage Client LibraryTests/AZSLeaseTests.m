@@ -70,8 +70,6 @@
     [lock unlock];
 }
 
-
-
 - (void)createContainerIfNotExists:(AZSCloudBlobContainer*)blobContainer
 {
     NSCondition *lock = [[NSCondition alloc] init];

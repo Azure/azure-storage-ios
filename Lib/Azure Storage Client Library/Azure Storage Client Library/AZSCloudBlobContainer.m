@@ -22,6 +22,7 @@
 #import "AZSBlobRequestFactory.h"
 #import "AZSOperationContext.h"
 #import "AZSEnums.h"
+#import "AZSStorageCredentials.h"
 #import "AZSStorageUri.h"
 #import "AZSBlobRequestOptions.h"
 #import "AZSAccessCondition.h"
@@ -32,7 +33,11 @@
 #import "AZSContinuationToken.h"
 #import "AZSResultSegment.h"
 #import "AZSBlobContainerProperties.h"
+#import "AZSBlobContainerPermissions.h"
+#import "AZSSharedAccessBlobParameters.h"
+#import "AZSSharedAccessSignatureHelper.h"
 #import "AZSResponseParser.h"
+#import "AZSUriQueryBuilder.h"
 #import "AZSUtil.h"
 #import "AZSNavigationUtil.h"
 #import "AZSErrors.h"
@@ -247,6 +252,12 @@
          completionHandler(error);
      }];
     return;
+}
+
+-(void)uploadPermissions:(AZSBlobContainerPermissions *)permissions completionHandler:(void (^)(NSError *))completionHandler
+{
+    // TODO: implement
+    completionHandler([[NSError alloc] initWithDomain:AZSErrorDomain code:AZSEInvalidArgument userInfo:nil]);
 }
 
 -(void)fetchAttributesWithCompletionHandler:(void (^)(NSError *))completionHandler
@@ -532,7 +543,7 @@
     
     _storageUri = ([[parseQueryResults objectAtIndex:0] isKindOfClass:[NSNull class]] ? nil : [parseQueryResults objectAtIndex:0]);
     
-    // todo: if (parsedcreds && creds) != null then throw mult creds
+    // todo: if (parsedCreds && creds) != null then throw mult creds
     
     _client = [[AZSCloudBlobClient alloc] initWithStorageUri: [AZSNavigationUtil getServiceClientBaseAddressWithStorageUri:self.storageUri usePathStyle:[AZSUtil usePathStyleAddressing:[uri primaryUri]]] credentials:(credentials != nil ? credentials : ([[parseQueryResults objectAtIndex:1] isKindOfClass:[NSNull class]] ? nil : [parseQueryResults objectAtIndex:1]))];
     
@@ -639,6 +650,30 @@
             }
         }
     }];
+}
+
+-(NSString *) createSharedAccessSignatureWithParameters:(AZSSharedAccessBlobParameters*)parameters error:(NSError **)error
+{
+    if (![self.client.credentials isSharedKey]) {
+        *error = [NSError errorWithDomain:AZSErrorDomain code:AZSEInvalidArgument userInfo:nil];
+        [[AZSUtil operationlessContext] logAtLevel:AZSLogLevelError withMessage:@"Cannot create SAS without account key."];
+        return nil;
+    }
+    
+    NSString *signature = [AZSSharedAccessSignatureHelper sharedAccessSignatureHashForBlobWithParameters:parameters resourceName:[self createSharedAccessCanonicalName] client:self.client error:error];
+    
+    if (!signature) {
+        // An error occurred.
+        return nil;
+    }
+    
+    const AZSUriQueryBuilder *builder = [AZSSharedAccessSignatureHelper sharedAccessSignatureForBlobWithParameters:parameters resourceType:@"c" signature:signature error:error];
+    return [builder builderAsString];
+}
+
+- (NSString *)createSharedAccessCanonicalName
+{
+    return [NSString stringWithFormat:@"/%@/%@/%@", @"blob", self.client.credentials.accountName, self.name];
 }
 
 @end

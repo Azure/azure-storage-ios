@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------------------------
-// <copyright file="AZSNavigationUtil.h" company="Microsoft">
+// <copyright file="AZSSharedAccessHeaders.h" company="Microsoft">
 //    Copyright 2015 Microsoft Corporation
 //
 //    Licensed under the MIT License;
@@ -16,20 +16,29 @@
 // -----------------------------------------------------------------------------------------
 
 #import <Foundation/Foundation.h>
+#import "AZSEnums.h"
+#import "AZSMacros.h"
 
-@class AZSStorageCredentials;
-@class AZSStorageUri;
+AZS_ASSUME_NONNULL_BEGIN
 
-@interface AZSNavigationUtil : NSObject
+/** The optional headers that can be returned using SAS.*/
+@interface AZSSharedAccessHeaders : NSObject
 
-+(NSURL*)getServiceClientBaseAddressWithUri: (NSURL *)addressUri usePathStyle:(BOOL)usePathStyle;
-+(AZSStorageUri*)getServiceClientBaseAddressWithStorageUri: (AZSStorageUri*)storageUri usePathStyle:(BOOL)usePathStyle;
+/** The cache-control header returned. */
+@property (strong, AZSNullable) NSString *cacheControl;
 
-+(AZSStorageCredentials*) parseSASQueryWithQueryParameters:(NSMutableDictionary*)queryParameters;
-+(NSMutableArray*)parseBlobQueryAndVerifyWithStorageUri:(AZSStorageUri*)blobAddress;
+/** The content-disposition header returned. */
+@property (strong, AZSNullable) NSString *contentDisposition;
 
-+(NSString *)getContainerNameWithContainerAddress:(NSURL*)uri isPathStyle:(BOOL)isPathStyle;
+/** The content-encoding header returned. */
+@property (strong, AZSNullable) NSString *contentEncoding;
 
-+(NSString *)getBlobNameWithBlobAddress:(NSURL*)uri isPathStyle:(BOOL)isPathStyle;
+/** The content-language header returned. */
+@property (strong, AZSNullable) NSString *contentLanguage;
+
+/** The content-type header returned. */
+@property (strong, AZSNullable) NSString *contentType;
 
 @end
+
+AZS_ASSUME_NONNULL_END

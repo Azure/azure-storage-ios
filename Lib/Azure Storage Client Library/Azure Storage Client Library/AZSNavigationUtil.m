@@ -103,7 +103,6 @@
     urlComponents.path = blobAddress.path;
     NSURL *url = urlComponents.URL;
     
-    // NSMutableArray *result = [[NSMutableArray alloc] initWithObjects:url, creds, snapshotString, nil];
     NSMutableArray *result = [[NSMutableArray alloc] initWithArray:@[url ? url : [NSNull null], creds ? creds : [NSNull null], snapshotString ? snapshotString : [NSNull null]]];
     
     return result;

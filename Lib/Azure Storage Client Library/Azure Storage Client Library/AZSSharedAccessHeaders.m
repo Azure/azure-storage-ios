@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------------------------
-// <copyright file="AZSNavigationUtil.h" company="Microsoft">
+// <copyright file="AZSSharedAccessHeaders.m" company="Microsoft">
 //    Copyright 2015 Microsoft Corporation
 //
 //    Licensed under the MIT License;
@@ -15,21 +15,8 @@
 // </copyright>
 // -----------------------------------------------------------------------------------------
 
-#import <Foundation/Foundation.h>
+#import "AZSSharedAccessHeaders.h"
 
-@class AZSStorageCredentials;
-@class AZSStorageUri;
-
-@interface AZSNavigationUtil : NSObject
-
-+(NSURL*)getServiceClientBaseAddressWithUri: (NSURL *)addressUri usePathStyle:(BOOL)usePathStyle;
-+(AZSStorageUri*)getServiceClientBaseAddressWithStorageUri: (AZSStorageUri*)storageUri usePathStyle:(BOOL)usePathStyle;
-
-+(AZSStorageCredentials*) parseSASQueryWithQueryParameters:(NSMutableDictionary*)queryParameters;
-+(NSMutableArray*)parseBlobQueryAndVerifyWithStorageUri:(AZSStorageUri*)blobAddress;
-
-+(NSString *)getContainerNameWithContainerAddress:(NSURL*)uri isPathStyle:(BOOL)isPathStyle;
-
-+(NSString *)getBlobNameWithBlobAddress:(NSURL*)uri isPathStyle:(BOOL)isPathStyle;
+@implementation AZSSharedAccessHeaders
 
 @end

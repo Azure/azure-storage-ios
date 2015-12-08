@@ -74,6 +74,7 @@ static NSCondition *_globalLogCondition;
     {
         _clientRequestId = [[NSUUID UUID] UUIDString];
         _requestResults = [NSMutableArray arrayWithCapacity:1];
+        _retryPolicy = [[AZSRetryPolicyExponential alloc] init];
     }
     
     return self;

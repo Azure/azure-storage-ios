@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------------------------
-// <copyright file="AZSNavigationUtil.h" company="Microsoft">
+// <copyright file="AZSTestSemaphore.m" company="Microsoft">
 //    Copyright 2015 Microsoft Corporation
 //
 //    Licensed under the MIT License;
@@ -15,21 +15,45 @@
 // </copyright>
 // -----------------------------------------------------------------------------------------
 
-#import <Foundation/Foundation.h>
+#import "AZSTestSemaphore.h"
 
-@class AZSStorageCredentials;
-@class AZSStorageUri;
+@implementation AZSTestSemaphore
 
-@interface AZSNavigationUtil : NSObject
++(void) barrierOnSemaphores:(NSArray *)semaphores
+{
+    for (AZSTestSemaphore *lock in semaphores) {
+        [lock wait];
+    }
+}
 
-+(NSURL*)getServiceClientBaseAddressWithUri: (NSURL *)addressUri usePathStyle:(BOOL)usePathStyle;
-+(AZSStorageUri*)getServiceClientBaseAddressWithStorageUri: (AZSStorageUri*)storageUri usePathStyle:(BOOL)usePathStyle;
+-(instancetype) init
+{
+    self = [super init];
+    if (self) {
+        _done = NO;
+        _condition = [[NSCondition alloc] init];
+    }
 
-+(AZSStorageCredentials*) parseSASQueryWithQueryParameters:(NSMutableDictionary*)queryParameters;
-+(NSMutableArray*)parseBlobQueryAndVerifyWithStorageUri:(AZSStorageUri*)blobAddress;
+    return self;
+}
 
-+(NSString *)getContainerNameWithContainerAddress:(NSURL*)uri isPathStyle:(BOOL)isPathStyle;
+-(void) signal
+{
+    [self.condition lock];
+    self.done = YES;
+    [self.condition signal];
+    [self.condition unlock];
+}
 
-+(NSString *)getBlobNameWithBlobAddress:(NSURL*)uri isPathStyle:(BOOL)isPathStyle;
+-(void) wait
+{
+    [self.condition lock];
+    while (!self.done) {
+        [self.condition wait];
+    }
+    
+    self.done = NO;
+    [self.condition unlock];
+}
 
 @end

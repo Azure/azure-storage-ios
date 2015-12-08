@@ -23,6 +23,7 @@
 #import "AZSStorageCredentials.h"
 #import "AZSEnums.h"
 #import "AZSOperationContext.h"
+#import "AZSUtil.h"
 
 @interface AZSSharedKeyBlobAuthenticationHandler()
 
@@ -153,11 +154,7 @@
     
     NSString *stringToSign = [self getStringToSignWithRequest:request operationContext:operationContext];
     
-    const char* stringToSignChar = [stringToSign cStringUsingEncoding:NSUTF8StringEncoding];
-    unsigned char cHMAC[CC_SHA256_DIGEST_LENGTH];
-    CCHmac(kCCHmacAlgSHA256, [self.storageCredentials.accountKey bytes], [self.storageCredentials.accountKey length], stringToSignChar, strlen(stringToSignChar), cHMAC);
-    
-    NSString *signature = [[[NSData alloc] initWithBytes:cHMAC length:sizeof(cHMAC)] base64EncodedStringWithOptions:0];
+    NSString *signature = [AZSUtil computeHmac256WithString:stringToSign credentials:self.storageCredentials];
     
     [request setValue:[NSString stringWithFormat:@"SharedKey %@:%@",self.storageCredentials.accountName,signature] forHTTPHeaderField:@"Authorization"];
 }

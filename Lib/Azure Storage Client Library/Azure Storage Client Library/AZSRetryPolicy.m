@@ -52,6 +52,7 @@
 
 @end
 
+
 @implementation AZSRetryPolicyNoRetry
 
 -(AZSRetryInfo *)evaluateRetryContext:(AZSRetryContext *)retryContext withOperationContext:(AZSOperationContext *)operationContext
@@ -66,17 +67,12 @@
 
 @end
 
-@interface AZSRetryPolicyLinear()
-
--(instancetype)init AZS_DESIGNATED_INITIALIZER;
-
-@end
 
 @implementation AZSRetryPolicyLinear
 
 -(instancetype)init
 {
-    return nil;
+    return [self initWithMaxAttempts:3 waitTimeBetweenRetries:2];
 }
 
 -(instancetype)initWithMaxAttempts:(NSInteger)maxAttempts waitTimeBetweenRetries:(NSTimeInterval)waitTimeBetweenRetries
@@ -110,17 +106,12 @@
 
 @end
 
-@interface AZSRetryPolicyExponential()
-
--(instancetype)init AZS_DESIGNATED_INITIALIZER;
-
-@end
 
 @implementation AZSRetryPolicyExponential
 
 -(instancetype)init
 {
-    return nil;
+    return [self initWithMaxAttempts:3 averageBackoffDelta:2];
 }
 
 -(instancetype)initWithMaxAttempts:(NSInteger)maxAttempts averageBackoffDelta:(NSTimeInterval)averageBackoffDelta

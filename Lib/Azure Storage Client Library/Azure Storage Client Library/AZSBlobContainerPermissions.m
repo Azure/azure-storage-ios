@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------------------------
-// <copyright file="AZSNavigationUtil.h" company="Microsoft">
+// <copyright file="AZSBlobContainerPermissions.m" company="Microsoft">
 //    Copyright 2015 Microsoft Corporation
 //
 //    Licensed under the MIT License;
@@ -15,21 +15,19 @@
 // </copyright>
 // -----------------------------------------------------------------------------------------
 
-#import <Foundation/Foundation.h>
+#import "AZSBlobContainerPermissions.h"
 
-@class AZSStorageCredentials;
-@class AZSStorageUri;
+@implementation AZSBlobContainerPermissions
 
-@interface AZSNavigationUtil : NSObject
-
-+(NSURL*)getServiceClientBaseAddressWithUri: (NSURL *)addressUri usePathStyle:(BOOL)usePathStyle;
-+(AZSStorageUri*)getServiceClientBaseAddressWithStorageUri: (AZSStorageUri*)storageUri usePathStyle:(BOOL)usePathStyle;
-
-+(AZSStorageCredentials*) parseSASQueryWithQueryParameters:(NSMutableDictionary*)queryParameters;
-+(NSMutableArray*)parseBlobQueryAndVerifyWithStorageUri:(AZSStorageUri*)blobAddress;
-
-+(NSString *)getContainerNameWithContainerAddress:(NSURL*)uri isPathStyle:(BOOL)isPathStyle;
-
-+(NSString *)getBlobNameWithBlobAddress:(NSURL*)uri isPathStyle:(BOOL)isPathStyle;
+-(instancetype) init
+{
+    self = [super init];
+    if (self) {
+        _sharedAccessPolicies = [[NSMutableDictionary alloc] init];
+        _publicAccess = AZSContainerPublicAccessTypeOff;
+    }
+    
+    return self;
+}
 
 @end

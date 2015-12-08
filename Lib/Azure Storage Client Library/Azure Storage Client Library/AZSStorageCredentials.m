@@ -100,7 +100,7 @@
     }
     
     //TODO use targetstorageversion constant.
-    [self.queryBuilder addWithKey:@"api-version" value:@"2015-02-21"];
+    [self.queryBuilder addWithKey:@"api-version" value:@"2015-04-05"];
 }
 
 -(NSURL *) transformWithUri:(NSURL *)uri

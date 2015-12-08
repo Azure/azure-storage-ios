@@ -30,6 +30,8 @@ AZS_ASSUME_NONNULL_BEGIN
 @class AZSCopyState;
 @class AZSBlobProperties;
 @class AZSStorageCredentials;
+@class AZSSharedAccessBlobParameters;
+@class AZSSharedAccessHeaders;
 
 /** The AZSCloudBlob represents a blob in Azure Storage.
  
@@ -302,6 +304,15 @@ AZS_ASSUME_NONNULL_BEGIN
  |BOOL | YES if the blob object exists on the service, NO else.|
  */
 -(void)existsWithAccessCondition:(AZSNullable AZSAccessCondition *)accessCondition requestOptions:(AZSNullable AZSBlobRequestOptions *)requestOptions operationContext:(AZSNullable AZSOperationContext *)operationContext completionHandler:(void (^)(NSError* __AZSNullable, BOOL))completionHandler;
+
+/** Creates a Shared Access Signature (SAS) token from the given policy for this Blob.
+ Note that logging in this method uses the global logger configured statically on the AZSOperationContext as there is no operation being performed to provide a local operation context.
+
+ @param parameters The shared access blob parameters from which to create the SAS token.
+ @param error A pointer to a NSError*, to be set in the event of failure.
+ @returns The newly created SAS token.
+ */
+-(NSString *) createSharedAccessSignatureWithParameters:(AZSSharedAccessBlobParameters*)parameters error:(NSError **)error;
 
 /** Acquires a lease on this blob.
  

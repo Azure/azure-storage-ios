@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------------------------
-// <copyright file="AZSNavigationUtil.h" company="Microsoft">
+// <copyright file="AZSSharedAccessSignatureHelper.h" company="Microsoft">
 //    Copyright 2015 Microsoft Corporation
 //
 //    Licensed under the MIT License;
@@ -17,19 +17,16 @@
 
 #import <Foundation/Foundation.h>
 
-@class AZSStorageCredentials;
+@class AZSCloudClient;
 @class AZSStorageUri;
+@class AZSSharedAccessHeaders;
+@class AZSSharedAccessBlobParameters;
+@class AZSUriQueryBuilder;
 
-@interface AZSNavigationUtil : NSObject
+@interface AZSSharedAccessSignatureHelper : NSObject
 
-+(NSURL*)getServiceClientBaseAddressWithUri: (NSURL *)addressUri usePathStyle:(BOOL)usePathStyle;
-+(AZSStorageUri*)getServiceClientBaseAddressWithStorageUri: (AZSStorageUri*)storageUri usePathStyle:(BOOL)usePathStyle;
++(AZSUriQueryBuilder *)sharedAccessSignatureForBlobWithParameters:(AZSSharedAccessBlobParameters*)parameters resourceType:(NSString*)resourceType signature:(NSString *)signature error:(NSError **)error;
 
-+(AZSStorageCredentials*) parseSASQueryWithQueryParameters:(NSMutableDictionary*)queryParameters;
-+(NSMutableArray*)parseBlobQueryAndVerifyWithStorageUri:(AZSStorageUri*)blobAddress;
-
-+(NSString *)getContainerNameWithContainerAddress:(NSURL*)uri isPathStyle:(BOOL)isPathStyle;
-
-+(NSString *)getBlobNameWithBlobAddress:(NSURL*)uri isPathStyle:(BOOL)isPathStyle;
++(NSString *)sharedAccessSignatureHashForBlobWithParameters:(AZSSharedAccessBlobParameters*)parameters resourceName:(NSString*)resourceName client:(AZSCloudClient*)client error:(NSError **)error;
 
 @end

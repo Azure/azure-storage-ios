@@ -26,7 +26,7 @@
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[urlComponents URL] cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:timeout];
     [request setHTTPMethod:@"PUT"];
     [request setValue:@"iOS-v0.1.1" forHTTPHeaderField:@"User-Agent"];
-    [request setValue:@"2015-02-21" forHTTPHeaderField:@"x-ms-version"];
+    [request setValue:@"2015-04-05" forHTTPHeaderField:@"x-ms-version"];
     
     return request;
 }
@@ -36,7 +36,7 @@
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[urlComponents URL] cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:timeout];
     [request setHTTPMethod:@"GET"];
     [request setValue:@"iOS-v0.1.1" forHTTPHeaderField:@"User-Agent"];
-    [request setValue:@"2015-02-21" forHTTPHeaderField:@"x-ms-version"];
+    [request setValue:@"2015-04-05" forHTTPHeaderField:@"x-ms-version"];
     
     return request;
 }
@@ -46,7 +46,7 @@
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[urlComponents URL] cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:timeout];
     [request setHTTPMethod:@"HEAD"];
     [request setValue:@"iOS-v0.1.1" forHTTPHeaderField:@"User-Agent"];
-    [request setValue:@"2015-02-21" forHTTPHeaderField:@"x-ms-version"];
+    [request setValue:@"2015-04-05" forHTTPHeaderField:@"x-ms-version"];
     
     return request;
 }
@@ -56,7 +56,7 @@
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[urlComponents URL] cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:timeout];
     [request setHTTPMethod:@"DELETE"];
     [request setValue:@"iOS-v0.1.1" forHTTPHeaderField:@"User-Agent"];
-    [request setValue:@"2015-02-21" forHTTPHeaderField:@"x-ms-version"];
+    [request setValue:@"2015-04-05" forHTTPHeaderField:@"x-ms-version"];
     
     return request;
 }

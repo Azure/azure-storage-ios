@@ -666,6 +666,7 @@
     
     if (retry)
     {
+        [self.operationContext logAtLevel:AZSLogLevelInfo withMessage:[NSString stringWithFormat:@"Retrying on HTTP status code %ld.", (long)self.requestResult.response.statusCode]];
         NSDate *retryTime = [NSDate dateWithTimeIntervalSinceNow:retryInfo.retryInterval];
         
         NSDate *loopUntil = [NSDate dateWithTimeIntervalSinceNow:0.1];
