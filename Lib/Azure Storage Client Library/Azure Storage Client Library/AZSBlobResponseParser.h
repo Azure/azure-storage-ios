@@ -21,6 +21,7 @@
 @class AZSBlobProperties;
 @class AZSCopyState;
 @class AZSOperationContext;
+@class AZSBlobContainerPermissions;
 
 @interface AZSContainerListItem : NSObject
 @property (copy) NSString *name;
@@ -68,6 +69,12 @@
 
 @end
 
+@interface AZSGetPageRangesResponse : NSObject
+
++(NSArray *)parseGetPageRangesResponseWithData:(NSData *)data operationContext:(AZSOperationContext *)operationContext error:(NSError **)error;
+
+@end
+
 @interface AZSBlobResponseParser : NSObject
 +(AZSBlobContainerProperties *)getContainerPropertiesWithResponse:(NSHTTPURLResponse *)response operationContext:(AZSOperationContext *)operationContext error:(NSError **)error;
 +(AZSBlobProperties *)getBlobPropertiesWithResponse:(NSHTTPURLResponse *)response operationContext:(AZSOperationContext *)operationContext error:(NSError **)error;
@@ -77,5 +84,8 @@
 +(AZSLeaseStatus)getLeaseStatusWithResponse:(NSHTTPURLResponse *)response operationContext:(AZSOperationContext *)operationContext error:(NSError **)error;
 +(AZSLeaseDuration)getLeaseDurationWithResponse:(NSHTTPURLResponse *)response operationContext:(AZSOperationContext *)operationContext error:(NSError **)error;
 +(NSNumber *)getRemainingLeaseTimeWithResponse:(NSHTTPURLResponse *)response;
++(NSNumber *)getSequenceNumberWithResponse:(NSHTTPURLResponse *)response;
++(NSNumber *)getAppendCommittedBlockCountWithResponse:(NSHTTPURLResponse *)response;
++(NSNumber *)getAppendPositionWithResponse:(NSHTTPURLResponse *)response;
 
 @end

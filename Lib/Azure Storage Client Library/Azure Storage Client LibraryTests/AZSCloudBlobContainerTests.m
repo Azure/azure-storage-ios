@@ -21,6 +21,7 @@
 #import "AZSConstants.h"
 #import "AZSTestHelpers.h"
 #import "AZSTestSemaphore.h"
+#import "AZSTestHelpers.h"
 
 @interface AZSCloudBlobContainerTests : AZSBlobTestBase
 
@@ -482,6 +483,47 @@
         }];
     }];
     [semaphore wait];
+}
+
+-(void)testContainerListBlobsBlockPageAppend
+{
+    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+
+    AZSCloudAppendBlob *appendBlob = [self.blobContainer appendBlobReferenceFromName:@"appendBlob"];
+    AZSCloudBlockBlob *blockBlob = [self.blobContainer blockBlobReferenceFromName:@"blockBlob"];
+    AZSCloudPageBlob *pageBlob = [self.blobContainer pageBlobReferenceFromName:@"pageBlob"];
+    
+    [appendBlob createWithCompletionHandler:^(NSError *error) {
+        XCTAssertNil(error, @"Error in creating append blob.  Error code = %ld, error domain = %@, error userinfo = %@", (long)error.code, error.domain, error.userInfo);
+        [blockBlob uploadFromText:@"sample blob text" completionHandler:^(NSError *error) {
+            XCTAssertNil(error, @"Error in creating block blob.  Error code = %ld, error domain = %@, error userinfo = %@", (long)error.code, error.domain, error.userInfo);
+            [pageBlob createWithSize:[NSNumber numberWithInt:512*10] completionHandler:^(NSError *error) {
+                XCTAssertNil(error, @"Error in creating block blob.  Error code = %ld, error domain = %@, error userinfo = %@", (long)error.code, error.domain, error.userInfo);
+                
+                NSMutableArray *blobs = [NSMutableArray arrayWithCapacity:3];
+                [AZSTestHelpers listAllInDirectoryOrContainer:self.blobContainer useFlatBlobListing:YES blobArrayToPopulate:blobs directoryArrayToPopulate:nil continuationToken:nil prefix:nil blobListingDetails:AZSBlobListingDetailsAll maxResults:5000 completionHandler:^(NSError *error) {
+                    XCTAssertNil(error, @"Error in listing blobs.  Error code = %ld, error domain = %@, error userinfo = %@", (long)error.code, error.domain, error.userInfo);
+                    XCTAssertEqual(3, blobs.count, @"Incorrect number of blobs returned.");
+                    
+                    XCTAssertEqualObjects(@"appendBlob", ((AZSCloudBlob *)blobs[0]).blobName, @"Incorrect blob name returned.");
+                    XCTAssertEqual(AZSBlobTypeAppendBlob, ((AZSCloudBlob *)blobs[0]).properties.blobType, @"Incorrect blob type returned.");
+                    XCTAssertTrue([blobs[0] respondsToSelector:NSSelectorFromString(@"appendBlockWithData:contentMD5:completionHandler:")], @"Incorrect blob class returned.");
+
+                    XCTAssertEqualObjects(@"blockBlob", ((AZSCloudBlob *)blobs[1]).blobName, @"Incorrect blob name returned.");
+                    XCTAssertEqual(AZSBlobTypeBlockBlob, ((AZSCloudBlob *)blobs[1]).properties.blobType, @"Incorrect blob type returned.");
+                    XCTAssertTrue([blobs[1] respondsToSelector:NSSelectorFromString(@"uploadBlockFromData:blockID:completionHandler:")], @"Incorrect blob class returned.");
+
+                    XCTAssertEqualObjects(@"pageBlob", ((AZSCloudBlob *)blobs[2]).blobName, @"Incorrect blob name returned.");
+                    XCTAssertEqual(AZSBlobTypePageBlob, ((AZSCloudBlob *)blobs[2]).properties.blobType, @"Incorrect blob type returned.");
+                    XCTAssertTrue([blobs[2] respondsToSelector:NSSelectorFromString(@"uploadPagesWithData:startOffset:contentMD5:completionHandler:")], @"Incorrect blob class returned.");
+
+                    dispatch_semaphore_signal(semaphore);
+                }];
+            }];
+        }];
+    }];
+    
+    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
 }
 
 -(void)testContainerExists

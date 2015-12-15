@@ -86,6 +86,62 @@
     return self;
 }
 
+-(instancetype) initWithIfSequenceNumberLessThanOrEqualTo:(NSNumber *)sequenceNumber
+{
+    self = [super init];
+    if (self)
+    {
+        _sequenceNumber = sequenceNumber;
+        _sequenceNumberOperator = AZSSequenceNumberOperatorLessThanOrEqualTo;
+    }
+    return self;
+}
+
+-(instancetype) initWithIfSequenceNumberLessThan:(NSNumber *)sequenceNumber
+{
+    self = [super init];
+    if (self)
+    {
+        _sequenceNumber = sequenceNumber;
+        _sequenceNumberOperator = AZSSequenceNumberOperatorLessThan;
+    }
+    
+    return self;
+}
+
+-(instancetype) initWithIfSequenceNumberEqualTo:(NSNumber *)sequenceNumber
+{
+    self = [super init];
+    if (self)
+    {
+        _sequenceNumber = sequenceNumber;
+        _sequenceNumberOperator = AZSSequenceNumberOperatorEqualTo;
+    }
+    
+    return self;
+}
+
+-(instancetype) initWithIfMaxSizeLessThanOrEqualTo:(NSNumber *)maxSize
+{
+    self = [super init];
+    if (self)
+    {
+        _maxSize = maxSize;
+    }
+    return self;
+}
+
+-(instancetype) initWithIfAppendPositionEqualTo:(NSNumber *)appendPosition
+{
+    self = [super init];
+    if (self)
+    {
+        _appendPosition = appendPosition;
+    }
+    return self;
+}
+
+
 +(instancetype) cloneWithEtag:(NSString*)etag accessCondition:(AZSAccessCondition*)condition;
 {
     AZSAccessCondition* clone = [[AZSAccessCondition alloc] init];

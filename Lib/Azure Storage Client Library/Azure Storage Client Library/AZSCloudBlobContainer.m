@@ -44,6 +44,9 @@
 #import "AZSNavigationUtil.h"
 #import "AZSErrors.h"
 #import "AZSCloudBlobDirectory.h"
+#import "AZSCloudPageBlob.h"
+#import "AZSCloudAppendBlob.h"
+#import "AZSBlobProperties.h"
 
 @interface AZSCloudBlobContainer()
 
@@ -226,7 +229,24 @@
             }
             else
             {
-                AZSCloudBlob *blob = [[AZSCloudBlob alloc] initWithContainer:self name:blobListItem.name snapshotTime:blobListItem.snapshotTime];
+                AZSCloudBlob *blob;
+                switch (blobListItem.properties.blobType)
+                {
+                    case AZSBlobTypeUnspecified:
+                        break;
+                    case AZSBlobTypeAppendBlob:
+                        blob = [[AZSCloudAppendBlob alloc] initWithContainer:self name:blobListItem.name snapshotTime:blobListItem.snapshotTime];
+                        break;
+                    case AZSBlobTypeBlockBlob:
+                        blob = [[AZSCloudBlockBlob alloc] initWithContainer:self name:blobListItem.name snapshotTime:blobListItem.snapshotTime];
+                        break;
+                    case AZSBlobTypePageBlob:
+                        blob = [[AZSCloudPageBlob alloc] initWithContainer:self name:blobListItem.name snapshotTime:blobListItem.snapshotTime];
+                        break;
+                    default:
+                        break;
+                }
+                
                 blob.metadata = blobListItem.metadata;
                 blob.properties = blobListItem.properties;
                 blob.blobCopyState = blobListItem.blobCopyState;
@@ -646,6 +666,30 @@
 {
     AZSCloudBlockBlob *blockBlob = [[AZSCloudBlockBlob alloc] initWithContainer:self name:blobName snapshotTime:snapshotTime];
     return blockBlob;
+}
+
+- (AZSCloudPageBlob *)pageBlobReferenceFromName:(NSString *)blobName
+{
+    AZSCloudPageBlob *pageBlob = [[AZSCloudPageBlob alloc] initWithContainer:self name:blobName];
+    return pageBlob;
+}
+
+- (AZSCloudPageBlob *)pageBlobReferenceFromName:(NSString *)blobName snapshotTime:(NSString *)snapshotTime
+{
+    AZSCloudPageBlob *pageBlob = [[AZSCloudPageBlob alloc] initWithContainer:self name:blobName snapshotTime:snapshotTime];
+    return pageBlob;
+}
+
+- (AZSCloudAppendBlob *)appendBlobReferenceFromName:(NSString *)blobName
+{
+    AZSCloudAppendBlob *appendBlob = [[AZSCloudAppendBlob alloc] initWithContainer:self name:blobName];
+    return appendBlob;
+}
+
+- (AZSCloudAppendBlob *)appendBlobReferenceFromName:(NSString *)blobName snapshotTime:(NSString *)snapshotTime
+{
+    AZSCloudAppendBlob *appendBlob = [[AZSCloudAppendBlob alloc] initWithContainer:self name:blobName snapshotTime:snapshotTime];
+    return appendBlob;
 }
 
 -(void)existsWithCompletionHandler:(void (^)(NSError *, BOOL))completionHandler

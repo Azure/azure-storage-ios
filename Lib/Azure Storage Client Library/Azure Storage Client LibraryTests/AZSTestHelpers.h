@@ -17,14 +17,18 @@
 
 #import <XCTest/XCTest.h>
 #import "AZSTestBase.h"
+#import "AZSEnums.h"
+
+@class AZSContinuationToken;
 
 @interface AZSTestHelpers : AZSTestBase
 
-+(void)checkPassageOfError:(NSError *)err expectToPass:(BOOL)expected expectedHttpErrorCode:(int)code message:(NSString *)message;
 +(NSString *)uniqueName;
 
-@end
++(NSMutableData *)generateSampleDataWithSeed:(unsigned int *)seed length:(unsigned int)length;
++(void)listAllInDirectoryOrContainer:(NSObject *)objectToList useFlatBlobListing:(BOOL)useFlatBlobListing blobArrayToPopulate:(NSMutableArray *)blobArrayToPopulate directoryArrayToPopulate:(NSMutableArray *)directoryArrayToPopulate continuationToken:(AZSContinuationToken *)continuationToken prefix:(NSString *)prefix blobListingDetails:(AZSBlobListingDetails)blobListingDetails maxResults:(NSUInteger)maxResults completionHandler:(void (^)(NSError *))completionHandler;
 
+@end
 
 @interface AZSUIntegerHolder : NSObject
 {
@@ -33,6 +37,7 @@
 }
 
 -(instancetype)initWithNumber:(unsigned int)number;
+
 @end
 
 

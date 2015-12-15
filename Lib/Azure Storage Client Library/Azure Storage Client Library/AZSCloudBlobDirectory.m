@@ -20,6 +20,8 @@
 #import "AZSCloudBlobClient.h"
 #import "AZSStorageUri.h"
 #import "AZSCloudBlockBlob.h"
+#import "AZSCloudPageBlob.h"
+#import "AZSCloudAppendBlob.h"
 
 @interface AZSCloudBlobDirectory()
 
@@ -75,6 +77,28 @@
 - (AZSCloudBlockBlob *)blockBlobReferenceFromName:(NSString *)blobName
 {
     return [self blockBlobReferenceFromName:blobName snapshotTime:nil];
+}
+
+- (AZSCloudPageBlob *)pageBlobReferenceFromName:(NSString *)blobName snapshotTime:(NSString *)snapshotTime
+{
+    AZSCloudPageBlob *pageBlob = [[AZSCloudPageBlob alloc] initWithContainer:self.blobContainer name:[self.name stringByAppendingString:blobName] snapshotTime:snapshotTime];
+    return pageBlob;
+}
+
+- (AZSCloudPageBlob *)pageBlobReferenceFromName:(NSString *)blobName
+{
+    return [self pageBlobReferenceFromName:blobName snapshotTime:nil];
+}
+
+- (AZSCloudAppendBlob *)appendBlobReferenceFromName:(NSString *)blobName snapshotTime:(NSString *)snapshotTime
+{
+    AZSCloudAppendBlob *appendBlob = [[AZSCloudAppendBlob alloc] initWithContainer:self.blobContainer name:[self.name stringByAppendingString:blobName] snapshotTime:snapshotTime];
+    return appendBlob;
+}
+
+- (AZSCloudAppendBlob *)appendBlobReferenceFromName:(NSString *)blobName
+{
+    return [self appendBlobReferenceFromName:blobName snapshotTime:nil];
 }
 
 - (AZSCloudBlobDirectory *)subdirectoryReferenceFromName:(NSString *)subdirectoryName

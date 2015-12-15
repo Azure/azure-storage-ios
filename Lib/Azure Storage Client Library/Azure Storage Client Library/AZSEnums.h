@@ -356,3 +356,19 @@ typedef NS_OPTIONS(NSUInteger, AZSSharedAccessResourceTypes)
     AZSSharedAccessResourceTypesAll         =
             AZSSharedAccessResourceTypesService | AZSSharedAccessResourceTypesContainer | AZSSharedAccessResourceTypesObject
 };
+
+/** Specifies the sequence number operator to use in a sequence number access condition.*/
+typedef NS_ENUM(NSInteger, AZSSequenceNumberOperator)
+{
+    /** Specifies no sequence number operator.*/
+    AZSSequenceNumberOperatorNone,
+    
+    /** Specifies that the request should only complete if the sequence number on the blob is less than or equal to the sequence number in the access condition.*/
+    AZSSequenceNumberOperatorLessThanOrEqualTo,
+
+    /** Specifies that the request should only complete if the sequence number on the blob is less than the sequence number in the access condition.*/
+    AZSSequenceNumberOperatorLessThan,
+    
+    /** Specifies that the request should only complete if the sequence number on the blob is equal to the sequence number in the access condition.*/
+    AZSSequenceNumberOperatorEqualTo
+};

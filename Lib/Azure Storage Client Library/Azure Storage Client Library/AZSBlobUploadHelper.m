@@ -22,6 +22,7 @@
 #import "AZSBlockListItem.h"
 #import "AZSBlobRequestOptions.h"
 #import "AZSOperationContext.h"
+#import "AZSBlobProperties.h"
 
 @interface AZSBlobUploadHelper()
 {

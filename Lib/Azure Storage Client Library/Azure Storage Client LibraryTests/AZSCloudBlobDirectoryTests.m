@@ -25,6 +25,7 @@
 #import "AZSCloudBlockBlob.h"
 #import "AZSUtil.h"
 #import "AZSTestSemaphore.h"
+#import "AZSTestHelpers.h"
 
 @interface AZSCloudBlobDirectoryTests : AZSBlobTestBase
 
@@ -157,7 +158,7 @@
                     
                     NSMutableArray *blobArray = [NSMutableArray arrayWithCapacity:3];
                     NSMutableArray *directoryArray = [NSMutableArray arrayWithCapacity:0];
-                    [self listAllInDirectoryOrContainer:directoryA useFlatBlobListing:YES blobArrayToPopulate:blobArray directoryArrayToPopulate:directoryArray continuationToken:nil prefix:nil blobListingDetails:AZSBlobListingDetailsNone maxResults:5000 completionHandler:^(NSError *error) {
+                    [AZSTestHelpers listAllInDirectoryOrContainer:directoryA useFlatBlobListing:YES blobArrayToPopulate:blobArray directoryArrayToPopulate:directoryArray continuationToken:nil prefix:nil blobListingDetails:AZSBlobListingDetailsNone maxResults:5000 completionHandler:^(NSError *error) {
                         XCTAssertNil(error, @"Error in listing blobs.  Error code = %ld, error domain = %@, error userinfo = %@", (long)error.code, error.domain, error.userInfo);
                         XCTAssertEqual(3, blobArray.count, @"Incorrect number of blobs listed.");
                         XCTAssertEqual(0, directoryArray.count, @"Incorrect number of directories listed.");
@@ -205,7 +206,7 @@
                     
                     NSMutableArray *blobArray = [NSMutableArray arrayWithCapacity:1];
                     NSMutableArray *directoryArray = [NSMutableArray arrayWithCapacity:1];
-                    [self listAllInDirectoryOrContainer:directoryA useFlatBlobListing:NO blobArrayToPopulate:blobArray directoryArrayToPopulate:directoryArray continuationToken:nil prefix:nil blobListingDetails:AZSBlobListingDetailsNone maxResults:5000 completionHandler:^(NSError *error) {
+                    [AZSTestHelpers listAllInDirectoryOrContainer:directoryA useFlatBlobListing:NO blobArrayToPopulate:blobArray directoryArrayToPopulate:directoryArray continuationToken:nil prefix:nil blobListingDetails:AZSBlobListingDetailsNone maxResults:5000 completionHandler:^(NSError *error) {
                         XCTAssertNil(error, @"Error in listing blobs.  Error code = %ld, error domain = %@, error userinfo = %@", (long)error.code, error.domain, error.userInfo);
                         XCTAssertEqual(1, blobArray.count, @"Incorrect number of blobs listed.");
                         XCTAssertEqual(1, directoryArray.count, @"Incorrect number of directories listed.");
@@ -252,7 +253,7 @@
                     
                     NSMutableArray *blobArray = [NSMutableArray arrayWithCapacity:0];
                     NSMutableArray *directoryArray = [NSMutableArray arrayWithCapacity:2];
-                    [self listAllInDirectoryOrContainer:self.blobContainer useFlatBlobListing:NO blobArrayToPopulate:blobArray directoryArrayToPopulate:directoryArray continuationToken:nil prefix:nil blobListingDetails:AZSBlobListingDetailsNone maxResults:5000 completionHandler:^(NSError *error) {
+                    [AZSTestHelpers listAllInDirectoryOrContainer:self.blobContainer useFlatBlobListing:NO blobArrayToPopulate:blobArray directoryArrayToPopulate:directoryArray continuationToken:nil prefix:nil blobListingDetails:AZSBlobListingDetailsNone maxResults:5000 completionHandler:^(NSError *error) {
                         XCTAssertNil(error, @"Error in listing blobs.  Error code = %ld, error domain = %@, error userinfo = %@", (long)error.code, error.domain, error.userInfo);
                         XCTAssertEqual(0, blobArray.count, @"Incorrect number of blobs listed.");
                         XCTAssertEqual(2, directoryArray.count, @"Incorrect number of directories listed.");
@@ -365,44 +366,6 @@
         }
     }
     return joinedString;
-}
-
--(void)listAllInDirectoryOrContainer:(NSObject *)objectToList useFlatBlobListing:(BOOL)useFlatBlobListing blobArrayToPopulate:(NSMutableArray *)blobArrayToPopulate directoryArrayToPopulate:(NSMutableArray *)directoryArrayToPopulate continuationToken:(AZSContinuationToken *)continuationToken prefix:(NSString *)prefix blobListingDetails:(AZSBlobListingDetails)blobListingDetails maxResults:(NSUInteger)maxResults completionHandler:(void (^)(NSError *))completionHandler
-{
-    void (^tempCompletion)(NSError *, AZSBlobResultSegment *) = ^void(NSError *error, AZSBlobResultSegment *results) {
-        if (error)
-        {
-            completionHandler(error);
-        }
-        else
-        {
-            [blobArrayToPopulate addObjectsFromArray:results.blobs];
-            [directoryArrayToPopulate addObjectsFromArray:results.directories];
-            if (results.continuationToken)
-            {
-                [self listAllInDirectoryOrContainer:objectToList useFlatBlobListing:useFlatBlobListing blobArrayToPopulate:blobArrayToPopulate directoryArrayToPopulate:directoryArrayToPopulate continuationToken:results.continuationToken prefix:prefix blobListingDetails:blobListingDetails maxResults:maxResults completionHandler:completionHandler];
-            }
-            else
-            {
-                completionHandler(nil);
-            }
-        }
-    };
-    
-    SEL selector = NSSelectorFromString(@"listBlobsSegmentedWithContinuationToken:prefix:useFlatBlobListing:blobListingDetails:maxResults:completionHandler:");
-
-    if ([objectToList respondsToSelector:selector])
-    {
-        // It's a container
-        AZSCloudBlobContainer *container = (AZSCloudBlobContainer *)objectToList;
-        [container listBlobsSegmentedWithContinuationToken:continuationToken prefix:nil useFlatBlobListing:useFlatBlobListing blobListingDetails:blobListingDetails maxResults:maxResults completionHandler:tempCompletion];
-    }
-    else
-    {
-        // It's a directory
-        AZSCloudBlobDirectory *directory = (AZSCloudBlobDirectory *)objectToList;
-        [directory listBlobsSegmentedWithContinuationToken:continuationToken useFlatBlobListing:useFlatBlobListing blobListingDetails:blobListingDetails maxResults:maxResults completionHandler:tempCompletion];
-    }
 }
 
 @end

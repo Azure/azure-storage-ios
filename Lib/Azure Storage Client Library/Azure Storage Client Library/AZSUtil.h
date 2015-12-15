@@ -47,7 +47,6 @@
 
 +(AZSOperationContext *) operationlessContext;
 
++(NSString *)calculateMD5FromData:(NSData *)data;
+
 @end
-
-
-

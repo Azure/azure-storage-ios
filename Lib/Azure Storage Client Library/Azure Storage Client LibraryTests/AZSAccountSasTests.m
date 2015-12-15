@@ -69,15 +69,15 @@
             
             NSError *error = nil;
             NSString *accountSasNone = [self.account createSharedAccessSignatureWithParameters:sp error:&error];
-            [AZSTestHelpers checkPassageOfError:error expectToPass:YES expectedHttpErrorCode:-1 message:@"Create SAS token"];
+            [self checkPassageOfError:error expectToPass:YES expectedHttpErrorCode:-1 message:@"Create SAS token"];
     
             AZSStorageCredentials *noneCredentials = [[AZSStorageCredentials alloc] initWithSASToken:accountSasNone accountName:client.credentials.accountName];
             AZSCloudBlobClient *noneClient = [[[AZSCloudStorageAccount alloc] initWithCredentials:noneCredentials useHttps:NO error:&error] getBlobClient];
-            [AZSTestHelpers checkPassageOfError:error expectToPass:YES expectedHttpErrorCode:-1 message:@"Access account with SAS token"];
+            [self checkPassageOfError:error expectToPass:YES expectedHttpErrorCode:-1 message:@"Access account with SAS token"];
             AZSCloudBlockBlob *noneBlob = [[noneClient containerReferenceFromName:container.name] blockBlobReferenceFromName:blob.blobName];
             
             [noneBlob downloadToStream:[[NSOutputStream alloc] initToMemory] completionHandler:^(NSError * err) {
-                [AZSTestHelpers checkPassageOfError:err expectToPass:NO expectedHttpErrorCode:403 message:@"Download blob"];
+                [self checkPassageOfError:err expectToPass:NO expectedHttpErrorCode:403 message:@"Download blob"];
                 XCTAssertTrue([(err.userInfo[@"Message"]) hasPrefix:@"This request is not authorized to perform this operation using this source IP"]);
 
                 // Ensure access attempt from the single allowed IP succeeds.
@@ -87,16 +87,16 @@
         
                 NSError *error = nil;
                 NSString *accountSasOne = [self.account createSharedAccessSignatureWithParameters:sp error:&error];
-                [AZSTestHelpers checkPassageOfError:error expectToPass:YES expectedHttpErrorCode:-1 message:@"Create SAS token"];
+                [self checkPassageOfError:error expectToPass:YES expectedHttpErrorCode:-1 message:@"Create SAS token"];
                 
                 AZSStorageCredentials *oneCredentials = [[AZSStorageCredentials alloc] initWithSASToken:accountSasOne accountName:client.credentials.accountName];
                 AZSCloudBlobClient *oneClient = [[[AZSCloudStorageAccount alloc] initWithCredentials:oneCredentials useHttps:NO error:&error] getBlobClient];
-                [AZSTestHelpers checkPassageOfError:error expectToPass:YES expectedHttpErrorCode:-1 message:@"Access account with SAS token"];
+                [self checkPassageOfError:error expectToPass:YES expectedHttpErrorCode:-1 message:@"Access account with SAS token"];
                 
                 AZSCloudBlockBlob *oneBlob = [[oneClient containerReferenceFromName:container.name] blockBlobReferenceFromName:blob.blobName];
                 
                 [oneBlob downloadToStream:[[NSOutputStream alloc] initToMemory] completionHandler:^(NSError * err) {
-                    [AZSTestHelpers checkPassageOfError:err expectToPass:YES expectedHttpErrorCode:-1 message:@"Download blob"];
+                    [self checkPassageOfError:err expectToPass:YES expectedHttpErrorCode:-1 message:@"Download blob"];
 
                     // Ensure access attempt from one of many allowed IPs succeeds.
                     inet_aton([@"255.255.255.255" UTF8String], ((struct in_addr *) &ip2));
@@ -104,15 +104,15 @@
 
                     NSError *error = nil;
                     NSString *accountSasAll = [self.account createSharedAccessSignatureWithParameters:sp error:&error];
-                    [AZSTestHelpers checkPassageOfError:error expectToPass:YES expectedHttpErrorCode:-1 message:@"Create SAS token"];
+                    [self checkPassageOfError:error expectToPass:YES expectedHttpErrorCode:-1 message:@"Create SAS token"];
                     
                     AZSStorageCredentials *allCredentials = [[AZSStorageCredentials alloc] initWithSASToken:accountSasAll accountName:client.credentials.accountName];
                     AZSCloudBlobClient *allClient = [[[AZSCloudStorageAccount alloc] initWithCredentials:allCredentials useHttps:NO error:&error] getBlobClient];
-                    [AZSTestHelpers checkPassageOfError:error expectToPass:YES expectedHttpErrorCode:-1 message:@"Access account with SAS token"];
+                    [self checkPassageOfError:error expectToPass:YES expectedHttpErrorCode:-1 message:@"Access account with SAS token"];
                     
                     AZSCloudBlockBlob *allBlob = [[allClient containerReferenceFromName:container.name] blockBlobReferenceFromName:blob.blobName];
                     [allBlob downloadToStream:[[NSOutputStream alloc] initToMemory] completionHandler:^(NSError * err) {
-                        [AZSTestHelpers checkPassageOfError:err expectToPass:YES expectedHttpErrorCode:-1 message:@"Download blob"];
+                        [self checkPassageOfError:err expectToPass:YES expectedHttpErrorCode:-1 message:@"Download blob"];
 
                         [container deleteContainerIfExistsWithCompletionHandler:^(NSError *err, BOOL exists) {
                             [semaphore signal];
@@ -145,7 +145,7 @@
             // Ensure using http with https only SAS fails.
             sp.protocols = AZSSharedAccessProtocolHttpsOnly;
             NSString *accountSasHttps = [self.account createSharedAccessSignatureWithParameters:sp error:&error];
-            [AZSTestHelpers checkPassageOfError:error expectToPass:YES expectedHttpErrorCode:-1 message:@"Create SAS token"];
+            [self checkPassageOfError:error expectToPass:YES expectedHttpErrorCode:-1 message:@"Create SAS token"];
     
             NSURLComponents *uri = [NSURLComponents componentsWithURL:blob.storageUri.primaryUri resolvingAgainstBaseURL:NO];
             uri.scheme = AZSCHttp;
@@ -154,7 +154,7 @@
             XCTAssertNil(error);
             
             [httpBlob downloadToStream:[[NSOutputStream alloc] initToMemory] completionHandler:^(NSError *err) {
-                [AZSTestHelpers checkPassageOfError:err expectToPass:NO expectedHttpErrorCode:403 message:@"Download https only blob using http"];
+                [self checkPassageOfError:err expectToPass:NO expectedHttpErrorCode:403 message:@"Download https only blob using http"];
                 XCTAssertTrue([(err.userInfo[@"Message"]) hasPrefix:@"This request is not authorized to perform this operation using this protocol."]);
         
                 // Ensure using https with https only SAS succeeds.
@@ -164,20 +164,20 @@
                 XCTAssertNil(error);
                 
                 [httpsBlob downloadToStream:[[NSOutputStream alloc] initToMemory] completionHandler:^(NSError *err) {
-                    [AZSTestHelpers checkPassageOfError:err expectToPass:YES expectedHttpErrorCode:-1 message:@"Download https only blob using https"];
+                    [self checkPassageOfError:err expectToPass:YES expectedHttpErrorCode:-1 message:@"Download https only blob using https"];
             
                     // Ensure using https with https,http SAS succeeds.
                     sp.protocols = AZSSharedAccessProtocolHttpsHttp;
                     NSError *error = nil;
                     NSString *accountSasHttp = [self.account createSharedAccessSignatureWithParameters:sp error:&error];
-                    [AZSTestHelpers checkPassageOfError:error expectToPass:YES expectedHttpErrorCode:-1 message:@"Create SAS token"];
+                    [self checkPassageOfError:error expectToPass:YES expectedHttpErrorCode:-1 message:@"Create SAS token"];
                     
                     AZSUriQueryBuilder *httpBuilder = [[AZSUriQueryBuilder alloc] initWithQuery:accountSasHttp];
                     AZSCloudBlockBlob *httpsBlob = [[AZSCloudBlockBlob alloc] initWithUrl:[httpBuilder addToUri:uri.URL] error:&error];
                     XCTAssertNil(error);
                     
                     [httpsBlob downloadToStream:[[NSOutputStream alloc] initToMemory] completionHandler:^(NSError *err) {
-                        [AZSTestHelpers checkPassageOfError:err expectToPass:YES expectedHttpErrorCode:-1 message:@"Download blob using https"];
+                        [self checkPassageOfError:err expectToPass:YES expectedHttpErrorCode:-1 message:@"Download blob using https"];
 
                         // Ensure using http with https,http SAS succeeds.
                         uri.scheme = AZSCHttp;
@@ -187,7 +187,7 @@
                         XCTAssertNil(error);
                         
                         [httpBlob downloadToStream:[[NSOutputStream alloc] initToMemory] completionHandler:^(NSError *err) {
-                            [AZSTestHelpers checkPassageOfError:err expectToPass:YES expectedHttpErrorCode:-1 message:@"Download blob using http"];
+                            [self checkPassageOfError:err expectToPass:YES expectedHttpErrorCode:-1 message:@"Download blob using http"];
                             
                             [container deleteContainerIfExistsWithCompletionHandler:^(NSError *err, BOOL exists) {
                                 [semaphore signal];
@@ -259,12 +259,12 @@
     
     NSError *error = nil;
     NSString *accountSAS = [self.account createSharedAccessSignatureWithParameters:sp error:&error];
-    [AZSTestHelpers checkPassageOfError:error expectToPass:YES expectedHttpErrorCode:-1 message:@"Create SAS token"];
+    [self checkPassageOfError:error expectToPass:YES expectedHttpErrorCode:-1 message:@"Create SAS token"];
     
     AZSCloudBlobClient *client = [self.account getBlobClient];
     AZSStorageCredentials *credentials = [[AZSStorageCredentials alloc] initWithSASToken:accountSAS accountName:client.credentials.accountName];
     AZSCloudBlobClient *sasClient = [[[AZSCloudStorageAccount alloc] initWithCredentials:credentials useHttps:NO error:&error] getBlobClient];
-    [AZSTestHelpers checkPassageOfError:error expectToPass:YES expectedHttpErrorCode:-1 message:@"Access account with SAS token"];
+    [self checkPassageOfError:error expectToPass:YES expectedHttpErrorCode:-1 message:@"Access account with SAS token"];
     
     AZSCloudBlobContainer *container = [client containerReferenceFromName:[NSString stringWithFormat:@"%@res%lu-perm%lu", [AZSTestHelpers uniqueName], resourceTypes, (unsigned long)permissions]];
     AZSCloudBlobContainer *sasContainer = [sasClient containerReferenceFromName:container.name];
@@ -274,7 +274,7 @@
             BOOL shouldPass = !((AZSCloudBlobContainer *) container).client.credentials.isSAS ||
                     [self isAccessAllowedWithParameters:sp acceptedPermissions:(AZSSharedAccessPermissionsCreate | AZSSharedAccessPermissionsWrite)
                     acceptedResourceTypes:AZSSharedAccessResourceTypesContainer acceptedServices:AZSSharedAccessServicesBlob];
-            [AZSTestHelpers checkPassageOfError:err expectToPass:shouldPass expectedHttpErrorCode:403 message:@"Attempt to Create Container"];
+            [self checkPassageOfError:err expectToPass:shouldPass expectedHttpErrorCode:403 message:@"Attempt to Create Container"];
             completionHandler(err);
         }];
     };
@@ -285,7 +285,7 @@
             BOOL shouldPass = !((AZSCloudBlobContainer *) container).client.credentials.isSAS ||
                     [self isAccessAllowedWithParameters:sp acceptedPermissions:AZSSharedAccessPermissionsRead
                     acceptedResourceTypes:AZSSharedAccessResourceTypesContainer acceptedServices:AZSSharedAccessServicesBlob];
-            [AZSTestHelpers checkPassageOfError:err expectToPass:shouldPass expectedHttpErrorCode:403 message:@"Attempt to check whether Container Exists"];
+            [self checkPassageOfError:err expectToPass:shouldPass expectedHttpErrorCode:403 message:@"Attempt to check whether Container Exists"];
             completionHandler(err);
         }];
     };
@@ -295,7 +295,7 @@
             BOOL shouldPass = !((AZSCloudClient*) client).credentials.isSAS ||
                     [self isAccessAllowedWithParameters:sp acceptedPermissions:AZSSharedAccessPermissionsList
                     acceptedResourceTypes:AZSSharedAccessResourceTypesService acceptedServices:AZSSharedAccessServicesBlob];
-            [AZSTestHelpers checkPassageOfError:err expectToPass:shouldPass expectedHttpErrorCode:403 message:@"Attempt to List Containers"];
+            [self checkPassageOfError:err expectToPass:shouldPass expectedHttpErrorCode:403 message:@"Attempt to List Containers"];
             completionHandler(err);
         }];
     };
@@ -307,7 +307,7 @@
             BOOL shouldPass = !((AZSCloudBlob *) blob).blobContainer.client.credentials.isSAS ||
                     [self isAccessAllowedWithParameters:sp acceptedPermissions:AZSSharedAccessPermissionsWrite
                     acceptedResourceTypes:AZSSharedAccessResourceTypesObject acceptedServices:AZSSharedAccessServicesBlob];
-            [AZSTestHelpers checkPassageOfError:err expectToPass:shouldPass expectedHttpErrorCode:403 message:@"Attempt to Create Blob"];
+            [self checkPassageOfError:err expectToPass:shouldPass expectedHttpErrorCode:403 message:@"Attempt to Create Blob"];
             completionHandler(err);
         }];
     };
@@ -318,7 +318,7 @@
             BOOL shouldPass = !((AZSCloudBlob *) blob).blobContainer.client.credentials.isSAS ||
                     [self isAccessAllowedWithParameters:sp acceptedPermissions:AZSSharedAccessPermissionsRead
                     acceptedResourceTypes:AZSSharedAccessResourceTypesObject acceptedServices:AZSSharedAccessServicesBlob];
-            [AZSTestHelpers checkPassageOfError:err expectToPass:shouldPass expectedHttpErrorCode:403 message:@"Attempt to check whether Blob Exists"];
+            [self checkPassageOfError:err expectToPass:shouldPass expectedHttpErrorCode:403 message:@"Attempt to check whether Blob Exists"];
             completionHandler(err);
         }];
     };
@@ -328,7 +328,7 @@
             BOOL shouldPass = !((AZSCloudBlob *) blob).blobContainer.client.credentials.isSAS ||
             [self isAccessAllowedWithParameters:sp acceptedPermissions:AZSSharedAccessPermissionsRead
                     acceptedResourceTypes:AZSSharedAccessResourceTypesObject acceptedServices:AZSSharedAccessServicesBlob];
-            [AZSTestHelpers checkPassageOfError:err expectToPass:shouldPass expectedHttpErrorCode:403 message:@"Attempt to Download Blob"];
+            [self checkPassageOfError:err expectToPass:shouldPass expectedHttpErrorCode:403 message:@"Attempt to Download Blob"];
             completionHandler(err);
         }];
     };
@@ -338,7 +338,7 @@
             BOOL shouldPass = !((AZSCloudBlob *) blob).blobContainer.client.credentials.isSAS ||
             [self isAccessAllowedWithParameters:sp acceptedPermissions:AZSSharedAccessPermissionsDelete
                     acceptedResourceTypes:AZSSharedAccessResourceTypesObject acceptedServices:AZSSharedAccessServicesBlob];
-            [AZSTestHelpers checkPassageOfError:err expectToPass:shouldPass expectedHttpErrorCode:403 message:@"Attempt to Delete Blob"];
+            [self checkPassageOfError:err expectToPass:shouldPass expectedHttpErrorCode:403 message:@"Attempt to Delete Blob"];
             completionHandler(err);
         }];
     };
@@ -348,7 +348,7 @@
             BOOL shouldPass = !((AZSCloudBlobContainer *) container).client.credentials.isSAS ||
                     [self isAccessAllowedWithParameters:sp acceptedPermissions:AZSSharedAccessPermissionsDelete
                     acceptedResourceTypes:AZSSharedAccessResourceTypesContainer acceptedServices:AZSSharedAccessServicesBlob];
-            [AZSTestHelpers checkPassageOfError:err expectToPass:shouldPass expectedHttpErrorCode:403 message:@"Attempt to Delete Container"];
+            [self checkPassageOfError:err expectToPass:shouldPass expectedHttpErrorCode:403 message:@"Attempt to Delete Container"];
             completionHandler(err);
         }];
     };

@@ -307,27 +307,27 @@
             {
                 currentBlobItem.properties.eTag = currentXmlText;
             }
-            else if ([currentNode isEqualToString:AZSCXmlContentLength])
+            else if ([currentNode isEqualToString:AZSCContentLength])
             {
                 currentBlobItem.properties.length = [numberFormatter numberFromString:currentXmlText];
             }
-            else if ([currentNode isEqualToString:AZSCXmlContentType])
+            else if ([currentNode isEqualToString:AZSCContentType])
             {
                 currentBlobItem.properties.contentType = currentXmlText;
             }
-            else if ([currentNode isEqualToString:AZSCXmlContentEncoding])
+            else if ([currentNode isEqualToString:AZSCContentEncoding])
             {
                 currentBlobItem.properties.contentEncoding = currentXmlText;
             }
-            else if ([currentNode isEqualToString:AZSCXmlContentLanguage])
+            else if ([currentNode isEqualToString:AZSCContentLanguage])
             {
                 currentBlobItem.properties.contentLanguage = currentXmlText;
             }
-            else if ([currentNode isEqualToString:AZSCXmlContentMd5])
+            else if ([currentNode isEqualToString:AZSCContentMd5])
             {
                 currentBlobItem.properties.contentMD5 = currentXmlText;
             }
-            else if ([currentNode isEqualToString:AZSCXmlContentCacheControl])
+            else if ([currentNode isEqualToString:AZSCContentCacheControl])
             {
                 currentBlobItem.properties.cacheControl = currentXmlText;
             }
@@ -337,15 +337,15 @@
             }
             else if ([currentNode isEqualToString:AZSCXmlBlobType])
             {
-                if ([currentXmlText isEqualToString:AZSCXmlBlobBlockBlob])
+                if ([currentXmlText isEqualToString:AZSCBlobBlockBlob])
                 {
                     currentBlobItem.properties.blobType = AZSBlobTypeBlockBlob;
                 }
-                else if ([currentXmlText isEqualToString:AZSCXmlBlobPageBlob])
+                else if ([currentXmlText isEqualToString:AZSCBlobPageBlob])
                 {
                     currentBlobItem.properties.blobType = AZSBlobTypePageBlob;
                 }
-                else if ([currentXmlText isEqualToString:AZSCXmlBlobAppendBlob])
+                else if ([currentXmlText isEqualToString:AZSCBlobAppendBlob])
                 {
                     currentBlobItem.properties.blobType = AZSBlobTypeAppendBlob;
                 }
@@ -580,7 +580,7 @@
 
 +(AZSContainerPublicAccessType) createContainerPermissionsWithResponse:(NSHTTPURLResponse *)response operationContext:(AZSOperationContext *)operationContext error:(NSError **)error;
 {
-    NSString *publicAccess = [response.allHeaderFields objectForKey:@"x-ms-blob-public-access"];
+    NSString *publicAccess = [response.allHeaderFields objectForKey:AZSCHeaderBlobPublicAccess];
     AZSContainerPublicAccessType accessType = AZSContainerPublicAccessTypeOff;
     
     if (publicAccess && [publicAccess length] > 0) {
@@ -686,6 +686,84 @@
 
 @end
 
+@implementation AZSGetPageRangesResponse
+
++(NSArray *)parseGetPageRangesResponseWithData:(NSData *)data operationContext:(AZSOperationContext *)operationContext error:(NSError *__autoreleasing *)error
+{
+    AZSStorageXMLParserDelegate *parserDelegate = [[AZSStorageXMLParserDelegate alloc] init];
+    
+    NSXMLParser *parser = [[NSXMLParser alloc] initWithData:data];
+    parser.shouldProcessNamespaces = NO;
+
+    __block NSMutableArray *rangeList = [NSMutableArray arrayWithCapacity:10];
+    __block long long currentLocation = 0;
+    __block long long currentMax = 0;
+    __block NSMutableArray *elementStack = [NSMutableArray arrayWithCapacity:10];
+    __block NSMutableString *builder = [[NSMutableString alloc] init];
+
+    parserDelegate.parseBeginElement = ^(NSXMLParser *parser, NSString *elementName,NSDictionary *attributeDict)
+    {
+        [operationContext logAtLevel:AZSLogLevelDebug withMessage:@"Beginning to parse element with name = %@", elementName];
+        [elementStack addObject:elementName];
+        if ([builder length] > 0)
+        {
+            builder = [[NSMutableString alloc] init];
+        }
+    };
+    
+    parserDelegate.parseEndElement = ^(NSXMLParser *parser, NSString *elementName)
+    {
+        [operationContext logAtLevel:AZSLogLevelDebug withMessage:@"Ending to parse element with name = %@", elementName];
+        NSString *currentNode = elementStack.lastObject;
+        [elementStack removeLastObject];
+        
+        if (![elementName isEqualToString:currentNode])
+        {
+            // Malformed XML
+            [parser abortParsing];
+        }
+        
+        NSString *parentNode = elementStack.lastObject;
+        if ([parentNode isEqualToString:AZSCXmlPageRange])
+        {
+            if ([currentNode isEqualToString:AZSCXmlStart])
+            {
+                currentLocation = builder.longLongValue;
+                builder = [[NSMutableString alloc] init];
+            }
+            else if ([currentNode isEqualToString:AZSCXmlEnd])
+            {
+                currentMax = builder.longLongValue;
+                builder = [[NSMutableString alloc] init];
+            }
+        }
+        else if ([parentNode isEqualToString:AZSCXmlPageList])
+        {
+            [rangeList addObject:[NSValue valueWithRange:(NSMakeRange(currentLocation, currentMax - currentLocation + 1))]];
+            currentMax = 0;
+            currentLocation = 0;
+        }
+    };
+
+    parserDelegate.foundCharacters = ^(NSXMLParser *parser, NSString *characters)
+    {
+        [operationContext logAtLevel:AZSLogLevelDebug withMessage:@"Found characters = %@", characters];
+        [builder appendString:characters];
+    };
+    
+    parser.delegate = parserDelegate;
+    
+    BOOL parseSuccessful = [parser parse];
+    if (!parseSuccessful)
+    {
+        *error = [NSError errorWithDomain:AZSErrorDomain code:AZSEParseError userInfo:nil];
+        [operationContext logAtLevel:AZSLogLevelError withMessage:@"Parse unsuccessful for get block list operation."];
+    }
+    return rangeList;
+}
+
+@end
+
 @implementation AZSBlobResponseParser
 
 +(AZSCopyState *)getCopyStateWithResponse:(NSHTTPURLResponse *)response
@@ -774,30 +852,34 @@
         return nil;
     }
     
-    result.contentLanguage = response.allHeaderFields[AZSCXmlContentLanguage];
-    result.contentDisposition = response.allHeaderFields[AZSCXmlContentDisposition];
-    result.contentEncoding = response.allHeaderFields[AZSCXmlContentEncoding];
-    result.contentMD5 = response.allHeaderFields[AZSCXmlContentMd5];
-    result.contentType = response.allHeaderFields[AZSCXmlContentType];
-    result.cacheControl = response.allHeaderFields[AZSCXmlContentCacheControl];
+    result.contentLanguage = response.allHeaderFields[AZSCContentLanguage];
+    result.contentDisposition = response.allHeaderFields[AZSCContentDisposition];
+    result.contentEncoding = response.allHeaderFields[AZSCContentEncoding];
+    result.contentMD5 = response.allHeaderFields[AZSCContentMd5];
+    result.contentType = response.allHeaderFields[AZSCContentType];
+    result.cacheControl = response.allHeaderFields[AZSCContentCacheControl];
     
     NSString *blobTypeString = response.allHeaderFields[AZSCHeaderBlobType];
     result.blobType = AZSBlobTypeUnspecified;
     //do we want unspecified or do we want to throw?
     if (blobTypeString)
     {
-        if ([AZSCXmlBlobBlockBlob isEqualToString:blobTypeString])
+        if ([AZSCBlobBlockBlob isEqualToString:blobTypeString])
         {
             result.blobType = AZSBlobTypeBlockBlob;
         }
-        else if ([AZSCXmlBlobPageBlob isEqualToString:blobTypeString])
+        else if ([AZSCBlobPageBlob isEqualToString:blobTypeString])
         {
             result.blobType = AZSBlobTypePageBlob;
+        }
+        else if ([AZSCBlobAppendBlob isEqualToString:blobTypeString])
+        {
+            result.blobType = AZSBlobTypeAppendBlob;
         }
     }
     
     NSString *rangeHeaderString = response.allHeaderFields[AZSCXmlRange];
-    NSString *contentLengthHeaderString = response.allHeaderFields[AZSCXmlContentLength];
+    NSString *contentLengthHeaderString = response.allHeaderFields[AZSCContentLength];
     NSString *blobContentLengthHeaderString = response.allHeaderFields[AZSCHeaderBlobContentLength];
     
     if (rangeHeaderString)
@@ -821,6 +903,12 @@
     if (sequenceNumberHeaderString)
     {
         result.sequenceNumber = [NSNumber numberWithLongLong:[sequenceNumberHeaderString longLongValue]];
+    }
+    
+    NSString *committedBlockCountString = [response.allHeaderFields valueForKey:AZSCHeaderBlobCommittedBlockCount];
+    if (committedBlockCountString)
+    {
+        result.appendBlobCommittedBlockCount = [NSNumber numberWithLongLong:[committedBlockCountString longLongValue]];
     }
     
     return result;
@@ -951,5 +1039,39 @@
     
     return remainingLeaseTime;
 }
+
++(NSNumber *)getSequenceNumberWithResponse:(NSHTTPURLResponse *)response
+{
+    NSString *sequenceNumberString = [response.allHeaderFields valueForKey:AZSCHeaderBlobSequenceNumber];
+    NSNumber *sequenceNumber = nil;
+    if (sequenceNumberString) {
+        sequenceNumber = [NSNumber numberWithLongLong: [sequenceNumberString longLongValue]];
+    }
+    
+    return sequenceNumber;
+}
+
++(NSNumber *)getAppendCommittedBlockCountWithResponse:(NSHTTPURLResponse *)response
+{
+    NSString *blockCountString = [response.allHeaderFields valueForKey:AZSCHeaderBlobCommittedBlockCount];
+    NSNumber *blockCount = nil;
+    if (blockCountString) {
+        blockCount = [NSNumber numberWithLongLong: [blockCountString longLongValue]];
+    }
+    
+    return blockCount;
+}
+
++(NSNumber *)getAppendPositionWithResponse:(NSHTTPURLResponse *)response
+{
+    NSString *appendPositionString = [response.allHeaderFields valueForKey:AZSCHeaderBlobAppendOffset];
+    NSNumber *appendPosition = nil;
+    if (appendPositionString) {
+        appendPosition = [NSNumber numberWithLongLong: [appendPositionString longLongValue]];
+    }
+    
+    return appendPosition;
+}
+
 
 @end

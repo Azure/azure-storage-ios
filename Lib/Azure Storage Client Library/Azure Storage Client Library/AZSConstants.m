@@ -17,6 +17,9 @@
 
 #import <Foundation/Foundation.h>
 
+
+
+
 // Miscellaneous
 NSString *const AZSCBlob = @"blob";
 NSString *const AZSCContainer = @"container";
@@ -36,6 +39,9 @@ NSString *const AZSCTargetStorageVersion = @"2015-04-05";
 NSString *const AZSCTrue = @"true";
 NSString *const AZSCUserAgent = @"iOS-v0.1.1";
 NSString *const AZSCUtc = @"UTC";
+NSString *const AZSCBlobAppendBlob = @"AppendBlob";
+NSString *const AZSCBlobBlockBlob = @"BlockBlob";
+NSString *const AZSCBlobPageBlob = @"PageBlob";
 
 NSInteger const AZSCKilobyte = 1024;
 NSInteger const AZSCMaxBlockSize = 4 * AZSCKilobyte * AZSCKilobyte;
@@ -56,17 +62,30 @@ NSString *const AZSCEmulatorAccount = @"devstoraccount1";
 NSString *const AZSCEmulatorAccountKey = @"Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==";
 
 // Headers
+NSString *const AZSCContentCacheControl = @"Cache-Control";
+NSString *const AZSCContentDisposition = @"Content-Disposition";
+NSString *const AZSCContentEncoding = @"Content-Encoding";
+NSString *const AZSCContentLanguage = @"Content-Language";
+NSString *const AZSCContentLength = @"Content-Length";
+NSString *const AZSCContentMd5 = @"Content-MD5";
+NSString *const AZSCContentType = @"Content-Type";
+
+// x-ms Headers
 NSString *const AZSCHeaderPrefix = @"x-ms-";
 NSString *const AZSCHeaderMetaPrefix = @"x-ms-meta-";
 NSString *const AZSCHeaderAuthorization = @"Authorization";
-NSString *const AZSCHeaderBlobPublicAccess = @"x-ms-blob-public-access";
+NSString *const AZSCHeaderBlobAppendOffset = @"x-ms-blob-append-offset";
 NSString *const AZSCHeaderBlobCacheControl = @"x-ms-blob-cache-control";
+NSString *const AZSCHeaderBlobCommittedBlockCount = @"x-ms-blob-committed-block-count";
+NSString *const AZSCHeaderBlobConditionAppendPos = @"x-ms-blob-condition-appendpos";
+NSString *const AZSCHeaderBlobConditionMaxSize = @"x-ms-blob-condition-maxsize";
 NSString *const AZSCHeaderBlobContentDisposition = @"x-ms-blob-content-disposition";
 NSString *const AZSCHeaderBlobContentEncoding = @"x-ms-blob-content-encoding";
 NSString *const AZSCHeaderBlobContentLanguage = @"x-ms-blob-content-language";
 NSString *const AZSCHeaderBlobContentLength = @"x-ms-blob-content-length";
 NSString *const AZSCHeaderBlobContentMd5 = @"x-ms-blob-content-md5";
 NSString *const AZSCHeaderBlobContentType = @"x-ms-blob-content-type";
+NSString *const AZSCHeaderBlobPublicAccess = @"x-ms-blob-public-access";
 NSString *const AZSCHeaderBlobSequenceNumber = @"x-ms-blob-sequence-number";
 NSString *const AZSCHeaderBlobType = @"x-ms-blob-type";
 NSString *const AZSCHeaderClientRequestId = @"x-ms-client-request-id";
@@ -79,6 +98,9 @@ NSString *const AZSCHeaderCopyCompletionTime = @"x-ms-copy-completion-time";
 NSString *const AZSCHeaderCopyStatusDescription = @"x-ms-copy-status-description";
 NSString *const AZSCHeaderDate = @"x-ms-date";
 NSString *const AZSCHeaderDeleteSnapshots = @"x-ms-delete-snapshots";
+NSString *const AZSCHeaderIfSequenceNumberEQ = @"x-ms-if-sequence-number-eq";
+NSString *const AZSCHeaderIfSequenceNumberLE = @"x-ms-if-sequence-number-le";
+NSString *const AZSCHeaderIfSequenceNumberLT = @"x-ms-if-sequence-number-lt";
 NSString *const AZSCHeaderLeaseAction = @"x-ms-lease-action";
 NSString *const AZSCHeaderLeaseId = @"x-ms-lease-id";
 NSString *const AZSCHeaderLeaseBreakPeriod = @"x-ms-lease-break-period";
@@ -86,10 +108,12 @@ NSString *const AZSCHeaderLeaseDuration = @"x-ms-lease-duration";
 NSString *const AZSCHeaderLeaseState = @"x-ms-lease-state";
 NSString *const AZSCHeaderLeaseStatus = @"x-ms-lease-status";
 NSString *const AZSCHeaderLeaseTime = @"x-ms-lease-time";
+NSString *const AZSCHeaderPageWrite = @"x-ms-page-write";
 NSString *const AZSCHeaderProposedLeaseId = @"x-ms-proposed-lease-id";
 NSString *const AZSCHeaderRange = @"x-ms-range";
 NSString *const AZSCHeaderRangeGetContent = @"x-ms-range-get-content-md5";
 NSString *const AZSCHeaderRequestId = @"x-ms-request-id";
+NSString *const AZSCHeaderSequenceNumberAction = @"x-ms-sequence-number-action";
 NSString *const AZSCHeaderSnapshot = @"x-ms-snapshot";
 NSString *const AZSCHeaderUserAgent = @"User-Agent";
 NSString *const AZSCHeaderSourceIfMatch = @"x-ms-source-if-match";
@@ -104,6 +128,7 @@ NSString *const AZSCHeaderValueAcquire = @"acquire";
 NSString *const AZSCHeaderValueAll = @"all";
 NSString *const AZSCHeaderValueBreak = @"break";
 NSString *const AZSCHeaderValueChange = @"change";
+NSString *const AZSCHeaderValueClear = @"clear";
 NSString *const AZSCHeaderValueCommitted = @"committed";
 NSString *const AZSCHeaderValueCopy = @"copy";
 NSString *const AZSCHeaderValueDate = @"Date";
@@ -112,6 +137,8 @@ NSString *const AZSCHeaderValueIfNoneMatch = @"If-None-Match";
 NSString *const AZSCHeaderValueIfModifiedSince = @"If-Modified-Since";
 NSString *const AZSCHeaderValueIfUnmodifiedSince = @"If-Unmodified-Since";
 NSString *const AZSCHeaderValueInclude = @"include";
+NSString *const AZSCHeaderValueIncrement = @"increment";
+NSString *const AZSCHeaderValueMax = @"max";
 NSString *const AZSCHeaderValueMetadata = @"metadata";
 NSString *const AZSCHeaderValueOnly = @"only";
 NSString *const AZSCHeaderValueRelease = @"release";
@@ -120,6 +147,7 @@ NSString *const AZSCHeaderValueSnapshots = @"snapshots";
 NSString *const AZSCHeaderValueUncommitted = @"uncommitted";
 NSString *const AZSCHeaderValueUncommittedBlobs = @"uncommittedblobs";
 NSString *const AZSCHeaderValueUserAgent = @"Azure-Storage/0.1.2-preview (iOS %@)";
+NSString *const AZSCHeaderValueUpdate = @"update";
 
 // HTTP Methods
 NSString *const AZSCHttpDelete = @"DELETE";
@@ -136,12 +164,15 @@ NSString *const AZSCQuerySnapshot = @"snapshot";
 
 // Query Parameters and Values
 NSString *const AZSCQueryCompAcl = @"comp=acl";
+NSString *const AZSCQueryCompAppendBlock = @"comp=appendblock";
 NSString *const AZSCQueryCompBlock = @"comp=block";
 NSString *const AZSCQueryCompBlockList = @"comp=blocklist";
 NSString *const AZSCQueryCompCopy = @"comp=copy";
 NSString *const AZSCQueryCompLease = @"comp=lease";
 NSString *const AZSCQueryCompList = @"comp=list";
 NSString *const AZSCQueryCompMetadata = @"comp=metadata";
+NSString *const AZSCQueryCompPage = @"comp=page";
+NSString *const AZSCQueryCompPageList = @"comp=pagelist";
 NSString *const AZSCQueryCompProperties = @"comp=properties";
 NSString *const AZSCQueryCompSnapshot = @"comp=snapshot";
 NSString *const AZSCQueryIncludeMetadata = @"include=metadata";
@@ -150,6 +181,7 @@ NSString *const AZSCQueryRestypeContainer = @"restype=container";
 // Query Parameter Templates
 NSString *const AZSCQueryTemplateBlockId = @"blockid=%@";
 NSString *const AZSCQueryTemplateBlockListType = @"blocklisttype=%@";
+NSString *const AZSCQueryTemplateBytes = @"bytes=%lu-%lu";
 NSString *const AZSCQueryTemplateCopyId = @"copyid=%@";
 NSString *const AZSCQueryTemplateDelimiter = @"delimiter=%@";
 NSString *const AZSCQueryTemplateInclude = @"include=%@";
@@ -207,9 +239,6 @@ NSString *const AZSCXmlAccessPolicy = @"AccessPolicy";
 NSString *const AZSCXmlAvailable = @"available";
 NSString *const AZSCXmlBlob = @"Blob";
 NSString *const AZSCXmlBlobs = @"Blobs";
-NSString *const AZSCXmlBlobAppendBlob = @"AppendBlob";
-NSString *const AZSCXmlBlobBlockBlob = @"BlockBlob";
-NSString *const AZSCXmlBlobPageBlob = @"PageBlob";
 NSString *const AZSCXmlBlobPrefix = @"BlobPrefix";
 NSString *const AZSCXmlBlobType = @"BlobType";
 NSString *const AZSCXmlBlock = @"Block";
@@ -221,13 +250,6 @@ NSString *const AZSCXmlCommitted = @"Committed";
 NSString *const AZSCXmlCommittedBlocks = @"CommittedBlocks";
 NSString *const AZSCXmlContainer = @"Container";
 NSString *const AZSCXmlContainers = @"Containers";
-NSString *const AZSCXmlContentCacheControl = @"Cache-Control";
-NSString *const AZSCXmlContentDisposition = @"Content-Disposition";
-NSString *const AZSCXmlContentEncoding = @"Content-Encoding";
-NSString *const AZSCXmlContentLanguage = @"Content-Language";
-NSString *const AZSCXmlContentLength = @"Content-Length";
-NSString *const AZSCXmlContentMd5 = @"Content-MD5";
-NSString *const AZSCXmlContentType = @"Content-Type";
 NSString *const AZSCXmlCopyAborted = @"aborted";
 NSString *const AZSCXmlCopyCompletionTime = @"CopyCompletionTime";
 NSString *const AZSCXmlCopyFailed = @"failed";
@@ -238,6 +260,7 @@ NSString *const AZSCXmlCopySource = @"CopySource";
 NSString *const AZSCXmlCopyStatus = @"CopyStatus";
 NSString *const AZSCXmlCopyStatusDescription = @"CopyStatusDescription";
 NSString *const AZSCXmlCopySuccess = @"success";
+NSString *const AZSCXmlEnd = @"End";
 NSString *const AZSCXmlEnumerationResults = @"EnumerationResults";
 NSString *const AZSCXmlError = @"Error";
 NSString *const AZSCXmlETag = @"ETag";
@@ -259,6 +282,8 @@ NSString *const AZSCXmlMetadata = @"Metadata";
 NSString *const AZSCXmlName = @"Name";
 NSString *const AZSCXmlNextMarker = @"NextMarker";
 NSString *const AZSCXmlOperationContext = @"OperationContext";
+NSString *const AZSCXmlPageList = @"PageList";
+NSString *const AZSCXmlPageRange = @"PageRange";
 NSString *const AZSCXmlPermission = @"Permission";
 NSString *const AZSCXmlProperties = @"Properties";
 NSString *const AZSCXmlRange = @"Range";

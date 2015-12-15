@@ -744,7 +744,7 @@
     if (updateLength)
     {
         NSString *rangeHeaderString = response.allHeaderFields[AZSCXmlRange];
-        NSString *contentLengthHeaderString = response.allHeaderFields[AZSCXmlContentLength];
+        NSString *contentLengthHeaderString = response.allHeaderFields[AZSCContentLength];
         NSString *blobContentLengthHeaderString = response.allHeaderFields[AZSCHeaderBlobContentLength];
         
         if (rangeHeaderString)

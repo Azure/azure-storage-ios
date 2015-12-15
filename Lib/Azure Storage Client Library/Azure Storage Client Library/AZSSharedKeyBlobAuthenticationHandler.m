@@ -51,18 +51,18 @@
     [self appendWithNewlineToString:stringToSign stringToAppend:request.HTTPMethod];
     
     // Standard headers
-    [self appendWithNewlineToString:stringToSign stringToAppend:[request valueForHTTPHeaderField:AZSCXmlContentEncoding]];
-    [self appendWithNewlineToString:stringToSign stringToAppend:[request valueForHTTPHeaderField:AZSCXmlContentLanguage]];
+    [self appendWithNewlineToString:stringToSign stringToAppend:[request valueForHTTPHeaderField:AZSCContentEncoding]];
+    [self appendWithNewlineToString:stringToSign stringToAppend:[request valueForHTTPHeaderField:AZSCContentLanguage]];
     
-    NSString *contentLengthValue = [request valueForHTTPHeaderField:AZSCXmlContentLength];
+    NSString *contentLengthValue = [request valueForHTTPHeaderField:AZSCContentLength];
     if ([contentLengthValue isEqualToString:@"0"])
     {
         contentLengthValue = nil;
     }
     [self appendWithNewlineToString:stringToSign stringToAppend:contentLengthValue];
     
-    [self appendWithNewlineToString:stringToSign stringToAppend:[request valueForHTTPHeaderField:AZSCXmlContentMd5]];
-    [self appendWithNewlineToString:stringToSign stringToAppend:[request valueForHTTPHeaderField:AZSCXmlContentType]];
+    [self appendWithNewlineToString:stringToSign stringToAppend:[request valueForHTTPHeaderField:AZSCContentMd5]];
+    [self appendWithNewlineToString:stringToSign stringToAppend:[request valueForHTTPHeaderField:AZSCContentType]];
     [self appendWithNewlineToString:stringToSign stringToAppend:nil]; // Date header
     [self appendWithNewlineToString:stringToSign stringToAppend:[request valueForHTTPHeaderField:AZSCHeaderValueIfModifiedSince]];
     [self appendWithNewlineToString:stringToSign stringToAppend:[request valueForHTTPHeaderField:AZSCHeaderValueIfMatch]];

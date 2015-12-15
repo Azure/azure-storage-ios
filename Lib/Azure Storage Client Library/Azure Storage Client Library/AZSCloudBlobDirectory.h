@@ -31,6 +31,8 @@ AZS_ASSUME_NONNULL_BEGIN
 @class AZSBlobRequestOptions;
 @class AZSOperationContext;
 @class AZSAccessCondition;
+@class AZSCloudPageBlob;
+@class AZSCloudAppendBlob;
 
 @interface AZSCloudBlobDirectory : NSObject
 
@@ -85,9 +87,56 @@ AZS_ASSUME_NONNULL_BEGIN
  @warning This method does not make a service call.  If properties, metadata, etc have been set on the service
  for this blob, this will not be reflected in the local container object.
  @param blobName The name of the block blob (part of the URL)
+ @param snapshotTime The snapshot time for the blob.  Nil means the root blob (not a snapshot).
  @return The block blob object.
  */
 - (AZSCloudBlockBlob *)blockBlobReferenceFromName:(NSString *)blobName snapshotTime:(AZSNullable NSString *)snapshotTime;
+
+/** Initialize a local AZSCloudPageBlob object
+ 
+ This creates an AZSCloudPageBlob object with the input name.
+ 
+ @warning This method does not make a service call.  If properties, metadata, etc have been set on the service
+ for this blob, this will not be reflected in the local container object.
+ @param blobName The name of the page blob (part of the URL)
+ @return The new page blob object.
+ */
+- (AZSCloudPageBlob *)pageBlobReferenceFromName:(NSString *)blobName;
+
+/** Initialize a local AZSCloudPageBlob object
+ 
+ This creates an AZSCloudPageBlob object with the input name.
+ 
+ @warning This method does not make a service call.  If properties, metadata, etc have been set on the service
+ for this blob, this will not be reflected in the local container object.
+ @param blobName The name of the page blob (part of the URL)
+ @param snapshotTime The snapshot time for the blob.  Nil means the root blob (not a snapshot).
+ @return The new page blob object.
+ */
+- (AZSCloudPageBlob *)pageBlobReferenceFromName:(NSString *)blobName snapshotTime:(AZSNullable NSString *)snapshotTime;
+
+/** Initialize a local AZSCloudAppendBlob object
+ 
+ This creates an AZSCloudAppendBlob object with the input name.
+ 
+ @warning This method does not make a service call.  If properties, metadata, etc have been set on the service
+ for this blob, this will not be reflected in the local container object.
+ @param blobName The name of the append blob (part of the URL)
+ @return The new append blob object.
+ */
+- (AZSCloudAppendBlob *)appendBlobReferenceFromName:(NSString *)blobName;
+
+/** Initialize a local AZSCloudAppendBlob object
+ 
+ This creates an AZSCloudAppendBlob object with the input name.
+ 
+ @warning This method does not make a service call.  If properties, metadata, etc have been set on the service
+ for this blob, this will not be reflected in the local container object.
+ @param blobName The name of the block blob (part of the URL)
+ @param snapshotTime The snapshot time for the blob.  Nil means the root blob (not a snapshot).
+ @return The new block blob object.
+ */
+- (AZSCloudAppendBlob *)appendBlobReferenceFromName:(NSString *)blobName snapshotTime:(AZSNullable NSString *)snapshotTime;
 
 /** Initialize a AZSCloudBlobDiretory object that represents the 'parent' directory of the current object.
  

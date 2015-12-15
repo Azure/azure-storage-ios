@@ -15,7 +15,6 @@
 // </copyright>
 // -----------------------------------------------------------------------------------------
 
-#import <CommonCrypto/CommonDigest.h>
 #import "AZSCloudBlockBlob.h"
 #import "AZSStorageCommand.h"
 #import "AZSBlobRequestFactory.h"
@@ -31,6 +30,7 @@
 #import "AZSUtil.h"
 #import "AZSErrors.h"
 #import "AZSStorageUri.h"
+#import "AZSBlobProperties.h"
 
 
 @interface AZSBlobUploadFromStreamInputContainer : NSObject
@@ -268,14 +268,12 @@
 
     if (requestOptions.useTransactionalMD5 && !(contentMD5))
     {
-        unsigned char md5Bytes[CC_MD5_DIGEST_LENGTH];
-        CC_MD5(sourceData.bytes, (CC_LONG) sourceData.length, md5Bytes);
-        contentMD5 = [[[NSData alloc] initWithBytes:md5Bytes length:CC_MD5_DIGEST_LENGTH] base64EncodedStringWithOptions:0];
+        contentMD5 = [AZSUtil calculateMD5FromData:sourceData];
     }
 
     [command setBuildRequest:^ NSMutableURLRequest * (NSURLComponents *urlComponents, NSTimeInterval timeout, AZSOperationContext *operationContext)
      {
-         return [AZSBlobRequestFactory putBlockWithLength:[sourceData length] blockID:blockID contentMD5:contentMD5 AccessCondition:accessCondition urlComponents:urlComponents timeout:timeout operationContext:operationContext];
+         return [AZSBlobRequestFactory putBlockWithLength:[sourceData length] blockID:blockID contentMD5:contentMD5 accessCondition:accessCondition urlComponents:urlComponents timeout:timeout operationContext:operationContext];
      }];
     
     [command setAuthenticationHandler:self.client.authenticationHandler];
@@ -326,9 +324,7 @@
     NSString *contentMD5 = nil;
     if (requestOptions.useTransactionalMD5)
     {
-        unsigned char md5Bytes[CC_MD5_DIGEST_LENGTH];
-        CC_MD5(sourceData.bytes, (CC_LONG) sourceData.length, md5Bytes);
-        contentMD5 = [[[NSData alloc] initWithBytes:md5Bytes length:CC_MD5_DIGEST_LENGTH] base64EncodedStringWithOptions:0];
+        contentMD5 = [AZSUtil calculateMD5FromData:sourceData];
     }
     
     [command setBuildRequest:^ NSMutableURLRequest * (NSURLComponents *urlComponents, NSTimeInterval timeout, AZSOperationContext *operationContext)

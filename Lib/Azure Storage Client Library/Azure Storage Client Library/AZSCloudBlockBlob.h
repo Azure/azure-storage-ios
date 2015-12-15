@@ -17,13 +17,12 @@
 
 #import <Foundation/Foundation.h>
 #import "AZSCloudBlob.h"
-#import "AZSEnums.h"
-#import "AZSCopyState.h"
-#import "AZSBlobProperties.h"
-#import "AZSCloudBlobContainer.h"
-#import "AZSCloudBlobClient.h"
-#import "AZSBlobOutputStream.h"
-#import "AZSMacros.h"
+
+@class AZSCopyState;
+@class AZSBlobProperties;
+@class AZSCloudBlobContainer;
+@class AZSCloudBlobClient;
+@class AZSBlobOutputStream;
 
 AZS_ASSUME_NONNULL_BEGIN
 
