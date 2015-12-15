@@ -68,9 +68,9 @@
     
     AZSUriQueryBuilder *builder = [[AZSUriQueryBuilder alloc] init];
     [builder addWithKey:@"sv" value: /* Target Storage Version */ @"2015-04-05"];
-    [builder addIfNotNilOrEmptyWithKey:@"sp" value:[AZSSharedAccessSignatureHelper stringFromPermissions:permissions]];
+    [builder addIfNotNilOrEmptyWithKey:@"sp" value:[AZSSharedAccessSignatureHelper stringFromPermissions:permissions error:error]];
     
-    if (error && *error) {
+    if (*error) {
         // An error occurred.
         return nil;
     }
@@ -126,13 +126,20 @@
     
     // Todo: Add ipRange and procols
     NSString *stringToSign = [NSString stringWithFormat:@"%@\n%@\n%@\n%@\n%@\n\n\n%@",
-            [self emptyIfNilString:[AZSSharedAccessSignatureHelper stringFromPermissions:permissions]], [AZSUtil utcTimeOrEmptyWithDate:startTime], [AZSUtil utcTimeOrEmptyWithDate:expiryTime],
+                              [self emptyIfNilString:[AZSSharedAccessSignatureHelper stringFromPermissions:permissions error:error]],
+                              [AZSUtil utcTimeOrEmptyWithDate:startTime], [AZSUtil utcTimeOrEmptyWithDate:expiryTime],
             resource, [self emptyIfNilString:storedPolicyIdentifier], /* Target Storage Version */ @"2015-04-05"];
-    return (error && *error) ? nil : stringToSign;
+    return (*error) ? nil : stringToSign;
 }
 
-+(NSString *)stringFromPermissions:(AZSSharedAccessPermissions)permissions
++(NSString *)stringFromPermissions:(AZSSharedAccessPermissions)permissions error:(NSError **)error
 {
+    if (permissions & ~AZSSharedAccessPermissionsAll) {
+        *error = [NSError errorWithDomain:AZSErrorDomain code:AZSEInvalidArgument userInfo:nil];
+        [[AZSUtil operationlessContext] logAtLevel:AZSLogLevelError withMessage:@"Unrecognized permissions argument."];
+        return nil;
+    }
+    
     NSMutableString *builder = [[NSMutableString alloc] init];
     if (permissions & AZSSharedAccessPermissionsRead) {
         [builder appendString:@"r"];
@@ -154,6 +161,41 @@
     }
     
     return builder;
+}
+
++(AZSSharedAccessPermissions)permissionsFromString:(NSString *)permissionString error:(NSError **)error
+{
+    AZSSharedAccessPermissions permissions = AZSSharedAccessPermissionsNone;
+    
+    for (int i = 0; i < permissionString.length; i++) {
+        char c = [permissionString characterAtIndex:i];
+        
+        if (c == 'r') {
+            permissions |= AZSSharedAccessPermissionsRead;
+        }
+        else if (c == 'a') {
+            permissions |= AZSSharedAccessPermissionsAdd;
+        }
+        else if (c == 'c') {
+            permissions |= AZSSharedAccessPermissionsCreate;
+        }
+        else if (c == 'w') {
+            permissions |= AZSSharedAccessPermissionsWrite;
+        }
+        else if (c == 'd') {
+            permissions |= AZSSharedAccessPermissionsDelete;
+        }
+        else if (c == 'l') {
+            permissions |= AZSSharedAccessPermissionsList;
+        }
+        else {
+            *error = [NSError errorWithDomain:AZSErrorDomain code:AZSEInvalidArgument userInfo:nil];
+            [[AZSUtil operationlessContext] logAtLevel:AZSLogLevelError withMessage:@"Unrecognized permissions character."];
+            return NSUIntegerMax;
+        }
+    }
+    
+    return permissions;
 }
 
 @end

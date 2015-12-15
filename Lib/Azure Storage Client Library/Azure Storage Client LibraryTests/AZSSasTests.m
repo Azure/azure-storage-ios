@@ -39,6 +39,7 @@
 #import "AZSUriQueryBuilder.h"
 
 @interface AZSSasTests : AZSBlobTestBase
+
 @property AZSCloudBlobContainer *blobContainer;
 @property AZSCloudBlockBlob *blockBlob;
 
@@ -67,7 +68,7 @@
 - (void)tearDown
 {
     // Put teardown code here; it will be run once, after the last test case.
-    AZSTestSemaphore *semaphore= [[AZSTestSemaphore alloc] init];
+    AZSTestSemaphore *semaphore = [[AZSTestSemaphore alloc] init];
     [self.blobContainer deleteContainerIfExistsWithCompletionHandler:^(NSError* err, BOOL created) {
         [semaphore signal];
     }];
@@ -76,16 +77,36 @@
     [super tearDown];
 }
 
-- (void) checkPassageOfError:(NSError *)err expectToPass:(BOOL)expected errorCode:(int)code message:(NSString *)message
+- (void)checkPassageOfError:(NSError *)err expectToPass:(BOOL)expected errorCode:(int)code message:(NSString *)message
 {
     if (expected) {
-        XCTAssertNil(err, @"%@ failed.  Error code = %ld, error domain = %@, error userinfo = %@", message, (long)err.code, err.domain, err.userInfo);
+        XCTAssertNil(err, @"%@ failed.", message);
     }
     else {
         XCTAssertNotNil(err, @"%@ unexpectedly passed.", message);
+        XCTAssertEqual(code, [[err.userInfo objectForKey:@"HTTP Status Code"] intValue]);
+    }
+}
+
+- (void)checkEqualityOfContainerPermissions:(AZSBlobContainerPermissions *)permissions otherPermissions:(AZSBlobContainerPermissions *)otherPermissions
+{
+    XCTAssertTrue(permissions.publicAccess == otherPermissions.publicAccess);
+    
+    XCTAssertEqual(permissions.sharedAccessPolicies.count, otherPermissions.sharedAccessPolicies.count);
+    
+    for (NSString *policyIdentifier in permissions.sharedAccessPolicies) {
+        AZSSharedAccessPolicy *policy = [permissions.sharedAccessPolicies objectForKey:policyIdentifier];
+        XCTAssertNotNil(policy);
         
-        int status = [[err.userInfo objectForKey:@"HTTP Status Code"] intValue];
-        XCTAssertEqual(code, status);
+        AZSSharedAccessPolicy *otherPolicy = [otherPermissions.sharedAccessPolicies objectForKey:policyIdentifier];
+        XCTAssertNotNil(otherPolicy);
+        
+        XCTAssertEqual(policy.permissions, otherPolicy.permissions);
+        XCTAssertEqualWithAccuracy(policy.sharedAccessStartTime.timeIntervalSince1970, otherPolicy.sharedAccessStartTime.timeIntervalSince1970, 1);
+        XCTAssertEqualWithAccuracy(policy.sharedAccessExpiryTime.timeIntervalSince1970, otherPolicy.sharedAccessExpiryTime.timeIntervalSince1970, 1);
+        
+        XCTAssertEqualObjects(policyIdentifier, policy.policyIdentifier);
+        XCTAssertEqualObjects(policy.policyIdentifier, otherPolicy.policyIdentifier);
     }
 }
 
@@ -97,7 +118,7 @@
     NSURL *primary = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"%@?%@", initialUri.primaryUri.absoluteString, queryString]];
     AZSStorageUri *uri = [[AZSStorageUri alloc] initWithPrimaryUri:primary];
     if (initialUri.secondaryUri) {
-        initialUri.secondaryUri = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"%@?%@", initialUri.secondaryUri.absoluteString, queryString]];
+        uri.secondaryUri = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"%@?%@", initialUri.secondaryUri.absoluteString, queryString]];
     }
     
     return uri;
@@ -134,12 +155,12 @@
 - (void)testContainerSas
 {
     // Test from stored policy
-    // TODO: Uncomment
-    /*AZSSharedAccessBlobParameters *sp = [[AZSSharedAccessBlobParameters alloc] init];
+    AZSSharedAccessBlobParameters *sp = [[AZSSharedAccessBlobParameters alloc] init];
     sp.storedPolicyIdentifier = @"readlist";
-    AZSTestSemaphore *lock = [[AZSTestSemaphore alloc] init];
+    AZSTestSemaphore *semaphore = [[AZSTestSemaphore alloc] init];
     AZSSharedAccessPolicy *policy = [[AZSSharedAccessPolicy alloc] initWithIdentifier:sp.storedPolicyIdentifier];
     policy.permissions = AZSSharedAccessPermissionsRead|AZSSharedAccessPermissionsList;
+    policy.sharedAccessStartTime = [[NSDate alloc] initWithTimeIntervalSinceNow:0];
     policy.sharedAccessExpiryTime = [[NSDate alloc] initWithTimeIntervalSinceNow:300];
     
     AZSBlobContainerPermissions *permissions = [[AZSBlobContainerPermissions alloc] init];
@@ -149,20 +170,25 @@
         [NSThread sleepForTimeInterval:30];
      
         [self testContainerSASWithParameters:sp completionHandler:^{
-            [lock signal];
+            [self.blobContainer downloadPermissionsWithCompletionHandler:^(NSError *error, AZSBlobContainerPermissions *storedPermissions) {
+                [self checkPassageOfError:err expectToPass:YES errorCode:-1 message:@"Download permissions"];
+                [self checkEqualityOfContainerPermissions:permissions otherPermissions:storedPermissions];
+
+                [semaphore signal];
+            }];
         }];
-    }];*/
+    }];
     
     // Test from local parameters
     AZSTestSemaphore *innerSemaphore = [[AZSTestSemaphore alloc] init];
     AZSSharedAccessBlobParameters *sp2 = [[AZSSharedAccessBlobParameters alloc] init];
-    sp2.permissions = AZSSharedAccessPermissionsRead|AZSSharedAccessPermissionsList; //policy.permissions;
-    sp2.sharedAccessExpiryTime = [[NSDate alloc] initWithTimeIntervalSinceNow:300]; //policy.sharedAccessExpiryTime;
+    sp2.permissions = policy.permissions;
+    sp2.sharedAccessExpiryTime = policy.sharedAccessExpiryTime;
     [self testContainerSASWithParameters:sp2 completionHandler:^(){
         [innerSemaphore signal];
     }];
     [innerSemaphore wait];
-    // [lock wait];
+    [semaphore wait];
 }
 
 - (void)testContainerSASWithParameters:(AZSSharedAccessBlobParameters *)sp completionHandler:(void(^)())completionHandler
@@ -212,8 +238,7 @@
     AZSOperationContext *context = [[AZSOperationContext alloc] init];
     
     // Test with stored policy
-    // TODO: Uncomment
-    /*AZSTestSemaphore *lock = [[AZSTestSemaphore alloc] init];
+    AZSTestSemaphore *semaphore = [[AZSTestSemaphore alloc] init];
     AZSSharedAccessBlobParameters *sp = [[AZSSharedAccessBlobParameters alloc] init];
     sp.storedPolicyIdentifier = @"readperm";
     
@@ -222,28 +247,33 @@
     policy.sharedAccessExpiryTime = [[NSDate alloc] initWithTimeIntervalSinceNow:300];
     
     AZSBlobContainerPermissions *permissions = [[AZSBlobContainerPermissions alloc] init];
-    [permissions setValue:sp forKey:@"readperm"];
+    [permissions.sharedAccessPolicies setObject:policy forKey:@"readperm"];
     [self.blobContainer uploadPermissions:permissions completionHandler:^(NSError * err) {
         [self checkPassageOfError:err expectToPass:YES errorCode:-1 message:@"Upload permissions"];
         
         [NSThread sleepForTimeInterval:30];
         
         [self testContainerSasBlobHeadersWithParameters:sp context:context completionHandler:^(){
-            [lock signal];
+            [self.blobContainer downloadPermissionsWithCompletionHandler:^(NSError *error, AZSBlobContainerPermissions *storedPermissions) {
+                [self checkPassageOfError:err expectToPass:YES errorCode:-1 message:@"Download permissions"];
+                [self checkEqualityOfContainerPermissions:permissions otherPermissions:storedPermissions];
+                
+                [semaphore signal];
+            }];
         }];
-    }];*/
+    }];
     
     // Test with local parameters
     AZSTestSemaphore *innerSemaphore = [[AZSTestSemaphore alloc] init];
     AZSSharedAccessBlobParameters *sp2 = [[AZSSharedAccessBlobParameters alloc] init];
-    sp2.permissions = AZSSharedAccessPermissionsRead|AZSSharedAccessPermissionsWrite|AZSSharedAccessPermissionsList; //policy.permissions;
-    sp2.sharedAccessExpiryTime = [[NSDate alloc] initWithTimeIntervalSinceNow:300]; //policy.sharedAccessExpiryTime;
+    sp2.permissions = policy.permissions;
+    sp2.sharedAccessExpiryTime = policy.sharedAccessExpiryTime;
     
     [self testContainerSasBlobHeadersWithParameters:sp2 context:context completionHandler:^(){
         [innerSemaphore signal];
     }];
     [innerSemaphore wait];
-    //[lock wait];
+    [semaphore wait];
 }
 
 - (void)testContainerSasBlobHeadersWithParameters:(AZSSharedAccessBlobParameters *)sp context:(AZSOperationContext *)context completionHandler:(void(^)())completionHandler
@@ -267,8 +297,8 @@
     AZSStorageCredentials *creds = [[AZSStorageCredentials alloc] initWithSASToken:[self.blobContainer createSharedAccessSignatureWithParameters:sp error:&error]];
     [self checkPassageOfError:error expectToPass:YES errorCode:-1 message:@"Create SAS token"];
     
-    AZSCloudBlobContainer *cont = [[AZSCloudBlobContainer alloc] initWithStorageUri:self.blobContainer.storageUri credentials:creds];
-    AZSCloudBlockBlob *sasBlob = [cont blockBlobReferenceFromName:self.blockBlob.blobName];
+    AZSCloudBlobContainer *container = [[AZSCloudBlobContainer alloc] initWithStorageUri:self.blobContainer.storageUri credentials:creds];
+    AZSCloudBlockBlob *sasBlob = [container blockBlobReferenceFromName:self.blockBlob.blobName];
     
     [sasBlob downloadToStream:[[NSOutputStream alloc] initToMemory] accessCondition:nil requestOptions:nil operationContext:context completionHandler:^(NSError * err) {
         [self checkPassageOfError:err expectToPass:YES errorCode:-1 message:@"Download to stream"];
@@ -283,9 +313,8 @@
     AZSTestSemaphore *semaphore= [[AZSTestSemaphore alloc] init];
 
     // Test with stored policy
-    // TODO: Uncomment
-    /*AZSSharedAccessBlobParameters *sp = [[AZSSharedAccessBlobParameters alloc] init];
-    sp.storedPolicyIdentifier = @"readlist";
+    AZSSharedAccessBlobParameters *sp = [[AZSSharedAccessBlobParameters alloc] init];
+    sp.storedPolicyIdentifier = @"readwrite";
     AZSSharedAccessBlobParameters *sp2 = [[AZSSharedAccessBlobParameters alloc] init];
     sp2.storedPolicyIdentifier = @"read";
     
@@ -305,48 +334,50 @@
         
         [NSThread sleepForTimeInterval:30];
         
-        [self testContainerUpdateSasWithParameters:sp otherParameters:sp2 completionHandler:^(){
-            [lock signal];
+        [self testContainerUpdateSasWithReadWriteParameters:sp readOnlyParameters:sp2 policies:permissions.sharedAccessPolicies completionHandler:^(){
+            [self.blobContainer downloadPermissionsWithCompletionHandler:^(NSError *error, AZSBlobContainerPermissions *storedPermissions) {
+                [self checkPassageOfError:err expectToPass:YES errorCode:-1 message:@"Download permissions"];
+                [self checkEqualityOfContainerPermissions:permissions otherPermissions:storedPermissions];
+                
+                [semaphore signal];
+            }];
         }];
     }];
-    [lock wait];*/
+    [semaphore wait];
 
     // Test with local parameters
     AZSSharedAccessBlobParameters *sp3 = [[AZSSharedAccessBlobParameters alloc] init];
-    sp3.permissions = AZSSharedAccessPermissionsRead|AZSSharedAccessPermissionsWrite; //policy.permissions;
-    sp3.sharedAccessExpiryTime = [[NSDate alloc] initWithTimeIntervalSinceNow:300]; //policy.sharedAccessExpiryTime;
+    sp3.permissions = policy.permissions;
+    sp3.sharedAccessExpiryTime = policy.sharedAccessExpiryTime;
     
     AZSSharedAccessBlobParameters *sp4 = [[AZSSharedAccessBlobParameters alloc] init];
-    sp4.permissions = AZSSharedAccessPermissionsRead; //policy2.permissions;
-    sp4.sharedAccessExpiryTime = [[NSDate alloc] initWithTimeIntervalSinceNow:300]; //policy2.sharedAccessExpiryTime;
+    sp4.permissions = policy2.permissions;
+    sp4.sharedAccessExpiryTime = policy2.sharedAccessExpiryTime;
     
-    [self testContainerUpdateSasWithParameters:sp3 otherParameters:sp4 completionHandler:^(){
+    [self testContainerUpdateSasWithReadWriteParameters:sp3 readOnlyParameters:sp4 policies:nil completionHandler:^(){
         [semaphore signal];
     }];
     [semaphore wait];
 }
 
-- (void)testContainerUpdateSasWithParameters:(AZSSharedAccessBlobParameters *)sprw otherParameters:(AZSSharedAccessBlobParameters *)spr completionHandler:(void(^)())completionHandler
+- (void)testContainerUpdateSasWithReadWriteParameters:(AZSSharedAccessBlobParameters *)sp readOnlyParameters:(AZSSharedAccessBlobParameters *)sp2 policies:(NSMutableDictionary *)policies completionHandler:(void(^)())completionHandler
 {
     __block NSError *error = nil;
-    NSString *sasToken = [self.blobContainer createSharedAccessSignatureWithParameters:sprw error:&error];
+    NSString *sasToken = [self.blobContainer createSharedAccessSignatureWithParameters:sp error:&error];
     [self checkPassageOfError:error expectToPass:YES errorCode:-1 message:@"Create SAS token"];
     
-    __block AZSCloudBlockBlob *testBlob = [self.blobContainer blockBlobReferenceFromName:@"sasBlob"];
+    __block AZSCloudBlockBlob *testBlob = [self.blobContainer blockBlobReferenceFromName:[NSString stringWithFormat:@"sasBlob%@",sp.storedPolicyIdentifier]];
     [testBlob uploadFromText:@"test" completionHandler:^(NSError *err) {
         [self checkPassageOfError:err expectToPass:YES errorCode:-1 message:@"Upload from text"];
         
-        [self testAccessWithSAS:sasToken permissions:AZSSharedAccessPermissionsRead|AZSSharedAccessPermissionsWrite container:self.blobContainer blob:testBlob completionHandler:^{
+        AZSSharedAccessPermissions permissions = (sp.permissions) ? sp.permissions : ((AZSSharedAccessPolicy *) [policies objectForKey:sp.storedPolicyIdentifier]).permissions;
+        [self testAccessWithSAS:sasToken permissions:permissions container:self.blobContainer blob:testBlob completionHandler:^{
             // Change the policy to only read and update SAS.
-            AZSSharedAccessBlobParameters *sp2 = [[AZSSharedAccessBlobParameters alloc] init];
-            sp2.permissions = AZSSharedAccessPermissionsRead;
-            sp2.sharedAccessExpiryTime = [[NSDate alloc] initWithTimeIntervalSinceNow:300];
-            
             NSString *sasToken2 = [self.blobContainer createSharedAccessSignatureWithParameters:sp2 error:&error];
             [self checkPassageOfError:error expectToPass:YES errorCode:-1 message:@"Create SAS token"];
             
             AZSCloudBlobContainer *sasContainer = [[AZSCloudBlobContainer alloc] initWithStorageUri:[self addToQuery:self.blobContainer.storageUri queryString:sasToken2]];
-            testBlob = [sasContainer blockBlobReferenceFromName:@"sasBlob2"];
+            testBlob = [sasContainer blockBlobReferenceFromName:[NSString stringWithFormat:@"sasBlob2%@", sp.storedPolicyIdentifier]];
             [testBlob uploadFromText:@"test" completionHandler:^(NSError *err) {
                 [self checkPassageOfError:err expectToPass:NO errorCode:403 message:@"Upload from text"];
                 
@@ -358,12 +389,12 @@
 
 - (void)testContainerSasCombinations
 {
-    dispatch_semaphore_t counter = dispatch_semaphore_create(16);
+    dispatch_semaphore_t counter = dispatch_semaphore_create(32);
     NSMutableArray *semaphores = [[NSMutableArray alloc] init];
     
-    for (int i = AZSSharedAccessPermissionsRead; i <= AZSSharedAccessPermissionsBlobFull; i++) {
-        // TODO: Remove
-        if ((i & (AZSSharedAccessPermissionsAll ^ AZSSharedAccessPermissionsAdd ^ AZSSharedAccessPermissionsCreate)) == 0) {
+    for (int accessPermissions = AZSSharedAccessPermissionsRead; accessPermissions <= AZSSharedAccessPermissionsBlobFull; accessPermissions++) {
+        // TODO: Remove once these are supported (right now Add only applies to AppendBlobs and Create isn't yet supported by block blob)
+        if ((accessPermissions & (AZSSharedAccessPermissionsAll ^ AZSSharedAccessPermissionsAdd ^ AZSSharedAccessPermissionsCreate)) == 0) {
             continue;
         }
         
@@ -372,53 +403,70 @@
         
         // Create random container and upload a test blob to it
         NSString *containerName = [[NSString stringWithFormat:@"sampleioscontainer%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:@""]] lowercaseString];
-        AZSCloudBlobContainer *cont = [self.blobClient containerReferenceFromName:containerName];
-        [cont createContainerIfNotExistsWithCompletionHandler:^(NSError* err, BOOL created) {
+        AZSCloudBlobContainer *container = [self.blobClient containerReferenceFromName:containerName];
+        [container createContainerIfNotExistsWithCompletionHandler:^(NSError* err, BOOL created) {
             [self checkPassageOfError:err expectToPass:YES errorCode:-1 message:@"Create container"];
             
-            dispatch_semaphore_wait(counter, DISPATCH_TIME_FOREVER);
-            AZSCloudBlockBlob *blob = [cont blockBlobReferenceFromName:@"sasBlob"];
+            AZSCloudBlockBlob *blob = [container blockBlobReferenceFromName:@"sasBlob"];
             [blob uploadFromText:@"test" completionHandler:^(NSError *err) {
                 [self checkPassageOfError:err expectToPass:YES errorCode:-1 message:@"Upload from text"];
                 
                 // Generate permissions from i
-                AZSSharedAccessPermissions permissions = i & AZSSharedAccessPermissionsAll;
                 AZSSharedAccessBlobParameters *sp = [[AZSSharedAccessBlobParameters alloc] init];
-                sp.permissions = permissions;
-                sp.sharedAccessExpiryTime = [[NSDate alloc] initWithTimeIntervalSinceNow:300];
-                NSError *error = nil;
+                sp.storedPolicyIdentifier = [NSString stringWithFormat:@"test%d", accessPermissions];
+                
+                AZSSharedAccessPolicy *policy = [[AZSSharedAccessPolicy alloc] initWithIdentifier:sp.storedPolicyIdentifier];
+                policy.permissions = accessPermissions & AZSSharedAccessPermissionsBlobFull;
+                policy.sharedAccessExpiryTime = [[NSDate alloc] initWithTimeIntervalSinceNow:300];
                 
                 // Test with stored policy
-                // TODO: Uncomment
-                /*AZSBlobContainerPermissions *contPerms = [[AZSBlobContainerPermissions alloc] init];
-                [contPerms.sharedAccessPolicies setObject:policy forKey:[NSString stringWithFormat:@"readwrite%d", i]];
-                AZSTestSemaphore *innerLock = [[AZSTestSemaphore alloc] init];
-                 
-                [self.blobContainer uploadPermissions:contPerms completionHandler:^(NSError *err) {
+                __block AZSBlobContainerPermissions *containerPermissions = [[AZSBlobContainerPermissions alloc] init];
+                [containerPermissions.sharedAccessPolicies setObject:policy forKey:policy.policyIdentifier];
+                AZSTestSemaphore *innerSemaphore = [[AZSTestSemaphore alloc] init];
+                NSError *error = nil;
+                
+                [container uploadPermissions:containerPermissions completionHandler:^(NSError *err) {
                     [self checkPassageOfError:error expectToPass:YES errorCode:-1 message:@"Upload permissions"];
                      
-                    [NSThread sleepForTimeInterval:30];
+                    [NSThread sleepForTimeInterval:30 + arc4random_uniform(10)];
                     // Generate SAS token and test access
                     NSError *error = nil;
-                    NSString *sasToken = [cont createSharedAccessSignatureFromPolicy:policy error:&error];
+                    NSString *sasToken = [container createSharedAccessSignatureWithParameters:sp error:&error];
                     [self checkPassageOfError:error expectToPass:YES errorCode:-1 message:@"Create SAS token"];
                     
-                    [self testAccessWithSAS:sasToken permissions:permissions container:cont blob:blob completionHandler:^() {
-                        dispatch_semaphore_signal(counter);
-                        [innerLock signal];
+                    dispatch_semaphore_wait(counter, DISPATCH_TIME_FOREVER);
+                    [self testAccessWithSAS:sasToken permissions:accessPermissions container:container blob:blob completionHandler:^() {
+                        [container downloadPermissionsWithCompletionHandler:^(NSError *error, AZSBlobContainerPermissions *storedPermissions) {
+                            [self checkPassageOfError:err expectToPass:YES errorCode:-1 message:@"Download permissions"];
+                            [self checkEqualityOfContainerPermissions:containerPermissions otherPermissions:storedPermissions];
+                            
+                            dispatch_semaphore_signal(counter);
+                            [innerSemaphore signal];
+                        }];
                     }];
-                    [innerLock signal];
                 }];
-                [lock wait];*/
                 
                 // Test with local parameters
                 // Generate SAS token and test access
-                NSString *sasToken = [cont createSharedAccessSignatureWithParameters:sp error:&error];
+                AZSSharedAccessBlobParameters *sp2 = [[AZSSharedAccessBlobParameters alloc] init];
+                sp2.permissions = policy.permissions;
+                sp2.sharedAccessExpiryTime = policy.sharedAccessExpiryTime;
+                NSString *sasToken = [container createSharedAccessSignatureWithParameters:sp2 error:&error];
                 [self checkPassageOfError:error expectToPass:YES errorCode:-1 message:@"Create SAS token"];
                 
-                [self testAccessWithSAS:sasToken permissions:permissions container:cont blob:blob completionHandler:^() {
-                    dispatch_semaphore_signal(counter);
-                    [semaphore signal];
+                dispatch_semaphore_wait(counter, DISPATCH_TIME_FOREVER);
+                AZSCloudBlockBlob *blob2 = [container blockBlobReferenceFromName:@"sasBlob2"];
+                [blob2 uploadFromText:@"test" completionHandler:^(NSError *err) {
+                    [self testAccessWithSAS:sasToken permissions:accessPermissions container:container blob:blob2 completionHandler:^() {
+                        dispatch_semaphore_signal(counter);
+                        [innerSemaphore wait];
+                        
+                        [container deleteContainerIfExistsWithCompletionHandler:^(NSError *err, BOOL deleted) {
+                            [self checkPassageOfError:err expectToPass:YES errorCode:-1 message:@"Delete Container"];
+                            
+                            [semaphore signal];
+                        }];
+                    }];
                 }];
             }];
         }];
@@ -428,61 +476,117 @@
 
 - (void)testContainerPublicAccess
 {
-    AZSTestSemaphore *lock = [[AZSTestSemaphore alloc] init];
+    AZSTestSemaphore *semaphore = [[AZSTestSemaphore alloc] init];
     AZSCloudBlockBlob *testBlob = [self.blobContainer blockBlobReferenceFromName:@"publicBlob"];
     [testBlob uploadFromText:@"test" completionHandler:^(NSError *err) {
         [self checkPassageOfError:err expectToPass:YES errorCode:-1 message:@"Upload from text"];
-        [lock signal];
-    }];
-    [lock wait];
-    
-    AZSBlobContainerPermissions *permissions = [[AZSBlobContainerPermissions alloc] init];
-    permissions.publicAccess = AZSContainerPublicAccessTypeContainer;
-    [self.blobContainer uploadPermissions:permissions completionHandler:^(NSError * err) {
-        [self checkPassageOfError:err expectToPass:YES errorCode:-1 message:@"Upload permissions"];
-        [lock signal];
-    }];
-    [lock wait];
-    [NSThread sleepForTimeInterval:35];
-    
-    [self testAccessWithSAS:nil permissions:AZSSharedAccessPermissionsList|AZSSharedAccessPermissionsRead container:self.blobContainer blob:testBlob completionHandler:^{
-        permissions.publicAccess = AZSContainerPublicAccessTypeBlob;
+        
+        AZSBlobContainerPermissions *permissions = [[AZSBlobContainerPermissions alloc] init];
+        permissions.publicAccess = AZSContainerPublicAccessTypeContainer;
         [self.blobContainer uploadPermissions:permissions completionHandler:^(NSError * err) {
-            [self checkPassageOfError:err expectToPass:YES errorCode:-1 message:@"Upload Permissions"];
+            [self checkPassageOfError:err expectToPass:YES errorCode:-1 message:@"Upload permissions"];
             
-            [NSThread sleepForTimeInterval:30];
-            [self testAccessWithSAS:nil permissions:AZSSharedAccessPermissionsRead container:self.blobContainer blob:testBlob completionHandler:^{
-                [lock signal];
+            [NSThread sleepForTimeInterval:35];
+            
+            [self testAccessWithSAS:nil permissions:AZSSharedAccessPermissionsList|AZSSharedAccessPermissionsRead container:self.blobContainer blob:testBlob completionHandler:^{
+                permissions.publicAccess = AZSContainerPublicAccessTypeBlob;
+                [self.blobContainer uploadPermissions:permissions completionHandler:^(NSError * err) {
+                    [self checkPassageOfError:err expectToPass:YES errorCode:-1 message:@"Upload Permissions"];
+                    
+                    [NSThread sleepForTimeInterval:30];
+                    [self testAccessWithSAS:nil permissions:AZSSharedAccessPermissionsRead container:self.blobContainer blob:testBlob completionHandler:^{
+                        [self checkPassageOfError:err expectToPass:YES errorCode:-1 message:@"Delete Container"];
+                        
+                        [self.blobContainer downloadPermissionsWithCompletionHandler:^(NSError *err, AZSBlobContainerPermissions *storedPermissions){
+                            [self checkPassageOfError:err expectToPass:YES errorCode:-1 message:@"Fetch permissions"];
+                            [self checkEqualityOfContainerPermissions:permissions otherPermissions:storedPermissions];
+                            
+                            [semaphore signal];
+                        }];
+                    }];
+                }];
             }];
         }];
     }];
-    [lock wait];
+    [semaphore wait];
 }
 
 - (void) testBlockBlobSasCombinations
 {
     NSMutableArray *semaphores = [[NSMutableArray alloc] init];
-    dispatch_semaphore_t counter = dispatch_semaphore_create(8);
+    dispatch_semaphore_t counter = dispatch_semaphore_create(32);
     
-    for (AZSSharedAccessPermissions permissions = AZSSharedAccessPermissionsNone; permissions <= AZSSharedAccessPermissionsBlobFull; permissions++) {
+    for (AZSSharedAccessPermissions accessPermissions = AZSSharedAccessPermissionsNone; accessPermissions <= AZSSharedAccessPermissionsBlobFull; accessPermissions++) {
+        // TODO: Remove once these are supported (right now Add only applies to AppendBlobs and Create isn't yet supported by block blob)
+        if ((accessPermissions & (AZSSharedAccessPermissionsAll ^ AZSSharedAccessPermissionsAdd ^ AZSSharedAccessPermissionsCreate)) == 0) {
+            continue;
+        }
+        
+        dispatch_semaphore_wait(counter, DISPATCH_TIME_FOREVER);
         AZSTestSemaphore *semaphore = [[AZSTestSemaphore alloc] init];
         [semaphores addObject:semaphore];
         
-        AZSCloudBlockBlob *blob = [self.blobContainer blockBlobReferenceFromName:[NSString stringWithFormat:@"testSasBlockBlob%ld", permissions]];
-        [blob uploadFromText:@"test" completionHandler:^(NSError * err) {
-            [self checkPassageOfError:err expectToPass:YES errorCode:-1 message:@"Upload from text"];
-            dispatch_semaphore_wait(counter, DISPATCH_TIME_FOREVER);
-            AZSSharedAccessBlobParameters *sp = [[AZSSharedAccessBlobParameters alloc] init];
-            sp.permissions = permissions;
-            sp.sharedAccessExpiryTime = [[NSDate alloc] initWithTimeIntervalSinceNow:300];
+        // Create random container and upload a test blob to it
+        NSString *containerName = [[NSString stringWithFormat:@"sampleioscontainer%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:@""]] lowercaseString];
+        AZSCloudBlobContainer *container = [self.blobClient containerReferenceFromName:containerName];
+        [container createContainerIfNotExistsWithCompletionHandler:^(NSError *err, BOOL exists){
+            [self checkPassageOfError:err expectToPass:YES errorCode:-1 message:@"Create container"];
             
-            NSError *error = nil;
-            NSString *sasToken = [blob createSharedAccessSignatureWithParameters:sp error:&error];
-            [self checkPassageOfError:error expectToPass:YES errorCode:-1 message:@"Create SAS token"];
+            AZSCloudBlockBlob *blob = [container blockBlobReferenceFromName:@"testSasBlockBlob"];
+            [blob uploadFromText:@"test" completionHandler:^(NSError * err) {
+                [self checkPassageOfError:err expectToPass:YES errorCode:-1 message:@"Upload from text"];
             
-            [self testAccessWithSAS:sasToken permissions:permissions container:nil blob:blob completionHandler:^{
-                dispatch_semaphore_signal(counter);
-                [semaphore signal];
+                AZSSharedAccessBlobParameters *sp = [[AZSSharedAccessBlobParameters alloc] init];
+                sp.storedPolicyIdentifier = [NSString stringWithFormat:@"test%lu", (unsigned long)accessPermissions];
+            
+                AZSSharedAccessPolicy *policy = [[AZSSharedAccessPolicy alloc] initWithIdentifier:sp.storedPolicyIdentifier];
+                policy.permissions = accessPermissions & AZSSharedAccessPermissionsBlobFull;
+                policy.sharedAccessExpiryTime = [[NSDate alloc] initWithTimeIntervalSinceNow:300];
+            
+                // Test with stored policy
+                AZSBlobContainerPermissions *containerPermissions = [[AZSBlobContainerPermissions alloc] init];
+                [containerPermissions.sharedAccessPolicies setObject:policy forKey:policy.policyIdentifier];
+                AZSTestSemaphore *innerSemaphore = [[AZSTestSemaphore alloc] init];
+                __block NSError *error = nil;
+            
+                [container uploadPermissions:containerPermissions completionHandler:^(NSError *err) {
+                    [self checkPassageOfError:error expectToPass:YES errorCode:-1 message:@"Upload permissions"];
+                
+                    [NSThread sleepForTimeInterval:30 + arc4random_uniform(10)];
+                    // Generate SAS token and test access
+                    NSError *error = nil;
+                    NSString *sasToken = [container createSharedAccessSignatureWithParameters:sp error:&error];
+                    [self checkPassageOfError:error expectToPass:YES errorCode:-1 message:@"Create SAS token"];
+                
+                    [self testAccessWithSAS:sasToken permissions:accessPermissions container:nil blob:blob completionHandler:^() {
+                        [container downloadPermissionsWithCompletionHandler:^(NSError *error, AZSBlobContainerPermissions *storedPermissions) {
+                            [self checkPassageOfError:err expectToPass:YES errorCode:-1 message:@"Download permissions"];
+                            [self checkEqualityOfContainerPermissions:containerPermissions otherPermissions:storedPermissions];
+                            
+                            [innerSemaphore signal];
+                        }];
+                    }];
+                }];
+            
+                // Test with local parameters
+                AZSSharedAccessBlobParameters *sp2 = [[AZSSharedAccessBlobParameters alloc] init];
+                sp2.permissions = policy.permissions;
+                sp2.sharedAccessExpiryTime = policy.sharedAccessExpiryTime;
+                
+                AZSCloudBlockBlob *blob2 = [container blockBlobReferenceFromName:@"testSasBlockBlob2"];
+                [blob2 uploadFromText:@"test" completionHandler:^(NSError *err) {
+                    NSString *sasToken = [blob2 createSharedAccessSignatureWithParameters:sp2 error:&error];
+                    [self checkPassageOfError:error expectToPass:YES errorCode:-1 message:@"Create SAS token"];
+                
+                    [self testAccessWithSAS:sasToken permissions:accessPermissions container:nil blob:blob2 completionHandler:^{
+                        [innerSemaphore wait];
+                        
+                        [container deleteContainerIfExistsWithCompletionHandler:^(NSError *err, BOOL deleted) {
+                            dispatch_semaphore_signal(counter);
+                            [semaphore signal];
+                        }];
+                    }];
+                }];
             }];
         }];
     }
@@ -492,8 +596,7 @@
 - (void) testBlobSas
 {
     // Test with stored policy
-    // TODO: uncomment
-    /*AZSTestSemaphore *lock = [[AZSTestSemaphore alloc] init];
+    AZSTestSemaphore *semaphore = [[AZSTestSemaphore alloc] init];
     AZSSharedAccessBlobParameters *sp = [[AZSSharedAccessBlobParameters alloc] init];
     sp.storedPolicyIdentifier = @"readperm";
     
@@ -507,21 +610,27 @@
         [self checkPassageOfError:err expectToPass:YES errorCode:-1 message:@"Upload Permissions"];
         
         [self testBlobSasWithParameters:sp completionHandler:^{
-            [lock signal];
+            [self.blobContainer downloadPermissionsWithCompletionHandler:^(NSError *err, AZSBlobContainerPermissions *storedPermissions){
+                [self checkPassageOfError:err expectToPass:YES errorCode:-1 message:@"Fetch permissions"];
+                [self checkEqualityOfContainerPermissions:permissions otherPermissions:storedPermissions];
+                
+                [semaphore signal];
+            }];
         }];
     }];
-    [NSThread sleepForTimeInterval:30];*/
+    [NSThread sleepForTimeInterval:30];
     
     // Test with local parameters
     AZSTestSemaphore *innerSemaphore = [[AZSTestSemaphore alloc] init];
     AZSSharedAccessBlobParameters *sp2 = [[AZSSharedAccessBlobParameters alloc] init];
-    sp2.permissions = AZSSharedAccessPermissionsRead|AZSSharedAccessPermissionsList; //policy.permissions;
-    sp2.sharedAccessExpiryTime = [[NSDate alloc] initWithTimeIntervalSinceNow:300]; //policy.sharedAccessExpiryTime;
+    sp2.permissions = policy.permissions;
+    sp2.sharedAccessExpiryTime = policy.sharedAccessExpiryTime;
     [self testBlobSasWithParameters:sp2 completionHandler:^(){
         [innerSemaphore signal];
     }];
+
     [innerSemaphore wait];
-    //[lock wait];
+    [semaphore wait];
 }
 
 - (void) testBlobSasWithParameters:(AZSSharedAccessBlobParameters *)sp completionHandler:(void(^)())completionHandler
@@ -565,8 +674,7 @@
     AZSOperationContext *context = [[AZSOperationContext alloc] init];
     
     // Test with stored policy
-    // TODO: uncomment
-    /*AZSTestSemaphore *lock = [[AZSTestSemaphore alloc] init];
+    AZSTestSemaphore *semaphore = [[AZSTestSemaphore alloc] init];
     AZSSharedAccessBlobParameters *sp = [[AZSSharedAccessBlobParameters alloc] init];
     sp.storedPolicyIdentifier = @"readperm";
     
@@ -574,26 +682,32 @@
     policy.permissions = AZSSharedAccessPermissionsRead|AZSSharedAccessPermissionsWrite|AZSSharedAccessPermissionsList;
     policy.sharedAccessExpiryTime = [[NSDate alloc] initWithTimeIntervalSinceNow:300];
     AZSBlobContainerPermissions *permissions = [[AZSBlobContainerPermissions alloc] init];
-    [permissions setValue:policy forKey:sp.storedPolicyIdentifier];
+    [permissions.sharedAccessPolicies setObject:policy forKey:sp.storedPolicyIdentifier];
     [self.blobContainer uploadPermissions:permissions completionHandler:^(NSError * err) {
         [self checkPassageOfError:err expectToPass:YES errorCode:-1 message:@"Upload permissions"];
         
         [self testBlobSasSharedAccessBlobHeadersWithParameters:sp context:context completionHandler:^(){
-            [lock signal];
+            [self.blobContainer downloadPermissionsWithCompletionHandler:^(NSError *err, AZSBlobContainerPermissions *storedPermissions){
+                [self checkPassageOfError:err expectToPass:YES errorCode:-1 message:@"Fetch permissions"];
+                [self checkEqualityOfContainerPermissions:permissions otherPermissions:storedPermissions];
+                
+                [semaphore signal];
+            }];
         }];
     }];
-    [NSThread sleepForTimeInterval:30];*/
+    [NSThread sleepForTimeInterval:30];
     
     // Test with local parameters
     AZSTestSemaphore *innerSemaphore = [[AZSTestSemaphore alloc] init];
     AZSSharedAccessBlobParameters *sp2 = [[AZSSharedAccessBlobParameters alloc] init];
-    sp2.permissions = AZSSharedAccessPermissionsRead|AZSSharedAccessPermissionsWrite|AZSSharedAccessPermissionsList; //policy.permissions;
-    sp2.sharedAccessExpiryTime = [[NSDate alloc] initWithTimeIntervalSinceNow:300]; //policy.sharedAccessExpiryTime;
+    sp2.permissions = policy.permissions;
+    sp2.sharedAccessExpiryTime = policy.sharedAccessExpiryTime;
     [self testBlobSasSharedAccessBlobHeadersWithParameters:sp2 context:context completionHandler:^(){
         [innerSemaphore signal];
     }];
+
     [innerSemaphore wait];
-    //[lock wait];
+    [semaphore wait];
 }
 
 - (void) testBlobSasSharedAccessBlobHeadersWithParameters:(AZSSharedAccessBlobParameters *)sp context:(AZSOperationContext *)context completionHandler:(void(^)())completionHandler
@@ -630,7 +744,7 @@
 
 - (void)testAccessWithSAS:(NSString *)sasToken permissions:(AZSSharedAccessPermissions)permissions container:(AZSCloudBlobContainer *)container blob:(AZSCloudBlob *) blob completionHandler:(void(^)())completionHandler
 {
-    const AZSStorageCredentials *creds = (sasToken) ? [[AZSStorageCredentials alloc] initWithSASToken:sasToken] : [[AZSStorageCredentials alloc] init];
+    const AZSStorageCredentials *creds = [[AZSStorageCredentials alloc] initWithSASToken:sasToken];
     const int permissionsErrorCode = (sasToken) ? 403 : 404;
     
     if (container) {

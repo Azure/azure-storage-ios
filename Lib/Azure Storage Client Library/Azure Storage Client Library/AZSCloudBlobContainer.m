@@ -15,6 +15,7 @@
 // </copyright>
 // -----------------------------------------------------------------------------------------
 
+#import <CommonCrypto/CommonDigest.h>
 #import "AZSCloudBlobContainer.h"
 #import "AZSCloudBlobClient.h"
 #import "AZSStorageCommand.h"
@@ -34,6 +35,7 @@
 #import "AZSResultSegment.h"
 #import "AZSBlobContainerProperties.h"
 #import "AZSBlobContainerPermissions.h"
+#import "AZSBlobRequestXML.h"
 #import "AZSSharedAccessBlobParameters.h"
 #import "AZSSharedAccessSignatureHelper.h"
 #import "AZSResponseParser.h"
@@ -103,7 +105,6 @@
     return [self createContainerWithAccessType:AZSContainerPublicAccessTypeOff requestOptions:nil operationContext:nil completionHandler:completionHandler];
 }
 
-// TODO: Test container public access type once we have GetContainerAcl implemented.
 - (void)createContainerWithAccessType:(AZSContainerPublicAccessType )accessType requestOptions:(AZSBlobRequestOptions *)requestOptions operationContext:(AZSOperationContext *)operationContext completionHandler:(void (^)(NSError*))completionHandler;
 {
     if (!operationContext)
@@ -256,8 +257,40 @@
 
 -(void)uploadPermissions:(AZSBlobContainerPermissions *)permissions completionHandler:(void (^)(NSError *))completionHandler
 {
-    // TODO: implement
-    completionHandler([[NSError alloc] initWithDomain:AZSErrorDomain code:AZSEInvalidArgument userInfo:nil]);
+    [self uploadPermissions:permissions accessCondition:nil requestOptions:nil operationContext:nil completionHandler:completionHandler];
+}
+
+- (void)uploadPermissions:(AZSBlobContainerPermissions *)permissions accessCondition:(AZSAccessCondition *)accessCondition requestOptions:(AZSBlobRequestOptions *)requestOptions operationContext:(AZSOperationContext *)operationContext completionHandler:(void (^)(NSError *))completionHandler
+{
+    if (!operationContext) {
+        operationContext = [[AZSOperationContext alloc] init];
+    }
+    
+    AZSBlobRequestOptions *modifiedOptions = [[AZSBlobRequestOptions copyOptions:requestOptions] applyDefaultsFromOptions:self.client.defaultRequestOptions];
+    AZSStorageCommand * command = [[AZSStorageCommand alloc] initWithStorageCredentials:self.client.credentials storageUri:self.storageUri operationContext:operationContext];
+
+    NSError *error = nil;
+    NSData *sourceData = [[AZSBlobRequestXML createStoredPoliciesXMLFromPermissions:permissions operationContext:operationContext error:&error] dataUsingEncoding:NSUTF8StringEncoding];
+    if (error) {
+        completionHandler(error);
+        return;
+    }
+    
+    [command setSource:sourceData];
+    [command setBuildRequest:^ NSMutableURLRequest * (NSURLComponents *urlComponents, NSTimeInterval timeout, AZSOperationContext *operationContext) {
+        return [AZSBlobRequestFactory uploadContainerPermissionsWithLength:sourceData.length urlComponents:urlComponents options:requestOptions accessCondition:accessCondition publicAccess:permissions.publicAccess timeout:timeout operationContext:operationContext];
+    }];
+    
+    [command setAuthenticationHandler:self.client.authenticationHandler];
+    
+    [command setPreProcessResponse:^ NSError * (NSHTTPURLResponse *urlResponse, AZSRequestResult *requestResult, AZSOperationContext *operationContext) {
+        [self updateEtagAndLastModifiedWithResponse:urlResponse];
+        return [AZSResponseParser preprocessResponseWithResponse:urlResponse requestResult:requestResult operationContext:operationContext];
+    }];
+    
+    [AZSExecutor ExecuteWithStorageCommand:command requestOptions:modifiedOptions operationContext:operationContext completionHandler:^(NSError *error, id result) {
+        completionHandler(error);
+    }];
 }
 
 -(void)fetchAttributesWithCompletionHandler:(void (^)(NSError *))completionHandler
@@ -276,12 +309,13 @@
     
     [command setBuildRequest:^ NSMutableURLRequest * (NSURLComponents *urlComponents, NSTimeInterval timeout, AZSOperationContext *operationContext)
      {
-         return [AZSBlobRequestFactory fetchContainerAttributesWithAccessCondition:nil urlComponents:urlComponents timeout:timeout operationContext:operationContext];
+         return [AZSBlobRequestFactory fetchContainerAttributesWithAccessCondition:accessCondition urlComponents:urlComponents timeout:timeout operationContext:operationContext];
      }];
     
     [command setAuthenticationHandler:self.client.authenticationHandler];
     
     [command setPreProcessResponse:^id(NSHTTPURLResponse * urlResponse, AZSRequestResult * requestResult, AZSOperationContext * operationContext) {
+        [self updateEtagAndLastModifiedWithResponse:urlResponse];
         NSError *error = [AZSResponseParser preprocessResponseWithResponse:urlResponse requestResult:requestResult operationContext:operationContext];
         if (error)
         {
@@ -302,6 +336,54 @@
     [AZSExecutor ExecuteWithStorageCommand:command requestOptions:modifiedOptions operationContext:operationContext completionHandler:^(NSError *error, id result)
      {
          completionHandler(error);
+     }];
+}
+
+- (void)downloadPermissionsWithCompletionHandler:(void (^)(NSError* __AZSNullable, AZSBlobContainerPermissions * __AZSNullable))completionHandler
+{
+    [self downloadPermissionsWithAccessCondition:nil requestOptions:nil operationContext:nil completionHandler:completionHandler];
+}
+
+- (void)downloadPermissionsWithAccessCondition:(AZSNullable AZSAccessCondition *)accessCondition requestOptions:(AZSNullable AZSBlobRequestOptions *)requestOptions operationContext:(AZSNullable AZSOperationContext *)operationContext completionHandler:(void (^)(NSError* __AZSNullable, AZSBlobContainerPermissions * __AZSNullable))completionHandler
+{
+    if (!operationContext) {
+        operationContext = [[AZSOperationContext alloc] init];
+    }
+    AZSBlobRequestOptions *modifiedOptions = [[AZSBlobRequestOptions copyOptions:requestOptions] applyDefaultsFromOptions:self.client.defaultRequestOptions];
+    AZSStorageCommand * command = [[AZSStorageCommand alloc] initWithStorageCredentials:self.client.credentials storageUri:self.storageUri operationContext:operationContext];
+    
+    [command setBuildRequest:^ NSMutableURLRequest * (NSURLComponents *urlComponents, NSTimeInterval timeout, AZSOperationContext *operationContext) {
+         return [AZSBlobRequestFactory downloadContainerPermissionsWithAccessCondition:accessCondition urlComponents:urlComponents timeout:timeout operationContext:operationContext];
+     }];
+    
+    [command setAuthenticationHandler:self.client.authenticationHandler];
+    
+    [command setPreProcessResponse:^id(NSHTTPURLResponse * urlResponse, AZSRequestResult * requestResult, AZSOperationContext * operationContext) {
+        [self updateEtagAndLastModifiedWithResponse:urlResponse];
+        return [AZSResponseParser preprocessResponseWithResponse:urlResponse requestResult:requestResult operationContext:operationContext];
+    }];
+    
+    [command setPostProcessResponse:^id(NSHTTPURLResponse * urlResponse, AZSRequestResult * requestResult, NSOutputStream *outputStream, AZSOperationContext * operationContext, NSError ** error) {
+        if (*error) {
+            return *error;
+        }
+        
+        AZSBlobContainerPermissions *permissions = [AZSDownloadContainerPermissions createContainerPermissionsWithResponse:urlResponse operationContext:operationContext error:error];
+        NSDictionary *policies = [AZSDownloadContainerPermissions parseDownloadContainerPermissionsResponseWithData:[outputStream propertyForKey:NSStreamDataWrittenToMemoryStreamKey] operationContext:operationContext error:error].storedPolicies;
+        for (NSString *policyIdentifier in policies) {
+            [permissions.sharedAccessPolicies setObject:[policies objectForKey:policyIdentifier] forKey:policyIdentifier];
+        }
+        
+        if (*error) {
+            return *error;
+        }
+        
+        return permissions;
+    }];
+
+    
+    [AZSExecutor ExecuteWithStorageCommand:command requestOptions:modifiedOptions operationContext:operationContext completionHandler:^(NSError *error, id result) {
+         completionHandler(error, result);
      }];
 }
 

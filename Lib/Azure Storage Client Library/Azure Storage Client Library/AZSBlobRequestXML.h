@@ -17,7 +17,11 @@
 
 #import <Foundation/Foundation.h>
 @class AZSOperationContext;
+@class AZSBlobContainerPermissions;
 
 @interface AZSBlobRequestXML : NSObject
+
 +(NSString *) createBlockListXMLFromArray:(NSArray *)blockList operationContext:(AZSOperationContext *)operationContext error:(NSError **)error;
++(NSString *) createStoredPoliciesXMLFromPermissions:(AZSBlobContainerPermissions *)permissions operationContext:(AZSOperationContext *)operationContext error:(NSError **)error;
+
 @end

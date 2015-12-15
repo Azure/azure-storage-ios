@@ -40,7 +40,7 @@ AZS_ASSUME_NONNULL_BEGIN
  @param identifier The identifier to use when storing this policy on the service.
  @returns The newly initialized policy.
  */
--(instancetype) initWithIdentifier:(NSString *)identifier AZS_DESIGNATED_INITIALIZER;
+-(instancetype) initWithIdentifier:(NSString * __AZSNullable)identifier AZS_DESIGNATED_INITIALIZER;
 
 @end
 

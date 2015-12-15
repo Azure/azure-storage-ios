@@ -15,6 +15,7 @@
 // </copyright>
 // -----------------------------------------------------------------------------------------
 
+#import "AZSBlobContainerPermissions.h"
 #import "AZSBlobResponseParser.h"
 #import "AZSBlockListItem.h"
 #import "AZSBlobContainerProperties.h"
@@ -24,6 +25,8 @@
 #import "AZSCopyState.h"
 #import "AZSResponseParser.h"
 #import "AZSOperationContext.h"
+#import "AZSSharedAccessPolicy.h"
+#import "AZSSharedAccessSignatureHelper.h"
 #import "AZSErrors.h"
 
 @implementation AZSContainerListItem
@@ -465,6 +468,134 @@
     listBlobsResponse.nextMarker = nextMarker;
     return listBlobsResponse;
 }
+@end
+
+@implementation AZSDownloadContainerPermissions
+
++(instancetype)parseDownloadContainerPermissionsResponseWithData:(NSData *)data operationContext:(AZSOperationContext *)operationContext error:(NSError **)error
+{
+    AZSDownloadContainerPermissions *permissions = [[AZSDownloadContainerPermissions alloc] init];
+    NSMutableDictionary *policies = [NSMutableDictionary dictionaryWithCapacity:5];
+    
+    AZSStorageXMLParserDelegate *parserDelegate = [[AZSStorageXMLParserDelegate alloc] init];
+    
+    NSXMLParser *parser = [[NSXMLParser alloc] initWithData:data];
+    parser.shouldProcessNamespaces = NO;
+    
+    __block AZSSharedAccessPolicy *currentStoredPolicy = [[AZSSharedAccessPolicy alloc] initWithIdentifier:nil];
+    __block NSMutableArray *elementStack = [NSMutableArray arrayWithCapacity:10];
+    __block NSMutableString *builder = [[NSMutableString alloc] init];
+    __block NSDictionary *currentAttributes = nil;
+    
+    parserDelegate.parseBeginElement = ^(NSXMLParser *parser, NSString *elementName,NSDictionary *attributeDict)
+    {
+        [operationContext logAtLevel:AZSLogLevelDebug withMessage:@"Beginning to parse element with name = %@", elementName];
+        [elementStack addObject:elementName];
+        if ([builder length] > 0)
+        {
+            builder = [[NSMutableString alloc] init];
+        }
+        currentAttributes = attributeDict;
+    };
+    
+    parserDelegate.parseEndElement = ^(NSXMLParser *parser, NSString *elementName)
+    {
+        [operationContext logAtLevel:AZSLogLevelDebug withMessage:@"Ending to parse element with name = %@", elementName];
+        NSString *currentNode = elementStack.lastObject;
+        [elementStack removeLastObject];
+        
+        if (![elementName isEqualToString:currentNode])
+        {
+            // Malformed XML
+            [parser abortParsing];
+        }
+        
+        NSString *parentNode = elementStack.lastObject;
+        if ([parentNode isEqualToString:@"SignedIdentifiers"])
+        {
+            if ([currentNode isEqualToString:@"SignedIdentifier"] && currentStoredPolicy.policyIdentifier)
+            {
+                policies[currentStoredPolicy.policyIdentifier] = currentStoredPolicy;
+                currentStoredPolicy = [[AZSSharedAccessPolicy alloc] initWithIdentifier:nil];
+            }
+        }
+        else if ([parentNode isEqualToString:@"SignedIdentifier"])
+        {
+            if ([currentNode isEqualToString:@"Id"])
+            {
+                currentStoredPolicy.policyIdentifier = builder;
+            }
+            else if ([currentNode isEqualToString:@"AccessPolicy"])
+            {
+                //currentStoredPolicy.snapshotTime = builder;
+            }
+            
+            builder = [[NSMutableString alloc] init];
+        }
+        else if ([parentNode isEqualToString:@"AccessPolicy"])
+        {
+            if ([currentNode isEqualToString:@"Start"])
+            {
+                currentStoredPolicy.sharedAccessStartTime = [[AZSUtil dateFormatterWithRoundtripFormat] dateFromString:builder];
+            }
+            else if ([currentNode isEqualToString:@"Expiry"])
+            {
+                NSDate *date = [[AZSUtil dateFormatterWithRoundtripFormat] dateFromString:builder];
+                currentStoredPolicy.sharedAccessExpiryTime = date;
+            }
+            else if ([currentNode isEqualToString:@"Permission"])
+            {
+                currentStoredPolicy.permissions = [AZSSharedAccessSignatureHelper permissionsFromString:builder error:error];
+            }
+            builder = [[NSMutableString alloc] init];
+        }
+    };
+    
+    parserDelegate.foundCharacters = ^(NSXMLParser *parser, NSString *characters)
+    {
+        [operationContext logAtLevel:AZSLogLevelDebug withMessage:@"Found characters = %@", characters];
+        [builder appendString:characters];
+    };
+    
+    parser.delegate = parserDelegate;
+    
+    if (![parser parse])
+    {
+        *error = [NSError errorWithDomain:AZSErrorDomain code:AZSEParseError userInfo:nil];
+        [operationContext logAtLevel:AZSLogLevelError withMessage:@"Parse unsuccessful for fetch stored policies response."];
+        return nil;
+    }
+    
+    permissions.storedPolicies = policies;
+    return permissions;
+}
+
++(AZSBlobContainerPermissions *) createContainerPermissionsWithResponse:(NSHTTPURLResponse *)response operationContext:(AZSOperationContext *)operationContext error:(NSError **)error;
+{
+    NSString *publicAccess = [response.allHeaderFields objectForKey:@"x-ms-blob-public-access"];
+    AZSContainerPublicAccessType accessType = AZSContainerPublicAccessTypeOff;
+    
+    if (publicAccess && [publicAccess length] > 0) {
+        NSString *lowerCasePublicAccess = [publicAccess lowercaseString];
+        
+        if ([@"container" isEqual:lowerCasePublicAccess]) {
+            accessType = AZSContainerPublicAccessTypeContainer;
+        }
+        else if ([@"blob" isEqual:lowerCasePublicAccess]) {
+            accessType = AZSContainerPublicAccessTypeBlob;
+        }
+        else {
+            *error = [NSError errorWithDomain:AZSErrorDomain code:AZSEInvalidArgument userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"Invalid Public Access Type: %@", publicAccess]}];
+            return nil;
+        }
+    }
+    
+    AZSBlobContainerPermissions *permissions = [[AZSBlobContainerPermissions alloc] init];
+    permissions.publicAccess = accessType;
+    
+    return permissions;
+}
+
 @end
 
 @implementation AZSGetBlockListResponse

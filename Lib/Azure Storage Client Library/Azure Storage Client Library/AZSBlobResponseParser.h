@@ -53,10 +53,18 @@
 
 @end
 
+@interface AZSDownloadContainerPermissions : NSObject
+
+@property (strong) NSDictionary *storedPolicies;
++(instancetype)parseDownloadContainerPermissionsResponseWithData:(NSData *)data operationContext:(AZSOperationContext *)operationContext error:(NSError **)error;
++(AZSBlobContainerPermissions *) createContainerPermissionsWithResponse:(NSHTTPURLResponse *)response operationContext:(AZSOperationContext *)operationContext error:(NSError **)error;
+
+@end
 
 @interface AZSGetBlockListResponse : NSObject
 
 +(NSArray *)parseGetBlockListResponseWithData:(NSData *)data operationContext:(AZSOperationContext *)operationContext error:(NSError **)error;
+
 @end
 
 @interface AZSBlobResponseParser : NSObject

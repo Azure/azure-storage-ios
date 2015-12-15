@@ -312,7 +312,7 @@ AZS_ASSUME_NONNULL_BEGIN
  */
 - (void)uploadMetadataWithAccessCondition:(AZSNullable AZSAccessCondition *)accessCondition requestOptions:(AZSNullable AZSBlobRequestOptions *)requestOptions operationContext:(AZSNullable AZSOperationContext *)operationContext completionHandler:(void (^)(NSError* __AZSNullable))completionHandler;
 
-/** Uploads to the account a set of permissions for the container.
+/** Uploads a set of permissions for the container.
  
  @param permissions The permissions to upload.
  @param completionHandler The block of code to execute when the Upload Permissions call completes.
@@ -321,8 +321,21 @@ AZS_ASSUME_NONNULL_BEGIN
  |----------------|-------------|
  |NSError *       | Nil if the operation succeeded without error, error with details about the failure otherwise.|
  */
-
 - (void)uploadPermissions:(AZSBlobContainerPermissions *)permissions completionHandler:(void (^)(NSError *))completionHandler;
+
+/** Uploads a set of permissions for the container.
+ 
+ @param permissions The permissions to upload.
+ @param accessCondition The access conditions for the container.
+ @param requestOptions Specifies any additional options for the request. Specifying nil will use the default request options from the associated client.
+ @param operationContext Represents the context for the current operation.  Can be used to track requests to the storage service, and to provide additional runtime information about the operation.
+ @param completionHandler The block of code to execute when the Upload Permissions call completes.
+ 
+ | Parameter name | Description |
+ |----------------|-------------|
+ |NSError *       | Nil if the operation succeeded without error, error with details about the failure otherwise.|
+ */
+- (void)uploadPermissions:(AZSBlobContainerPermissions *)permissions accessCondition:(AZSAccessCondition * __AZSNullable)accessCondition requestOptions:(AZSBlobRequestOptions * __AZSNullable)requestOptions operationContext:(AZSOperationContext * __AZSNullable)operationContext completionHandler:(void (^)(NSError *))completionHandler;
 
 /** Retrieves the container's attributes.
  
@@ -346,6 +359,29 @@ AZS_ASSUME_NONNULL_BEGIN
  |NSError * | Nil if the operation succeeded without error, error with details about the failure otherwise.|
  */
 - (void)fetchAttributesWithAccessCondition:(AZSNullable AZSAccessCondition *)accessCondition requestOptions:(AZSNullable AZSBlobRequestOptions *)requestOptions operationContext:(AZSNullable AZSOperationContext *)operationContext completionHandler:(void (^)(NSError* __AZSNullable))completionHandler;
+
+/** Retrieves the stored container permissions.
+ 
+ @param completionHandler The block of code to execute when the Download Permissions call completes.
+ 
+ | Parameter name | Description |
+ |----------------|-------------|
+ |NSError * | Nil if the operation succeeded without error, error with details about the failure otherwise.|
+ */
+- (void)downloadPermissionsWithCompletionHandler:(void (^)(NSError* __AZSNullable, AZSBlobContainerPermissions * __AZSNullable))completionHandler;
+
+/** Retrieves the stored container permissions.
+ 
+ @param accessCondition The access condition for the request.
+ @param requestOptions The options to use for the request.
+ @param operationContext The operation context to use for the call.
+ @param completionHandler The block of code to execute when the Download Permissions call completes.
+ 
+ | Parameter name | Description |
+ |----------------|-------------|
+ |NSError * | Nil if the operation succeeded without error, error with details about the failure otherwise.|
+ */
+- (void)downloadPermissionsWithAccessCondition:(AZSAccessCondition * __AZSNullable)accessCondition requestOptions:(AZSBlobRequestOptions * __AZSNullable)requestOptions operationContext:(AZSNullable AZSOperationContext *)operationContext completionHandler:(void (^)(NSError* __AZSNullable, AZSBlobContainerPermissions * __AZSNullable))completionHandler;
 
 /** Acquires a lease on this container.
  
@@ -479,7 +515,7 @@ AZS_ASSUME_NONNULL_BEGIN
  */
 - (void)renewLeaseWithAccessCondition:(AZSNullable AZSAccessCondition *)accessCondition requestOptions:(AZSNullable AZSBlobRequestOptions *)requestOptions operationContext:(AZSNullable AZSOperationContext *)operationContext completionHandler:(void (^)(NSError* __AZSNullable))completionHandler;
 
-/** Creates a Shared Access Signature (SAS) token from the given policy for this Container.
+/** Creates a Shared Access Signature (SAS) token from the given parameters for this Container.
  Note that logging in this method uses the global logger configured statically on the AZSOperationContext as there is no operation being performed to provide a local operation context.
  
  @param parameters The shared access blob parameters from which to create the SAS token.

@@ -29,4 +29,8 @@
 
 +(NSString *)sharedAccessSignatureHashForBlobWithParameters:(AZSSharedAccessBlobParameters*)parameters resourceName:(NSString*)resourceName client:(AZSCloudClient*)client error:(NSError **)error;
 
++(NSString *)stringFromPermissions:(AZSSharedAccessPermissions)permissions error:(NSError **)error;
+
++(AZSSharedAccessPermissions)permissionsFromString:(NSString *)permissionString error:(NSError **)error;
+
 @end

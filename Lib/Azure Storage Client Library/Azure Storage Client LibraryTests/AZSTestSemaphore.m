@@ -21,8 +21,8 @@
 
 +(void) barrierOnSemaphores:(NSArray *)semaphores
 {
-    for (AZSTestSemaphore *lock in semaphores) {
-        [lock wait];
+    for (AZSTestSemaphore *semaphore in semaphores) {
+        [semaphore wait];
     }
 }
 

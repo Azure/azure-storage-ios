@@ -446,9 +446,6 @@
 			isa = PBXGroup;
 			children = (
 				693220451C16439D00B07D98 /* Resources */,
-				693220401C16439500B07D98 /* AZSSasTests.m */,
-				693220411C16439500B07D98 /* AZSTestSemaphore.h */,
-				693220421C16439500B07D98 /* AZSTestSemaphore.m */,
 				BE45105A1A9D252300C3F971 /* Supporting Files */,
 				B05A0E791B1262BD005DCF06 /* AZSCloudBlobContainerTests.m */,
 				B05A0E7B1B12645C005DCF06 /* AZSCloudStorageAccountTests.m */,
@@ -463,6 +460,9 @@
 				B04A084B1B274C7100998078 /* AZSTestHelpers.m */,
 				B05EC6E11B28E63F0048EDD4 /* AZSBlobOutputStreamTests.m */,
 				B06CA9E71B748083001B7303 /* AZSTestRetry.m */,
+				693220401C16439500B07D98 /* AZSSasTests.m */,
+				693220411C16439500B07D98 /* AZSTestSemaphore.h */,
+				693220421C16439500B07D98 /* AZSTestSemaphore.m */,
 			);
 			path = "Azure Storage Client LibraryTests";
 			sourceTree = "<group>";
@@ -914,6 +914,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Azure Storage Client Library/Azure Storage Client Library-Prefix.pch";
 				INFOPLIST_FILE = "Azure Storage Client LibraryTests/Azure Storage Client LibraryTests-Info.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = "MS.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = xctest;
 			};

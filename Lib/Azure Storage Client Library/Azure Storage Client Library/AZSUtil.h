@@ -15,6 +15,12 @@
 // </copyright>
 // -----------------------------------------------------------------------------------------
 
+#ifdef __IPHONE_8_0
+    #define AZSGregorianCalendar NSCalendarIdentifierGregorian
+#else
+    #define AZSGregorianCalendar NSGregorianCalendar
+#endif
+
 #import <Foundation/Foundation.h>
 @class AZSOperationContext;
 @class AZSStorageCredentials;

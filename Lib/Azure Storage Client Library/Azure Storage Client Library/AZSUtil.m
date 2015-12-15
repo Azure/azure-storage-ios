@@ -33,6 +33,7 @@ static NSInteger pathStylePorts[20] = {10000, 10001, 10002, 10003, 10004, 10100,
     if (!df) {
         df = [[NSDateFormatter alloc] init];
         [df setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"]];
+        [df setCalendar: [[NSCalendar alloc] initWithCalendarIdentifier:AZSGregorianCalendar]];
         [df setTimeZone:[NSTimeZone timeZoneWithName:@"UTC"]];
         dateFormat = [df copy];
     }
@@ -76,7 +77,7 @@ static NSInteger pathStylePorts[20] = {10000, 10001, 10002, 10003, 10004, 10100,
 
 +(NSDateFormatter *) dateFormatterWithRoundtripFormat
 {
-    return [AZSUtil dateFormatterWithFormat:@"yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fffffff'Z'"];
+    return [AZSUtil dateFormatterWithFormat:@"yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'SSSSSSS'Z'"];
 }
 
 +(NSString *) utcTimeOrEmptyWithDate:(NSDate *)date
