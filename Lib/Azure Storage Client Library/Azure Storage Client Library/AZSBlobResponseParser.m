@@ -54,6 +54,7 @@
         _properties = [[AZSBlobProperties alloc] init];
         _metadata = [NSMutableDictionary dictionaryWithCapacity:3];
         _blobCopyState = [[AZSCopyState alloc] init];
+        _isDirectory = NO;
     }
     return self;
 }
@@ -73,16 +74,16 @@
     __block NSMutableArray *containers = [NSMutableArray arrayWithCapacity:10];
     __block AZSContainerListItem *currentContainer = [[AZSContainerListItem alloc] init];
     __block NSMutableArray *elementStack = [NSMutableArray arrayWithCapacity:10];
-    __block NSMutableString *builder = [[NSMutableString alloc] init];
+    __block NSMutableString *currentXmlText = [[NSMutableString alloc] init];
     __block NSString *nextMarker = nil;
     
     parserDelegate.parseBeginElement = ^(NSXMLParser *parser, NSString *elementName,NSDictionary *attributeDict)
     {
         [operationContext logAtLevel:AZSLogLevelDebug withMessage:@"Beginning to parse element with name = %@", elementName];
         [elementStack addObject:elementName];
-        if ([builder length] > 0)
+        if ([currentXmlText length] > 0)
         {
-            builder = [[NSMutableString alloc] init];
+            currentXmlText = [[NSMutableString alloc] init];
         }
     };
     
@@ -111,93 +112,93 @@
         {
             if ([currentNode isEqualToString:AZSCXmlNextMarker])
             {
-                if (builder.length > 0)
+                if (currentXmlText.length > 0)
                 {
-                    nextMarker = builder;
+                    nextMarker = currentXmlText;
                 }
             }
             
-            builder = [[NSMutableString alloc] init];
+            currentXmlText = [[NSMutableString alloc] init];
         }
         else if ([parentNode isEqualToString:AZSCXmlContainer])
         {
             if ([currentNode isEqualToString:AZSCXmlName])
             {
-                currentContainer.name = builder;
+                currentContainer.name = currentXmlText;
             }
             
-            builder = [[NSMutableString alloc] init];
+            currentXmlText = [[NSMutableString alloc] init];
         }
         else if ([parentNode isEqualToString:AZSCXmlProperties])
         {
             if ([currentNode isEqualToString:AZSCXmlLastModified])
             {
-                currentContainer.properties.lastModified = [[AZSUtil dateFormatterWithRFCFormat] dateFromString:builder];
+                currentContainer.properties.lastModified = [[AZSUtil dateFormatterWithRFCFormat] dateFromString:currentXmlText];
             }
             else if ([currentNode isEqualToString:[AZSCXmlETag capitalizedString]])
             {
-                currentContainer.properties.eTag = builder;
+                currentContainer.properties.eTag = currentXmlText;
             }
             else if ([currentNode isEqualToString:AZSCXmlLeaseStatus])
             {
-                if ([builder isEqualToString:AZSCXmlLocked])
+                if ([currentXmlText isEqualToString:AZSCXmlLocked])
                 {
                     currentContainer.properties.leaseStatus = AZSLeaseStatusLocked;
                 }
-                else if ([builder isEqualToString:AZSCXmlUnlocked])
+                else if ([currentXmlText isEqualToString:AZSCXmlUnlocked])
                 {
                     currentContainer.properties.leaseStatus = AZSLeaseStatusUnlocked;
                 }
             }
             else if ([currentNode isEqualToString:AZSCXmlLeaseState])
             {
-                if ([builder isEqualToString:AZSCXmlAvailable])
+                if ([currentXmlText isEqualToString:AZSCXmlAvailable])
                 {
                     currentContainer.properties.leaseState = AZSLeaseStateAvailable;
                 }
-                else if ([builder isEqualToString:AZSCXmlLeased])
+                else if ([currentXmlText isEqualToString:AZSCXmlLeased])
                 {
                     currentContainer.properties.leaseState = AZSLeaseStateLeased;
                 }
-                else if ([builder isEqualToString:AZSCXmlExpired])
+                else if ([currentXmlText isEqualToString:AZSCXmlExpired])
                 {
                     currentContainer.properties.leaseState = AZSLeaseStateExpired;
                 }
-                else if ([builder isEqualToString:AZSCXmlBreaking])
+                else if ([currentXmlText isEqualToString:AZSCXmlBreaking])
                 {
                     currentContainer.properties.leaseState = AZSLeaseStateBreaking;
                 }
-                else if ([builder isEqualToString:AZSCXmlBroken])
+                else if ([currentXmlText isEqualToString:AZSCXmlBroken])
                 {
                     currentContainer.properties.leaseState = AZSLeaseStateBroken;
                 }
             }
             else if ([currentNode isEqualToString:AZSCXmlLeaseDuration])
             {
-                if ([builder isEqualToString:AZSCXmlInfinite])
+                if ([currentXmlText isEqualToString:AZSCXmlInfinite])
                 {
                     currentContainer.properties.leaseDuration = AZSLeaseDurationInfinite;
                 }
-                else if ([builder isEqualToString:AZSCXmlFixed])
+                else if ([currentXmlText isEqualToString:AZSCXmlFixed])
                 {
                     currentContainer.properties.leaseDuration = AZSLeaseDurationFixed;
                 }
             }
             
-            builder = [[NSMutableString alloc] init];
+            currentXmlText = [[NSMutableString alloc] init];
         }
         else if ([parentNode isEqualToString:AZSCXmlMetadata])
         {
-            [currentContainer.metadata setValue:builder forKey:currentNode];
+            [currentContainer.metadata setValue:currentXmlText forKey:currentNode];
             
-            builder = [[NSMutableString alloc] init];
+            currentXmlText = [[NSMutableString alloc] init];
         }
     };
     
     parserDelegate.foundCharacters = ^(NSXMLParser *parser, NSString *characters)
     {
         [operationContext logAtLevel:AZSLogLevelDebug withMessage:@"Found characters = %@", characters];
-        [builder appendString:characters];
+        [currentXmlText appendString:characters];
     };
 
     parser.delegate = parserDelegate;
@@ -231,7 +232,7 @@
     __block NSMutableArray *blobListItems = [NSMutableArray arrayWithCapacity:10];
     __block AZSBlobListItem *currentBlobItem = [[AZSBlobListItem alloc] init];
     __block NSMutableArray *elementStack = [NSMutableArray arrayWithCapacity:10];
-    __block NSMutableString *builder = [[NSMutableString alloc] init];
+    __block NSMutableString *currentXmlText = [[NSMutableString alloc] init];
     __block NSString *nextMarker = nil;
     __block NSDictionary *currentAttributes = nil;
 
@@ -239,9 +240,9 @@
     {
         [operationContext logAtLevel:AZSLogLevelDebug withMessage:@"Beginning to parse element with name = %@", elementName];
         [elementStack addObject:elementName];
-        if ([builder length] > 0)
+        if ([currentXmlText length] > 0)
         {
-            builder = [[NSMutableString alloc] init];
+            currentXmlText = [[NSMutableString alloc] init];
         }
         currentAttributes = attributeDict;
     };
@@ -263,12 +264,14 @@
         {
             if ([currentNode isEqualToString:AZSCXmlBlob])
             {
+                currentBlobItem.isDirectory = NO;
                 [blobListItems addObject:currentBlobItem];
                 currentBlobItem = [[AZSBlobListItem alloc] init];
             }
             else if ([currentNode isEqualToString:AZSCXmlBlobPrefix])
             {
-                // TODO: implement once we have blob directory support
+                currentBlobItem.isDirectory = YES;
+                [blobListItems addObject:currentBlobItem];
                 currentBlobItem = [[AZSBlobListItem alloc] init];
             }
         }
@@ -276,181 +279,190 @@
         {
             if ([currentNode isEqualToString:AZSCXmlName])
             {
-                currentBlobItem.name = builder;
+                currentBlobItem.name = currentXmlText;
             }
             else if ([currentNode isEqualToString:AZSCXmlSnapshot])
             {
-                currentBlobItem.snapshotTime = builder;
+                currentBlobItem.snapshotTime = currentXmlText;
             }
             
-            builder = [[NSMutableString alloc] init];
+            currentXmlText = [[NSMutableString alloc] init];
+        }
+        else if ([parentNode isEqualToString:AZSCXmlBlobPrefix])
+        {
+            if ([currentNode isEqualToString:AZSCXmlName])
+            {
+                currentBlobItem.name = currentXmlText;
+            }
+            
+            currentXmlText = [[NSMutableString alloc] init];
         }
         else if ([parentNode isEqualToString:AZSCXmlProperties])
         {
             if ([currentNode isEqualToString:AZSCXmlLastModified])
             {
-                currentBlobItem.properties.lastModified = [[AZSUtil dateFormatterWithRFCFormat] dateFromString:builder];
+                currentBlobItem.properties.lastModified = [[AZSUtil dateFormatterWithRFCFormat] dateFromString:currentXmlText];
             }
             else if ([currentNode isEqualToString:[AZSCXmlETag capitalizedString]])
             {
-                currentBlobItem.properties.eTag = builder;
+                currentBlobItem.properties.eTag = currentXmlText;
             }
             else if ([currentNode isEqualToString:AZSCXmlContentLength])
             {
-                currentBlobItem.properties.length = [numberFormatter numberFromString:builder];
+                currentBlobItem.properties.length = [numberFormatter numberFromString:currentXmlText];
             }
             else if ([currentNode isEqualToString:AZSCXmlContentType])
             {
-                currentBlobItem.properties.contentType = builder;
+                currentBlobItem.properties.contentType = currentXmlText;
             }
             else if ([currentNode isEqualToString:AZSCXmlContentEncoding])
             {
-                currentBlobItem.properties.contentEncoding = builder;
+                currentBlobItem.properties.contentEncoding = currentXmlText;
             }
             else if ([currentNode isEqualToString:AZSCXmlContentLanguage])
             {
-                currentBlobItem.properties.contentLanguage = builder;
+                currentBlobItem.properties.contentLanguage = currentXmlText;
             }
             else if ([currentNode isEqualToString:AZSCXmlContentMd5])
             {
-                currentBlobItem.properties.contentMD5 = builder;
+                currentBlobItem.properties.contentMD5 = currentXmlText;
             }
             else if ([currentNode isEqualToString:AZSCXmlContentCacheControl])
             {
-                currentBlobItem.properties.cacheControl = builder;
+                currentBlobItem.properties.cacheControl = currentXmlText;
             }
             else if ([currentNode isEqualToString:AZSCHeaderBlobSequenceNumber])
             {
-                currentBlobItem.properties.sequenceNumber = [numberFormatter numberFromString:builder];
+                currentBlobItem.properties.sequenceNumber = [numberFormatter numberFromString:currentXmlText];
             }
             else if ([currentNode isEqualToString:AZSCXmlBlobType])
             {
-                if ([builder isEqualToString:AZSCXmlBlobBlockBlob])
+                if ([currentXmlText isEqualToString:AZSCXmlBlobBlockBlob])
                 {
                     currentBlobItem.properties.blobType = AZSBlobTypeBlockBlob;
                 }
-                else if ([builder isEqualToString:AZSCXmlBlobPageBlob])
+                else if ([currentXmlText isEqualToString:AZSCXmlBlobPageBlob])
                 {
                     currentBlobItem.properties.blobType = AZSBlobTypePageBlob;
                 }
-                else if ([builder isEqualToString:AZSCXmlBlobAppendBlob])
+                else if ([currentXmlText isEqualToString:AZSCXmlBlobAppendBlob])
                 {
                     currentBlobItem.properties.blobType = AZSBlobTypeAppendBlob;
                 }
             }
             else if ([currentNode isEqualToString:AZSCXmlLeaseStatus])
             {
-                if ([builder isEqualToString:AZSCXmlLocked])
+                if ([currentXmlText isEqualToString:AZSCXmlLocked])
                 {
                     currentBlobItem.properties.leaseStatus = AZSLeaseStatusLocked;
                 }
-                else if ([builder isEqualToString:AZSCXmlUnlocked])
+                else if ([currentXmlText isEqualToString:AZSCXmlUnlocked])
                 {
                     currentBlobItem.properties.leaseStatus = AZSLeaseStatusUnlocked;
                 }
             }
             else if ([currentNode isEqualToString:AZSCXmlLeaseState])
             {
-                if ([builder isEqualToString:AZSCXmlAvailable])
+                if ([currentXmlText isEqualToString:AZSCXmlAvailable])
                 {
                     currentBlobItem.properties.leaseState = AZSLeaseStateAvailable;
                 }
-                else if ([builder isEqualToString:AZSCXmlLeased])
+                else if ([currentXmlText isEqualToString:AZSCXmlLeased])
                 {
                     currentBlobItem.properties.leaseState = AZSLeaseStateLeased;
                 }
-                else if ([builder isEqualToString:AZSCXmlExpired])
+                else if ([currentXmlText isEqualToString:AZSCXmlExpired])
                 {
                     currentBlobItem.properties.leaseState = AZSLeaseStateExpired;
                 }
-                else if ([builder isEqualToString:AZSCXmlBreaking])
+                else if ([currentXmlText isEqualToString:AZSCXmlBreaking])
                 {
                     currentBlobItem.properties.leaseState = AZSLeaseStateBreaking;
                 }
-                else if ([builder isEqualToString:AZSCXmlBroken])
+                else if ([currentXmlText isEqualToString:AZSCXmlBroken])
                 {
                     currentBlobItem.properties.leaseState = AZSLeaseStateBroken;
                 }
             }
             else if ([currentNode isEqualToString:AZSCXmlLeaseDuration])
             {
-                if ([builder isEqualToString:AZSCXmlInfinite])
+                if ([currentXmlText isEqualToString:AZSCXmlInfinite])
                 {
                     currentBlobItem.properties.leaseDuration = AZSLeaseDurationInfinite;
                 }
-                else if ([builder isEqualToString:AZSCXmlFixed])
+                else if ([currentXmlText isEqualToString:AZSCXmlFixed])
                 {
                     currentBlobItem.properties.leaseDuration = AZSLeaseDurationFixed;
                 }
             }
             else if ([currentNode isEqualToString:AZSCXmlCopyId])
             {
-                currentBlobItem.blobCopyState.operationId = builder;
+                currentBlobItem.blobCopyState.operationId = currentXmlText;
             }
             else if ([currentNode isEqualToString:AZSCXmlCopyStatus])
             {
-                if ([builder isEqualToString:AZSCXmlCopyPending])
+                if ([currentXmlText isEqualToString:AZSCXmlCopyPending])
                 {
                     currentBlobItem.blobCopyState.copyStatus = AZSCopyStatusPending;
                 }
-                else if ([builder isEqualToString:AZSCXmlCopySuccess])
+                else if ([currentXmlText isEqualToString:AZSCXmlCopySuccess])
                 {
                     currentBlobItem.blobCopyState.copyStatus = AZSCopyStatusSuccess;
                 }
-                else if ([builder isEqualToString:AZSCXmlCopyAborted])
+                else if ([currentXmlText isEqualToString:AZSCXmlCopyAborted])
                 {
                     currentBlobItem.blobCopyState.copyStatus = AZSCopyStatusAborted;
                 }
-                else if ([builder isEqualToString:AZSCXmlCopyFailed])
+                else if ([currentXmlText isEqualToString:AZSCXmlCopyFailed])
                 {
                     currentBlobItem.blobCopyState.copyStatus = AZSCopyStatusFailed;
                 }
             }
             else if ([currentNode isEqualToString:AZSCXmlCopySource])
             {
-                currentBlobItem.blobCopyState.source = [NSURL URLWithString:builder];
+                currentBlobItem.blobCopyState.source = [NSURL URLWithString:currentXmlText];
             }
             else if ([currentNode isEqualToString:AZSCXmlCopyProgress])
             {
-                NSArray *progressFraction = [builder componentsSeparatedByString:@"/"];
+                NSArray *progressFraction = [currentXmlText componentsSeparatedByString:@"/"];
                 currentBlobItem.blobCopyState.bytesCopied = [progressFraction objectAtIndex:0];
                 currentBlobItem.blobCopyState.totalBytes = [progressFraction objectAtIndex:1];
             }
             else if ([currentNode isEqualToString:AZSCXmlCopyCompletionTime])
             {
-                currentBlobItem.blobCopyState.completionTime = [[AZSUtil dateFormatterWithRFCFormat] dateFromString:builder];
+                currentBlobItem.blobCopyState.completionTime = [[AZSUtil dateFormatterWithRFCFormat] dateFromString:currentXmlText];
             }
             else if ([currentNode isEqualToString:AZSCXmlCopyStatusDescription])
             {
-                currentBlobItem.blobCopyState.statusDescription = builder;
+                currentBlobItem.blobCopyState.statusDescription = currentXmlText;
             }
             
-            builder = [[NSMutableString alloc] init];
+            currentXmlText = [[NSMutableString alloc] init];
         }
         else if ([parentNode isEqualToString:AZSCXmlMetadata])
         {
-            [currentBlobItem.metadata setValue:builder forKey:currentNode];
+            [currentBlobItem.metadata setValue:currentXmlText forKey:currentNode];
             
-            builder = [[NSMutableString alloc] init];
+            currentXmlText = [[NSMutableString alloc] init];
         }
         else if ([parentNode isEqualToString:AZSCXmlEnumerationResults])
         {
             if ([currentNode isEqualToString:AZSCXmlNextMarker])
             {
-                if (builder.length > 0)
+                if (currentXmlText.length > 0)
                 {
-                    nextMarker = builder;
+                    nextMarker = currentXmlText;
                 }
             }
             
-            builder = [[NSMutableString alloc] init];
+            currentXmlText = [[NSMutableString alloc] init];
         }
     };
     
     parserDelegate.foundCharacters = ^(NSXMLParser *parser, NSString *characters)
     {
         [operationContext logAtLevel:AZSLogLevelDebug withMessage:@"Found characters = %@", characters];
-        [builder appendString:characters];
+        [currentXmlText appendString:characters];
     };
     
     parser.delegate = parserDelegate;
@@ -484,16 +496,16 @@
     
     __block AZSSharedAccessPolicy *currentStoredPolicy = [[AZSSharedAccessPolicy alloc] initWithIdentifier:nil];
     __block NSMutableArray *elementStack = [NSMutableArray arrayWithCapacity:10];
-    __block NSMutableString *builder = [[NSMutableString alloc] init];
+    __block NSMutableString *currentXmlText = [[NSMutableString alloc] init];
     __block NSDictionary *currentAttributes = nil;
     
     parserDelegate.parseBeginElement = ^(NSXMLParser *parser, NSString *elementName,NSDictionary *attributeDict)
     {
         [operationContext logAtLevel:AZSLogLevelDebug withMessage:@"Beginning to parse element with name = %@", elementName];
         [elementStack addObject:elementName];
-        if ([builder length] > 0)
+        if ([currentXmlText length] > 0)
         {
-            builder = [[NSMutableString alloc] init];
+            currentXmlText = [[NSMutableString alloc] init];
         }
         currentAttributes = attributeDict;
     };
@@ -523,35 +535,34 @@
         {
             if ([currentNode isEqualToString:AZSCXmlId])
             {
-                currentStoredPolicy.policyIdentifier = builder;
+                currentStoredPolicy.policyIdentifier = currentXmlText;
             }
             
-            builder = [[NSMutableString alloc] init];
+            currentXmlText = [[NSMutableString alloc] init];
         }
         else if ([parentNode isEqualToString:AZSCXmlAccessPolicy])
         {
             if ([currentNode isEqualToString:AZSCXmlStart])
             {
-                currentStoredPolicy.sharedAccessStartTime = [[AZSUtil dateFormatterWithRoundtripFormat] dateFromString:builder];
+                currentStoredPolicy.sharedAccessStartTime = [[AZSUtil dateFormatterWithRoundtripFormat] dateFromString:currentXmlText];
             }
             else if ([currentNode isEqualToString:AZSCXmlExpiry])
             {
-                NSDate *date = [[AZSUtil dateFormatterWithRoundtripFormat] dateFromString:builder];
+                NSDate *date = [[AZSUtil dateFormatterWithRoundtripFormat] dateFromString:currentXmlText];
                 currentStoredPolicy.sharedAccessExpiryTime = date;
             }
             else if ([currentNode isEqualToString:AZSCXmlPermission])
             {
-                currentStoredPolicy.permissions = [AZSSharedAccessSignatureHelper permissionsFromString:builder error:error];
+                currentStoredPolicy.permissions = [AZSSharedAccessSignatureHelper permissionsFromString:currentXmlText error:error];
             }
-            
-            builder = [[NSMutableString alloc] init];
+            currentXmlText = [[NSMutableString alloc] init];
         }
     };
     
     parserDelegate.foundCharacters = ^(NSXMLParser *parser, NSString *characters)
     {
         [operationContext logAtLevel:AZSLogLevelDebug withMessage:@"Found characters = %@", characters];
-        [builder appendString:characters];
+        [currentXmlText appendString:characters];
     };
     
     parser.delegate = parserDelegate;
@@ -603,15 +614,15 @@
     __block NSMutableArray *blockList = [NSMutableArray arrayWithCapacity:10];
     __block AZSBlockListItem *currentBlock = [[AZSBlockListItem alloc] initWithBlockID:AZSCEmptyString blockListMode:AZSBlockListModeLatest];
     __block NSMutableArray *elementStack = [NSMutableArray arrayWithCapacity:10];
-    __block NSMutableString *builder = [[NSMutableString alloc] init];
+    __block NSMutableString *currentXmlText = [[NSMutableString alloc] init];
 
     parserDelegate.parseBeginElement = ^(NSXMLParser *parser, NSString *elementName,NSDictionary *attributeDict)
     {
         [operationContext logAtLevel:AZSLogLevelDebug withMessage:@"Beginning to parse element with name = %@", elementName];
         [elementStack addObject:elementName];
-        if ([builder length] > 0)
+        if ([currentXmlText length] > 0)
         {
-            builder = [[NSMutableString alloc] init];
+            currentXmlText = [[NSMutableString alloc] init];
         }
     };
     
@@ -632,13 +643,13 @@
         {
             if ([currentNode isEqualToString:AZSCXmlName])
             {
-                currentBlock.blockID = builder;
-                builder = [[NSMutableString alloc] init];
+                currentBlock.blockID = currentXmlText;
+                currentXmlText = [[NSMutableString alloc] init];
             }
             else if ([currentNode isEqualToString:AZSCXmlSize])
             {
-                currentBlock.size = [builder integerValue];
-                builder = [[NSMutableString alloc] init];
+                currentBlock.size = [currentXmlText integerValue];
+                currentXmlText = [[NSMutableString alloc] init];
             }
         }
         else if ([parentNode isEqualToString:AZSCXmlCommittedBlocks])
@@ -659,7 +670,7 @@
     parserDelegate.foundCharacters = ^(NSXMLParser *parser, NSString *characters)
     {
         [operationContext logAtLevel:AZSLogLevelDebug withMessage:@"Found characters = %@", characters];
-        [builder appendString:characters];
+        [currentXmlText appendString:characters];
     };
 
     parser.delegate = parserDelegate;

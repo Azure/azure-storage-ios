@@ -8,6 +8,7 @@
  * Added support for IP Restricted SAS and Protocol Restricted SAS.
  * Added support for Account level SAS.
  * Updated service version to 2015-04-05.
+ * Added support for blob directories.
 
 2015.09.22 Version 0.1.0
  * Initial Release

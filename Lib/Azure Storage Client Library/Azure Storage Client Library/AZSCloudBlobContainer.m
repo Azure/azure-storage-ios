@@ -43,6 +43,7 @@
 #import "AZSUtil.h"
 #import "AZSNavigationUtil.h"
 #import "AZSErrors.h"
+#import "AZSCloudBlobDirectory.h"
 
 @interface AZSCloudBlobContainer()
 
@@ -198,7 +199,7 @@
     
     [command setBuildRequest:^ NSMutableURLRequest * (NSURLComponents *urlComponents, NSTimeInterval timeout, AZSOperationContext *operationContext)
      {
-         return [AZSBlobRequestFactory listBlobsWithPrefix:prefix delimiter:nil blobListingDetails:blobListingDetails maxResults:maxResults continuationToken:token urlComponents:urlComponents timeout:timeout operationContext:operationContext];
+         return [AZSBlobRequestFactory listBlobsWithPrefix:prefix delimiter:((useFlatBlobListing) ? nil : self.client.directoryDelimiter) blobListingDetails:blobListingDetails maxResults:maxResults continuationToken:token urlComponents:urlComponents timeout:timeout operationContext:operationContext];
      }];
     
     [command setAuthenticationHandler:self.client.authenticationHandler];
@@ -215,15 +216,23 @@
             return nil;
         }
 
-        NSMutableArray *results = [NSMutableArray arrayWithCapacity:[listBlobsResponse.blobListItems count]];
+        NSMutableArray *blobResults = [NSMutableArray arrayWithCapacity:0];
+        NSMutableArray *directoryResults = [NSMutableArray arrayWithCapacity:0];
         for (AZSBlobListItem *blobListItem in listBlobsResponse.blobListItems)
         {
-            AZSCloudBlob *temp = [[AZSCloudBlob alloc] initWithContainer:self name:blobListItem.name snapshotTime:blobListItem.snapshotTime];
-            temp.metadata = blobListItem.metadata;
-            temp.properties = blobListItem.properties;
-            temp.blobCopyState = blobListItem.blobCopyState;
+            if (blobListItem.isDirectory)
+            {
+                [directoryResults addObject:[[AZSCloudBlobDirectory alloc] initWithDirectoryName:blobListItem.name container:self]];
+            }
+            else
+            {
+                AZSCloudBlob *blob = [[AZSCloudBlob alloc] initWithContainer:self name:blobListItem.name snapshotTime:blobListItem.snapshotTime];
+                blob.metadata = blobListItem.metadata;
+                blob.properties = blobListItem.properties;
+                blob.blobCopyState = blobListItem.blobCopyState;
             
-            [results addObject:temp];
+                [blobResults addObject:blob];
+            }
         }
         
         AZSContinuationToken *continuationToken = nil;
@@ -231,7 +240,7 @@
         {
             continuationToken = [AZSContinuationToken tokenFromString:listBlobsResponse.nextMarker withLocation:requestResult.targetLocation];
         }
-        return [AZSBlobResultSegment segmentWithBlobs:results directories:nil continuationToken:continuationToken];
+        return [AZSBlobResultSegment segmentWithBlobs:blobResults directories:directoryResults continuationToken:continuationToken];
     }];
     
     [AZSExecutor ExecuteWithStorageCommand:command requestOptions:modifiedOptions operationContext:operationContext completionHandler:completionHandler];
@@ -629,7 +638,13 @@
 
 - (AZSCloudBlockBlob *)blockBlobReferenceFromName:(NSString *)blobName
 {
-    AZSCloudBlockBlob *blockBlob = [[AZSCloudBlockBlob alloc] initWithContainer:self name:blobName];
+    AZSCloudBlockBlob *blockBlob = [[AZSCloudBlockBlob alloc] initWithContainer:self name:blobName snapshotTime:nil];
+    return blockBlob;
+}
+
+- (AZSCloudBlockBlob *)blockBlobReferenceFromName:(NSString *)blobName snapshotTime:(NSString *)snapshotTime
+{
+    AZSCloudBlockBlob *blockBlob = [[AZSCloudBlockBlob alloc] initWithContainer:self name:blobName snapshotTime:snapshotTime];
     return blockBlob;
 }
 
@@ -751,6 +766,11 @@
 - (NSString *)createSharedAccessCanonicalName
 {
     return [NSString stringWithFormat:AZSCSasTemplateContainerCanonicalName, AZSCBlob, self.client.credentials.accountName, self.name];
+}
+
+- (AZSCloudBlobDirectory *)directoryReferenceFromName:(NSString *)directoryName
+{
+    return [[AZSCloudBlobDirectory alloc] initWithDirectoryName:directoryName container:self];
 }
 
 @end

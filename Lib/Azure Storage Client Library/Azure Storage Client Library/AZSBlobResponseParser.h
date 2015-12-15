@@ -34,6 +34,7 @@
 @property (strong) NSMutableDictionary *metadata;
 @property (strong) AZSCopyState *blobCopyState;
 @property (copy) NSString *snapshotTime;
+@property BOOL isDirectory;
 @end
 
 

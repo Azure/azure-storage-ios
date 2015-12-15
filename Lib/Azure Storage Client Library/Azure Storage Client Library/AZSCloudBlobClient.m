@@ -15,6 +15,7 @@
 // </copyright>
 // -----------------------------------------------------------------------------------------
 
+#import "AZSConstants.h"
 #import "AZSResultSegment.h"
 #import "AZSCloudBlobClient.h"
 #import "AZSCloudBlobContainer.h"
@@ -33,9 +34,12 @@
 
 @implementation AZSCloudBlobClient
 
+@synthesize directoryDelimiter = _directoryDelimiter;
+
 - (instancetype)initWithStorageUri:(AZSStorageUri *)storageUri credentials:(AZSStorageCredentials *)credentials
 {
     self = [super initWithStorageUri:storageUri credentials:credentials];
+    self.directoryDelimiter = AZSCDefaultDirectoryDelimiter;
     return self;
 }
 
@@ -119,6 +123,23 @@
     else
     {
         self.authenticationHandler = [[AZSNoOpAuthenticationHandler alloc] init];
+    }
+}
+
+-(NSString *) directoryDelimiter
+{
+    return _directoryDelimiter;
+}
+
+-(void) setDirectoryDelimiter:(NSString *)directoryDelimiter
+{
+    if (!directoryDelimiter.length)
+    {
+        _directoryDelimiter = AZSCDefaultDirectoryDelimiter;
+    }
+    else
+    {
+        _directoryDelimiter = directoryDelimiter;
     }
 }
 

@@ -24,6 +24,7 @@ NSString *const AZSCDateFormatColloquial = @"%a, %d %b %Y %T GMT";
 NSString *const AZSCDateFormatIso8601 = @"yyyy-MM-dd'T'HH:mm:ss'Z'";
 NSString *const AZSCDateFormatRFC = @"EEE, dd MMM yyyy HH':'mm':'ss 'GMT'";
 NSString *const AZSCDateFormatRoundtrip = @"yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'SSSSSSS'Z'";
+NSString *const AZSCDefaultDirectoryDelimiter = @"/";
 NSString *const AZSCDefaultSuffix = @"core.windows.net";
 NSString *const AZSCEmptyString = @"";
 NSString *const AZSCHttp = @"http";

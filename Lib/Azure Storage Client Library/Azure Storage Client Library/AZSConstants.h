@@ -27,6 +27,7 @@ FOUNDATION_EXPORT NSString *const AZSCDateFormatColloquial;
 FOUNDATION_EXPORT NSString *const AZSCDateFormatIso8601;
 FOUNDATION_EXPORT NSString *const AZSCDateFormatRFC;
 FOUNDATION_EXPORT NSString *const AZSCDateFormatRoundtrip;
+FOUNDATION_EXPORT NSString *const AZSCDefaultDirectoryDelimiter;
 FOUNDATION_EXPORT NSString *const AZSCDefaultSuffix;
 FOUNDATION_EXPORT NSString *const AZSCEmptyString;
 FOUNDATION_EXPORT NSString *const AZSCHttp;
