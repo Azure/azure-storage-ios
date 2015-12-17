@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+
+	<title>AZSOperationContext Class Reference</title>
+
+	<link rel="stylesheet" href="../css/style.css">
+	<meta name="viewport" content="initial-scale=1, maximum-scale=1.4">
+	<meta name="generator" content="appledoc 2.2.1 (build 1334)">
+</head>
+<body class="appledoc">
+	<header>
+		<div class="container" class="hide-in-xcode">
+			
+			<h1 id="library-title">
+				<a href="../index.html">Azure Storage Client for iOS </a>
+			</h1>
+
+			<p id="developer-home">
+				<a href="../index.html">Microsoft</a>
+			</p>
+			
+		</div>
+	</header>
+
+	<aside>
+		<div class="container">
+			<nav>
+				<ul id="header-buttons" role="toolbar">
+					<li><a href="../index.html">Index</a></li>
+<li><a href="../hierarchy.html">Hierarchy</a></li>
+
+					<li id="on-this-page" role="navigation">
+						<label>
+							On This Page
+
+							<div class="chevron">
+								<div class="chevy chevron-left"></div>
+								<div class="chevy chevron-right"></div>
+							</div>
+
+							<select id="jump-to">
+	<option value="top">Jump To&#133;</option>
+	
+	<option value="overview">Overview</option>
+	
+
+	
+	
+	<option value="tasks">Tasks</option>
+	
+	
+
+	
+	
+	<optgroup label="Properties">
+		
+		<option value="//api/name/clientRequestId">clientRequestId</option>
+		
+		<option value="//api/name/endTime">endTime</option>
+		
+		<option value="//api/name/logFunction">logFunction</option>
+		
+		<option value="//api/name/logLevel">logLevel</option>
+		
+		<option value="//api/name/requestResults">requestResults</option>
+		
+		<option value="//api/name/responseReceived">responseReceived</option>
+		
+		<option value="//api/name/retryPolicy">retryPolicy</option>
+		
+		<option value="//api/name/sendingRequest">sendingRequest</option>
+		
+		<option value="//api/name/startTime">startTime</option>
+		
+		<option value="//api/name/userHeaders">userHeaders</option>
+		
+	</optgroup>
+	
+
+	
+	<optgroup label="Class Methods">
+		
+		<option value="//api/name/globalLogFunction">+ globalLogFunction</option>
+		
+		<option value="//api/name/globalLogLevel">+ globalLogLevel</option>
+		
+		<option value="//api/name/globalLogger">+ globalLogger</option>
+		
+		<option value="//api/name/setGlobalLogFunction:">+ setGlobalLogFunction:</option>
+		
+		<option value="//api/name/setGlobalLogLevel:">+ setGlobalLogLevel:</option>
+		
+		<option value="//api/name/setGlobalLogger:">+ setGlobalLogger:</option>
+		
+	</optgroup>
+	
+
+	
+	<optgroup label="Instance Methods">
+		
+		<option value="//api/name/logger">- logger</option>
+		
+		<option value="//api/name/loggerCondition">- loggerCondition</option>
+		
+		<option value="//api/name/setLogger:withCondition:">- setLogger:withCondition:</option>
+		
+	</optgroup>
+	
+	
+</select>
+						</label>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</aside>
+
+	<article>
+		<div id="overview_contents" class="container">
+			<div id="content">
+				<main role="main">
+					<h1 class="title">AZSOperationContext Class Reference</h1>
+
+					
+					<div class="section section-specification"><table cellspacing="0"><tbody>
+						<tr>
+	<th>Inherits from</th>
+	<td>NSObject</td>
+</tr><tr>
+	<th>Declared in</th>
+	<td>AZSOperationContext.h<br />AZSOperationContext.m</td>
+</tr>
+						</tbody></table></div>
+					
+
+                    
+					
+					<div class="section section-overview">
+						<a title="Overview" name="overview"></a>
+						<h2 class="subtitle subtitle-overview">Overview</h2>
+						<p>The AZSOperationContext class contains all data relevant to an operation</p>
+
+<p>An AZSOperationContext is designed to be created by the code calling into Storage.  All
+methods that perform service requests optionally take in an AZSOperationContext.  The instance should
+be empty when passed into the Storage library, except where noted.  Once the operation is
+finished, the AZSOperationContext will be populated with relevant information from the request.</p>
+
+<p>AZSOperationContext instances should not be resued between calls.</p>
+
+<p>This class is always optional.  If you do not provide one, you will not have access to the
+relevant information.</p>
+
+<p>AZSOperationContext is distinguished from <a href="../Classes/AZSRequestResult.html">AZSRequestResult</a> because the AZSOperationContext
+represents an entire operation, which may contain multiple requests (if the operation retries,
+or requires multiple HTTP requests.)</p>
+
+<p>AZSOperationContext is distinguished from <a href="../Classes/AZSRequestOptions.html">AZSRequestOptions</a> classes because the AZSOperationContext represents
+the results from an entire operation and will be populated throughout the operation, while the
+<a href="../Classes/AZSRequestOptions.html">AZSRequestOptions</a> is a set of options that governs how the library makes requests.  <a href="../Classes/AZSRequestOptions.html">AZSRequestOptions</a> instances
+can be reused freely in multiple operations, AZSOperationContext instances cannot.</p>
+					</div>
+					
+					
+
+					
+					
+					<div class="section section-tasks">
+						<a title="Tasks" name="tasks"></a>
+						
+
+						
+						
+
+						<div class="task-list">
+							<div class="section-method">
+	<a name="//api/name/clientRequestId" title="clientRequestId"></a>
+	<h3 class="method-title"><code><a href="#//api/name/clientRequestId">&nbsp;&nbsp;clientRequestId</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>A string representing the client request ID to assign to the request.
+This will automatically be initialized to a GUID when the class is initialized,
+but this may be overridden.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (copy) NSString *clientRequestId</code></div>
+
+		    
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSOperationContext.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/sendingRequest" title="sendingRequest"></a>
+	<h3 class="method-title"><code><a href="#//api/name/sendingRequest">&nbsp;&nbsp;sendingRequest</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Optional.  If non-nil, it&rsquo;s a block that the library will call shortly before it signs and sends a request.
+The request is included in the call; the block may modify the request as desired.
+Blocking here will block the request.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (copy, AZSNullable) void ( ^ ) ( NSMutableURLRequest *, AZSOperationContext *) sendingRequest</code></div>
+
+		    
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSOperationContext.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/responseReceived" title="responseReceived"></a>
+	<h3 class="method-title"><code><a href="#//api/name/responseReceived">&nbsp;&nbsp;responseReceived</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Optional.  If non-nil, it&rsquo;s a block that the library will call immediately upon receiving the response headers
+(before data is downloaded.)
+Blocking here will block the request.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (copy, AZSNullable) void ( ^ ) ( NSMutableURLRequest *, NSHTTPURLResponse *, AZSOperationContext *) responseReceived</code></div>
+
+		    
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSOperationContext.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/userHeaders" title="userHeaders"></a>
+	<h3 class="method-title"><code><a href="#//api/name/userHeaders">&nbsp;&nbsp;userHeaders</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Optional.  An NSDictionary mapping strings to strings.  All objects in this dictionary will be interpreted as additional headers to
+be added to the request, with the keys being the name of the header and the value the header value.  The library will sign these if necessary.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (strong, AZSNullable) NSDictionary *userHeaders</code></div>
+
+		    
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSOperationContext.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/startTime" title="startTime"></a>
+	<h3 class="method-title"><code><a href="#//api/name/startTime">&nbsp;&nbsp;startTime</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>The start time for the operation.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (copy, AZSNullable) NSDate *startTime</code></div>
+
+		    
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSOperationContext.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/endTime" title="endTime"></a>
+	<h3 class="method-title"><code><a href="#//api/name/endTime">&nbsp;&nbsp;endTime</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>The end time for the operation.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (copy, AZSNullable) NSDate *endTime</code></div>
+
+		    
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSOperationContext.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/requestResults" title="requestResults"></a>
+	<h3 class="method-title"><code><a href="#//api/name/requestResults">&nbsp;&nbsp;requestResults</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>An array of request results objects.  Populated by the library.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (strong, readonly) NSArray *requestResults</code></div>
+
+		    
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSOperationContext.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/retryPolicy" title="retryPolicy"></a>
+	<h3 class="method-title"><code><a href="#//api/name/retryPolicy">&nbsp;&nbsp;retryPolicy</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>The retry policy for the request.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (strong, AZSNullable) id&lt;AZSRetryPolicy&gt; retryPolicy</code></div>
+
+		    
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSOperationContext.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/logLevel" title="logLevel"></a>
+	<h3 class="method-title"><code><a href="#//api/name/logLevel">&nbsp;&nbsp;logLevel</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>The log level for this OperationContext instance.  Messages will only be logged if their severity is
+equal to or more severe than this.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property AZSLogLevel logLevel</code></div>
+
+		    
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSOperationContext.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/logFunction" title="logFunction"></a>
+	<h3 class="method-title"><code><a href="#//api/name/logFunction">&nbsp;&nbsp;logFunction</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Optional.  A function that the caller can set.  If set, this function will be called when the library wants to log a message.
+This function will only be called if the severity of the message is high enough, compared to the <a href="#//api/name/logLevel">logLevel</a>.
+This function is designed if you have a specific <a href="#//api/name/logger">logger</a> or logging framework you would like to use.
+If this function is set, the instance <a href="#//api/name/logger">logger</a> (the <a href="#//api/name/logger">logger</a> property on this OperationContext instance) will be ignored.
+If this function is not set, and the instance <a href="#//api/name/logger">logger</a> is not set, no messages will be logged on this instance.
+(Global logging may still occur.)</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (copy) void ( ^ ) ( AZSLogLevel logLevel , NSString *stringToLog ) logFunction</code></div>
+
+		    
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<table>
+<thead>
+<tr>
+<th> Parameter name </th>
+<th> Description </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="#//api/name/logLevel">logLevel</a> </td>
+<td> The log level of this particular log message.</td>
+</tr>
+<tr>
+<td>stringToLog </td>
+<td> The formatted log message.</td>
+</tr>
+</tbody>
+</table>
+
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSOperationContext.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/globalLogLevel" title="globalLogLevel"></a>
+	<h3 class="method-title"><code><a href="#//api/name/globalLogLevel">+&nbsp;globalLogLevel</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>The log level for all requests for the static <a href="#//api/name/logger">logger</a>.  A static variable.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>+ (AZSLogLevel)globalLogLevel</code></div>
+
+		    
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSOperationContext.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/setGlobalLogLevel:" title="setGlobalLogLevel:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/setGlobalLogLevel:">+&nbsp;setGlobalLogLevel:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Sets the log level for all requests for the static <a href="#//api/name/logger">logger</a>.  A static variable.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>+ (void)setGlobalLogLevel:(AZSLogLevel)<em>globalLogLevel</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>globalLogLevel</code></th>
+						<td><p>The global log level for the library.  Messages will only be logged to the global <a href="#//api/name/logger">logger</a> if their severity is
+equal to or more severe than this.</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSOperationContext.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/globalLogFunction" title="globalLogFunction"></a>
+	<h3 class="method-title"><code><a href="#//api/name/globalLogFunction">+&nbsp;globalLogFunction</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Optional.  Returns the function that the caller can set.  See the setter documentation for details.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>+ (void ( ^ ) ( AZSLogLevel logLevel , NSString *stringToLog ))globalLogFunction</code></div>
+
+		    
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSOperationContext.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/setGlobalLogFunction:" title="setGlobalLogFunction:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/setGlobalLogFunction:">+&nbsp;setGlobalLogFunction:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Optional.  A function that the caller can set.  If set, this function will be called when the library wants to log a message globally.
+This function will only be called if the severity of the message is high enough, compared to the <a href="#//api/name/globalLogLevel">globalLogLevel</a>.
+This function is designed if you have a specific <a href="#//api/name/logger">logger</a> or logging framework you would like to use.
+If this function is set, the global <a href="#//api/name/logger">logger</a> (the <a href="#//api/name/globalLogger">globalLogger</a> property on the OperationContext class) will be ignored.
+If this function is not set, and the <a href="#//api/name/globalLogger">globalLogger</a> is not set, no messages will be logged globally.  (Instance logging may still occur.)</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>+ (void)setGlobalLogFunction:(void ( ^ ) ( AZSLogLevel logLevel , NSString *stringToLog ))<em>globalLogFunction</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>globalLogFunction</code></th>
+						<td><p>The block of code to execute when the upload call completes.</p>
+
+<table>
+<thead>
+<tr>
+<th> Parameter name </th>
+<th> Description </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="#//api/name/logLevel">logLevel</a> </td>
+<td> The log level of this particular log message.</td>
+</tr>
+<tr>
+<td>stringToLog </td>
+<td> The formatted log message.</td>
+</tr>
+</tbody>
+</table>
+</td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSOperationContext.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/globalLogger" title="globalLogger"></a>
+	<h3 class="method-title"><code><a href="#//api/name/globalLogger">+&nbsp;globalLogger</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Optional.  The global (static) <a href="#//api/name/logger">logger</a> that the library will log messages to.  See the setter for more details.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>+ (aslclient)globalLogger</code></div>
+
+		    
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSOperationContext.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/setGlobalLogger:" title="setGlobalLogger:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/setGlobalLogger:">+&nbsp;setGlobalLogger:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Optional.  The global (static) <a href="#//api/name/logger">logger</a> that the library will log messages to.
+Assign an aslclient to this, and the library will log messages to it.
+If this is not set, and the <a href="#//api/name/globalLogFunction">globalLogFunction</a> is not set, no messages will be logged globally.  (Instance logging may still occur.)
+Note that if the <a href="#//api/name/globalLogFunction">globalLogFunction</a> is set, this is ignored.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>+ (void)setGlobalLogger:(aslclient)<em>globalLogger</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>globalLogger</code></th>
+						<td><p>The <a href="#//api/name/logger">logger</a> to use globally.</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSOperationContext.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/logger" title="logger"></a>
+	<h3 class="method-title"><code><a href="#//api/name/logger">&ndash;&nbsp;logger</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Optional.  The global (static) logger that the library will log messages to.  See the setter for more details.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (aslclient)logger</code></div>
+
+		    
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSOperationContext.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/loggerCondition" title="loggerCondition"></a>
+	<h3 class="method-title"><code><a href="#//api/name/loggerCondition">&ndash;&nbsp;loggerCondition</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>The NSCondition object that the OperationContext will use to avoid multiple messages being logged to the <a href="#//api/name/logger">logger</a> simultaneously.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (NSCondition *)loggerCondition</code></div>
+
+		    
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSOperationContext.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/setLogger:withCondition:" title="setLogger:withCondition:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/setLogger:withCondition:">&ndash;&nbsp;setLogger:withCondition:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Optional.  The global (static) <a href="#//api/name/logger">logger</a> that the library will log messages to.
+Assign an aslclient to this, and the library will log messages to it.
+If this is not set, and the <a href="#//api/name/logFunction">logFunction</a> is not set, no messages will be logged on this instance.(Global logging may still occur.)
+Note that if the <a href="#//api/name/logFunction">logFunction</a> is set, this is ignored.
+The caller must also specify an NSCondition that the library can lock upon.  It is a requirement that aslclient instances are not accessed in parallel,
+this input NSCondition here is used to guard against that.  If you give the same aslclient instance to multiple operations at once, you must also specify the
+same condition object, otherwise behavior will be undefined.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)setLogger:(aslclient)<em>logger</em> withCondition:(NSCondition *)<em>condition</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>logger</code></th>
+						<td><p>The <a href="#//api/name/logger">logger</a> for this instance to use.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>condition</code></th>
+						<td><p>The NSCondition to protect the <a href="#//api/name/logger">logger</a>.</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSOperationContext.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div>
+						</div>
+						
+					</div>
+					
+					
+
+                    
+                    
+          
+				</main>
+
+				<footer>
+					<div class="footer-copyright">
+						
+						<p class="copyright">Copyright &copy; 2015 Microsoft. All rights reserved. Updated: 2015-12-15</p>
+						
+						
+						<p class="generator">Generated by <a href="http://appledoc.gentlebytes.com">appledoc 2.2.1 (build 1334)</a>.</p>
+						
+					</div>
+				</footer>
+			</div>
+		</div>
+	</article>
+
+	<script src="../js/script.js"></script>
+</body>
+</html>
