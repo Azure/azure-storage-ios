@@ -16,6 +16,7 @@
 // -----------------------------------------------------------------------------------------
 
 #include <time.h>
+#import "AZSConstants.h"
 #import "AZSRequestResult.h"
 
 @interface AZSRequestResult()
@@ -56,21 +57,21 @@
         _responseAvailable = YES;
         _endTime = [NSDate date];
         _error = error;
-        _serviceRequestID = response.allHeaderFields[@"x-ms-request-id"];
+        _serviceRequestID = response.allHeaderFields[AZSCHeaderRequestId];
         
-        if (response.allHeaderFields[@"Content-Length"])
+        if (response.allHeaderFields[AZSCXmlContentLength])
         {
-            _contentReceivedLength = [NSNumber numberWithLongLong:[response.allHeaderFields[@"Content-Length"] longLongValue]].unsignedIntegerValue;
+            _contentReceivedLength = [NSNumber numberWithLongLong:[response.allHeaderFields[AZSCXmlContentLength] longLongValue]].unsignedIntegerValue;
         }
         
-        _contentReceivedMD5 = response.allHeaderFields[@"Content-MD5"];
-        _etag = response.allHeaderFields[@"ETag"];
+        _contentReceivedMD5 = response.allHeaderFields[AZSCXmlContentMd5];
+        _etag = response.allHeaderFields[AZSCXmlETag];
         
-        if (response.allHeaderFields[@"Date"])
+        if (response.allHeaderFields[AZSCHeaderValueDate])
         {
-            const char * dateString = [response.allHeaderFields[@"Date"] UTF8String];
+            const char * dateString = [response.allHeaderFields[AZSCHeaderValueDate] UTF8String];
             struct tm timeptr;
-            strptime(dateString, "%a, %d %b %Y %T GMT", &timeptr);
+            strptime(dateString, [AZSCDateFormatColloquial UTF8String], &timeptr);
             _serviceRequestDate = [NSDate dateWithTimeIntervalSince1970:mktime(&timeptr)];
         }
     }

@@ -15,6 +15,7 @@
 // </copyright>
 // -----------------------------------------------------------------------------------------
 
+#import "AZSConstants.h"
 #import "AZSStorageCommand.h"
 #import "AZSOperationContext.h"
 #import "AZSRequestResult.h"
@@ -55,7 +56,7 @@
             if (rawErrorData.length > 0)
             {
                 NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithDictionary:(*errorToPopulate).userInfo];
-                userInfo[@"rawErrorData"] = rawErrorData;
+                userInfo[AZSCRawErrorData] = rawErrorData;
                 *errorToPopulate = [NSError errorWithDomain:(*errorToPopulate).domain code:(*errorToPopulate).code userInfo:userInfo];
                 [AZSResponseParser processErrorResponseWithData:rawErrorData errorToPopulate:errorToPopulate operationContext:operationContext error:error];
             }

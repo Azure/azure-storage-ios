@@ -15,6 +15,7 @@
 // </copyright>
 // -----------------------------------------------------------------------------------------
 
+#import "AZSConstants.h"
 #import "AZSStorageCredentials.h"
 #import "AZSUriQueryBuilder.h"
 #import "AZSUtil.h"
@@ -100,7 +101,7 @@
     }
     
     //TODO use targetstorageversion constant.
-    [self.queryBuilder addWithKey:@"api-version" value:@"2015-04-05"];
+    [self.queryBuilder addWithKey:AZSCQueryApiVersion value:AZSCTargetStorageVersion];
 }
 
 -(NSURL *) transformWithUri:(NSURL *)uri

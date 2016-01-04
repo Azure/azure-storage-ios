@@ -63,10 +63,10 @@ typedef NS_ENUM(NSInteger, AZSContainerPublicAccessType)
 typedef NS_OPTIONS(NSUInteger, AZSContainerListingDetails)
 {
     /** No additional details retrieved with the container listing operation.*/
-    AZSContainerListingDetailsNone = 0,
+    AZSContainerListingDetailsNone = 0x0,
     
     /** Retrieve container metadata as well in the listing operation.*/
-    AZSContainerListingDetailsMetadata = 1 << 0,
+    AZSContainerListingDetailsMetadata = 0x1 << 0,
     
     /** Retrieve all details in the listing operation.*/
     AZSContainerListingDetailsAll = AZSContainerListingDetailsMetadata
@@ -76,19 +76,19 @@ typedef NS_OPTIONS(NSUInteger, AZSContainerListingDetails)
 typedef NS_OPTIONS(NSUInteger, AZSBlobListingDetails)
 {
     /** List only committed blobs, and do not return blob metadata.*/
-    AZSBlobListingDetailsNone = 0,
+    AZSBlobListingDetailsNone = 0x0,
     
     /** List committed blobs and blob snapshots.*/
-    AZSBlobListingDetailsSnapshots = 1 << 0,
+    AZSBlobListingDetailsSnapshots = 0x1 << 0,
     
     /** Retrieve blob metadata for each blob returned in the listing.*/
-    AZSBlobListingDetailsMetadata = 1 << 1,
+    AZSBlobListingDetailsMetadata = 0x1 << 1,
     
     /** List committed and uncommittee blobs.*/
-    AZSBlobListingDetailsUncommittedBlobs = 1 << 2,
+    AZSBlobListingDetailsUncommittedBlobs = 0x1 << 2,
     
     /** Include copy propertied in the listing.*/
-    AZSBlobListingDetailsCopy = 1 << 3,
+    AZSBlobListingDetailsCopy = 0x1 << 3,
     
     /** List all available committed blobs, uncommitted blobs, and snapshots, and return all metadata and copy status for those blobs.*/
     AZSBlobListingDetailsAll = AZSBlobListingDetailsSnapshots | AZSBlobListingDetailsMetadata | AZSBlobListingDetailsUncommittedBlobs | AZSBlobListingDetailsCopy
@@ -239,26 +239,26 @@ typedef NS_ENUM(NSInteger, AZSLeaseAction)
     AZSLeaseActionChange
 };
 
-/** The maximum level at which to log. */
+/** The maximum level at which to log. These values correspond to their respective ASL log levels. */
 typedef NS_ENUM(NSInteger, AZSLogLevel)
 {
     /** Don't log anything. */
-    AZSLogLevelNoLogging,
+    AZSLogLevelNoLogging = 0,
     
     /** Only log critical-level messages. */
-    AZSLogLevelCritical,
+    AZSLogLevelCritical = 2,
     
     /** Log error-level and critical-level messages. */
-    AZSLogLevelError,
+    AZSLogLevelError = 3,
     
     /** Log warning-, error-, and critical-level messages. */
-    AZSLogLevelWarning,
+    AZSLogLevelWarning = 4,
     
     /** Log info-, warning-, error-, and critical-level messages. */
-    AZSLogLevelInfo,
+    AZSLogLevelInfo = 6,
     
     /** Log all messages, including debugging messages. */
-    AZSLogLevelDebug
+    AZSLogLevelDebug = 7
 };
 
 /** Specifies the set of possible permissions for a shared access policy. **/
@@ -268,22 +268,22 @@ typedef NS_OPTIONS(NSUInteger, AZSSharedAccessPermissions)
     AZSSharedAccessPermissionsNone   = 0x0,
     
     /** Specifies Read access granted. **/
-    AZSSharedAccessPermissionsRead   = 0x1,
+    AZSSharedAccessPermissionsRead   = 0x1 << 0,
     
     /** Specifies Add access granted. **/
-    AZSSharedAccessPermissionsAdd    = 0x2,
+    AZSSharedAccessPermissionsAdd    = 0x1 << 1,
     
     /** Specifies Create access granted. **/
-    AZSSharedAccessPermissionsCreate = 0x4,
+    AZSSharedAccessPermissionsCreate = 0x1 << 2,
     
     /** Specifies Write access granted. **/
-    AZSSharedAccessPermissionsWrite  = 0x8,
+    AZSSharedAccessPermissionsWrite  = 0x1 << 3,
     
     /** Specifies Delete access granted. **/
-    AZSSharedAccessPermissionsDelete = 0x10,
+    AZSSharedAccessPermissionsDelete = 0x1 << 4,
     
     /** Specifies List access granted. **/
-    AZSSharedAccessPermissionsList   = 0x20,
+    AZSSharedAccessPermissionsList   = 0x1 << 5,
     
     /** Specifies All access granted. **/
     AZSSharedAccessPermissionsAll           = AZSSharedAccessPermissionsRead | AZSSharedAccessPermissionsAdd | AZSSharedAccessPermissionsCreate |

@@ -16,6 +16,7 @@
 // -----------------------------------------------------------------------------------------
 
 #import <CommonCrypto/CommonDigest.h>
+#import "AZSConstants.h"
 #import "AZSCloudBlobContainer.h"
 #import "AZSCloudBlobClient.h"
 #import "AZSStorageCommand.h"
@@ -367,11 +368,11 @@
         if (*error) {
             return *error;
         }
-        
+
         AZSBlobContainerPermissions *permissions = [AZSDownloadContainerPermissions createContainerPermissionsWithResponse:urlResponse operationContext:operationContext error:error];
         NSDictionary *policies = [AZSDownloadContainerPermissions parseDownloadContainerPermissionsResponseWithData:[outputStream propertyForKey:NSStreamDataWrittenToMemoryStreamKey] operationContext:operationContext error:error].storedPolicies;
         for (NSString *policyIdentifier in policies) {
-            [permissions.sharedAccessPolicies setObject:[policies objectForKey:policyIdentifier] forKey:policyIdentifier];
+            permissions.sharedAccessPolicies[policyIdentifier] = policies[policyIdentifier];
         }
         
         if (*error) {
@@ -385,6 +386,31 @@
     [AZSExecutor ExecuteWithStorageCommand:command requestOptions:modifiedOptions operationContext:operationContext completionHandler:^(NSError *error, id result) {
          completionHandler(error, result);
      }];
+}
+
++ (AZSBlobContainerPermissions *) createContainerACLFromPublicAccess:(NSString *)publicAccess error:(NSError **)error
+{
+    AZSContainerPublicAccessType accessType = AZSContainerPublicAccessTypeOff;
+    
+    if (publicAccess && [publicAccess length] > 0) {
+        NSString *lowerCasePublicAccess = [publicAccess lowercaseString];
+        
+        if ([AZSCContainer isEqual:lowerCasePublicAccess]) {
+            accessType = AZSContainerPublicAccessTypeContainer;
+        }
+        else if ([AZSCBlob isEqual:lowerCasePublicAccess]) {
+            accessType = AZSContainerPublicAccessTypeBlob;
+        }
+        else {
+            *error = [NSError errorWithDomain:AZSErrorDomain code:AZSEInvalidArgument userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"Invalid Public Access Type: %@", publicAccess]}];
+            return nil;
+        }
+    }
+    
+    AZSBlobContainerPermissions *permissions = [[AZSBlobContainerPermissions alloc] init];
+    permissions.publicAccess = accessType;
+    
+    return permissions;
 }
 
 - (void)acquireLeaseWithLeaseTime:(NSNumber *)leaseTime proposedLeaseId:(NSString *)proposedLeaseId completionHandler:(void (^)(NSError*, NSString *))completionHandler
@@ -420,7 +446,7 @@
     }];
     
     [command setPostProcessResponse:^id(NSHTTPURLResponse *urlResponse, AZSRequestResult *requestResult, NSOutputStream *outputStream, AZSOperationContext *operationContext, NSError **error) {
-        return [urlResponse.allHeaderFields valueForKey:@"x-ms-lease-id"];
+        return urlResponse.allHeaderFields[AZSCHeaderLeaseId];
     }];
     
     [AZSExecutor ExecuteWithStorageCommand:command requestOptions:modifiedOptions operationContext:operationContext completionHandler:^(NSError *error, NSString *leaseId)
@@ -509,7 +535,7 @@
     }];
     
     [command setPostProcessResponse:^id(NSHTTPURLResponse *urlResponse, AZSRequestResult *requestResult, NSOutputStream *outputStream, AZSOperationContext *operationContext, NSError *__autoreleasing *error) {
-        return [urlResponse.allHeaderFields valueForKey:@"x-ms-lease-id"];
+        return urlResponse.allHeaderFields[AZSCHeaderLeaseId];
     }];
     
     [AZSExecutor ExecuteWithStorageCommand:command requestOptions:modifiedOptions operationContext:operationContext completionHandler:^(NSError *error, NSString *leaseId)
@@ -553,7 +579,7 @@
     }];
     
     [command setPostProcessResponse:^id(NSHTTPURLResponse *urlResponse, AZSRequestResult *requestResult, NSOutputStream *outputStream, AZSOperationContext *operationContext, NSError *__autoreleasing *error) {
-        return [urlResponse.allHeaderFields valueForKey:@"x-ms-lease-id"];
+        return urlResponse.allHeaderFields[AZSCHeaderLeaseId];
     }];
 
     [AZSExecutor ExecuteWithStorageCommand:command requestOptions:modifiedOptions operationContext:operationContext completionHandler:^(NSError *error, id result)
@@ -605,8 +631,8 @@
 
 -(void)updateEtagAndLastModifiedWithResponse:(NSHTTPURLResponse *)response
 {
-    NSString *parsedEtag = [response.allHeaderFields valueForKey:@"ETag"];
-    NSDate *parsedLastModified = [[AZSUtil dateFormatterWithRFCFormat] dateFromString:[response.allHeaderFields valueForKey:@"Last-Modified"]];
+    NSString *parsedEtag = response.allHeaderFields[AZSCXmlETag];
+    NSDate *parsedLastModified = [[AZSUtil dateFormatterWithRFCFormat] dateFromString:response.allHeaderFields[AZSCXmlLastModified]];
     
     if (parsedEtag)
     {
@@ -648,7 +674,7 @@
     [self fetchAttributesWithAccessCondition:accessCondition requestOptions:requestOptions operationContext:operationContext completionHandler:^(NSError *error) {
         if (error)
         {
-            if ([error.domain isEqualToString:AZSErrorDomain] && (error.code == AZSEServerError) && error.userInfo[@"HTTP Status Code"] && (((NSNumber *)error.userInfo[@"HTTP Status Code"]).intValue == 404))
+            if ([error.domain isEqualToString:AZSErrorDomain] && (error.code == AZSEServerError) && error.userInfo[AZSCHttpStatusCode] && (((NSNumber *)error.userInfo[AZSCHttpStatusCode]).intValue == 404))
             {
                 completionHandler(nil, NO);
             }
@@ -749,13 +775,13 @@
         return nil;
     }
     
-    const AZSUriQueryBuilder *builder = [AZSSharedAccessSignatureHelper sharedAccessSignatureForBlobWithParameters:parameters resourceType:@"c" signature:signature error:error];
+    const AZSUriQueryBuilder *builder = [AZSSharedAccessSignatureHelper sharedAccessSignatureForBlobWithParameters:parameters resourceType:AZSCSasPermissionsCreate signature:signature error:error];
     return [builder builderAsString];
 }
 
 - (NSString *)createSharedAccessCanonicalName
 {
-    return [NSString stringWithFormat:@"/%@/%@/%@", @"blob", self.client.credentials.accountName, self.name];
+    return [NSString stringWithFormat:AZSCSasTemplateContainerCanonicalName, AZSCBlob, self.client.credentials.accountName, self.name];
 }
 
 @end

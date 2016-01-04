@@ -16,8 +16,9 @@
 // -----------------------------------------------------------------------------------------
 
 #import <XCTest/XCTest.h>
-#import "AZSBlobTestBase.h"
 #import "Azure_Storage_Client_Library.h"
+#import "AZSBlobTestBase.h"
+#import "AZSConstants.h"
 
 @interface AZSCloudBlobContainerTests : AZSBlobTestBase
 @property NSString *containerName;
@@ -29,7 +30,7 @@
 - (void)setUp
 {
     [super setUp];
-    self.containerName = [[NSString stringWithFormat:@"sampleioscontainer%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:@""]] lowercaseString];
+    self.containerName = [[NSString stringWithFormat:@"sampleioscontainer%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
     self.blobContainer = [self.blobClient containerReferenceFromName:self.containerName];
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
     
@@ -67,8 +68,8 @@
 {
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
     
-    NSString *containerName = [[NSString stringWithFormat:@"sampleioscontainer%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:@""]] lowercaseString];
-    NSString *blobName = @"blob";
+    NSString *containerName = [[NSString stringWithFormat:@"sampleioscontainer%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
+    NSString *blobName = AZSCBlob;
     NSString *blobText = @"blobText";
     
     AZSCloudBlobContainer *container = [self.blobClient containerReferenceFromName:containerName];
@@ -120,7 +121,7 @@
 -(void)createBlobsForListingTestsWithCompletionHandler:(void (^)(NSArray *, NSString *))completionHandler
 {
     NSString *blobText = @"sampleBlobText";
-    NSString *blobNamePrefix = [[NSString stringWithFormat:@"sampleblob%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:@""]] lowercaseString];
+    NSString *blobNamePrefix = [[NSString stringWithFormat:@"sampleblob%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
     
     NSMutableArray *blobs = [NSMutableArray arrayWithCapacity:6];
     
@@ -276,7 +277,7 @@
             NSArray *resultArray = resultSegment.blobs;
             
             XCTAssertNil(error, @"Error in listing blobs.  Error code = %ld, error domain = %@, error userinfo = %@", (long)error.code, error.domain, error.userInfo);
-            XCTAssertTrue(resultArray.count >=3 , @"Incorrect number of blobs returned.");
+            XCTAssertTrue(resultArray.count >= 3, @"Incorrect number of blobs returned.");
             
             for (int i = 0; i < resultArray.count; i++)
             {
@@ -540,6 +541,5 @@
     dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
 
 }
-
 
 @end

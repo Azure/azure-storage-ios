@@ -17,8 +17,9 @@
 
 #import <XCTest/XCTest.h>
 #import <CommonCrypto/CommonDigest.h>
-#import "AZSBlobTestBase.h"
 #import "Azure_Storage_Client_Library.h"
+#import "AZSBlobTestBase.h"
+#import "AZSConstants.h"
 #import "AZSTestHelpers.h"
 
 @interface AZSCloudBlockBlobTests : AZSBlobTestBase
@@ -31,7 +32,7 @@
 - (void)setUp
 {
     [super setUp];
-    self.containerName = [[NSString stringWithFormat:@"sampleioscontainer%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:@""]] lowercaseString];
+    self.containerName = [[NSString stringWithFormat:@"sampleioscontainer%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
     self.blobContainer = [self.blobClient containerReferenceFromName:self.containerName];
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
     
@@ -68,7 +69,7 @@
 
 -(NSString *)generateRandomBlockID
 {
-    return [[[[NSString stringWithFormat:@"blockid%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:@""]] lowercaseString] dataUsingEncoding:NSUTF8StringEncoding] base64EncodedStringWithOptions:0];
+    return [[[[NSString stringWithFormat:@"blockid%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString] dataUsingEncoding:NSUTF8StringEncoding] base64EncodedStringWithOptions:0];
 }
 
 - (void)testUploadDownload
@@ -76,7 +77,7 @@
     // Test uploading a blob in one shot (put blob / UploadFromData) and downloading to a stream.
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
     
-    NSString *blobName = [[NSString stringWithFormat:@"sampleblob%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:@""]] lowercaseString];
+    NSString *blobName = [[NSString stringWithFormat:@"sampleblob%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
     NSString *blobText = @"sampleBlobText";
     
     AZSCloudBlockBlob *blockBlob = [self.blobContainer blockBlobReferenceFromName:blobName];
@@ -109,7 +110,7 @@
     // Test uploading a blob in one shot (put blob / UploadFromData) and downloading to a stream.
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
     
-    NSString *blobName = [[NSString stringWithFormat:@"sampleblob%@\u03b2%%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:@""]] lowercaseString];
+    NSString *blobName = [[NSString stringWithFormat:@"sampleblob%@\u03b2%%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
     NSString *blobText = @"sampleBlobText";
     
     AZSCloudBlockBlob *blockBlob = [self.blobContainer blockBlobReferenceFromName:blobName];
@@ -141,7 +142,7 @@
 -(void)testBlobError
 {
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
-    NSString *blobName = [[NSString stringWithFormat:@"sampleblob%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:@""]] lowercaseString];
+    NSString *blobName = [[NSString stringWithFormat:@"sampleblob%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
     AZSCloudBlockBlob *blockBlob = [self.blobContainer blockBlobReferenceFromName:blobName];
 
     NSOutputStream *targetStream = [NSOutputStream outputStreamToMemory];
@@ -275,7 +276,7 @@
     
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
     
-    NSString *blobName = [[NSString stringWithFormat:@"sampleblob%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:@""]] lowercaseString];
+    NSString *blobName = [[NSString stringWithFormat:@"sampleblob%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
     NSString *blockIDPrefix = @"blockIDPrefix";
     NSString *blockDataPrefix = @"blockDataPrefix";
     
@@ -392,8 +393,8 @@
 
 -(void)runBlobDeleteSnapshotTestWithSnapshotOption:(AZSDeleteSnapshotsOption)deleteSnapshotsOption completionHandler:(void (^)(NSError *, NSError *, NSError *, NSError *, NSError *))completionHandler;
 {
-    NSString *blobName1 = [[NSString stringWithFormat:@"sampleblob%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:@""]] lowercaseString];
-    NSString *blobName2 = [[NSString stringWithFormat:@"sampleblob%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:@""]] lowercaseString];
+    NSString *blobName1 = [[NSString stringWithFormat:@"sampleblob%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
+    NSString *blobName2 = [[NSString stringWithFormat:@"sampleblob%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
     NSString *blobText = @"sampleBlobText";
     AZSCloudBlockBlob *blockBlob1 = [self.blobContainer blockBlobReferenceFromName:blobName1];
     AZSCloudBlockBlob *blockBlob2 = [self.blobContainer blockBlobReferenceFromName:blobName2];
@@ -427,11 +428,11 @@
         XCTAssertNil(blob1DeleteError, @"Error in deleting blob with no snapshots.  Error code = %ld, error domain = %@, error userinfo = %@", (long)blob1DeleteError.code, blob1DeleteError.domain, blob1DeleteError.userInfo);
 
         XCTAssertNotNil(blob1DownloadError, @"Expected error in blob download did not occur.");
-        int blob1DownloadStatusCode = ((NSNumber *)blob1DownloadError.userInfo[@"HTTP Status Code"]).intValue;
+        int blob1DownloadStatusCode = ((NSNumber *)blob1DownloadError.userInfo[AZSCHttpStatusCode]).intValue;
         XCTAssertTrue(blob1DownloadStatusCode == 404, @"Blob download failed with an incorrect error code.  Intended to be a 404, actually is a %d", blob1DownloadStatusCode);
 
         XCTAssertNotNil(blob2DeleteError, @"Expected error in blob delete did not occur.");
-        int blob2DeleteStatusCode = ((NSNumber *)blob2DeleteError.userInfo[@"HTTP Status Code"]).intValue;
+        int blob2DeleteStatusCode = ((NSNumber *)blob2DeleteError.userInfo[AZSCHttpStatusCode]).intValue;
         XCTAssertTrue(blob2DeleteStatusCode == 409, @"Blob download failed with an incorrect error code.  Intended to be a 409, actually is a %d", blob1DownloadStatusCode);
 
         XCTAssertNil(blob2DownloadError, @"Error in fetching blob content.  Error code = %ld, error domain = %@, error userinfo = %@", (long)blob2DownloadError.code, blob2DownloadError.domain, blob2DownloadError.userInfo);
@@ -451,17 +452,17 @@
         XCTAssertNil(blob1DeleteError, @"Error in deleting blob with no snapshots.  Error code = %ld, error domain = %@, error userinfo = %@", (long)blob1DeleteError.code, blob1DeleteError.domain, blob1DeleteError.userInfo);
         
         XCTAssertNotNil(blob1DownloadError, @"Expected error in blob download did not occur.");
-        int blob1DownloadStatusCode = ((NSNumber *)blob1DownloadError.userInfo[@"HTTP Status Code"]).intValue;
+        int blob1DownloadStatusCode = ((NSNumber *)blob1DownloadError.userInfo[AZSCHttpStatusCode]).intValue;
         XCTAssertTrue(blob1DownloadStatusCode == 404, @"Blob download failed with an incorrect error code.  Intended to be a 404, actually is a %d", blob1DownloadStatusCode);
         
         XCTAssertNil(blob2DeleteError, @"Error in deleting blob with no snapshots.  Error code = %ld, error domain = %@, error userinfo = %@", (long)blob2DeleteError.code, blob2DeleteError.domain, blob2DeleteError.userInfo);
         
         XCTAssertNotNil(blob2DownloadError, @"Expected error in blob download did not occur.");
-        int blob2DownloadStatusCode = ((NSNumber *)blob2DownloadError.userInfo[@"HTTP Status Code"]).intValue;
+        int blob2DownloadStatusCode = ((NSNumber *)blob2DownloadError.userInfo[AZSCHttpStatusCode]).intValue;
         XCTAssertTrue(blob2DownloadStatusCode == 404, @"Blob download failed with an incorrect error code.  Intended to be a 404, actually is a %d", blob2DownloadStatusCode);
         
         XCTAssertNotNil(blob2SnapshotDownloadError, @"Expected error in blob download did not occur.");
-        int blob2SnapshotDownloadStatusCode = ((NSNumber *)blob2SnapshotDownloadError.userInfo[@"HTTP Status Code"]).intValue;
+        int blob2SnapshotDownloadStatusCode = ((NSNumber *)blob2SnapshotDownloadError.userInfo[AZSCHttpStatusCode]).intValue;
         XCTAssertTrue(blob2SnapshotDownloadStatusCode == 404, @"Blob download failed with an incorrect error code.  Intended to be a 404, actually is a %d", blob2SnapshotDownloadStatusCode);
         
         dispatch_semaphore_signal(semaphore);
@@ -475,7 +476,7 @@
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
     [self runBlobDeleteSnapshotTestWithSnapshotOption:AZSDeleteSnapshotsOptionDeleteSnapshotsOnly completionHandler:^(NSError *blob1DeleteError, NSError *blob1DownloadError, NSError *blob2DeleteError, NSError *blob2DownloadError, NSError *blob2SnapshotDownloadError) {
         XCTAssertNotNil(blob1DeleteError, @"Expected error in blob delete did not occur.");
-        int blob1DeleteStatusCode = ((NSNumber *)blob1DeleteError.userInfo[@"HTTP Status Code"]).intValue;
+        int blob1DeleteStatusCode = ((NSNumber *)blob1DeleteError.userInfo[AZSCHttpStatusCode]).intValue;
         XCTAssertTrue(blob1DeleteStatusCode == 404, @"Blob delete failed with an incorrect error code.  Intended to be a 404, actually is a %d", blob1DeleteStatusCode);
         
         XCTAssertNil(blob1DownloadError, @"Error in fetching blob content.  Error code = %ld, error domain = %@, error userinfo = %@", (long)blob1DownloadError.code, blob1DownloadError.domain, blob1DownloadError.userInfo);
@@ -485,7 +486,7 @@
         XCTAssertNil(blob2DownloadError, @"Error in fetching blob content.  Error code = %ld, error domain = %@, error userinfo = %@", (long)blob2DownloadError.code, blob2DownloadError.domain, blob2DownloadError.userInfo);
         
         XCTAssertNotNil(blob2SnapshotDownloadError, @"Expected error in blob download did not occur.");
-        int blob2SnapshotDownloadStatusCode = ((NSNumber *)blob2SnapshotDownloadError.userInfo[@"HTTP Status Code"]).intValue;
+        int blob2SnapshotDownloadStatusCode = ((NSNumber *)blob2SnapshotDownloadError.userInfo[AZSCHttpStatusCode]).intValue;
         XCTAssertTrue(blob2SnapshotDownloadStatusCode == 404, @"Blob download failed with an incorrect error code.  Intended to be a 404, actually is a %d", blob2SnapshotDownloadStatusCode);
         
         dispatch_semaphore_signal(semaphore);
@@ -498,7 +499,7 @@
 {
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
 
-    NSString *blobName = [[NSString stringWithFormat:@"sampleblob%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:@""]] lowercaseString];
+    NSString *blobName = [[NSString stringWithFormat:@"sampleblob%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
     NSString *blobText = @"sampleBlobText";
     AZSCloudBlockBlob *blockBlob = [self.blobContainer blockBlobReferenceFromName:blobName];
     
@@ -508,12 +509,12 @@
             XCTAssertNil(error, @"Error in snapshotting blob.  Error code = %ld, error domain = %@, error userinfo = %@", (long)error.code, error.domain, error.userInfo);
             [blockBlobSnapshot deleteWithSnapshotsOption:AZSDeleteSnapshotsOptionDeleteSnapshotsOnly completionHandler:^(NSError *error) {
                 XCTAssertNotNil(error, @"Expected error in blob delete did not occur.");
-                int statusCode = ((NSNumber *)error.userInfo[@"HTTP Status Code"]).intValue;
+                int statusCode = ((NSNumber *)error.userInfo[AZSCHttpStatusCode]).intValue;
                 XCTAssertTrue(statusCode == 400, @"Blob delete failed with an incorrect error code.  Intended to be a 400, actually is a %d", statusCode);
                 
                 [blockBlobSnapshot deleteWithSnapshotsOption:AZSDeleteSnapshotsOptionIncludeSnapshots completionHandler:^(NSError *error) {
                     XCTAssertNotNil(error, @"Expected error in blob delete did not occur.");
-                    int statusCode = ((NSNumber *)error.userInfo[@"HTTP Status Code"]).intValue;
+                    int statusCode = ((NSNumber *)error.userInfo[AZSCHttpStatusCode]).intValue;
                     XCTAssertTrue(statusCode == 400, @"Blob delete failed with an incorrect error code.  Intended to be a 400, actually is a %d", statusCode);
 
                     [blockBlobSnapshot deleteWithSnapshotsOption:AZSDeleteSnapshotsOptionNone completionHandler:^(NSError *error) {
@@ -521,7 +522,7 @@
                         
                         [blockBlobSnapshot downloadToTextWithCompletionHandler:^(NSError *error, NSString *downloadedText) {
                             XCTAssertNotNil(error, @"Expected error in blob snapshot download did not occur.");
-                            int statusCode = ((NSNumber *)error.userInfo[@"HTTP Status Code"]).intValue;
+                            int statusCode = ((NSNumber *)error.userInfo[AZSCHttpStatusCode]).intValue;
                             XCTAssertTrue(statusCode == 404, @"Blob snapshot download failed with an incorrect error code.  Intended to be a 404, actually is a %d", statusCode);
                             
                             [blockBlob downloadToTextWithCompletionHandler:^(NSError *error, NSString *downloadedText) {
@@ -545,7 +546,7 @@
 {
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
     
-    NSString *blobName = [[NSString stringWithFormat:@"sampleblob%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:@""]] lowercaseString];
+    NSString *blobName = [[NSString stringWithFormat:@"sampleblob%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
     
     NSString *blobText = @"sampleBlobText";
     
@@ -578,7 +579,7 @@
     
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
     
-    NSString *blobName = [[NSString stringWithFormat:@"sampleblob%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:@""]] lowercaseString];
+    NSString *blobName = [[NSString stringWithFormat:@"sampleblob%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
     
     NSString *blobText = @"sampleBlobText";
     NSString *blobTextafter1 = @"sampleBlobTextafter1";
@@ -646,7 +647,7 @@
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
     //   TODO:  Change all tests to use XCTestExpectation when we switch to XCode 6
 
-    NSString *blobName = [[NSString stringWithFormat:@"sampleblob%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:@""]] lowercaseString];
+    NSString *blobName = [[NSString stringWithFormat:@"sampleblob%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
 
     NSMutableArray __block *blockIDs = [NSMutableArray arrayWithCapacity:5];
     NSMutableArray __block *blockDataArray = [NSMutableArray arrayWithCapacity:5];
@@ -704,7 +705,7 @@
 -(void)testUseTransactionalMD5
 {
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
-    NSString *blobName = [[NSString stringWithFormat:@"sampleblob%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:@""]] lowercaseString];
+    NSString *blobName = [[NSString stringWithFormat:@"sampleblob%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
     AZSCloudBlockBlob *blockBlob = [self.blobContainer blockBlobReferenceFromName:blobName];
     
     NSString *blockDataString = @"SampleBlockData";
@@ -719,11 +720,11 @@
     bro.useTransactionalMD5 = YES;
     
     
-    void (^validateSendingContentMD5)(NSMutableURLRequest *, AZSOperationContext *) =^void(NSMutableURLRequest *request, AZSOperationContext *sendingOpContext)
+    void (^validateSendingContentMD5)(NSMutableURLRequest *, AZSOperationContext *) = ^(NSMutableURLRequest *request, AZSOperationContext *sendingOpContext)
     {
-        if (![request.URL.absoluteString hasSuffix:@"blocklist"])
+        if (![request.URL.absoluteString hasSuffix:[AZSCXmlBlockList lowercaseString]])
         {
-            XCTAssert([[request allHTTPHeaderFields][@"Content-MD5"] compare:actualContentMD5 options:NSLiteralSearch] == NSOrderedSame, @"Incorrect content-MD5 calculated by the library.");
+            XCTAssert([[request allHTTPHeaderFields][AZSCXmlContentMd5] compare:actualContentMD5 options:NSLiteralSearch] == NSOrderedSame, @"Incorrect content-MD5 calculated by the library.");
         }
     };
     
@@ -770,7 +771,7 @@
     // TODO: Improve this test to test auto-calculation of the MD5 of a much longer input blob.
     
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
-    NSString *blobName = [[NSString stringWithFormat:@"sampleblob%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:@""]] lowercaseString];
+    NSString *blobName = [[NSString stringWithFormat:@"sampleblob%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
     AZSCloudBlockBlob *blockBlob = [self.blobContainer blockBlobReferenceFromName:blobName];
 
     NSString *blockDataString = @"SampleBlockData";
@@ -828,7 +829,7 @@
 -(void)testDisableContentMD5ValidationIncorrectCase
 {
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
-    NSString *blobName = [[NSString stringWithFormat:@"sampleblob%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:@""]] lowercaseString];
+    NSString *blobName = [[NSString stringWithFormat:@"sampleblob%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
     AZSCloudBlockBlob *blockBlob = [self.blobContainer blockBlobReferenceFromName:blobName];
 
     NSString *blockDataString = @"SampleBlockData";
@@ -873,7 +874,7 @@
 -(void)testDisableContentMD5ValidationCorrectCase
 {
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
-    NSString *blobName = [[NSString stringWithFormat:@"sampleblob%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:@""]] lowercaseString];
+    NSString *blobName = [[NSString stringWithFormat:@"sampleblob%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
     AZSCloudBlockBlob *blockBlob = [self.blobContainer blockBlobReferenceFromName:blobName];
     
     NSString *blockDataString = @"SampleBlockData";
@@ -918,7 +919,7 @@
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
     NSString *initialText = @"Some Sample text to roundtrip.";
     NSData *initialData = [initialText dataUsingEncoding:NSUTF8StringEncoding];
-    NSString *blobName = [[NSString stringWithFormat:@"sampleblob%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:@""]] lowercaseString];
+    NSString *blobName = [[NSString stringWithFormat:@"sampleblob%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
     AZSCloudBlockBlob *blockBlob = [self.blobContainer blockBlobReferenceFromName:blobName];
     
     [blockBlob uploadFromData:initialData completionHandler:^(NSError *error) {
@@ -951,7 +952,7 @@
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
     NSString *initialText = @"Some Sample text to roundtrip.";
 
-    NSString *blobName = [[NSString stringWithFormat:@"sampleblob%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:@""]] lowercaseString];
+    NSString *blobName = [[NSString stringWithFormat:@"sampleblob%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
     AZSCloudBlockBlob *blockBlob = [self.blobContainer blockBlobReferenceFromName:blobName];
 
     [blockBlob uploadFromText:initialText completionHandler:^(NSError *error) {
@@ -993,7 +994,7 @@
     [fileText writeToFile:filePath atomically:YES encoding:NSUTF8StringEncoding error:&error];
     XCTAssertNil(error, @"Error in writing initial file.  Error code = %ld, error domain = %@, error userinfo = %@", (long)error.code, error.domain, error.userInfo);
     
-    NSString *blobName = [[NSString stringWithFormat:@"sampleblob%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:@""]] lowercaseString];
+    NSString *blobName = [[NSString stringWithFormat:@"sampleblob%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
     AZSCloudBlockBlob *blockBlob = [self.blobContainer blockBlobReferenceFromName:blobName];
     
     [blockBlob uploadFromFileWithPath:filePath completionHandler:^(NSError *error) {
@@ -1036,7 +1037,7 @@
     [fileText writeToURL:fileURL atomically:YES encoding:NSUTF8StringEncoding error:&error];
     XCTAssertNil(error, @"Error in writing initial file.  Error code = %ld, error domain = %@, error userinfo = %@", (long)error.code, error.domain, error.userInfo);
     
-    NSString *blobName = [[NSString stringWithFormat:@"sampleblob%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:@""]] lowercaseString];
+    NSString *blobName = [[NSString stringWithFormat:@"sampleblob%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
     AZSCloudBlockBlob *blockBlob = [self.blobContainer blockBlobReferenceFromName:blobName];
 
     [blockBlob uploadFromFileWithURL:fileURL completionHandler:^(NSError *error) {
@@ -1068,10 +1069,10 @@
 -(void)testStartCopyFromBlob
 {
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
-    NSString *sourceBlobName = [[NSString stringWithFormat:@"sampleblob%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:@""]] lowercaseString];
+    NSString *sourceBlobName = [[NSString stringWithFormat:@"sampleblob%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
     AZSCloudBlockBlob *sourceBlob = [self.blobContainer blockBlobReferenceFromName:sourceBlobName];
 
-    NSString *targetBlobName = [[NSString stringWithFormat:@"sampleblob%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:@""]] lowercaseString];
+    NSString *targetBlobName = [[NSString stringWithFormat:@"sampleblob%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
     AZSCloudBlockBlob *targetBlob = [self.blobContainer blockBlobReferenceFromName:targetBlobName];
 
     NSString *blobDataString = @"SampleBlockData";
@@ -1088,7 +1089,7 @@
 
                 [targetBlob abortAsyncCopyWithCopyId:copyID completionHandler:^(NSError *error) {
                     XCTAssertNotNil(error, @"Abort copy did not fail as expected.");
-                    int statusCode = ((NSNumber *)error.userInfo[@"HTTP Status Code"]).intValue;
+                    int statusCode = ((NSNumber *)error.userInfo[AZSCHttpStatusCode]).intValue;
                     XCTAssertTrue(statusCode == 409, @"Abort copy failed with an incorrect error code.  Intended to be a 409, actually is a %d", statusCode);
                     
                     [targetBlob downloadToTextWithCompletionHandler:^(NSError *error, NSString *destinationText) {
@@ -1108,10 +1109,10 @@
 -(void)testStartCopyFromURL
 {
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
-    NSString *sourceBlobName = [[NSString stringWithFormat:@"sampleblob%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:@""]] lowercaseString];
+    NSString *sourceBlobName = [[NSString stringWithFormat:@"sampleblob%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
     AZSCloudBlockBlob *sourceBlob = [self.blobContainer blockBlobReferenceFromName:sourceBlobName];
     
-    NSString *targetBlobName = [[NSString stringWithFormat:@"sampleblob%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:@""]] lowercaseString];
+    NSString *targetBlobName = [[NSString stringWithFormat:@"sampleblob%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
     AZSCloudBlockBlob *targetBlob = [self.blobContainer blockBlobReferenceFromName:targetBlobName];
     
     
@@ -1129,7 +1130,7 @@
                 
                 [targetBlob abortAsyncCopyWithCopyId:copyID completionHandler:^(NSError *error) {
                     XCTAssertNotNil(error, @"Abort copy did not fail as expected.");
-                    int statusCode = ((NSNumber *)error.userInfo[@"HTTP Status Code"]).intValue;
+                    int statusCode = ((NSNumber *)error.userInfo[AZSCHttpStatusCode]).intValue;
                     XCTAssertTrue(statusCode == 409, @"Abort copy failed with an incorrect error code.  Intended to be a 409, actually is a %d", statusCode);
 
                     [targetBlob downloadToTextWithCompletionHandler:^(NSError *error, NSString *destinationText) {
@@ -1164,7 +1165,7 @@
                 NSLog(@"Actual code = %ld", (long)((NSNumber *)error.userInfo[@"HTTPStatusCode"]).integerValue);
                 NSLog(@"Expected code = %d", ((NSNumber *)[expectedHTTPCodes objectAtIndex:currentRunCount]).intValue);
                 
-                XCTAssertTrue(((NSNumber *)error.userInfo[@"HTTP Status Code"]).integerValue == ((NSNumber *)[expectedHTTPCodes objectAtIndex:currentRunCount]).intValue, @"Incorrect HTTP Status code found.");
+                XCTAssertTrue(((NSNumber *)error.userInfo[AZSCHttpStatusCode]).integerValue == ((NSNumber *)[expectedHTTPCodes objectAtIndex:currentRunCount]).intValue, @"Incorrect HTTP Status code found.");
             }
             
             [self runAccessConditionTestWithBlob:blob expectedBlobText:expectedBlobText accessConditions:accessConditions expectedHTTPCodes:expectedHTTPCodes currentRunCount:(currentRunCount + 1) completionHandler:completionHandler];
@@ -1176,7 +1177,7 @@
 {
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
 
-    NSString *sourceBlobName = [[NSString stringWithFormat:@"sampleblob%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:@""]] lowercaseString];
+    NSString *sourceBlobName = [[NSString stringWithFormat:@"sampleblob%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
     AZSCloudBlockBlob *sourceBlob = [self.blobContainer blockBlobReferenceFromName:sourceBlobName];
     NSString *blobDataString = @"SampleBlockData";
 
@@ -1223,7 +1224,6 @@
         }];
     }];
     
-
     dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
 
 }

@@ -15,6 +15,7 @@
 // </copyright>
 // -----------------------------------------------------------------------------------------
 
+#import "AZSConstants.h"
 #import "AZSCloudStorageAccount.h"
 #import "AZSCloudBlobClient.h"
 #import "AZSStorageUri.h"
@@ -53,24 +54,24 @@
     AZSCloudStorageAccount *account = nil;
     NSString *endpointSuffix = nil;
     
-    if (settingsDictionary[@"EndpointSuffix"])
+    if (settingsDictionary[AZSCSettingsEndpointSuffix])
     {
-        endpointSuffix = settingsDictionary[@"EndpointSuffix"];
+        endpointSuffix = settingsDictionary[AZSCSettingsEndpointSuffix];
     }
     
-    BOOL useHttps = ![((NSString *)settingsDictionary[@"DefaultEndpointsProtocol"]) isEqualToString:@"http"];
+    BOOL useHttps = ![((NSString *)settingsDictionary[AZSCSettingsEndpointsProtocol]) isEqualToString:AZSCSettingsHttp];
     
     AZSStorageCredentials *credentials = nil;
-    if (settingsDictionary[@"AccountName"] && settingsDictionary[@"AccountKey"])
+    if (settingsDictionary[AZSCSettingsAccountName] && settingsDictionary[AZSCSettingsAccountKey])
     {
-        credentials = [[AZSStorageCredentials alloc] initWithAccountName:settingsDictionary[@"AccountName"] accountKey:settingsDictionary[@"AccountKey"]];
+        credentials = [[AZSStorageCredentials alloc] initWithAccountName:settingsDictionary[AZSCSettingsAccountName] accountKey:settingsDictionary[AZSCSettingsAccountKey]];
     }
-    else if (settingsDictionary[@"SharedAccessSignature"])
+    else if (settingsDictionary[AZSCSettingsSas])
     {
-        credentials = [[AZSStorageCredentials alloc] initWithSASToken:settingsDictionary[@"SharedAccessSignature"]];
+        credentials = [[AZSStorageCredentials alloc] initWithSASToken:settingsDictionary[AZSCSettingsSas]];
     }
     
-    AZSStorageUri *explicitBlobEndpoint = settingsDictionary[@"BlobEndpoint"] ? ([[AZSStorageUri alloc] initWithPrimaryUri:[NSURL URLWithString:settingsDictionary[@"BlobEndpoint"]]]) : nil;
+    AZSStorageUri *explicitBlobEndpoint = settingsDictionary[AZSCSettingsBlobEndpoint] ? ([[AZSStorageUri alloc] initWithPrimaryUri:[NSURL URLWithString:settingsDictionary[AZSCSettingsBlobEndpoint]]]) : nil;
     
     if (explicitBlobEndpoint)
     {
@@ -97,28 +98,28 @@
         NSString *credentialsString = nil;
         if (self.storageCredentials.accountKey)
         {
-            credentialsString = [NSString stringWithFormat:@";AccountName=%@;AccountKey=%@", self.storageCredentials.accountName, self.storageCredentials.accountKey];
+            credentialsString = [NSString stringWithFormat:AZSCSharedTemplateCredentials, @";", self.storageCredentials.accountName, self.storageCredentials.accountKey];
         }
         else if (self.storageCredentials.sasToken)
         {
-            credentialsString = [NSString stringWithFormat:@";SharedAccessSignature=%@", self.storageCredentials.sasToken];
+            credentialsString = [NSString stringWithFormat:AZSCSasTemplateCredentials, self.storageCredentials.sasToken];
         }
         else
         {
-            credentialsString = @"";
+            credentialsString = AZSCEmptyString;
         }
         
         if (self.explicitEndpoints)
         {
-            _connectionString = [NSString stringWithFormat:@"%@;BlobEndpoint=%@", credentialsString, self.blob_endpoint];
+            _connectionString = [NSString stringWithFormat:AZSCSharedTemplateBlobEndpoint, credentialsString, self.blob_endpoint];
         }
         else if (self.endpointSuffix)
         {
-            _connectionString = [NSString stringWithFormat:@"DefaultEndpointsProtocol=%@%@;EndpointSuffix=%@", (self.useHttps ? @"https" : @"http"), credentialsString, self.endpointSuffix];
+            _connectionString = [NSString stringWithFormat:AZSCSharedTemplateEndpointSuffix, (self.useHttps ? AZSCSettingsHttps : AZSCSettingsHttp), credentialsString, self.endpointSuffix];
         }
         else
         {
-            _connectionString = [NSString stringWithFormat:@"DefaultEndpointsProtocol=%@%@", (self.useHttps ? @"https" : @"http"), credentialsString];
+            _connectionString = [NSString stringWithFormat:AZSCSharedTemplateDefaultEndpoint, (self.useHttps ? AZSCSettingsHttps : AZSCSettingsHttp), credentialsString];
         }
     }
     
@@ -127,8 +128,8 @@
 
 -(AZSStorageUri *) constructDefaultEndpointWithScheme:(NSString *)scheme hostnamePrefix:(NSString *)hostnamePrefix endpointSuffix:(NSString *)endpointSuffix
 {
-    NSString *primaryUriString = [NSString stringWithFormat:@"%@://%@.%@.%@", scheme, self.storageCredentials.accountName, hostnamePrefix, endpointSuffix];
-    NSString *secondaryUriString = [NSString stringWithFormat:@"%@://%@-secondary.%@.%@", scheme, self.storageCredentials.accountName, hostnamePrefix, endpointSuffix];
+    NSString *primaryUriString = [NSString stringWithFormat:AZSCSharedTemplatePrimaryUri, scheme, self.storageCredentials.accountName, hostnamePrefix, endpointSuffix];
+    NSString *secondaryUriString = [NSString stringWithFormat:AZSCSharedTemplateSecondaryUri, scheme, self.storageCredentials.accountName, hostnamePrefix, endpointSuffix];
     
     return [[AZSStorageUri alloc] initWithPrimaryUri:[NSURL URLWithString:primaryUriString] secondaryUri:[NSURL URLWithString:secondaryUriString]];
 }
@@ -152,7 +153,7 @@
 
 -(instancetype) initWithCredentials:(AZSStorageCredentials *)storageCredentials useHttps:(BOOL)useHttps
 {
-    self = [self initWithCredentials:storageCredentials useHttps:useHttps endpointSuffix: @"core.windows.net"];
+    self = [self initWithCredentials:storageCredentials useHttps:useHttps endpointSuffix: AZSCDefaultSuffix];
     
     return self;
 }
@@ -164,7 +165,7 @@
     {
         _storageCredentials = storageCredentials;
         _endpointSuffix = endpointSuffix;
-        _blob_endpoint = [self constructDefaultEndpointWithScheme:(useHttps ? @"https" : @"http") hostnamePrefix:@"blob" endpointSuffix:endpointSuffix];
+        _blob_endpoint = [self constructDefaultEndpointWithScheme:(useHttps ? AZSCSettingsHttps : AZSCSettingsHttp) hostnamePrefix:AZSCBlob endpointSuffix:endpointSuffix];
         _explicitEndpoints = NO;
         _useHttps = useHttps;
     }

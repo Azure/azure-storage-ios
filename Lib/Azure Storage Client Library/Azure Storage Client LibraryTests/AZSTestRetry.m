@@ -16,6 +16,7 @@
 // -----------------------------------------------------------------------------------------
 
 #import <XCTest/XCTest.h>
+#import "AZSConstants.h"
 #import "AZSBlobTestBase.h"
 #import "Azure_Storage_Client_Library.h"
 
@@ -49,7 +50,7 @@
 - (void)setUp
 {
     [super setUp];
-    self.containerName = [[NSString stringWithFormat:@"sampleioscontainer%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:@""]] lowercaseString];
+    self.containerName = [[NSString stringWithFormat:@"sampleioscontainer%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
     self.blobContainer = [self.blobClient containerReferenceFromName:self.containerName];
 
     // Put setup code here; it will be run once, before the first test case.
@@ -249,7 +250,6 @@
     }];
     
     dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-
 }
 
 @end

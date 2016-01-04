@@ -21,6 +21,7 @@
 #import "AZSBlobContainerPermissions.h"
 #import "AZSBlobTestBase.h"
 #import "AZSBlockListItem.h"
+#import "AZSConstants.h"
 #import "AZSCloudBlob.h"
 #import "AZSCloudBlobContainer.h"
 #import "AZSCloudBlobClient.h"
@@ -53,7 +54,7 @@
     
     // Put setup code here; it will be run once, before the first test case.
     AZSTestSemaphore *semaphore = [[AZSTestSemaphore alloc] init];
-    NSString *containerName = [[NSString stringWithFormat:@"sampleioscontainer%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:@""]] lowercaseString];
+    NSString *containerName = [[NSString stringWithFormat:@"sampleioscontainer%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
     self.blobContainer = [self.blobClient containerReferenceFromName:containerName];
     
     [self.blobContainer createContainerIfNotExistsWithCompletionHandler:^(NSError* err, BOOL created) {
@@ -84,7 +85,7 @@
     }
     else {
         XCTAssertNotNil(err, @"%@ unexpectedly passed.", message);
-        XCTAssertEqual(code, [[err.userInfo objectForKey:@"HTTP Status Code"] intValue]);
+        XCTAssertEqual(code, [err.userInfo[AZSCHttpStatusCode] intValue]);
     }
 }
 
@@ -95,10 +96,10 @@
     XCTAssertEqual(permissions.sharedAccessPolicies.count, otherPermissions.sharedAccessPolicies.count);
     
     for (NSString *policyIdentifier in permissions.sharedAccessPolicies) {
-        AZSSharedAccessPolicy *policy = [permissions.sharedAccessPolicies objectForKey:policyIdentifier];
+        AZSSharedAccessPolicy *policy = permissions.sharedAccessPolicies[policyIdentifier];
         XCTAssertNotNil(policy);
         
-        AZSSharedAccessPolicy *otherPolicy = [otherPermissions.sharedAccessPolicies objectForKey:policyIdentifier];
+        AZSSharedAccessPolicy *otherPolicy = otherPermissions.sharedAccessPolicies[policyIdentifier];
         XCTAssertNotNil(otherPolicy);
         
         XCTAssertEqual(policy.permissions, otherPolicy.permissions);
@@ -135,12 +136,12 @@
     NSString *sas = [self.blockBlob createSharedAccessSignatureWithParameters:sp error:&error];
     [self checkPassageOfError:error expectToPass:YES errorCode:-1 message:@"Create SAS token"];
     
-    __block NSRange match = [sas rangeOfString:@"api-version"];
+    __block NSRange match = [sas rangeOfString:AZSCQueryApiVersion];
     XCTAssertTrue(match.location == NSNotFound);
     
     AZSOperationContext *context = [[AZSOperationContext alloc] init];
     context.responseReceived = ^void(NSMutableURLRequest *req, NSHTTPURLResponse *resp, AZSOperationContext *ctxt) {
-        match = [[resp.URL absoluteString] rangeOfString:@"api-version"];
+        match = [[resp.URL absoluteString] rangeOfString:AZSCQueryApiVersion];
         XCTAssertFalse(match.location == NSNotFound);
     };
     
@@ -164,7 +165,7 @@
     policy.sharedAccessExpiryTime = [[NSDate alloc] initWithTimeIntervalSinceNow:300];
     
     AZSBlobContainerPermissions *permissions = [[AZSBlobContainerPermissions alloc] init];
-    [permissions.sharedAccessPolicies setObject:policy forKey:sp.storedPolicyIdentifier];
+    permissions.sharedAccessPolicies[sp.storedPolicyIdentifier] = policy;
     [self.blobContainer uploadPermissions:permissions completionHandler:^(NSError *err) {
         [self checkPassageOfError:err expectToPass:YES errorCode:-1 message:@"Upload permissions"];
         [NSThread sleepForTimeInterval:30];
@@ -247,7 +248,7 @@
     policy.sharedAccessExpiryTime = [[NSDate alloc] initWithTimeIntervalSinceNow:300];
     
     AZSBlobContainerPermissions *permissions = [[AZSBlobContainerPermissions alloc] init];
-    [permissions.sharedAccessPolicies setObject:policy forKey:@"readperm"];
+    permissions.sharedAccessPolicies[@"readperm"] = policy;
     [self.blobContainer uploadPermissions:permissions completionHandler:^(NSError * err) {
         [self checkPassageOfError:err expectToPass:YES errorCode:-1 message:@"Upload permissions"];
         
@@ -286,11 +287,11 @@
     sp.headers.contentType = @"text/html; charset=utf-8";
     
     context.responseReceived = ^void(NSMutableURLRequest *req, NSHTTPURLResponse *resp, AZSOperationContext *ctxt) {
-        XCTAssertTrue([@"no-cache" isEqualToString:[resp.allHeaderFields objectForKey:@"Cache-Control"]]);
-        XCTAssertTrue([@"attachment; filename=\"fname.ext\"" isEqualToString:[resp.allHeaderFields objectForKey:@"Content-Disposition"]]);
-        XCTAssertTrue([@"gzip" isEqualToString:[resp.allHeaderFields objectForKey:@"Content-Encoding"]]);
-        XCTAssertTrue([@"da" isEqualToString:[resp.allHeaderFields objectForKey:@"Content-Language"]]);
-        XCTAssertTrue([@"text/html; charset=utf-8" isEqualToString:[resp.allHeaderFields objectForKey:@"Content-Type"]]);
+        XCTAssertTrue([@"no-cache" isEqualToString:resp.allHeaderFields[AZSCXmlContentCacheControl]]);
+        XCTAssertTrue([@"attachment; filename=\"fname.ext\"" isEqualToString:resp.allHeaderFields[AZSCXmlContentDisposition]]);
+        XCTAssertTrue([@"gzip" isEqualToString:resp.allHeaderFields[AZSCXmlContentEncoding]]);
+        XCTAssertTrue([@"da" isEqualToString:resp.allHeaderFields[AZSCXmlContentLanguage]]);
+        XCTAssertTrue([@"text/html; charset=utf-8" isEqualToString:resp.allHeaderFields[AZSCXmlContentType]]);
     };
     
     NSError *error = nil;
@@ -326,8 +327,8 @@
     policy2.sharedAccessExpiryTime = policy.sharedAccessExpiryTime;
     
     AZSBlobContainerPermissions *permissions = [[AZSBlobContainerPermissions alloc] init];
-    [permissions.sharedAccessPolicies setObject:policy forKey:sp.storedPolicyIdentifier];
-    [permissions.sharedAccessPolicies setObject:policy2 forKey:sp2.storedPolicyIdentifier];
+    permissions.sharedAccessPolicies[sp.storedPolicyIdentifier] = policy;
+    permissions.sharedAccessPolicies[sp2.storedPolicyIdentifier] = policy2;
     
     [self.blobContainer uploadPermissions:permissions completionHandler:^(NSError *err) {
         [self checkPassageOfError:err expectToPass:YES errorCode:-1 message:@"Upload permissions"];
@@ -370,7 +371,7 @@
     [testBlob uploadFromText:@"test" completionHandler:^(NSError *err) {
         [self checkPassageOfError:err expectToPass:YES errorCode:-1 message:@"Upload from text"];
         
-        AZSSharedAccessPermissions permissions = (sp.permissions) ? sp.permissions : ((AZSSharedAccessPolicy *) [policies objectForKey:sp.storedPolicyIdentifier]).permissions;
+        AZSSharedAccessPermissions permissions = (sp.permissions) ? sp.permissions : ((AZSSharedAccessPolicy *) policies[sp.storedPolicyIdentifier]).permissions;
         [self testAccessWithSAS:sasToken permissions:permissions container:self.blobContainer blob:testBlob completionHandler:^{
             // Change the policy to only read and update SAS.
             NSString *sasToken2 = [self.blobContainer createSharedAccessSignatureWithParameters:sp2 error:&error];
@@ -402,7 +403,7 @@
         [semaphores addObject:semaphore];
         
         // Create random container and upload a test blob to it
-        NSString *containerName = [[NSString stringWithFormat:@"sampleioscontainer%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:@""]] lowercaseString];
+        NSString *containerName = [[NSString stringWithFormat:@"sampleioscontainer%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
         AZSCloudBlobContainer *container = [self.blobClient containerReferenceFromName:containerName];
         [container createContainerIfNotExistsWithCompletionHandler:^(NSError* err, BOOL created) {
             [self checkPassageOfError:err expectToPass:YES errorCode:-1 message:@"Create container"];
@@ -421,7 +422,7 @@
                 
                 // Test with stored policy
                 __block AZSBlobContainerPermissions *containerPermissions = [[AZSBlobContainerPermissions alloc] init];
-                [containerPermissions.sharedAccessPolicies setObject:policy forKey:policy.policyIdentifier];
+                containerPermissions.sharedAccessPolicies[policy.policyIdentifier] = policy;
                 AZSTestSemaphore *innerSemaphore = [[AZSTestSemaphore alloc] init];
                 NSError *error = nil;
                 
@@ -527,7 +528,7 @@
         [semaphores addObject:semaphore];
         
         // Create random container and upload a test blob to it
-        NSString *containerName = [[NSString stringWithFormat:@"sampleioscontainer%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:@""]] lowercaseString];
+        NSString *containerName = [[NSString stringWithFormat:@"sampleioscontainer%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
         AZSCloudBlobContainer *container = [self.blobClient containerReferenceFromName:containerName];
         [container createContainerIfNotExistsWithCompletionHandler:^(NSError *err, BOOL exists){
             [self checkPassageOfError:err expectToPass:YES errorCode:-1 message:@"Create container"];
@@ -545,7 +546,7 @@
             
                 // Test with stored policy
                 AZSBlobContainerPermissions *containerPermissions = [[AZSBlobContainerPermissions alloc] init];
-                [containerPermissions.sharedAccessPolicies setObject:policy forKey:policy.policyIdentifier];
+                containerPermissions.sharedAccessPolicies[policy.policyIdentifier] = policy;
                 AZSTestSemaphore *innerSemaphore = [[AZSTestSemaphore alloc] init];
                 __block NSError *error = nil;
             
@@ -604,7 +605,7 @@
     policy.permissions = AZSSharedAccessPermissionsRead|AZSSharedAccessPermissionsList;
     policy.sharedAccessExpiryTime = [[NSDate alloc] initWithTimeIntervalSinceNow:300];
     AZSBlobContainerPermissions *permissions = [[AZSBlobContainerPermissions alloc] init];
-    [permissions.sharedAccessPolicies setObject:policy forKey:sp.storedPolicyIdentifier];
+    permissions.sharedAccessPolicies[sp.storedPolicyIdentifier] = policy;
     
     [self.blobContainer uploadPermissions:permissions completionHandler:^(NSError *err) {
         [self checkPassageOfError:err expectToPass:YES errorCode:-1 message:@"Upload Permissions"];
@@ -682,7 +683,7 @@
     policy.permissions = AZSSharedAccessPermissionsRead|AZSSharedAccessPermissionsWrite|AZSSharedAccessPermissionsList;
     policy.sharedAccessExpiryTime = [[NSDate alloc] initWithTimeIntervalSinceNow:300];
     AZSBlobContainerPermissions *permissions = [[AZSBlobContainerPermissions alloc] init];
-    [permissions.sharedAccessPolicies setObject:policy forKey:sp.storedPolicyIdentifier];
+    permissions.sharedAccessPolicies[sp.storedPolicyIdentifier] = policy;
     [self.blobContainer uploadPermissions:permissions completionHandler:^(NSError * err) {
         [self checkPassageOfError:err expectToPass:YES errorCode:-1 message:@"Upload permissions"];
         
@@ -729,11 +730,11 @@
     AZSCloudBlockBlob *sasBlob = [[AZSCloudBlockBlob alloc] initWithUrl:[[NSURL alloc] initWithString:blobURL]];
     
     context.responseReceived = ^void(NSMutableURLRequest *req, NSHTTPURLResponse *resp, AZSOperationContext *ctxt) {
-        XCTAssertTrue([@"no-cache" isEqualToString:[resp.allHeaderFields objectForKey:@"Cache-Control"]]);
-        XCTAssertTrue([@"attachment; filename=\"fname.ext\"" isEqualToString:[resp.allHeaderFields objectForKey:@"Content-Disposition"]]);
-        XCTAssertTrue([@"gzip" isEqualToString:[resp.allHeaderFields objectForKey:@"Content-Encoding"]]);
-        XCTAssertTrue([@"da" isEqualToString:[resp.allHeaderFields objectForKey:@"Content-Language"]]);
-        XCTAssertTrue([@"text/html; charset=utf-8" isEqualToString:[resp.allHeaderFields objectForKey:@"Content-Type"]]);
+        XCTAssertTrue([@"no-cache" isEqualToString:resp.allHeaderFields[AZSCXmlContentCacheControl]]);
+        XCTAssertTrue([@"attachment; filename=\"fname.ext\"" isEqualToString:resp.allHeaderFields[AZSCXmlContentDisposition]]);
+        XCTAssertTrue([@"gzip" isEqualToString:resp.allHeaderFields[AZSCXmlContentEncoding]]);
+        XCTAssertTrue([@"da" isEqualToString:resp.allHeaderFields[AZSCXmlContentLanguage]]);
+        XCTAssertTrue([@"text/html; charset=utf-8" isEqualToString:resp.allHeaderFields[AZSCXmlContentType]]);
     };
     [sasBlob downloadToStream:[[NSOutputStream alloc] initToMemory] accessCondition:nil requestOptions:nil operationContext:context completionHandler:^(NSError * err) {
         [self checkPassageOfError:err expectToPass:YES errorCode:-1 message:@"Download to stream"];
@@ -787,7 +788,7 @@
                                     [innerSemaphore signal];
                                 }
                                 else {
-                                    [container listBlobsSegmentedWithContinuationToken:tok prefix:@"" useFlatBlobListing:YES blobListingDetails:AZSBlobListingDetailsNone maxResults:-1 completionHandler:^(NSError * err, AZSBlobResultSegment *result) {
+                                    [container listBlobsSegmentedWithContinuationToken:tok prefix:AZSCEmptyString useFlatBlobListing:YES blobListingDetails:AZSBlobListingDetailsNone maxResults:-1 completionHandler:^(NSError * err, AZSBlobResultSegment *result) {
                                         [self checkPassageOfError:err expectToPass:YES errorCode:permissionsErrorCode message:@"List blobs"];
                                         
                                         // This recursive call is to a weak block variable to avoid a retention cycle
@@ -802,7 +803,7 @@
                         }
                         else {
                             // Test absence of Container LIST permissions
-                            [container listBlobsSegmentedWithContinuationToken:token prefix:@"" useFlatBlobListing:YES blobListingDetails:AZSBlobListingDetailsNone maxResults:-1 completionHandler:^(NSError * err, AZSBlobResultSegment *result) {
+                            [container listBlobsSegmentedWithContinuationToken:token prefix:AZSCEmptyString useFlatBlobListing:YES blobListingDetails:AZSBlobListingDetailsNone maxResults:-1 completionHandler:^(NSError * err, AZSBlobResultSegment *result) {
                                 [self checkPassageOfError:err expectToPass:NO errorCode:permissionsErrorCode message:@"List blobs"];
                                 [innerSemaphore signal];
                             }];

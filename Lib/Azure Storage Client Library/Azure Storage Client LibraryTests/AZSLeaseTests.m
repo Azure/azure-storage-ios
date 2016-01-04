@@ -19,6 +19,7 @@
 #import <XCTest/XCTest.h>
 #import "Azure_Storage_Client_Library.h"
 #import "AZSBlobTestBase.h"
+#import "AZSConstants.h"
 #import "AZSTestHelpers.h"
 
 @interface AZSLeaseTests : AZSBlobTestBase
@@ -34,7 +35,7 @@
     [super setUp];
     
     // Put setup code here; it will be run once, before the first test case.
-    self.containerName = [[NSString stringWithFormat:@"sampleioscontainer%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:@""]] lowercaseString];
+    self.containerName = [[NSString stringWithFormat:@"sampleioscontainer%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
     self.blobContainer = [self.blobClient containerReferenceFromName:self.containerName];
     [self createContainerIfNotExists:self.blobContainer];
 }
@@ -137,7 +138,7 @@
     NSCondition *lock = [[NSCondition alloc] init];
     __block BOOL done = NO;
     
-    AZSCloudBlockBlob *blob = [self.blobContainer blockBlobReferenceFromName:@"blob"];
+    AZSCloudBlockBlob *blob = [self.blobContainer blockBlobReferenceFromName:AZSCBlob];
     [blob uploadFromText:@"sampleText" completionHandler:^(NSError *error) {
         [self atomicOnLock:lock donePtr:&done operation:^{
             XCTAssertTrue(error == nil, @"Error in blob creation.  Error code = %ld, error domain = %@, error userinfo = %@", (long)error.code, error.domain, error.userInfo);
@@ -172,7 +173,7 @@
     __block NSString *leaseID = [[NSUUID UUID] UUIDString];
     NSCondition *lock = [[NSCondition alloc] init];
     __block BOOL done = NO;
-    NSString *containerName = [[NSString stringWithFormat:@"sampleioscontainer%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:@""]] lowercaseString];
+    NSString *containerName = [[NSString stringWithFormat:@"sampleioscontainer%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
     AZSCloudBlobContainer *blobContainer = [self.blobClient containerReferenceFromName:containerName];
     [self createContainerIfNotExists:blobContainer];
     
@@ -192,7 +193,7 @@
     [blobContainer deleteContainerWithCompletionHandler:^(NSError *error) {
         [self atomicOnLock:lock donePtr:&done operation:^void{
             XCTAssertTrue(error != nil, @"Error in leasing.  Delete call did not fail when it should have.");
-            XCTAssertTrue(((NSNumber *)(error.userInfo[@"HTTP Status Code"])).integerValue == 412, @"Error in leasing, incorrect return code.");
+            XCTAssertTrue(((NSNumber *)(error.userInfo[AZSCHttpStatusCode])).integerValue == 412, @"Error in leasing, incorrect return code.");
         }];
     }];
     [self barrierOnLock:lock donePtr:&done];
@@ -208,7 +209,7 @@
     
     // Infinite
     __block NSString *leaseID2 = [[NSUUID UUID] UUIDString];
-    containerName = [[NSString stringWithFormat:@"sampleioscontainer%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:@""]] lowercaseString];
+    containerName = [[NSString stringWithFormat:@"sampleioscontainer%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
     blobContainer = [self.blobClient containerReferenceFromName:containerName];
     [self createContainerIfNotExists:blobContainer];
     opCtxt = [[AZSOperationContext alloc] init];
@@ -225,7 +226,7 @@
     [blobContainer deleteContainerWithCompletionHandler:^(NSError *error) {
         [self atomicOnLock:lock donePtr:&done operation:^void{
             XCTAssertTrue(error != nil, @"Error in leasing.  Delete call did not fail when it should have.");
-            XCTAssertTrue(((NSNumber *)(error.userInfo[@"HTTP Status Code"])).integerValue == 412, @"Error in leasing, incorrect return code.");
+            XCTAssertTrue(((NSNumber *)(error.userInfo[AZSCHttpStatusCode])).integerValue == 412, @"Error in leasing, incorrect return code.");
         }];
     }];
     [self barrierOnLock:lock donePtr:&done];
@@ -252,7 +253,7 @@
 
 - (void)testBlobAcquireLease
 {
-    AZSCloudBlockBlob *blob = [self.blobContainer blockBlobReferenceFromName:@"blob"];
+    AZSCloudBlockBlob *blob = [self.blobContainer blockBlobReferenceFromName:AZSCBlob];
     // Test acquiring a blob lease
     __block NSString *leaseID = [[NSUUID UUID] UUIDString];
     NSCondition *lock = [[NSCondition alloc] init];
@@ -281,7 +282,7 @@
     [blob deleteWithCompletionHandler:^(NSError *error) {
         [self atomicOnLock:lock donePtr:&done operation:^void{
             XCTAssertTrue(error != nil, @"Error in leasing.  Delete call did not fail when it should have.");
-            XCTAssertTrue(((NSNumber *)(error.userInfo[@"HTTP Status Code"])).integerValue == 412, @"Error in leasing, incorrect return code.");
+            XCTAssertTrue(((NSNumber *)(error.userInfo[AZSCHttpStatusCode])).integerValue == 412, @"Error in leasing, incorrect return code.");
         }];
     }];
     [self barrierOnLock:lock donePtr:&done];
@@ -325,7 +326,7 @@
     [blob deleteWithCompletionHandler:^(NSError *error) {
         [self atomicOnLock:lock donePtr:&done operation:^void{
             XCTAssertTrue(error != nil, @"Error in leasing.  Delete call did not fail when it should have.");
-            XCTAssertTrue(((NSNumber *)(error.userInfo[@"HTTP Status Code"])).integerValue == 412, @"Error in leasing, incorrect return code.");
+            XCTAssertTrue(((NSNumber *)(error.userInfo[AZSCHttpStatusCode])).integerValue == 412, @"Error in leasing, incorrect return code.");
         }];
     }];
     [self barrierOnLock:lock donePtr:&done];
@@ -406,7 +407,7 @@
     NSCondition *lock = [[NSCondition alloc] init];
     __block BOOL done = NO;
     
-    AZSCloudBlockBlob *blob = [self.blobContainer blockBlobReferenceFromName:@"blob"];
+    AZSCloudBlockBlob *blob = [self.blobContainer blockBlobReferenceFromName:AZSCBlob];
     [blob uploadFromText:@"text" completionHandler:^(NSError *err) {
         [self atomicOnLock:lock donePtr:&done operation:^void{
             XCTAssertTrue(err == nil, @"Error in blob creation.  Error code = %ld, error domain = %@, error userinfo = %@", (long)err.code, err.domain, err.userInfo);
@@ -521,7 +522,7 @@
     NSCondition *lock = [[NSCondition alloc] init];
     __block BOOL done = NO;
     
-    AZSCloudBlockBlob *blob = [self.blobContainer blockBlobReferenceFromName:@"blob"];
+    AZSCloudBlockBlob *blob = [self.blobContainer blockBlobReferenceFromName:AZSCBlob];
     [blob uploadFromText:@"text" completionHandler:^(NSError *err) {
         [self atomicOnLock:lock donePtr:&done operation:^void{
             XCTAssertTrue(err == nil, @"Error in blob creation.  Error code = %ld, error domain = %@, error userinfo = %@", (long)err.code, err.domain, err.userInfo);
@@ -651,7 +652,7 @@
     NSCondition *lock = [[NSCondition alloc] init];
     __block BOOL done = NO;
     
-    AZSCloudBlockBlob *blob = [self.blobContainer blockBlobReferenceFromName:@"blob"];
+    AZSCloudBlockBlob *blob = [self.blobContainer blockBlobReferenceFromName:AZSCBlob];
     [blob uploadFromText:@"text" completionHandler:^(NSError *err) {
         [self atomicOnLock:lock donePtr:&done operation:^void{
             XCTAssertTrue(err == nil, @"Error in blob creation.  Error code = %ld, error domain = %@, error userinfo = %@", (long)err.code, err.domain, err.userInfo);
@@ -661,9 +662,13 @@
     
     // 15 seconds
     [blob acquireLeaseWithLeaseTime:[[NSNumber alloc] initWithInt:15] proposedLeaseId:leaseID completionHandler:^(NSError* err, NSString* resultLeaseID){
-        [self atomicOnLock:lock donePtr:&done operation:^void{
-            XCTAssertTrue(err == nil, @"Error in leasing.  Error code = %ld, error domain = %@, error userinfo = %@", (long)err.code, err.domain, err.userInfo);
-            leaseID = resultLeaseID;
+        AZSCloudBlob *blobCopy = [self.blobContainer blockBlobReferenceFromName:AZSCBlob];
+        [blobCopy fetchAttributesWithCompletionHandler:^(NSError * err){
+            [self atomicOnLock:lock donePtr:&done operation:^void{
+                XCTAssertTrue(err == nil, @"Error in leasing.  Error code = %ld, error domain = %@, error userinfo = %@", (long)err.code, err.domain, err.userInfo);
+                XCTAssertEqual(blobCopy.properties.leaseDuration, AZSLeaseDurationFixed);
+                leaseID = resultLeaseID;
+            }];
         }];
     }];
     [self barrierOnLock:lock donePtr:&done];
@@ -892,7 +897,7 @@
     __block NSString *leaseID2;
     AZSOperationContext *opCtxt = [[AZSOperationContext alloc] init];
     
-    AZSCloudBlockBlob *blob = [self.blobContainer blockBlobReferenceFromName:@"blob"];
+    AZSCloudBlockBlob *blob = [self.blobContainer blockBlobReferenceFromName:AZSCBlob];
     [blob uploadFromText:@"text" completionHandler:^(NSError *err) {
         [self atomicOnLock:lock donePtr:&done operation:^void{
             XCTAssertTrue(err == nil, @"Error in blob creation.  Error code = %ld, error domain = %@, error userinfo = %@", (long)err.code, err.domain, err.userInfo);

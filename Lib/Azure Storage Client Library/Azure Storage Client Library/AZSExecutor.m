@@ -16,6 +16,7 @@
 // -----------------------------------------------------------------------------------------
 
 #import <CommonCrypto/CommonDigest.h>
+#import "AZSConstants.h"
 #import "AZSExecutor.h"
 #import "AZSOperationContext.h"
 #import "AZSRequestOptions.h"
@@ -353,7 +354,7 @@
         NSString *clientRequestId = self.operationContext.clientRequestId;
         if ([clientRequestId length] != 0)
         {
-            [self.request setValue:clientRequestId forHTTPHeaderField:@"x-ms-client-request-id"];
+            [self.request setValue:clientRequestId forHTTPHeaderField:AZSCHeaderClientRequestId];
         }
         
         // User headers from op context
@@ -364,7 +365,7 @@
 
         // TODO: make this static, so that we're not querying the OS each time
         NSString *operationSystemVersionString = [NSProcessInfo processInfo].operatingSystemVersionString;
-        [self.request setValue:[NSString stringWithFormat:@"Azure-Storage/0.1.1-preview (iOS %@)",operationSystemVersionString] forHTTPHeaderField:@"User-Agent"];
+        [self.request setValue:[NSString stringWithFormat:AZSCHeaderValueUserAgent,operationSystemVersionString] forHTTPHeaderField:AZSCHeaderUserAgent];
         
         // Add the user headers, if they exist.
         if (self.operationContext.userHeaders)

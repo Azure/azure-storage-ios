@@ -16,6 +16,7 @@
 // -----------------------------------------------------------------------------------------
 
 #import <XCTest/XCTest.h>
+#import "AZSConstants.h"
 #import "AZSBlobTestBase.h"
 #import "Azure_Storage_Client_Library.h"
 
@@ -122,7 +123,7 @@
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
 
     // Prefix, max results, containerListingDetails, continuation token.
-    NSString *containerNamePrefix = [[NSString stringWithFormat:@"sampleioscontainer%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:@""]] lowercaseString];
+    NSString *containerNamePrefix = [[NSString stringWithFormat:@"sampleioscontainer%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
     NSInteger numberContainersToCreate = 5;
     __block NSMutableArray *containerArray = [NSMutableArray arrayWithCapacity:numberContainersToCreate];
     [self createContainersWithPrefix:containerNamePrefix numberToCreate:numberContainersToCreate arrayToPopulate:containerArray completionHandler:^(NSError *error) {
@@ -167,7 +168,7 @@
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
     
     // Prefix, max results, containerListingDetails, continuation token.
-    NSString *containerNamePrefix = [[NSString stringWithFormat:@"sampleioscontainer%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:@""]] lowercaseString];
+    NSString *containerNamePrefix = [[NSString stringWithFormat:@"sampleioscontainer%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
     NSInteger numberContainersToCreate = 5;
     __block NSMutableArray *containerArray = [NSMutableArray arrayWithCapacity:numberContainersToCreate];
     [self createContainersWithPrefix:containerNamePrefix numberToCreate:numberContainersToCreate arrayToPopulate:containerArray completionHandler:^(NSError *error) {
@@ -216,7 +217,7 @@
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
     
     // Prefix, max results, containerListingDetails, continuation token.
-    NSString *containerNamePrefix = [[NSString stringWithFormat:@"sampleioscontainer%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:@""]] lowercaseString];
+    NSString *containerNamePrefix = [[NSString stringWithFormat:@"sampleioscontainer%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
     NSInteger numberContainersToCreate = 5;
     __block NSMutableArray *containerArray = [NSMutableArray arrayWithCapacity:numberContainersToCreate];
     [self createContainersWithPrefix:containerNamePrefix numberToCreate:numberContainersToCreate arrayToPopulate:containerArray completionHandler:^(NSError *error) {
@@ -266,7 +267,7 @@
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
     
     // Prefix, max results, containerListingDetails, continuation token.
-    NSString *containerNamePrefix = [[NSString stringWithFormat:@"sampleioscontainer%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:@""]] lowercaseString];
+    NSString *containerNamePrefix = [[NSString stringWithFormat:@"sampleioscontainer%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
     NSInteger numberContainersToCreate = 5;
     __block NSMutableArray *containerArray = [NSMutableArray arrayWithCapacity:numberContainersToCreate];
     [self createContainersWithPrefix:containerNamePrefix numberToCreate:numberContainersToCreate arrayToPopulate:containerArray completionHandler:^(NSError *error) {
@@ -310,6 +311,5 @@
     }];
     dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
 }
-
 
 @end

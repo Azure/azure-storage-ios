@@ -15,6 +15,7 @@
 // </copyright>
 // -----------------------------------------------------------------------------------------
 
+#import "AZSConstants.h"
 #import "AZSCloudClient.h"
 #import "AZSErrors.h"
 #import "AZSOperationContext.h"
@@ -49,13 +50,13 @@
         return nil;
     }
     
-    stringToSign = [NSString stringWithFormat:@"%@\n%@\n%@\n%@\n%@\n%@", stringToSign, [self emptyIfNilString:parameters.headers.cacheControl], [self emptyIfNilString:parameters.headers.contentDisposition], [self emptyIfNilString:parameters.headers.contentEncoding], [self emptyIfNilString:parameters.headers.contentLanguage], [self emptyIfNilString:parameters.headers.contentType]];
+    stringToSign = [NSString stringWithFormat:AZSCSasTemplateBlobParameters, stringToSign, [self emptyIfNilString:parameters.headers.cacheControl], [self emptyIfNilString:parameters.headers.contentDisposition], [self emptyIfNilString:parameters.headers.contentEncoding], [self emptyIfNilString:parameters.headers.contentLanguage], [self emptyIfNilString:parameters.headers.contentType]];
     return [self sharedAccessSignatureHashWithStringToSign:stringToSign credentials:[client credentials] error:error];
 }
 
 +(NSString *)emptyIfNilString:(NSString *)testString
 {
-    return (testString) ? testString : @"";
+    return testString ?: AZSCEmptyString;
 }
 
 +(AZSUriQueryBuilder *)sharedAccessSignatureWithPermissions:(AZSSharedAccessPermissions)permissions sharedAccessStartTime:(NSDate *)startTime sharedAccessExpiryTime:(NSDate *)expiryTime startPartitionKey:(NSString *)startPartitionKey startRowKey:(NSString *)startRowKey endPartitionKey:(NSString *)endPartitionKey endRowKey:(NSString *)endRowKey headers:(AZSSharedAccessHeaders *)headers storedPolicyIdentifier:(NSString *)storedPolicyIdentifier resourceType:(NSString *)resourceType tableName:(NSString *)tableName signature:(NSString *)signature error:(NSError **)error
@@ -67,8 +68,8 @@
     }
     
     AZSUriQueryBuilder *builder = [[AZSUriQueryBuilder alloc] init];
-    [builder addWithKey:@"sv" value: /* Target Storage Version */ @"2015-04-05"];
-    [builder addIfNotNilOrEmptyWithKey:@"sp" value:[AZSSharedAccessSignatureHelper stringFromPermissions:permissions error:error]];
+    [builder addWithKey:AZSCSasServiceVersion value: AZSCTargetStorageVersion];
+    [builder addIfNotNilOrEmptyWithKey:AZSCSasPermissions value:[AZSSharedAccessSignatureHelper stringFromPermissions:permissions error:error]];
     
     if (*error) {
         // An error occurred.
@@ -76,28 +77,28 @@
     }
     
     NSString *startString = [AZSUtil utcTimeOrEmptyWithDate:startTime];
-    [builder addIfNotNilOrEmptyWithKey:@"st" value:startString];
+    [builder addIfNotNilOrEmptyWithKey:AZSCSasStartTime value:startString];
     
     NSString *expiryString = [AZSUtil utcTimeOrEmptyWithDate:expiryTime];
-    [builder addIfNotNilOrEmptyWithKey:@"se" value:expiryString];
+    [builder addIfNotNilOrEmptyWithKey:AZSCSasExpiryTime value:expiryString];
     
-    [builder addIfNotNilOrEmptyWithKey:@"spk" value:startPartitionKey];
-    [builder addIfNotNilOrEmptyWithKey:@"srk" value:startRowKey];
-    [builder addIfNotNilOrEmptyWithKey:@"epk" value:endPartitionKey];
-    [builder addIfNotNilOrEmptyWithKey:@"erk" value:endRowKey];
+    [builder addIfNotNilOrEmptyWithKey:AZSCSasStartPartionKey value:startPartitionKey];
+    [builder addIfNotNilOrEmptyWithKey:AZSCSasStartRowKey value:startRowKey];
+    [builder addIfNotNilOrEmptyWithKey:AZSCSasEndPartionKey value:endPartitionKey];
+    [builder addIfNotNilOrEmptyWithKey:AZSCSasEndRowKey value:endRowKey];
     
-    [builder addIfNotNilOrEmptyWithKey:@"si" value:storedPolicyIdentifier];
-    [builder addIfNotNilOrEmptyWithKey:@"sr" value:resourceType];
+    [builder addIfNotNilOrEmptyWithKey:AZSCSasStoredIdentifier value:storedPolicyIdentifier];
+    [builder addIfNotNilOrEmptyWithKey:AZSCSasResource value:resourceType];
     
-    [builder addIfNotNilOrEmptyWithKey:@"tn" value:tableName];
+    [builder addIfNotNilOrEmptyWithKey:AZSCSasTableName value:tableName];
     
-    [builder addIfNotNilOrEmptyWithKey:@"rscc" value:headers.cacheControl];
-    [builder addIfNotNilOrEmptyWithKey:@"rsct" value:headers.contentType];
-    [builder addIfNotNilOrEmptyWithKey:@"rsce" value:headers.contentEncoding];
-    [builder addIfNotNilOrEmptyWithKey:@"rscl" value:headers.contentLanguage];
-    [builder addIfNotNilOrEmptyWithKey:@"rscd" value:headers.contentDisposition];
+    [builder addIfNotNilOrEmptyWithKey:AZSCSasCacheControl value:headers.cacheControl];
+    [builder addIfNotNilOrEmptyWithKey:AZSCSasContentType value:headers.contentType];
+    [builder addIfNotNilOrEmptyWithKey:AZSCSasContentEncoding value:headers.contentEncoding];
+    [builder addIfNotNilOrEmptyWithKey:AZSCSasContentLanguage value:headers.contentLanguage];
+    [builder addIfNotNilOrEmptyWithKey:AZSCSasContentDisposition value:headers.contentDisposition];
     
-    [builder addIfNotNilOrEmptyWithKey:@"sig" value:signature];
+    [builder addIfNotNilOrEmptyWithKey:AZSCQuerySig value:signature];
     
     return builder;
 }
@@ -125,10 +126,10 @@
     }
     
     // Todo: Add ipRange and procols
-    NSString *stringToSign = [NSString stringWithFormat:@"%@\n%@\n%@\n%@\n%@\n\n\n%@",
+    NSString *stringToSign = [NSString stringWithFormat:AZSCSasTemplateBlobStringToSign,
                               [self emptyIfNilString:[AZSSharedAccessSignatureHelper stringFromPermissions:permissions error:error]],
                               [AZSUtil utcTimeOrEmptyWithDate:startTime], [AZSUtil utcTimeOrEmptyWithDate:expiryTime],
-            resource, [self emptyIfNilString:storedPolicyIdentifier], /* Target Storage Version */ @"2015-04-05"];
+            resource, [self emptyIfNilString:storedPolicyIdentifier], AZSCTargetStorageVersion];
     return (*error) ? nil : stringToSign;
 }
 
@@ -142,22 +143,22 @@
     
     NSMutableString *builder = [[NSMutableString alloc] init];
     if (permissions & AZSSharedAccessPermissionsRead) {
-        [builder appendString:@"r"];
+        [builder appendString:AZSCSasPermissionsRead];
     }
     if (permissions & AZSSharedAccessPermissionsAdd) {
-        [builder appendString:@"a"];
+        [builder appendString:AZSCSasPermissionsAdd];
     }
     if (permissions & AZSSharedAccessPermissionsCreate) {
-        [builder appendString:@"c"];
+        [builder appendString:AZSCSasPermissionsCreate];
     }
     if (permissions & AZSSharedAccessPermissionsWrite) {
-        [builder appendString:@"w"];
+        [builder appendString:AZSCSasPermissionsWrite];
     }
     if (permissions & AZSSharedAccessPermissionsDelete) {
-        [builder appendString:@"d"];
+        [builder appendString:AZSCSasPermissionsDelete];
     }
     if (permissions & AZSSharedAccessPermissionsList) {
-        [builder appendString:@"l"];
+        [builder appendString:AZSCSasPermissionsList];
     }
     
     return builder;

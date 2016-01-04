@@ -15,6 +15,7 @@
 // </copyright>
 // -----------------------------------------------------------------------------------------
 
+#import "AZSConstants.h"
 #import "AZSResponseParser.h"
 #import "AZSErrors.h"
 #import "AZSOperationContext.h"
@@ -52,10 +53,10 @@
         default:
         {
             NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
-            userInfo[@"HTTP Status Code"] = [NSNumber numberWithInteger:response.statusCode];
-            userInfo[@"URLResponse"] = response;
-            userInfo[@"RequestResult"] = requestResult;
-            userInfo[@"OperationContext"] = operationContext;
+            userInfo[AZSCHttpStatusCode] = [NSNumber numberWithInteger:response.statusCode];
+            userInfo[AZSCXmlUrlResponse] = response;
+            userInfo[AZSCXmlRequestResult] = requestResult;
+            userInfo[AZSCXmlOperationContext] = operationContext;
             NSError *storageError = [NSError errorWithDomain:AZSErrorDomain code:AZSEServerError userInfo:userInfo];
             return storageError;
         }
@@ -101,14 +102,14 @@
         
         NSString *parentNode = elementStack.lastObject;
         
-        if ([parentNode isEqualToString:@"Error"])
+        if ([parentNode isEqualToString:AZSCXmlError])
         {
-            if ([currentNode isEqualToString:@"Code"])
+            if ([currentNode isEqualToString:AZSCXmlCode])
             {
                 userInfo[currentNode] = builder;
                 builder = [[NSMutableString alloc] init];
             }
-            else if ([currentNode isEqualToString:@"Message"])
+            else if ([currentNode isEqualToString:AZSCXmlMessage])
             {
                 userInfo[currentNode] = builder;
                 builder = [[NSMutableString alloc] init];

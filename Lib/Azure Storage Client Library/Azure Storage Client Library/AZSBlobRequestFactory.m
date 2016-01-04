@@ -17,6 +17,7 @@
 
 #import "AZSBlobRequestFactory.h"
 #import "AZSAccessCondition.h"
+#import "AZSConstants.h"
 #import "AZSContinuationToken.h"
 #import "AZSBlobContainerProperties.h"
 #import "AZSEnums.h"
@@ -30,31 +31,36 @@
 +(NSMutableURLRequest *) createContainerWithAccessType:(AZSContainerPublicAccessType)accessType cloudMetadata:(NSMutableDictionary *)cloudMetadata urlComponents:(NSURLComponents *)urlComponents timeout:(NSTimeInterval)timeout operationContext:(AZSOperationContext *)operationContext
 {
     // TODO: IOS 8 - update this to use urlComponents.queryItems
-    urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:@"restype=container"];
+    urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:AZSCQueryRestypeContainer];
     NSMutableURLRequest *request = [AZSRequestFactory putRequestWithUrlComponents:urlComponents timeout:timeout];
     
-    switch (accessType)
-    {
-        case AZSContainerPublicAccessTypeContainer:
-            [request setValue:@"container" forHTTPHeaderField:@"x-ms-blob-public-access"];
-            break;
-        case AZSContainerPublicAccessTypeBlob:
-            [request setValue:@"blob" forHTTPHeaderField:@"x-ms-blob-public-access"];
-            break;
-        case AZSContainerPublicAccessTypeOff:
-        default:
-            break;
-    }
+    [AZSBlobRequestFactory addAccessTypeToRequest:request accessType:accessType];
 
     [AZSRequestFactory addMetadataToRequest:request metadata:cloudMetadata];
 
     return request;
 }
 
++(void) addAccessTypeToRequest:(NSMutableURLRequest *)request accessType:(AZSContainerPublicAccessType)accessType
+{
+    switch (accessType) {
+        case AZSContainerPublicAccessTypeBlob:
+            [AZSUtil addOptionalHeaderToRequest:request header:AZSCHeaderBlobPublicAccess stringValue:AZSCBlob];
+            break;
+            
+        case AZSContainerPublicAccessTypeContainer:
+            [AZSUtil addOptionalHeaderToRequest:request header:AZSCHeaderBlobPublicAccess stringValue:AZSCContainer];
+            break;
+            
+        case AZSContainerPublicAccessTypeOff:
+            break;
+    }
+}
+
 +(NSMutableURLRequest *) deleteContainerWithAccessCondition:(AZSAccessCondition *)accessCondition urlComponents:(NSURLComponents *)urlComponents timeout:(NSTimeInterval)timeout operationContext:(AZSOperationContext *)operationContext;
 {
     // TODO: IOS 8 - update this to use urlComponents.queryItems
-    urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:@"restype=container"];
+    urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:AZSCQueryRestypeContainer];
     NSMutableURLRequest *request = [AZSRequestFactory deleteRequestWithUrlComponents:urlComponents timeout:timeout];
     
     [AZSRequestFactory applyAccessConditionToRequest:request condition:accessCondition];
@@ -63,25 +69,25 @@
 
 +(NSMutableURLRequest *) listContainersWithPrefix:(NSString *)prefix containerListingDetails:(AZSContainerListingDetails)containerListingDetails maxResults:(NSInteger)maxResults continuationToken:(AZSContinuationToken *)continuationToken urlComponents:(NSURLComponents *)urlComponents timeout:(NSTimeInterval)timeout operationContext:(AZSOperationContext *)operationContext
 {
-    urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:@"comp=list"];
+    urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:AZSCQueryCompList];
     if (prefix != nil && [prefix length] > 0)
     {
-        urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:[NSString stringWithFormat:@"prefix=%@", prefix]];
+        urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:[NSString stringWithFormat:AZSCQueryTemplatePrefix, prefix]];
     }
     
     if (continuationToken.nextMarker != nil && [continuationToken.nextMarker length] > 0)
     {
-        urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:[NSString stringWithFormat:@"marker=%@", continuationToken.nextMarker]];
+        urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:[NSString stringWithFormat:AZSCQueryTemplateMarker, continuationToken.nextMarker]];
     }
     
     if (maxResults > 0)
     {
-        urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:[NSString stringWithFormat:@"maxresults=%ld", (long)maxResults]];
+        urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:[NSString stringWithFormat:AZSCQueryTemplateMaxResults, (long)maxResults]];
     }
     
     if ((containerListingDetails & AZSContainerListingDetailsMetadata) != 0)
     {
-        urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:@"include=metadata"];
+        urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:AZSCQueryIncludeMetadata];
     }
     
     NSMutableURLRequest *request = [AZSRequestFactory getRequestWithUrlComponents:urlComponents timeout:timeout];
@@ -91,8 +97,8 @@
 +(NSMutableURLRequest *) uploadContainerMetadataWithCloudMetadata:(NSMutableDictionary *) cloudMetadata accessCondition:(AZSAccessCondition *)accessCondition urlComponents:(NSURLComponents *)urlComponents timeout:(NSTimeInterval)timeout operationContext:(AZSOperationContext *)operationContext
 {
     // TODO: IOS 8 - update this to use urlComponents.queryItems
-    urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:@"restype=container"];
-    urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:@"comp=metadata"];
+    urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:AZSCQueryRestypeContainer];
+    urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:AZSCQueryCompMetadata];
     NSMutableURLRequest *request = [AZSRequestFactory putRequestWithUrlComponents:urlComponents timeout:timeout];
     
     [AZSRequestFactory addMetadataToRequest:request metadata:cloudMetadata];
@@ -104,7 +110,7 @@
 +(NSMutableURLRequest *) fetchContainerAttributesWithAccessCondition:(AZSAccessCondition *)accessCondition urlComponents:(NSURLComponents *)urlComponents timeout:(NSTimeInterval)timeout operationContext:(AZSOperationContext *)operationContext
 {
     // TODO: IOS 8 - update this to use urlComponents.queryItems
-    urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:@"restype=container"];
+    urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:AZSCQueryRestypeContainer];
     NSMutableURLRequest *request = [AZSRequestFactory headRequestWithUrlComponents:urlComponents timeout:timeout];
     
     [AZSRequestFactory applyAccessConditionToRequest:request condition:accessCondition];
@@ -114,8 +120,8 @@
 +(NSMutableURLRequest *) downloadContainerPermissionsWithAccessCondition:(AZSAccessCondition *)accessCondition urlComponents:(NSURLComponents *)urlComponents timeout:(NSTimeInterval)timeout operationContext:(AZSOperationContext *)operationContext
 {
     // TODO: IOS 8 - update this to use urlComponents.queryItems
-    urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:@"restype=container"];
-    urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:@"comp=acl"];
+    urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:AZSCQueryRestypeContainer];
+    urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:AZSCQueryCompAcl];
     NSMutableURLRequest *request = [AZSRequestFactory getRequestWithUrlComponents:urlComponents timeout:timeout];
     
     [AZSRequestFactory applyAccessConditionToRequest:request condition:accessCondition];
@@ -125,8 +131,8 @@
 +(NSMutableURLRequest *)leaseContainerWithLeaseAction:(AZSLeaseAction)leaseAction proposedLeaseId:(NSString *)proposedLeaseId leaseDuration:(NSNumber *)leaseDuration leaseBreakPeriod:(NSNumber *)leaseBreakPeriod accessCondition:(AZSAccessCondition *)accessCondition urlComponents:(NSURLComponents *)urlComponents timeout:(NSTimeInterval)timeout operationContext:(AZSOperationContext *)operationContext
 {
     // TODO: IOS 8 - update this to use urlComponents.queryItems
-    urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:@"restype=container"];
-    urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:@"comp=lease"];
+    urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:AZSCQueryRestypeContainer];
+    urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:AZSCQueryCompLease];
     NSMutableURLRequest *request = [AZSRequestFactory putRequestWithUrlComponents:urlComponents timeout:timeout];
     
     [AZSBlobRequestFactory addLeaseActionToRequest:request leaseAction:leaseAction];
@@ -140,24 +146,13 @@
 
 +(NSMutableURLRequest *) uploadContainerPermissionsWithLength:(NSUInteger)length urlComponents:(NSURLComponents *)urlComponents options:(AZSBlobRequestOptions *)options accessCondition:(AZSAccessCondition *)accessCondition publicAccess:(AZSContainerPublicAccessType)publicAccess timeout:(NSTimeInterval)timeout operationContext:(AZSOperationContext *)operationContext
 {
-    urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:@"restype=container"];
-    urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:@"comp=acl"];
+    urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:AZSCQueryRestypeContainer];
+    urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:AZSCQueryCompAcl];
     NSMutableURLRequest *request = [AZSRequestFactory putRequestWithUrlComponents:urlComponents timeout:timeout];
 
-    [request setValue:[NSString stringWithFormat:@"%lu", (unsigned long)length] forHTTPHeaderField:@"Content-Length"];
+    [request setValue:[NSString stringWithFormat:@"%lu", (unsigned long)length] forHTTPHeaderField:AZSCXmlContentLength];
     
-    switch (publicAccess) {
-        case AZSContainerPublicAccessTypeBlob:
-            [AZSUtil addOptionalHeaderToRequest:request header:@"x-ms-blob-public-access" stringValue:@"blob"];
-            break;
-            
-        case AZSContainerPublicAccessTypeContainer:
-            [AZSUtil addOptionalHeaderToRequest:request header:@"x-ms-blob-public-access" stringValue:@"container"];
-            break;
-            
-        case AZSContainerPublicAccessTypeOff:
-            break;
-    }
+    [AZSBlobRequestFactory addAccessTypeToRequest:request accessType:publicAccess];
     
     [AZSRequestFactory applyAccessConditionToRequest:request condition:accessCondition];
     
@@ -168,70 +163,70 @@
 {
     // TODO: IOS 8 - update this to use urlComponents.queryItems
     NSMutableURLRequest *request = [AZSRequestFactory putRequestWithUrlComponents:urlComponents timeout:timeout];
-    [request setValue:[NSString stringWithFormat:@"%lu", (unsigned long)length] forHTTPHeaderField:@"Content-Length"];
-    [request setValue:@"BlockBlob" forHTTPHeaderField:@"x-ms-blob-type"];
+    [request setValue:[NSString stringWithFormat:@"%lu", (unsigned long)length] forHTTPHeaderField:AZSCXmlContentLength];
+    [request setValue:AZSCXmlBlobBlockBlob forHTTPHeaderField:AZSCHeaderBlobType];
     
     [AZSRequestFactory addMetadataToRequest:request metadata:cloudMetadata];
     [AZSBlobRequestFactory addBlobPropertiesToRequest:request properties:blobProperties];
     
     [AZSRequestFactory applyAccessConditionToRequest:request condition:accessCondition];
-    [AZSUtil addOptionalHeaderToRequest:request header:@"Content-MD5" stringValue:contentMD5];
+    [AZSUtil addOptionalHeaderToRequest:request header:AZSCXmlContentMd5 stringValue:contentMD5];
     return request;
 }
 
 +(NSMutableURLRequest *) putBlockWithLength:(NSUInteger)length blockID:(NSString *)blockID contentMD5:(NSString *)contentMD5 AccessCondition:(AZSAccessCondition *)accessCondition urlComponents:(NSURLComponents *)urlComponents timeout:(NSTimeInterval)timeout operationContext:(AZSOperationContext *)operationContext
 {
-    urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:@"comp=block"];
-    urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:[NSString stringWithFormat:@"blockid=%@",blockID]];
+    urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:AZSCQueryCompBlock];
+    urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:[NSString stringWithFormat:AZSCQueryTemplateBlockId,blockID]];
 
     // TODO: IOS 8 - update this to use urlComponents.queryItems
     NSMutableURLRequest *request = [AZSRequestFactory putRequestWithUrlComponents:urlComponents timeout:timeout];
-    [request setValue:[NSString stringWithFormat:@"%lu", (unsigned long)length] forHTTPHeaderField:@"Content-Length"];
+    [request setValue:[NSString stringWithFormat:@"%lu", (unsigned long)length] forHTTPHeaderField:AZSCXmlContentLength];
     
     [AZSRequestFactory applyLeaseIdToRequest:request condition:accessCondition];
-    [AZSUtil addOptionalHeaderToRequest:request header:@"Content-MD5" stringValue:contentMD5];
+    [AZSUtil addOptionalHeaderToRequest:request header:AZSCXmlContentMd5 stringValue:contentMD5];
     [AZSRequestFactory applyAccessConditionToRequest:request condition:accessCondition];
     return request;
 }
 
 +(NSMutableURLRequest *) putBlockListWithLength:(NSUInteger)length blobProperties:(AZSBlobProperties *)blobProperties contentMD5:(NSString *)contentMD5 cloudMetadata:(NSMutableDictionary *)cloudMetadata AccessCondition:(AZSAccessCondition *)accessCondition urlComponents:(NSURLComponents *)urlComponents timeout:(NSTimeInterval)timeout operationContext:(AZSOperationContext *)operationContext
 {
-    urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:@"comp=blocklist"];
+    urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:AZSCQueryCompBlockList];
     // TODO: IOS 8 - update this to use urlComponents.queryItems
     NSMutableURLRequest *request = [AZSRequestFactory putRequestWithUrlComponents:urlComponents timeout:timeout];
-    [request setValue:[NSString stringWithFormat:@"%lu", (unsigned long)length] forHTTPHeaderField:@"Content-Length"];
+    [request setValue:[NSString stringWithFormat:@"%lu", (unsigned long)length] forHTTPHeaderField:AZSCXmlContentLength];
     
     [AZSRequestFactory addMetadataToRequest:request metadata:cloudMetadata];
     [AZSBlobRequestFactory addBlobPropertiesToRequest:request properties:blobProperties];
     
     [AZSRequestFactory applyAccessConditionToRequest:request condition:accessCondition];
-    [AZSUtil addOptionalHeaderToRequest:request header:@"Content-MD5" stringValue:contentMD5];
+    [AZSUtil addOptionalHeaderToRequest:request header:AZSCXmlContentMd5 stringValue:contentMD5];
     
     return request;
 }
 
 +(NSMutableURLRequest *) getBlockListWithBlockListFilter:(AZSBlockListFilter)blockListFilter snapshotTime:(NSString *)snapshotTime accessCondition:(AZSAccessCondition *)accessCondition urlComponents:(NSURLComponents *)urlComponents timeout:(NSTimeInterval)timeout operationContext:(AZSOperationContext *)operationContext
 {
-    urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:@"comp=blocklist"];
+    urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:AZSCQueryCompBlockList];
     
     NSString *blockListSpecifier;
     switch (blockListFilter)
     {
         case AZSBlockListFilterAll:
-            blockListSpecifier = @"all";
+            blockListSpecifier = AZSCHeaderValueAll;
             break;
         case AZSBlockListFilterCommitted:
-            blockListSpecifier = @"committed";
+            blockListSpecifier = AZSCHeaderValueCommitted;
             break;
         case AZSBlockListFilterUncommitted:
-            blockListSpecifier = @"uncommitted";
+            blockListSpecifier = AZSCHeaderValueUncommitted;
             break;
     }
     
-    urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:[NSString stringWithFormat:@"blocklisttype=%@", blockListSpecifier]];
+    urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:[NSString stringWithFormat:AZSCQueryTemplateBlockListType, blockListSpecifier]];
     if (snapshotTime)
     {
-        urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:[NSString stringWithFormat:@"snapshot=%@", snapshotTime]];
+        urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:[NSString stringWithFormat:AZSCQueryTemplateSnapshot, snapshotTime]];
     }
     
     NSMutableURLRequest *request = [AZSRequestFactory getRequestWithUrlComponents:urlComponents timeout:timeout];
@@ -245,17 +240,17 @@
 {
     if (snapshotTime)
     {
-        urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:[NSString stringWithFormat:@"snapshot=%@", snapshotTime]];
+        urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:[NSString stringWithFormat:AZSCQueryTemplateSnapshot, snapshotTime]];
     }
     
     NSMutableURLRequest *request = [AZSRequestFactory getRequestWithUrlComponents:urlComponents timeout:timeout];
 
     if (range.length > 0)
     {
-        [AZSUtil addOptionalHeaderToRequest:request header:@"x-ms-range" stringValue:[NSString stringWithFormat:@"%lu-%lu",(unsigned long)range.location, ((unsigned long)range.location + (unsigned long)range.length)]];
+        [AZSUtil addOptionalHeaderToRequest:request header:AZSCHeaderRange stringValue:[NSString stringWithFormat:@"%lu-%lu",(unsigned long)range.location, ((unsigned long)range.location + (unsigned long)range.length)]];
         if (getRangeContentMD5)
         {
-            [AZSUtil addOptionalHeaderToRequest:request header:@"x-ms-range-get-content-md5" stringValue:@"true"];
+            [AZSUtil addOptionalHeaderToRequest:request header:AZSCHeaderRangeGetContent stringValue:AZSCHeaderValueTrue];
         }
     }
     
@@ -267,17 +262,17 @@
 {
     if (snapshotTime)
     {
-        urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:[NSString stringWithFormat:@"snapshot=%@", snapshotTime]];
+        urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:[NSString stringWithFormat:AZSCQueryTemplateSnapshot, snapshotTime]];
     }
     NSMutableURLRequest *request = [AZSRequestFactory deleteRequestWithUrlComponents:urlComponents timeout:timeout];
     
     switch (deleteSnapshotsOption)
     {
         case AZSDeleteSnapshotsOptionDeleteSnapshotsOnly:
-            [request setValue:@"only" forHTTPHeaderField:@"x-ms-delete-snapshots"];
+            [request setValue:AZSCHeaderValueOnly forHTTPHeaderField:AZSCHeaderDeleteSnapshots];
             break;
         case AZSDeleteSnapshotsOptionIncludeSnapshots:
-            [request setValue:@"include" forHTTPHeaderField:@"x-ms-delete-snapshots"];
+            [request setValue:AZSCHeaderValueInclude forHTTPHeaderField:AZSCHeaderDeleteSnapshots];
             break;
         case AZSDeleteSnapshotsOptionNone:
         default:
@@ -290,7 +285,7 @@
 
 +(NSMutableURLRequest *) snapshotBlobWithMetadata:(NSMutableDictionary *)metadata accessCondition:(AZSAccessCondition *)accessCondition urlComponents:(NSURLComponents *)urlComponents timeout:(NSTimeInterval)timeout operationContext:(AZSOperationContext *)operationContext
 {
-    urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:@"comp=snapshot"];
+    urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:AZSCQueryCompSnapshot];
     NSMutableURLRequest *request = [AZSRequestFactory putRequestWithUrlComponents:urlComponents timeout:timeout];
     
     [AZSRequestFactory addMetadataToRequest:request metadata:metadata];
@@ -301,27 +296,27 @@
 
 +(NSMutableURLRequest *) listBlobsWithPrefix:(NSString *)prefix delimiter:(NSString *)delimiter blobListingDetails:(AZSBlobListingDetails)blobListingDetails maxResults:(NSInteger)maxResults continuationToken:(AZSContinuationToken *)continuationToken urlComponents:(NSURLComponents *)urlComponents timeout:(NSTimeInterval)timeout operationContext:(AZSOperationContext *)operationContext
 {
-    urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:@"restype=container"];
-    urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:@"comp=list"];
+    urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:AZSCQueryRestypeContainer];
+    urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:AZSCQueryCompList];
     
     if (prefix != nil && [prefix length] > 0)
     {
-        urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:[NSString stringWithFormat:@"prefix=%@", prefix]];
+        urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:[NSString stringWithFormat:AZSCQueryTemplatePrefix, prefix]];
     }
 
     if (delimiter != nil && [delimiter length] > 0)
     {
-        urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:[NSString stringWithFormat:@"delimiter=%@", delimiter]];
+        urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:[NSString stringWithFormat:AZSCQueryTemplateDelimiter, delimiter]];
     }
     
     if (continuationToken.nextMarker != nil && [continuationToken.nextMarker length] > 0)
     {
-        urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:[NSString stringWithFormat:@"marker=%@", continuationToken.nextMarker]];
+        urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:[NSString stringWithFormat:AZSCQueryTemplateMarker, continuationToken.nextMarker]];
     }
     
     if (maxResults > 0)
     {
-        urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:[NSString stringWithFormat:@"maxresults=%ld", (long)maxResults]];
+        urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:[NSString stringWithFormat:AZSCQueryTemplateMaxResults, (long) maxResults]];
     }
     
     if (blobListingDetails != AZSBlobListingDetailsNone)
@@ -335,7 +330,7 @@
                 [includes appendString:@","];
             }
             
-            [includes appendString:@"snapshots"];
+            [includes appendString:AZSCHeaderValueSnapshots];
         }
         
         if ((blobListingDetails & AZSBlobListingDetailsMetadata) != 0)
@@ -345,7 +340,7 @@
                 [includes appendString:@","];
             }
             
-            [includes appendString:@"metadata"];
+            [includes appendString:AZSCHeaderValueMetadata];
         }
 
         if ((blobListingDetails & AZSBlobListingDetailsUncommittedBlobs) != 0)
@@ -355,7 +350,7 @@
                 [includes appendString:@","];
             }
             
-            [includes appendString:@"uncommittedblobs"];
+            [includes appendString:AZSCHeaderValueUncommittedBlobs];
         }
 
         if ((blobListingDetails & AZSBlobListingDetailsCopy) != 0)
@@ -365,10 +360,10 @@
                 [includes appendString:@","];
             }
             
-            [includes appendString:@"copy"];
+            [includes appendString:AZSCHeaderValueCopy];
         }
 
-        urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:[NSString stringWithFormat:@"include=%@", includes]];
+        urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:[NSString stringWithFormat:AZSCQueryTemplateInclude, includes]];
     }
     
     NSMutableURLRequest *request = [AZSRequestFactory getRequestWithUrlComponents:urlComponents timeout:timeout];
@@ -378,7 +373,7 @@
 +(NSMutableURLRequest *) uploadBlobPropertiesWithBlobProperties:(AZSBlobProperties *)blobProperties cloudMetadata:(NSMutableDictionary *)cloudMetadata accessCondition:(AZSAccessCondition *)accessCondition urlComponents:(NSURLComponents *)urlComponents timeout:(NSTimeInterval)timeout operationContext:(AZSOperationContext *)operationContext
 {
     // TODO: IOS 8 - update this to use urlComponents.queryItems
-    urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:@"comp=properties"];
+    urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:AZSCQueryCompProperties];
     NSMutableURLRequest *request = [AZSRequestFactory putRequestWithUrlComponents:urlComponents timeout:timeout];
     
     [AZSRequestFactory addMetadataToRequest:request metadata:cloudMetadata];
@@ -390,7 +385,7 @@
 +(NSMutableURLRequest *) uploadBlobMetadataWithCloudMetadata:(NSMutableDictionary *) cloudMetadata accessCondition:(AZSAccessCondition *)accessCondition urlComponents:(NSURLComponents *)urlComponents timeout:(NSTimeInterval)timeout operationContext:(AZSOperationContext *)operationContext
 {
     // TODO: IOS 8 - update this to use urlComponents.queryItems
-    urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:@"comp=metadata"];
+    urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:AZSCQueryCompMetadata];
     NSMutableURLRequest *request = [AZSRequestFactory putRequestWithUrlComponents:urlComponents timeout:timeout];
     
     [AZSRequestFactory addMetadataToRequest:request metadata:cloudMetadata];
@@ -404,7 +399,7 @@
     // TODO: IOS 8 - update this to use urlComponents.queryItems
     if (snapshotTime)
     {
-        urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:[NSString stringWithFormat:@"snapshot=%@", snapshotTime]];
+        urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:[NSString stringWithFormat:AZSCQueryTemplateSnapshot, snapshotTime]];
     }
     NSMutableURLRequest *request = [AZSRequestFactory headRequestWithUrlComponents:urlComponents timeout:timeout];
     
@@ -415,7 +410,7 @@
 +(NSMutableURLRequest *)leaseBlobWithLeaseAction:(AZSLeaseAction)leaseAction proposedLeaseId:(NSString *)proposedLeaseId leaseDuration:(NSNumber *)leaseDuration leaseBreakPeriod:(NSNumber *)leaseBreakPeriod accessCondition:(AZSAccessCondition *)accessCondition urlComponents:(NSURLComponents *)urlComponents timeout:(NSTimeInterval)timeout operationContext:(AZSOperationContext *)operationContext
 {
     // TODO: IOS 8 - update this to use urlComponents.queryItems
-    urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:@"comp=lease"];
+    urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:AZSCQueryCompLease];
     NSMutableURLRequest *request = [AZSRequestFactory putRequestWithUrlComponents:urlComponents timeout:timeout];
     
     [AZSBlobRequestFactory addLeaseActionToRequest:request leaseAction:leaseAction];
@@ -431,7 +426,7 @@
 {
     // TODO: IOS 8 - update this to use urlComponents.queryItems
     NSMutableURLRequest *request = [AZSRequestFactory putRequestWithUrlComponents:urlComponents timeout:timeout];
-    [request addValue:sourceURL.absoluteString forHTTPHeaderField:@"x-ms-copy-source"];
+    [request addValue:sourceURL.absoluteString forHTTPHeaderField:AZSCHeaderCopySource];
     [AZSRequestFactory applySourceAccessConditionToRequest:request condition:sourceAccessCondition];
     
     [AZSRequestFactory applyAccessConditionToRequest:request condition:accessCondition];
@@ -442,11 +437,11 @@
 +(NSMutableURLRequest *) abortCopyBlobWithCopyId:(NSString *)copyId accessCondition:(AZSAccessCondition *)accessCondition urlComponents:(NSURLComponents *)urlComponents timeout:(NSTimeInterval)timeout operationContext:(AZSOperationContext *)operationContext
 {
     // TODO: IOS 8 - update this to use urlComponents.queryItems
-    urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:@"comp=copy"];
-    urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:[NSString stringWithFormat:@"copyid=%@", copyId]];
+    urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:AZSCQueryCompCopy];
+    urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:[NSString stringWithFormat:AZSCQueryTemplateCopyId, copyId]];
 
     NSMutableURLRequest *request = [AZSRequestFactory putRequestWithUrlComponents:urlComponents timeout:timeout];
-    [request addValue:@"abort" forHTTPHeaderField:@"x-ms-copy-action"];
+    [request addValue:AZSCHeaderValueAbort forHTTPHeaderField:AZSCHeaderCopyAction];
     [AZSRequestFactory applyLeaseIdToRequest:request condition:accessCondition];
     return request;
 }
@@ -455,51 +450,51 @@
 {
     if (blobProperties)
     {
-        [AZSUtil addOptionalHeaderToRequest:request header:@"x-ms-blob-cache-control" stringValue:blobProperties.cacheControl];
-        [AZSUtil addOptionalHeaderToRequest:request header:@"x-ms-blob-content-disposition" stringValue:blobProperties.contentDisposition];
-        [AZSUtil addOptionalHeaderToRequest:request header:@"x-ms-blob-content-encoding" stringValue:blobProperties.contentEncoding];
-        [AZSUtil addOptionalHeaderToRequest:request header:@"x-ms-blob-content-language" stringValue:blobProperties.contentLanguage];
-        [AZSUtil addOptionalHeaderToRequest:request header:@"x-ms-blob-content-md5" stringValue:blobProperties.contentMD5];
-        [AZSUtil addOptionalHeaderToRequest:request header:@"x-ms-blob-content-type" stringValue:blobProperties.contentType];
+        [AZSUtil addOptionalHeaderToRequest:request header:AZSCHeaderBlobCacheControl stringValue:blobProperties.cacheControl];
+        [AZSUtil addOptionalHeaderToRequest:request header:AZSCHeaderBlobContentDisposition stringValue:blobProperties.contentDisposition];
+        [AZSUtil addOptionalHeaderToRequest:request header:AZSCHeaderBlobContentEncoding stringValue:blobProperties.contentEncoding];
+        [AZSUtil addOptionalHeaderToRequest:request header:AZSCHeaderBlobContentLanguage stringValue:blobProperties.contentLanguage];
+        [AZSUtil addOptionalHeaderToRequest:request header:AZSCHeaderBlobContentMd5 stringValue:blobProperties.contentMD5];
+        [AZSUtil addOptionalHeaderToRequest:request header:AZSCHeaderBlobContentType stringValue:blobProperties.contentType];
     }
 }
 
 +(void) addLeaseActionToRequest:(NSMutableURLRequest*)request leaseAction:(AZSLeaseAction)leaseAction
 {
-    NSString * leaseActionHeader = @"x-ms-lease-action";
+    NSString * leaseActionHeader = AZSCHeaderLeaseAction;
     switch (leaseAction)
     {
         case AZSLeaseActionAcquire:
-            [request addValue:@"acquire" forHTTPHeaderField:leaseActionHeader];
+            [request addValue:AZSCHeaderValueAcquire forHTTPHeaderField:leaseActionHeader];
             break;
         case AZSLeaseActionBreak:
-            [request addValue:@"break" forHTTPHeaderField:leaseActionHeader];
+            [request addValue:AZSCHeaderValueBreak forHTTPHeaderField:leaseActionHeader];
             break;
         case AZSLeaseActionChange:
-            [request addValue:@"change" forHTTPHeaderField:leaseActionHeader];
+            [request addValue:AZSCHeaderValueChange forHTTPHeaderField:leaseActionHeader];
             break;
         case AZSLeaseActionRelease:
-            [request addValue:@"release" forHTTPHeaderField:leaseActionHeader];
+            [request addValue:AZSCHeaderValueRelease forHTTPHeaderField:leaseActionHeader];
             break;
         case AZSLeaseActionRenew:
-            [request addValue:@"renew" forHTTPHeaderField:leaseActionHeader];
+            [request addValue:AZSCHeaderValueRenew forHTTPHeaderField:leaseActionHeader];
             break;
     }
 }
 
 +(void) addLeaseDurationToRequest:(NSMutableURLRequest*)request leaseDuration:(NSNumber*)leaseDuration
 {
-    [AZSUtil addOptionalHeaderToRequest:request header:@"x-ms-lease-duration" intValue:leaseDuration];
+    [AZSUtil addOptionalHeaderToRequest:request header:AZSCHeaderLeaseDuration intValue:leaseDuration];
 }
 
 +(void) addProposedLeaseIdToRequest:(NSMutableURLRequest*)request proposedLeaseId:(NSString*)proposedLeaseId
 {
-    [AZSUtil addOptionalHeaderToRequest:request header:@"x-ms-proposed-lease-id" stringValue:proposedLeaseId];
+    [AZSUtil addOptionalHeaderToRequest:request header:AZSCHeaderProposedLeaseId stringValue:proposedLeaseId];
 }
 
 +(void) addLeaseBreakPeriodToRequest:(NSMutableURLRequest*)request leaseBreakPeriod:(NSNumber*)leaseBreakPeriod
 {
-    [AZSUtil addOptionalHeaderToRequest:request header:@"x-ms-lease-break-period" intValue:leaseBreakPeriod];
+    [AZSUtil addOptionalHeaderToRequest:request header:AZSCHeaderLeaseBreakPeriod intValue:leaseBreakPeriod];
 }
 
 @end

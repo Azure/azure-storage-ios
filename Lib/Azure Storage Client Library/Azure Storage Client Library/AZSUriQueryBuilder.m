@@ -15,6 +15,7 @@
 // </copyright>
 // -----------------------------------------------------------------------------------------
 
+#import "AZSConstants.h"
 #import "AZSUriQueryBuilder.h"
 #import "AZSUtil.h"
 
@@ -58,7 +59,7 @@
 
 -(NSString*) builderAsString
 {
-    NSString *result = @"";
+    NSString *result = AZSCEmptyString;
     
     BOOL first = YES;
     

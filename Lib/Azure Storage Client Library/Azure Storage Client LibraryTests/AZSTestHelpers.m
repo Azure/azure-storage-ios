@@ -15,8 +15,9 @@
 // </copyright>
 // -----------------------------------------------------------------------------------------
 
-#import "AZSTestHelpers.h"
 #import <XCTest/XCTest.h>
+#import "AZSConstants.h"
+#import "AZSTestHelpers.h"
 @import ObjectiveC;
 
 @implementation AZSTestHelpers
@@ -121,9 +122,9 @@ void RunLoopSourceCancelRoutine (void *info, CFRunLoopRef rl, CFStringRef mode)
         self.runLoopsRegistered = [NSMutableArray arrayWithCapacity:1];
         self.totalBytes = 0;
         self.errorCount = 0;
-        self.errors = [NSMutableString stringWithFormat:@""];
+        self.errors = [NSMutableString stringWithString:AZSCEmptyString];
         self.totalBlobSize = totalBlobSize;
-        self.currentBuffer = [NSMutableData dataWithLength:1024];
+        self.currentBuffer = [NSMutableData dataWithLength:AZSCKilobyte];
         self.isUpload = isUpload;
 
     }

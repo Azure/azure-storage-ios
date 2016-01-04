@@ -15,6 +15,7 @@
 // </copyright>
 // -----------------------------------------------------------------------------------------
 
+#import "AZSConstants.h"
 #import "AZSStorageUri.h"
 
 @interface AZSStorageUri()
@@ -33,7 +34,7 @@
         NSString * path = components.path;
         if (path == nil)
         {
-            path = @"";
+            path = AZSCEmptyString;
         }
         path = [[path stringByAppendingString:@"/"] stringByAppendingString:pathToAppend];
         [components setPath:path];

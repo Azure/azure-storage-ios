@@ -17,6 +17,7 @@
 
 #import <Foundation/Foundation.h>
 #import <XCTest/XCTest.h>
+#import "AZSConstants.h"
 #import "AZSBlobTestBase.h"
 #import "Azure_Storage_Client_Library.h"
 #import "AZSTestHelpers.h"
@@ -61,7 +62,7 @@
 - (void)setUp
 {
     [super setUp];
-    self.containerName = [[NSString stringWithFormat:@"sampleioscontainer%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:@""]] lowercaseString];
+    self.containerName = [[NSString stringWithFormat:@"sampleioscontainer%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
     self.blobContainer = [self.blobClient containerReferenceFromName:self.containerName];
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
     
@@ -261,6 +262,5 @@
     }
     XCTAssertTrue(0 == failures, @"%d failure(s) detected.", failures);
 }
-
 
 @end

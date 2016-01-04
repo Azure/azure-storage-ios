@@ -15,6 +15,7 @@
 // </copyright>
 // -----------------------------------------------------------------------------------------
 
+#import "AZSConstants.h"
 #import "AZSCloudBlob.h"
 #import "AZSCloudBlobContainer.h"
 #import "AZSStorageUri.h"
@@ -383,7 +384,7 @@
     }];
     
     [command setPostProcessResponse:^id(NSHTTPURLResponse *urlResponse, AZSRequestResult *requestResult, NSOutputStream *outputStream, AZSOperationContext *operationContext, NSError **error) {
-        NSString *snapshotTime = [urlResponse.allHeaderFields valueForKey:@"x-ms-snapshot"];
+        NSString *snapshotTime = urlResponse.allHeaderFields[AZSCHeaderSnapshot];
         
         AZSCloudBlob *snapshotBlob = [[AZSCloudBlob alloc] initWithContainer:self.blobContainer name:self.blobName snapshotTime:snapshotTime];
         
@@ -416,7 +417,7 @@
     [self fetchAttributesWithAccessCondition:accessCondition requestOptions:requestOptions operationContext:operationContext completionHandler:^(NSError *error) {
         if (error)
         {
-            if ([error.domain isEqualToString:AZSErrorDomain] && (error.code == AZSEServerError) && error.userInfo[@"HTTP Status Code"] && (((NSNumber *)error.userInfo[@"HTTP Status Code"]).intValue == 404))
+            if ([error.domain isEqualToString:AZSErrorDomain] && (error.code == AZSEServerError) && error.userInfo[AZSCHttpStatusCode] && (((NSNumber *)error.userInfo[AZSCHttpStatusCode]).intValue == 404))
             {
                 completionHandler(nil, NO);
             }
@@ -453,7 +454,7 @@
 
 - (NSString *)createSharedAccessCanonicalName
 {
-    return [NSString stringWithFormat:@"/%@/%@/%@/%@", @"blob", self.client.credentials.accountName, self.blobContainer.name, self.blobName];
+    return [NSString stringWithFormat:AZSCSasTemplateBlobCanonicalName, AZSCBlob, self.client.credentials.accountName, self.blobContainer.name, self.blobName];
 }
 
 - (void)acquireLeaseWithLeaseTime:(NSNumber *)leaseTime proposedLeaseId:(NSString *)proposedLeaseId completionHandler:(void (^)(NSError*, NSString *))completionHandler
@@ -496,7 +497,7 @@
     
     [command setPostProcessResponse:^id(NSHTTPURLResponse *urlResponse, AZSRequestResult *requestResult, NSOutputStream *outputStream, AZSOperationContext *operationContext, NSError **error) {
         
-        return [urlResponse.allHeaderFields valueForKey:@"x-ms-lease-id"];
+        return urlResponse.allHeaderFields[AZSCHeaderLeaseId];
     }];
     
     [AZSExecutor ExecuteWithStorageCommand:command requestOptions:modifiedOptions operationContext:operationContext completionHandler:^(NSError *error, NSString *leaseId)
@@ -596,7 +597,7 @@
     }];
     
     [command setPostProcessResponse:^id(NSHTTPURLResponse *urlResponse, AZSRequestResult *requestResult, NSOutputStream *outputStream, AZSOperationContext *operationContext, NSError *__autoreleasing *error) {
-        return [urlResponse.allHeaderFields valueForKey:@"x-ms-lease-id"];
+        return urlResponse.allHeaderFields[AZSCHeaderLeaseId];
     }];
     
     [AZSExecutor ExecuteWithStorageCommand:command requestOptions:modifiedOptions operationContext:operationContext completionHandler:^(NSError *error, NSString *leaseId)
@@ -700,9 +701,9 @@
 
 +(void)updateEtagAndLastModifiedWithResponse:(NSHTTPURLResponse *)response properties:(AZSBlobProperties *)properties updateLength:(BOOL)updateLength
 {
-    NSString *parsedEtag = [response.allHeaderFields valueForKey:@"ETag"];
-    NSDate *parsedLastModified = [[AZSUtil dateFormatterWithRFCFormat] dateFromString:[response.allHeaderFields valueForKey:@"Last-Modified"]];
-    NSString *parsedSequenceNumberString = [response.allHeaderFields valueForKey:@"x-ms-blob-sequence-number"];
+    NSString *parsedEtag = response.allHeaderFields[AZSCXmlETag];
+    NSDate *parsedLastModified = [[AZSUtil dateFormatterWithRFCFormat] dateFromString:response.allHeaderFields[AZSCXmlLastModified]];
+    NSString *parsedSequenceNumberString = response.allHeaderFields[AZSCHeaderBlobSequenceNumber];
 
     if (parsedEtag)
     {
@@ -720,9 +721,9 @@
     
     if (updateLength)
     {
-        NSString *rangeHeaderString = [response.allHeaderFields valueForKey:@"Range"];
-        NSString *contentLengthHeaderString = [response.allHeaderFields valueForKey:@"Content-Length"];
-        NSString *blobContentLengthHeaderString = [response.allHeaderFields valueForKey:@"x-ms-blob-content-length"];
+        NSString *rangeHeaderString = response.allHeaderFields[AZSCXmlRange];
+        NSString *contentLengthHeaderString = response.allHeaderFields[AZSCXmlContentLength];
+        NSString *blobContentLengthHeaderString = response.allHeaderFields[AZSCHeaderBlobContentLength];
         
         if (rangeHeaderString)
         {
@@ -754,9 +755,9 @@
     
     // todo: if (parsedSnap && snap) but they're not equal then throw mult snapshots
     
-    if ([parseQueryResults count] > 2)
+    if ([parseQueryResults count] > AZSCSnapshotIndex)
     {
-        _snapshotTime = ([[parseQueryResults objectAtIndex:2] isKindOfClass:[NSNull class]] ? nil : [parseQueryResults objectAtIndex:2]);
+        _snapshotTime = ([[parseQueryResults objectAtIndex:AZSCSnapshotIndex] isKindOfClass:[NSNull class]] ? nil : [parseQueryResults objectAtIndex:AZSCSnapshotIndex]);
     }
     
     _client = [[AZSCloudBlobClient alloc] initWithStorageUri: [AZSNavigationUtil getServiceClientBaseAddressWithStorageUri:self.storageUri usePathStyle:[AZSUtil usePathStyleAddressing:[uri primaryUri]]] credentials:(credentials != nil ? credentials : ([[parseQueryResults objectAtIndex:1] isKindOfClass:[NSNull class]] ? nil : [parseQueryResults objectAtIndex:1]))];
@@ -826,7 +827,7 @@
     
     if (sourceBlob.snapshotTime)
     {
-        components.query = [AZSRequestFactory appendToQuery:components.query stringToAppend:[NSString stringWithFormat:@"snapshot=%@",sourceBlob.snapshotTime]];
+        components.query = [AZSRequestFactory appendToQuery:components.query stringToAppend:[NSString stringWithFormat:AZSCQueryTemplateSnapshot,sourceBlob.snapshotTime]];
     }
     
     NSURL *transformedURL = [self.client.credentials transformWithUri:[components URL]];
@@ -922,4 +923,3 @@
 }
 
 @end
-

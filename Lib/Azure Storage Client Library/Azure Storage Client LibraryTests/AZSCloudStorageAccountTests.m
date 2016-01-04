@@ -16,8 +16,9 @@
 // -----------------------------------------------------------------------------------------
 
 #import <XCTest/XCTest.h>
-#import "AZSTestBase.h"
 #import "Azure_Storage_Client_Library.h"
+#import "AZSConstants.h"
+#import "AZSTestBase.h"
 
 @interface AZSCloudStorageAccountTests : AZSTestBase
 
@@ -40,7 +41,7 @@
 -(BOOL)validateCorrectBlobURLIsCreatedWithConnectionString:(NSString *)connectionString desiredURL:(NSString *)desiredURL
 {
     AZSCloudStorageAccount *account = [AZSCloudStorageAccount accountFromConnectionString:connectionString];
-    return [[[[account getBlobClient] containerReferenceFromName:@"container"].storageUri primaryUri].absoluteString isEqualToString:[desiredURL stringByAppendingString:@"/container"]];
+    return [[[[account getBlobClient] containerReferenceFromName:AZSCContainer].storageUri primaryUri].absoluteString isEqualToString:[desiredURL stringByAppendingString:@"/container"]];
 
 }
 
@@ -48,36 +49,33 @@
 {
     // Test connection string parsing.
     // TODO: Test connection string round-triping
-    NSString *connectionString = @"AccountName=xaccount;AccountKey=key";
-    NSString *desiredURL = @"https://xaccount.blob.core.windows.net";
+    NSString *connectionString = [NSString stringWithFormat:AZSCSharedTemplateCredentials, AZSCEmptyString, @"xaccount", @"key"];
+    NSString *desiredURL = [NSString stringWithFormat:AZSCSharedTemplatePrimaryUri, AZSCSettingsHttps, @"xaccount", AZSCBlob, AZSCDefaultSuffix];
     XCTAssertTrue([self validateCorrectBlobURLIsCreatedWithConnectionString:connectionString desiredURL:desiredURL], @"Incorrect URL");
 
-    connectionString = @"AccountName=xaccount;AccountKey=key;DefaultEndpointsProtocol=https";
-    desiredURL = @"https://xaccount.blob.core.windows.net";
+    connectionString = [NSString stringWithFormat:@"%@%@", connectionString, [NSString stringWithFormat:AZSCSharedTemplateDefaultEndpoint, AZSCSettingsHttps, AZSCEmptyString]];
     XCTAssertTrue([self validateCorrectBlobURLIsCreatedWithConnectionString:connectionString desiredURL:desiredURL], @"Incorrect URL");
     
-    connectionString = @"AccountName=xaccount;AccountKey=key;DefaultEndpointsProtocol=http";
-    desiredURL = @"http://xaccount.blob.core.windows.net";
+    connectionString = [NSString stringWithFormat:@"%@;%@", connectionString, [NSString stringWithFormat:AZSCSharedTemplateDefaultEndpoint, AZSCSettingsHttp, AZSCEmptyString]];
+    desiredURL = [NSString stringWithFormat:AZSCSharedTemplatePrimaryUri, AZSCSettingsHttp, @"xaccount", AZSCBlob, AZSCDefaultSuffix];
     XCTAssertTrue([self validateCorrectBlobURLIsCreatedWithConnectionString:connectionString desiredURL:desiredURL], @"Incorrect URL");
 
-    connectionString = @"AccountName=account;AccountKey=key;BlobEndpoint=http://sampleblobendpoint";
     desiredURL = @"http://sampleblobendpoint";
+    connectionString = [NSString stringWithFormat:AZSCSharedTemplateBlobEndpoint, [NSString stringWithFormat:AZSCSharedTemplateCredentials, AZSCEmptyString, @"account", @"key"], desiredURL];
     XCTAssertTrue([self validateCorrectBlobURLIsCreatedWithConnectionString:connectionString desiredURL:desiredURL], @"Incorrect URL");
     
-    connectionString = @"BlobEndpoint=http://sampleblobendpoint;AccountName=account;AccountKey=key";
-    desiredURL = @"http://sampleblobendpoint";
+    connectionString = [NSString stringWithFormat:@"%@;%@;%@", [connectionString componentsSeparatedByString:@";"][2], [connectionString componentsSeparatedByString:@";"][0], [connectionString componentsSeparatedByString:@";"][1]];
     XCTAssertTrue([self validateCorrectBlobURLIsCreatedWithConnectionString:connectionString desiredURL:desiredURL], @"Incorrect URL");
 
-    connectionString = @"BlobEndpoint=http://sampleblobendpoint;SharedAccessSignature=sampleSAStoken";
-    desiredURL = @"http://sampleblobendpoint";
+    connectionString = [[[NSString stringWithFormat:AZSCSharedTemplateBlobEndpoint, AZSCEmptyString, desiredURL] stringByAppendingString:[NSString stringWithFormat:AZSCSasTemplateCredentials, @"sampleSAStoken"]] substringFromIndex:1];
     XCTAssertTrue([self validateCorrectBlobURLIsCreatedWithConnectionString:connectionString desiredURL:desiredURL], @"Incorrect URL");
 
-    connectionString = @"EndpointSuffix=test.endpoint.suffix;AccountName=account;AccountKey=key";
-    desiredURL = @"https://account.blob.test.endpoint.suffix";
+    connectionString = [NSString stringWithFormat:@"%@;%@", @"EndpointSuffix=test.endpoint.suffix", [NSString stringWithFormat:AZSCSharedTemplateCredentials, AZSCEmptyString, @"account", @"key"]];
+    desiredURL = [NSString stringWithFormat:AZSCSharedTemplatePrimaryUri, AZSCSettingsHttps, @"account", AZSCBlob, @"test.endpoint.suffix"];
     XCTAssertTrue([self validateCorrectBlobURLIsCreatedWithConnectionString:connectionString desiredURL:desiredURL], @"Incorrect URL");
 
-    connectionString = @"EndpointSuffix=test.endpoint.suffix;AccountName=account;AccountKey=key;DefaultEndpointsProtocol=http";
-    desiredURL = @"http://account.blob.test.endpoint.suffix";
+    connectionString = [[connectionString stringByAppendingString:@";"] stringByAppendingString:[NSString stringWithFormat:AZSCSharedTemplateDefaultEndpoint, AZSCSettingsHttp, AZSCEmptyString]];
+    desiredURL = [NSString stringWithFormat:AZSCSharedTemplatePrimaryUri, AZSCSettingsHttp, @"account", AZSCBlob, @"test.endpoint.suffix"];;
     XCTAssertTrue([self validateCorrectBlobURLIsCreatedWithConnectionString:connectionString desiredURL:desiredURL], @"Incorrect URL");
 }
 
@@ -93,23 +91,24 @@
     //AZSStorageCredentials *sasCreds = [[AZSStorageCredentials alloc] initWithSASToken:@"sasToken"];
     
     AZSCloudStorageAccount *account = [[AZSCloudStorageAccount alloc] initWithCredentials:accountKeyCreds useHttps:YES];
-    NSString *containerUri = [[[account getBlobClient] containerReferenceFromName:@"container"].storageUri.primaryUri absoluteString];
+    NSString *containerUri = [[[account getBlobClient] containerReferenceFromName:AZSCContainer].storageUri.primaryUri absoluteString];
     XCTAssertTrue([containerUri isEqualToString:@"https://accountName.blob.core.windows.net/container"], @"Incorrect container URI created.");
     
     account = [[AZSCloudStorageAccount alloc] initWithCredentials:accountKeyCreds useHttps:NO];
-    containerUri = [[[account getBlobClient] containerReferenceFromName:@"container"].storageUri.primaryUri absoluteString];
+    containerUri = [[[account getBlobClient] containerReferenceFromName:AZSCContainer].storageUri.primaryUri absoluteString];
     XCTAssertTrue([containerUri isEqualToString:@"http://accountName.blob.core.windows.net/container"], @"Incorrect container URI created.");
 
     account = [[AZSCloudStorageAccount alloc] initWithCredentials:accountKeyCreds useHttps:YES endpointSuffix:@"sample.suffix"];
-    containerUri = [[[account getBlobClient] containerReferenceFromName:@"container"].storageUri.primaryUri absoluteString];
+    containerUri = [[[account getBlobClient] containerReferenceFromName:AZSCContainer].storageUri.primaryUri absoluteString];
     XCTAssertTrue([containerUri isEqualToString:@"https://accountName.blob.sample.suffix/container"], @"Incorrect container URI created.");
 
     account = [[AZSCloudStorageAccount alloc] initWithCredentials:accountKeyCreds useHttps:NO endpointSuffix:@"sample.suffix"];
-    containerUri = [[[account getBlobClient] containerReferenceFromName:@"container"].storageUri.primaryUri absoluteString];
+    containerUri = [[[account getBlobClient] containerReferenceFromName:AZSCContainer].storageUri.primaryUri absoluteString];
     XCTAssertTrue([containerUri isEqualToString:@"http://accountName.blob.sample.suffix/container"], @"Incorrect container URI created.");
     
     account = [[AZSCloudStorageAccount alloc] initWithCredentials:accountKeyCreds blobEndpoint:[[AZSStorageUri alloc] initWithPrimaryUri:[NSURL URLWithString:@"sample://full.blob.endpoint"]] tableEndpoint:nil queueEndpoint:nil fileEndpoint:nil];
-    containerUri = [[[account getBlobClient] containerReferenceFromName:@"container"].storageUri.primaryUri absoluteString];
+    containerUri = [[[account getBlobClient] containerReferenceFromName:AZSCContainer].storageUri.primaryUri absoluteString];
     XCTAssertTrue([containerUri isEqualToString:@"sample://full.blob.endpoint/container"], @"Incorrect container URI created.");
 }
+
 @end

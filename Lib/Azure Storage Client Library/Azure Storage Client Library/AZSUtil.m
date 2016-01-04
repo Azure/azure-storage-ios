@@ -16,6 +16,7 @@
 // -----------------------------------------------------------------------------------------
 
 #import <CommonCrypto/CommonHMAC.h>
+#import "AZSConstants.h"
 #import "AZSErrors.h"
 #import "AZSOperationContext.h"
 #import "AZSUtil.h"
@@ -23,21 +24,19 @@
 
 @implementation AZSUtil
 
-static NSDateFormatter *df = nil;
-
 static NSInteger pathStylePorts[20] = {10000, 10001, 10002, 10003, 10004, 10100, 10101, 10102, 10103, 10104, 11000, 11001, 11002, 11003, 10004, 11100, 11101, 11102, 11103, 11104};
 
 +(NSDateFormatter *) dateFormatterWithFormat:(NSString *)format
 {
-    NSDateFormatter *dateFormat = [df copy];
+    static NSDateFormatter *df = nil;
     if (!df) {
         df = [[NSDateFormatter alloc] init];
-        [df setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"]];
+        [df setLocale:[[NSLocale alloc] initWithLocaleIdentifier:AZSCPosix]];
         [df setCalendar: [[NSCalendar alloc] initWithCalendarIdentifier:AZSGregorianCalendar]];
-        [df setTimeZone:[NSTimeZone timeZoneWithName:@"UTC"]];
-        dateFormat = [df copy];
+        [df setTimeZone:[NSTimeZone timeZoneWithName:AZSCUtc]];
     }
     
+    NSDateFormatter *dateFormat = [df copy];
     [dateFormat setDateFormat:format];
     return dateFormat;
 }
@@ -62,7 +61,7 @@ static NSInteger pathStylePorts[20] = {10000, 10001, 10002, 10003, 10004, 10100,
 {
     if (date)
     {
-        return [NSString stringWithFormat: @"%@", [[AZSUtil dateFormatterWithRFCFormat] stringFromDate:date]];
+        return [[AZSUtil dateFormatterWithRFCFormat] stringFromDate:date];
     }
     else
     {
@@ -72,21 +71,21 @@ static NSInteger pathStylePorts[20] = {10000, 10001, 10002, 10003, 10004, 10100,
 
 +(NSDateFormatter *) dateFormatterWithRFCFormat
 {
-    return [AZSUtil dateFormatterWithFormat:@"EEE, dd MMM yyyy HH':'mm':'ss 'GMT'"];
+    return [AZSUtil dateFormatterWithFormat:AZSCDateFormatRFC];
 }
 
 +(NSDateFormatter *) dateFormatterWithRoundtripFormat
 {
-    return [AZSUtil dateFormatterWithFormat:@"yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'SSSSSSS'Z'"];
+    return [AZSUtil dateFormatterWithFormat:AZSCDateFormatRoundtrip];
 }
 
 +(NSString *) utcTimeOrEmptyWithDate:(NSDate *)date
 {
     if (!date) {
-        return @"";
+        return AZSCEmptyString;
     }
     
-    return [[AZSUtil dateFormatterWithFormat: /* ISO8601 format */ @"yyyy-MM-dd'T'HH:mm:ss'Z'"] stringFromDate:date];
+    return [[AZSUtil dateFormatterWithFormat: AZSCDateFormatIso8601] stringFromDate:date];
 }
 
 +(BOOL)streamAvailable:(NSStream *)stream
@@ -101,11 +100,11 @@ static NSInteger pathStylePorts[20] = {10000, 10001, 10002, 10003, 10004, 10100,
 +(NSString *) URLEncodedStringWithString:(NSString *)stringToConvert
 {
     NSMutableString *encodedString = [NSMutableString string];
-    const unsigned char *sourceUTF8 = (const unsigned char *) [stringToConvert cStringUsingEncoding:NSUTF8StringEncoding];
-    unsigned long length = strlen((const char *) sourceUTF8);
-    for (int i = 0; i < length; ++i)
+    const char *sourceUTF8 = [stringToConvert cStringUsingEncoding:NSUTF8StringEncoding];
+    unsigned long length = strlen(sourceUTF8);
+    for (int i = 0; i < length; i++)
     {
-        const unsigned char currentChar = sourceUTF8[i];
+        const char currentChar = sourceUTF8[i];
         if (currentChar == '.' || currentChar == '-' || currentChar == '_' || currentChar == '~' ||
                    (currentChar >= 'a' && currentChar <= 'z') ||
                    (currentChar >= 'A' && currentChar <= 'Z') ||
@@ -126,7 +125,7 @@ static NSInteger pathStylePorts[20] = {10000, 10001, 10002, 10003, 10004, 10100,
 {
     NSMutableDictionary *result = [[NSMutableDictionary alloc] init];
     
-    if (!query || [query isEqualToString:@""])
+    if (!query || [query isEqualToString:AZSCEmptyString])
     {
         return result;
     }
@@ -151,7 +150,7 @@ static NSInteger pathStylePorts[20] = {10000, 10001, 10002, 10003, 10004, 10100,
         NSRange equalDex = [pair rangeOfString:@"="];
         if (equalDex.length < 1 || equalDex.location == 0)
         {
-            key = @"";
+            key = AZSCEmptyString;
             val = [pair stringByRemovingPercentEncoding];
         }
         else

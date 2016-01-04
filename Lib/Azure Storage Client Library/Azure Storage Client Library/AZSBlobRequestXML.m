@@ -19,6 +19,7 @@
 #import "AZSBlobContainerPermissions.h"
 #import "AZSBlobRequestXML.h"
 #import "AZSBlockListItem.h"
+#import "AZSConstants.h"
 #import "AZSErrors.h"
 #import "AZSOperationContext.h"
 #import "AZSSharedAccessPolicy.h"
@@ -56,10 +57,10 @@
         [operationContext logAtLevel:AZSLogLevelError withMessage:@"Error in generating XML block list."];
     }
     
-    int returnCode = xmlTextWriterStartDocument(writer, NULL, "ISO-8859-1", NULL);
+    int returnCode = xmlTextWriterStartDocument(writer, NULL, [AZSCXmlIso UTF8String], NULL);
     [AZSBlobRequestXML checkReturnCodeAndCreateErrorWithReturnCode:returnCode operationContext:operationContext error:error];
     
-    returnCode = xmlTextWriterStartElement(writer, (const xmlChar *)"BlockList");
+    returnCode = xmlTextWriterStartElement(writer, (const xmlChar *)[AZSCXmlBlockList UTF8String]);
     [AZSBlobRequestXML checkReturnCodeAndCreateErrorWithReturnCode:returnCode operationContext:operationContext error:error];
 
     for (AZSBlockListItem *block in blockList)
@@ -67,15 +68,15 @@
         switch (block.blockListMode)
         {
             case AZSBlockListModeLatest:
-                returnCode = xmlTextWriterStartElement(writer, (const xmlChar *)"Latest");
+                returnCode = xmlTextWriterStartElement(writer, (const xmlChar *)[AZSCXmlLatest UTF8String]);
                 [AZSBlobRequestXML checkReturnCodeAndCreateErrorWithReturnCode:returnCode operationContext:operationContext error:error];
                 break;
             case AZSBlockListModeCommitted:
-                returnCode = xmlTextWriterStartElement(writer, (const xmlChar *)"Committed");
+                returnCode = xmlTextWriterStartElement(writer, (const xmlChar *)[AZSCXmlCommitted UTF8String]);
                 [AZSBlobRequestXML checkReturnCodeAndCreateErrorWithReturnCode:returnCode operationContext:operationContext error:error];
                 break;
             case AZSBlockListModeUncommitted:
-                returnCode = xmlTextWriterStartElement(writer, (const xmlChar *)"Uncommitted");
+                returnCode = xmlTextWriterStartElement(writer, (const xmlChar *)[AZSCXmlUncommitted UTF8String]);
                 [AZSBlobRequestXML checkReturnCodeAndCreateErrorWithReturnCode:returnCode operationContext:operationContext error:error];
                 break;
             default:
@@ -126,22 +127,22 @@
         [operationContext logAtLevel:AZSLogLevelError withMessage:@"Error in generating XML block list."];
     }
     
-    int returnCode = xmlTextWriterStartDocument(writer, NULL, "ISO-8859-1", NULL);
+    int returnCode = xmlTextWriterStartDocument(writer, NULL, [AZSCXmlIso UTF8String], NULL);
     [AZSBlobRequestXML checkReturnCodeAndCreateErrorWithReturnCode:returnCode operationContext:operationContext error:error];
     
     // <SignedIdentifiers>
-    returnCode = xmlTextWriterStartElement(writer, (const xmlChar *)"SignedIdentifiers");
+    returnCode = xmlTextWriterStartElement(writer, (const xmlChar *)[AZSCXmlSignedIdentifiers UTF8String]);
     [AZSBlobRequestXML checkReturnCodeAndCreateErrorWithReturnCode:returnCode operationContext:operationContext error:error];
     
     for (NSString *key in permissions.sharedAccessPolicies)
     {
         AZSSharedAccessPolicy *policy = [permissions.sharedAccessPolicies objectForKey:key];
         // <SignedIdentifier>
-        returnCode = xmlTextWriterStartElement(writer, (const xmlChar *)"SignedIdentifier");
+        returnCode = xmlTextWriterStartElement(writer, (const xmlChar *)[AZSCXmlSignedIdentifier UTF8String]);
         [AZSBlobRequestXML checkReturnCodeAndCreateErrorWithReturnCode:returnCode operationContext:operationContext error:error];
         
         //      <Id>policyIdentifier</Id>
-        returnCode = xmlTextWriterStartElement(writer, (const xmlChar *)"Id");
+        returnCode = xmlTextWriterStartElement(writer, (const xmlChar *)[AZSCXmlId UTF8String]);
         [AZSBlobRequestXML checkReturnCodeAndCreateErrorWithReturnCode:returnCode operationContext:operationContext error:error];
         returnCode = xmlTextWriterWriteString(writer, (const xmlChar *)[policy.policyIdentifier cStringUsingEncoding:NSUTF8StringEncoding]);
         [AZSBlobRequestXML checkReturnCodeAndCreateErrorWithReturnCode:returnCode operationContext:operationContext error:error];
@@ -149,11 +150,11 @@
         [AZSBlobRequestXML checkReturnCodeAndCreateErrorWithReturnCode:returnCode operationContext:operationContext error:error];
         
         //      <AccessPolicy>
-        returnCode = xmlTextWriterStartElement(writer, (const xmlChar *)"AccessPolicy");
+        returnCode = xmlTextWriterStartElement(writer, (const xmlChar *)[AZSCXmlAccessPolicy UTF8String]);
         [AZSBlobRequestXML checkReturnCodeAndCreateErrorWithReturnCode:returnCode operationContext:operationContext error:error];
         
         //          <Start>sharedAccessStartTime</Start>
-        returnCode = xmlTextWriterStartElement(writer, (const xmlChar *)"Start");
+        returnCode = xmlTextWriterStartElement(writer, (const xmlChar *)[AZSCXmlStart UTF8String]);
         [AZSBlobRequestXML checkReturnCodeAndCreateErrorWithReturnCode:returnCode operationContext:operationContext error:error];
         returnCode = xmlTextWriterWriteString(writer, (const xmlChar *)[[AZSUtil utcTimeOrEmptyWithDate:policy.sharedAccessStartTime] cStringUsingEncoding:NSUTF8StringEncoding]);
         [AZSBlobRequestXML checkReturnCodeAndCreateErrorWithReturnCode:returnCode operationContext:operationContext error:error];
@@ -161,7 +162,7 @@
         [AZSBlobRequestXML checkReturnCodeAndCreateErrorWithReturnCode:returnCode operationContext:operationContext error:error];
         
         //          <Expiry>sharedAccessExpiryTime</Expiry>
-        returnCode = xmlTextWriterStartElement(writer, (const xmlChar *)"Expiry");
+        returnCode = xmlTextWriterStartElement(writer, (const xmlChar *)[AZSCXmlExpiry UTF8String]);
         [AZSBlobRequestXML checkReturnCodeAndCreateErrorWithReturnCode:returnCode operationContext:operationContext error:error];
         returnCode = xmlTextWriterWriteString(writer, (const xmlChar *)[[AZSUtil utcTimeOrEmptyWithDate:policy.sharedAccessExpiryTime] cStringUsingEncoding:NSUTF8StringEncoding]);
         [AZSBlobRequestXML checkReturnCodeAndCreateErrorWithReturnCode:returnCode operationContext:operationContext error:error];
@@ -169,7 +170,7 @@
         [AZSBlobRequestXML checkReturnCodeAndCreateErrorWithReturnCode:returnCode operationContext:operationContext error:error];
         
         //          <Permission>permissionsString</Permission>
-        returnCode = xmlTextWriterStartElement(writer, (const xmlChar *)"Permission");
+        returnCode = xmlTextWriterStartElement(writer, (const xmlChar *)[AZSCXmlPermission UTF8String]);
         [AZSBlobRequestXML checkReturnCodeAndCreateErrorWithReturnCode:returnCode operationContext:operationContext error:error];
         returnCode = xmlTextWriterWriteString(writer, (const xmlChar *)[[AZSSharedAccessSignatureHelper stringFromPermissions:policy.permissions error:error] cStringUsingEncoding:NSUTF8StringEncoding]);
         [AZSBlobRequestXML checkReturnCodeAndCreateErrorWithReturnCode:returnCode operationContext:operationContext error:error];
