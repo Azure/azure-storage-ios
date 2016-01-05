@@ -18,6 +18,7 @@
 #import <XCTest/XCTest.h>
 #import "AZSConstants.h"
 #import "AZSBlobTestBase.h"
+#import "AZSTestSemaphore.h"
 #import "Azure_Storage_Client_Library.h"
 
 @interface AZSCloudBlobClientTests : AZSBlobTestBase
@@ -37,14 +38,13 @@
 
 - (void)tearDown
 {
-    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+    AZSTestSemaphore *semaphore = [[AZSTestSemaphore alloc] init];
 
     // Put teardown code here; it will be run once, after the last test case.
     [self deleteContainersWithContainerNames:self.containerNames completionHandler:^() {
-        dispatch_semaphore_signal(semaphore);
+        [semaphore signal];
     }];
-    
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+    [semaphore wait];
 
     [super tearDown];
 }
@@ -120,10 +120,10 @@
 
 - (void)testListContainersSegmentedPrefixDetailsNone
 {
-    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+    AZSTestSemaphore *semaphore = [[AZSTestSemaphore alloc] init];
 
     // Prefix, max results, containerListingDetails, continuation token.
-    NSString *containerNamePrefix = [[NSString stringWithFormat:@"sampleioscontainer%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
+    NSString *containerNamePrefix = [[NSString stringWithFormat:@"sampleioscontainer%@", [[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
     NSInteger numberContainersToCreate = 5;
     __block NSMutableArray *containerArray = [NSMutableArray arrayWithCapacity:numberContainersToCreate];
     [self createContainersWithPrefix:containerNamePrefix numberToCreate:numberContainersToCreate arrayToPopulate:containerArray completionHandler:^(NSError *error) {
@@ -155,20 +155,19 @@
                     [self assertContainerPropertiesWithContainer:containerResult];
                 }
                 
-                dispatch_semaphore_signal(semaphore);
+                [semaphore signal];
             }];
-
         }];
-        
     }];
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+    [semaphore wait];
 }
+
 - (void)testListContainersSegmentedPrefixDetailsAll
 {
-    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+    AZSTestSemaphore *semaphore = [[AZSTestSemaphore alloc] init];
     
     // Prefix, max results, containerListingDetails, continuation token.
-    NSString *containerNamePrefix = [[NSString stringWithFormat:@"sampleioscontainer%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
+    NSString *containerNamePrefix = [[NSString stringWithFormat:@"sampleioscontainer%@", [[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
     NSInteger numberContainersToCreate = 5;
     __block NSMutableArray *containerArray = [NSMutableArray arrayWithCapacity:numberContainersToCreate];
     [self createContainersWithPrefix:containerNamePrefix numberToCreate:numberContainersToCreate arrayToPopulate:containerArray completionHandler:^(NSError *error) {
@@ -204,20 +203,19 @@
                     [self assertContainerPropertiesWithContainer:containerResult];
                 }
                 
-                dispatch_semaphore_signal(semaphore);
+                [semaphore signal];
             }];
-            
         }];
-        
     }];
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+    [semaphore wait];
 }
+
 - (void)testListContainersSegmentedPrefixDetailsMetadata
 {
-    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+    AZSTestSemaphore *semaphore = [[AZSTestSemaphore alloc] init];
     
     // Prefix, max results, containerListingDetails, continuation token.
-    NSString *containerNamePrefix = [[NSString stringWithFormat:@"sampleioscontainer%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
+    NSString *containerNamePrefix = [[NSString stringWithFormat:@"sampleioscontainer%@", [[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
     NSInteger numberContainersToCreate = 5;
     __block NSMutableArray *containerArray = [NSMutableArray arrayWithCapacity:numberContainersToCreate];
     [self createContainersWithPrefix:containerNamePrefix numberToCreate:numberContainersToCreate arrayToPopulate:containerArray completionHandler:^(NSError *error) {
@@ -253,21 +251,19 @@
                     [self assertContainerPropertiesWithContainer:containerResult];
                 }
                 
-                dispatch_semaphore_signal(semaphore);
+                [semaphore signal];
             }];
-            
         }];
-        
     }];
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+    [semaphore wait];
 }
 
 - (void)testListContainersSegmentedMaxResultsAndContinuationToken
 {
-    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+    AZSTestSemaphore *semaphore = [[AZSTestSemaphore alloc] init];
     
     // Prefix, max results, containerListingDetails, continuation token.
-    NSString *containerNamePrefix = [[NSString stringWithFormat:@"sampleioscontainer%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
+    NSString *containerNamePrefix = [[NSString stringWithFormat:@"sampleioscontainer%@", [[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
     NSInteger numberContainersToCreate = 5;
     __block NSMutableArray *containerArray = [NSMutableArray arrayWithCapacity:numberContainersToCreate];
     [self createContainersWithPrefix:containerNamePrefix numberToCreate:numberContainersToCreate arrayToPopulate:containerArray completionHandler:^(NSError *error) {
@@ -303,13 +299,13 @@
                     [self assertContainerPropertiesWithContainer:containerResult];
                 }
                 
-                dispatch_semaphore_signal(semaphore);
+                [semaphore signal];
             }];
             
         }];
         
     }];
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+    [semaphore wait];
 }
 
 @end

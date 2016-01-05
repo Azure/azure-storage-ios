@@ -54,7 +54,7 @@
     
     // Put setup code here; it will be run once, before the first test case.
     AZSTestSemaphore *semaphore = [[AZSTestSemaphore alloc] init];
-    NSString *containerName = [[NSString stringWithFormat:@"sampleioscontainer%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
+    NSString *containerName = [[NSString stringWithFormat:@"sampleioscontainer%@", [[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
     self.blobContainer = [self.blobClient containerReferenceFromName:containerName];
     
     [self.blobContainer createContainerIfNotExistsWithCompletionHandler:^(NSError* err, BOOL created) {
@@ -185,7 +185,7 @@
     AZSSharedAccessBlobParameters *sp2 = [[AZSSharedAccessBlobParameters alloc] init];
     sp2.permissions = policy.permissions;
     sp2.sharedAccessExpiryTime = policy.sharedAccessExpiryTime;
-    [self testContainerSASWithParameters:sp2 completionHandler:^(){
+    [self testContainerSASWithParameters:sp2 completionHandler:^() {
         [innerSemaphore signal];
     }];
     [innerSemaphore wait];
@@ -254,7 +254,7 @@
         
         [NSThread sleepForTimeInterval:30];
         
-        [self testContainerSasBlobHeadersWithParameters:sp context:context completionHandler:^(){
+        [self testContainerSasBlobHeadersWithParameters:sp context:context completionHandler:^() {
             [self.blobContainer downloadPermissionsWithCompletionHandler:^(NSError *error, AZSBlobContainerPermissions *storedPermissions) {
                 [self checkPassageOfError:err expectToPass:YES errorCode:-1 message:@"Download permissions"];
                 [self checkEqualityOfContainerPermissions:permissions otherPermissions:storedPermissions];
@@ -270,7 +270,7 @@
     sp2.permissions = policy.permissions;
     sp2.sharedAccessExpiryTime = policy.sharedAccessExpiryTime;
     
-    [self testContainerSasBlobHeadersWithParameters:sp2 context:context completionHandler:^(){
+    [self testContainerSasBlobHeadersWithParameters:sp2 context:context completionHandler:^() {
         [innerSemaphore signal];
     }];
     [innerSemaphore wait];
@@ -335,7 +335,7 @@
         
         [NSThread sleepForTimeInterval:30];
         
-        [self testContainerUpdateSasWithReadWriteParameters:sp readOnlyParameters:sp2 policies:permissions.sharedAccessPolicies completionHandler:^(){
+        [self testContainerUpdateSasWithReadWriteParameters:sp readOnlyParameters:sp2 policies:permissions.sharedAccessPolicies completionHandler:^() {
             [self.blobContainer downloadPermissionsWithCompletionHandler:^(NSError *error, AZSBlobContainerPermissions *storedPermissions) {
                 [self checkPassageOfError:err expectToPass:YES errorCode:-1 message:@"Download permissions"];
                 [self checkEqualityOfContainerPermissions:permissions otherPermissions:storedPermissions];
@@ -355,7 +355,7 @@
     sp4.permissions = policy2.permissions;
     sp4.sharedAccessExpiryTime = policy2.sharedAccessExpiryTime;
     
-    [self testContainerUpdateSasWithReadWriteParameters:sp3 readOnlyParameters:sp4 policies:nil completionHandler:^(){
+    [self testContainerUpdateSasWithReadWriteParameters:sp3 readOnlyParameters:sp4 policies:nil completionHandler:^() {
         [semaphore signal];
     }];
     [semaphore wait];
@@ -403,7 +403,7 @@
         [semaphores addObject:semaphore];
         
         // Create random container and upload a test blob to it
-        NSString *containerName = [[NSString stringWithFormat:@"sampleioscontainer%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
+        NSString *containerName = [[NSString stringWithFormat:@"sampleioscontainer%@", [[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
         AZSCloudBlobContainer *container = [self.blobClient containerReferenceFromName:containerName];
         [container createContainerIfNotExistsWithCompletionHandler:^(NSError* err, BOOL created) {
             [self checkPassageOfError:err expectToPass:YES errorCode:-1 message:@"Create container"];
@@ -498,7 +498,7 @@
                     [self testAccessWithSAS:nil permissions:AZSSharedAccessPermissionsRead container:self.blobContainer blob:testBlob completionHandler:^{
                         [self checkPassageOfError:err expectToPass:YES errorCode:-1 message:@"Delete Container"];
                         
-                        [self.blobContainer downloadPermissionsWithCompletionHandler:^(NSError *err, AZSBlobContainerPermissions *storedPermissions){
+                        [self.blobContainer downloadPermissionsWithCompletionHandler:^(NSError *err, AZSBlobContainerPermissions *storedPermissions) {
                             [self checkPassageOfError:err expectToPass:YES errorCode:-1 message:@"Fetch permissions"];
                             [self checkEqualityOfContainerPermissions:permissions otherPermissions:storedPermissions];
                             
@@ -528,9 +528,9 @@
         [semaphores addObject:semaphore];
         
         // Create random container and upload a test blob to it
-        NSString *containerName = [[NSString stringWithFormat:@"sampleioscontainer%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
+        NSString *containerName = [[NSString stringWithFormat:@"sampleioscontainer%@", [[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
         AZSCloudBlobContainer *container = [self.blobClient containerReferenceFromName:containerName];
-        [container createContainerIfNotExistsWithCompletionHandler:^(NSError *err, BOOL exists){
+        [container createContainerIfNotExistsWithCompletionHandler:^(NSError *err, BOOL exists) {
             [self checkPassageOfError:err expectToPass:YES errorCode:-1 message:@"Create container"];
             
             AZSCloudBlockBlob *blob = [container blockBlobReferenceFromName:@"testSasBlockBlob"];
@@ -611,7 +611,7 @@
         [self checkPassageOfError:err expectToPass:YES errorCode:-1 message:@"Upload Permissions"];
         
         [self testBlobSasWithParameters:sp completionHandler:^{
-            [self.blobContainer downloadPermissionsWithCompletionHandler:^(NSError *err, AZSBlobContainerPermissions *storedPermissions){
+            [self.blobContainer downloadPermissionsWithCompletionHandler:^(NSError *err, AZSBlobContainerPermissions *storedPermissions) {
                 [self checkPassageOfError:err expectToPass:YES errorCode:-1 message:@"Fetch permissions"];
                 [self checkEqualityOfContainerPermissions:permissions otherPermissions:storedPermissions];
                 
@@ -626,7 +626,7 @@
     AZSSharedAccessBlobParameters *sp2 = [[AZSSharedAccessBlobParameters alloc] init];
     sp2.permissions = policy.permissions;
     sp2.sharedAccessExpiryTime = policy.sharedAccessExpiryTime;
-    [self testBlobSasWithParameters:sp2 completionHandler:^(){
+    [self testBlobSasWithParameters:sp2 completionHandler:^() {
         [innerSemaphore signal];
     }];
 
@@ -649,7 +649,7 @@
         [self checkPassageOfError:error expectToPass:YES errorCode:-1 message:@"Create SAS token"];
         XCTAssertTrue([blobFromUri.client.credentials isSAS]);
         
-        [blobFromUri downloadToStream:[[NSOutputStream alloc] initToMemory] accessCondition:nil requestOptions:nil operationContext:nil completionHandler:^(NSError * err){
+        [blobFromUri downloadToStream:[[NSOutputStream alloc] initToMemory] accessCondition:nil requestOptions:nil operationContext:nil completionHandler:^(NSError * err) {
             [self checkPassageOfError:err expectToPass:YES errorCode:-1 message:@"Dowload to stream"];
             
             // Generate credentials from SAS
@@ -661,7 +661,7 @@
             XCTAssertTrue([blobFromClient.client.credentials isSAS]);
             XCTAssertEqualObjects(bClient, blobFromClient.client);
             
-            [blobFromClient downloadToStream:[[NSOutputStream alloc] initToMemory] accessCondition:nil requestOptions:nil operationContext:nil completionHandler:^(NSError *Err){
+            [blobFromClient downloadToStream:[[NSOutputStream alloc] initToMemory] accessCondition:nil requestOptions:nil operationContext:nil completionHandler:^(NSError *Err) {
                 [self checkPassageOfError:err expectToPass:YES errorCode:-1 message:@"Dowload to stream"];
                 
                 completionHandler();
@@ -687,8 +687,8 @@
     [self.blobContainer uploadPermissions:permissions completionHandler:^(NSError * err) {
         [self checkPassageOfError:err expectToPass:YES errorCode:-1 message:@"Upload permissions"];
         
-        [self testBlobSasSharedAccessBlobHeadersWithParameters:sp context:context completionHandler:^(){
-            [self.blobContainer downloadPermissionsWithCompletionHandler:^(NSError *err, AZSBlobContainerPermissions *storedPermissions){
+        [self testBlobSasSharedAccessBlobHeadersWithParameters:sp context:context completionHandler:^() {
+            [self.blobContainer downloadPermissionsWithCompletionHandler:^(NSError *err, AZSBlobContainerPermissions *storedPermissions) {
                 [self checkPassageOfError:err expectToPass:YES errorCode:-1 message:@"Fetch permissions"];
                 [self checkEqualityOfContainerPermissions:permissions otherPermissions:storedPermissions];
                 
@@ -703,7 +703,7 @@
     AZSSharedAccessBlobParameters *sp2 = [[AZSSharedAccessBlobParameters alloc] init];
     sp2.permissions = policy.permissions;
     sp2.sharedAccessExpiryTime = policy.sharedAccessExpiryTime;
-    [self testBlobSasSharedAccessBlobHeadersWithParameters:sp2 context:context completionHandler:^(){
+    [self testBlobSasSharedAccessBlobHeadersWithParameters:sp2 context:context completionHandler:^() {
         [innerSemaphore signal];
     }];
 

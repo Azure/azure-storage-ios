@@ -19,10 +19,13 @@
 #import "Azure_Storage_Client_Library.h"
 #import "AZSBlobTestBase.h"
 #import "AZSConstants.h"
+#import "AZSTestSemaphore.h"
 
 @interface AZSCloudBlobContainerTests : AZSBlobTestBase
+
 @property NSString *containerName;
 @property AZSCloudBlobContainer *blobContainer;
+
 @end
 
 @implementation AZSCloudBlobContainerTests
@@ -30,16 +33,16 @@
 - (void)setUp
 {
     [super setUp];
-    self.containerName = [[NSString stringWithFormat:@"sampleioscontainer%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
+    self.containerName = [[NSString stringWithFormat:@"sampleioscontainer%@", [[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
     self.blobContainer = [self.blobClient containerReferenceFromName:self.containerName];
-    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+    AZSTestSemaphore *semaphore = [[AZSTestSemaphore alloc] init];
     
-    [self.blobContainer createContainerWithCompletionHandler:^(NSError * error) {
+    [self.blobContainer createContainerIfNotExistsWithCompletionHandler:^(NSError *error, BOOL exists) {
         XCTAssertNil(error, @"Error in test setup, in creating container.  Error code = %ld, error domain = %@, error userinfo = %@", (long)error.code, error.domain, error.userInfo);
-        dispatch_semaphore_signal(semaphore);
+        [semaphore signal];
     }];
+    [semaphore wait];
     
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
     // Put setup code here; it will be run once, before the first test case.
 }
 
@@ -47,28 +50,20 @@
 {
     // Put teardown code here; it will be run once, after the last test case.
     AZSCloudBlobContainer *blobContainer = [self.blobClient containerReferenceFromName:self.containerName];
-    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+    AZSTestSemaphore *semaphore = [[AZSTestSemaphore alloc] init];
     
-    @try {
-        // Best-effort cleanup
-        // TODO: Change to delete if exists once that's implemented.
-        
-        [blobContainer deleteContainerWithCompletionHandler:^(NSError * error) {
-            dispatch_semaphore_signal(semaphore);
-        }];
-    }
-    @catch (NSException *exception) {
-        
-    }
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+    [blobContainer deleteContainerIfExistsWithCompletionHandler:^(NSError *error, BOOL exists) {
+        [semaphore signal];
+    }];
+    [semaphore wait];
     [super tearDown];
 }
 
 - (void)runTestContainerAccessWithAccessType:(AZSContainerPublicAccessType) accessType
 {
-    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+    AZSTestSemaphore *semaphore = [[AZSTestSemaphore alloc] init];
     
-    NSString *containerName = [[NSString stringWithFormat:@"sampleioscontainer%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
+    NSString *containerName = [[NSString stringWithFormat:@"sampleioscontainer%@", [[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
     NSString *blobName = AZSCBlob;
     NSString *blobText = @"blobText";
     
@@ -100,16 +95,13 @@
                     XCTAssertTrue([blobText isEqualToString:resultText], @"Text strings do not match.");
                     
                     [container deleteContainerIfExistsWithCompletionHandler:^(NSError *error, BOOL deleted) {
-                        dispatch_semaphore_signal(semaphore);
-                        
+                        [semaphore signal];
                     }];
-                    
                 }];
             }];
         }];
     }];
-    
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+    [semaphore wait];
 }
 
 -(void)testContainerAccessWithPublicAccess
@@ -121,7 +113,7 @@
 -(void)createBlobsForListingTestsWithCompletionHandler:(void (^)(NSArray *, NSString *))completionHandler
 {
     NSString *blobText = @"sampleBlobText";
-    NSString *blobNamePrefix = [[NSString stringWithFormat:@"sampleblob%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
+    NSString *blobNamePrefix = [[NSString stringWithFormat:@"sampleblob%@", [[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
     
     NSMutableArray *blobs = [NSMutableArray arrayWithCapacity:6];
     
@@ -213,7 +205,7 @@
 
 - (void)testContainerListBlobsSegmentedFlatListingDetailsNone
 {
-    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+    AZSTestSemaphore *semaphore = [[AZSTestSemaphore alloc] init];
     
     [self createBlobsForListingTestsWithCompletionHandler:^(NSArray *blobs, NSString *blobNamePrefix) {
         NSMutableArray *arrayToPopulate = [NSMutableArray arrayWithCapacity:6];
@@ -233,16 +225,15 @@
                 [self checkBlobPropertiesWithBlob:blob isCommitted:YES isSnapshot:NO];
             }
             
-            dispatch_semaphore_signal(semaphore);
+            [semaphore signal];
         }];
     }];
-    
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+    [semaphore wait];
 }
 
 - (void)testContainerListBlobsSegmentedFlatWithPrefix
 {
-    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+    AZSTestSemaphore *semaphore = [[AZSTestSemaphore alloc] init];
     
     [self createBlobsForListingTestsWithCompletionHandler:^(NSArray *blobs, NSString *blobNamePrefix) {
         NSMutableArray *arrayToPopulate = [NSMutableArray arrayWithCapacity:6];
@@ -260,16 +251,15 @@
                 [self checkBlobPropertiesWithBlob:blob isCommitted:YES isSnapshot:NO];
             }
 
-            dispatch_semaphore_signal(semaphore);
+            [semaphore signal];
         }];
     }];
-    
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+    [semaphore wait];
 }
 
 - (void)testContainerListBlobsSegmentedFlatWithMaxResults
 {
-    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+    AZSTestSemaphore *semaphore = [[AZSTestSemaphore alloc] init];
     
     [self createBlobsForListingTestsWithCompletionHandler:^(NSArray *blobs, NSString *blobNamePrefix) {
         [self.blobContainer listBlobsSegmentedWithContinuationToken:nil prefix:nil useFlatBlobListing:YES blobListingDetails:AZSBlobListingDetailsNone maxResults:3 completionHandler:^(NSError *error, AZSBlobResultSegment *resultSegment) {
@@ -287,16 +277,15 @@
                 [self checkBlobPropertiesWithBlob:blob isCommitted:YES isSnapshot:NO];
             }
             
-            dispatch_semaphore_signal(semaphore);
+            [semaphore signal];
         }];
     }];
-    
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+    [semaphore wait];
 }
 
 - (void)testContainerListBlobsSegmentedFlatWithMaxResultsAll
 {
-    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+    AZSTestSemaphore *semaphore = [[AZSTestSemaphore alloc] init];
     
     [self createBlobsForListingTestsWithCompletionHandler:^(NSArray *blobs, NSString *blobNamePrefix) {
         NSMutableArray *arrayToPopulate = [NSMutableArray arrayWithCapacity:6];
@@ -316,18 +305,15 @@
                 [self checkBlobPropertiesWithBlob:blob isCommitted:YES isSnapshot:NO];
             }
             
-            dispatch_semaphore_signal(semaphore);
+            [semaphore signal];
         }];
     }];
-    
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+    [semaphore wait];
 }
-
-
 
 - (void)testContainerListBlobsSegmentedFlatListingDetailsSnapshots
 {
-    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+    AZSTestSemaphore *semaphore = [[AZSTestSemaphore alloc] init];
     
     [self createBlobsForListingTestsWithCompletionHandler:^(NSArray *blobs, NSString *blobNamePrefix) {
         NSMutableArray *arrayToPopulate = [NSMutableArray arrayWithCapacity:6];
@@ -344,21 +330,20 @@
             
             for (int i = 0; i < arrayToPopulate.count; i++)
             {
-                NSLog(@"%d", i);
                 AZSCloudBlob *blob = (AZSCloudBlob *)arrayToPopulate[i];
                 XCTAssertTrue(blob.metadata.count == 0, @"Metadata returned where there should be none.");
                 [self checkBlobPropertiesWithBlob:blob isCommitted:YES isSnapshot:(i == 0)];
             }
             
-            dispatch_semaphore_signal(semaphore);
+            [semaphore signal];
         }];
     }];
-    
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);}
+    [semaphore wait];
+}
 
 - (void)testContainerListBlobsSegmentedFlatListingDetailsMetadata
 {
-    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+    AZSTestSemaphore *semaphore = [[AZSTestSemaphore alloc] init];
     
     [self createBlobsForListingTestsWithCompletionHandler:^(NSArray *blobs, NSString *blobNamePrefix) {
         NSMutableArray *arrayToPopulate = [NSMutableArray arrayWithCapacity:6];
@@ -382,16 +367,15 @@
                 [self checkBlobPropertiesWithBlob:blob isCommitted:YES isSnapshot:NO];
             }
             
-            dispatch_semaphore_signal(semaphore);
+            [semaphore signal];
         }];
     }];
-    
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+    [semaphore wait];
 }
 
 - (void)testContainerListBlobsSegmentedFlatListingDetailsUncommitted
 {
-    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+    AZSTestSemaphore *semaphore = [[AZSTestSemaphore alloc] init];
     
     [self createBlobsForListingTestsWithCompletionHandler:^(NSArray *blobs, NSString *blobNamePrefix) {
         NSMutableArray *arrayToPopulate = [NSMutableArray arrayWithCapacity:6];
@@ -412,16 +396,15 @@
                 [self checkBlobPropertiesWithBlob:blob isCommitted:(i != 4) isSnapshot:NO];
             }
             
-            dispatch_semaphore_signal(semaphore);
+            [semaphore signal];
         }];
     }];
-    
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+    [semaphore wait];
 }
 
 - (void)testContainerListBlobsSegmentedFlatListingDetailsCopy
 {
-    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+    AZSTestSemaphore *semaphore = [[AZSTestSemaphore alloc] init];
     
     [self createBlobsForListingTestsWithCompletionHandler:^(NSArray *blobs, NSString *blobNamePrefix) {
         NSMutableArray *arrayToPopulate = [NSMutableArray arrayWithCapacity:6];
@@ -448,16 +431,15 @@
                 [self checkBlobPropertiesWithBlob:blob isCommitted:YES isSnapshot:NO];
             }
             
-            dispatch_semaphore_signal(semaphore);
+            [semaphore signal];
         }];
     }];
-    
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+    [semaphore wait];
 }
 
 - (void)testContainerListBlobsSegmentedFlatListingDetailsAll
 {
-    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+    AZSTestSemaphore *semaphore = [[AZSTestSemaphore alloc] init];
     
     [self createBlobsForListingTestsWithCompletionHandler:^(NSArray *blobs, NSString *blobNamePrefix) {
         NSMutableArray *arrayToPopulate = [NSMutableArray arrayWithCapacity:6];
@@ -488,20 +470,18 @@
                 {
                     XCTAssertTrue(blob.metadata.count == 0, @"Metadata returned where there should be none.");
                 }
-                NSLog(@"%d",i);
                 [self checkBlobPropertiesWithBlob:blob isCommitted:(i != 5) isSnapshot:(i == 0)];
             }
             
-            dispatch_semaphore_signal(semaphore);
+            [semaphore signal];
         }];
     }];
-    
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+    [semaphore wait];
 }
 
 -(void)testContainerExists
 {
-    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+    AZSTestSemaphore *semaphore = [[AZSTestSemaphore alloc] init];
 
     NSString *newContainerName = [NSString stringWithFormat:@"%@1", self.containerName];
     // Check that Exists, CreateIfNotExists, and DeleteIfExists all do the right thing in both the exists and not-exists cases.
@@ -530,16 +510,14 @@
                         [newContainer deleteContainerIfExistsWithCompletionHandler:^(NSError *error, BOOL success) {
                             XCTAssertNil(error, @"Error in deleteIfExists.  Error code = %ld, error domain = %@, error userinfo = %@", (long)error.code, error.domain, error.userInfo);
                             XCTAssertTrue(success, @"deleteIfExists returned NO for an existant container.");
-                            dispatch_semaphore_signal(semaphore);
+                            [semaphore signal];
                         }];
                     }];
                 }];
             }];
         }];
     }];
-    
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-
+    [semaphore wait];
 }
 
 @end

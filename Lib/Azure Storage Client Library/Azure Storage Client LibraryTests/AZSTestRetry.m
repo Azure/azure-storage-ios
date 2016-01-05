@@ -18,6 +18,7 @@
 #import <XCTest/XCTest.h>
 #import "AZSConstants.h"
 #import "AZSBlobTestBase.h"
+#import "AZSTestSemaphore.h"
 #import "Azure_Storage_Client_Library.h"
 
 // TODO: Figure out a way to not have to document this.  Unfortunately, it will show up in the exported documentation.
@@ -50,9 +51,9 @@
 - (void)setUp
 {
     [super setUp];
-    self.containerName = [[NSString stringWithFormat:@"sampleioscontainer%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
+    self.containerName = [[NSString stringWithFormat:@"sampleioscontainer%@", [[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
     self.blobContainer = [self.blobClient containerReferenceFromName:self.containerName];
-
+    
     // Put setup code here; it will be run once, before the first test case.
 }
 
@@ -207,8 +208,7 @@
 
 -(void)testRetryLogicInExecutor
 {
-    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
-
+    AZSTestSemaphore *semaphore = [[AZSTestSemaphore alloc] init];
     AZSRetryPolicyForTest *testRetryPolicy = [[AZSRetryPolicyForTest alloc] init];
     
     __block int currentRetryCount = 0;
@@ -246,10 +246,9 @@
         XCTAssertNotNil(error, @"Error not returned when it should have been.");
         XCTAssertTrue(currentRetryCount == 3, @"Incorrect number of retries attempted.");
         XCTAssertTrue(ABS([testEnd timeIntervalSinceDate:testStart] - 9.0) < 1.0, @"Incorrect amount of time waited in between retries.");
-        dispatch_semaphore_signal(semaphore);
+        [semaphore signal];
     }];
-    
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+    [semaphore wait];
 }
 
 @end
