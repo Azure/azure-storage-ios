@@ -63,7 +63,7 @@
 - (void)setUp
 {
     [super setUp];
-    self.containerName = [[NSString stringWithFormat:@"sampleioscontainer%@", [[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
+    self.containerName = [NSString stringWithFormat:@"sampleioscontainer%@", [AZSTestHelpers uniqueName]];
     self.blobContainer = [self.blobClient containerReferenceFromName:self.containerName];
     AZSTestSemaphore *semaphore = [[AZSTestSemaphore alloc] init];
     

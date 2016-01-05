@@ -22,6 +22,23 @@
 
 @implementation AZSTestHelpers
 
++ (void)checkPassageOfError:(NSError *)err expectToPass:(BOOL)expected expectedHttpErrorCode:(int)code message:(NSString *)message
+{
+    int badCode = [err.userInfo[AZSCHttpStatusCode] intValue];
+    if (expected) {
+        XCTAssertNil(err, @"%@ failed.", message);
+    }
+    else {
+        XCTAssertNotNil(err, @"%@ unexpectedly passed.", message);
+        XCTAssertEqual(code, badCode);
+    }
+}
+
++ (NSString *)uniqueName
+{
+    return [[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString] lowercaseString];
+}
+
 @end
 
 @implementation AZSUIntegerHolder

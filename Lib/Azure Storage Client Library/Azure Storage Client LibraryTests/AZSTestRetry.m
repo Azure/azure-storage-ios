@@ -18,6 +18,7 @@
 #import <XCTest/XCTest.h>
 #import "AZSConstants.h"
 #import "AZSBlobTestBase.h"
+#import "AZSTestHelpers.h"
 #import "AZSTestSemaphore.h"
 #import "Azure_Storage_Client_Library.h"
 
@@ -51,7 +52,7 @@
 - (void)setUp
 {
     [super setUp];
-    self.containerName = [[NSString stringWithFormat:@"sampleioscontainer%@", [[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
+    self.containerName = [NSString stringWithFormat:@"sampleioscontainer%@", [AZSTestHelpers uniqueName]];
     self.blobContainer = [self.blobClient containerReferenceFromName:self.containerName];
     
     // Put setup code here; it will be run once, before the first test case.

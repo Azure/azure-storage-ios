@@ -15,11 +15,17 @@
 // </copyright>
 // -----------------------------------------------------------------------------------------
 
+#import <XCTest/XCTest.h>
 #import "AZSTestBase.h"
 
 @interface AZSTestHelpers : AZSTestBase
 
++(void)checkPassageOfError:(NSError *)err expectToPass:(BOOL)expected expectedHttpErrorCode:(int)code message:(NSString *)message;
++(NSString *)uniqueName;
+
 @end
+
+
 @interface AZSUIntegerHolder : NSObject
 {
 @public
@@ -36,7 +42,6 @@
 @property NSUInteger totalBytes;
 @property NSUInteger errorCount;
 @property NSMutableString *errors;
-
 
 // NSStream methods and properties:
 @property(assign) id<NSStreamDelegate> delegate;
@@ -68,4 +73,3 @@
 -(instancetype)initWithRandomSeed:(unsigned int)seed totalBlobSize:(NSUInteger)totalBlobSize isUpload:(BOOL)isUpload;
 
 @end
-

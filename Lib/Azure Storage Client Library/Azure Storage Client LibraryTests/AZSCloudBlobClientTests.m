@@ -18,6 +18,7 @@
 #import <XCTest/XCTest.h>
 #import "AZSConstants.h"
 #import "AZSBlobTestBase.h"
+#import "AZSTestHelpers.h"
 #import "AZSTestSemaphore.h"
 #import "Azure_Storage_Client_Library.h"
 
@@ -123,7 +124,7 @@
     AZSTestSemaphore *semaphore = [[AZSTestSemaphore alloc] init];
 
     // Prefix, max results, containerListingDetails, continuation token.
-    NSString *containerNamePrefix = [[NSString stringWithFormat:@"sampleioscontainer%@", [[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
+    NSString *containerNamePrefix = [NSString stringWithFormat:@"sampleioscontainer%@", [AZSTestHelpers uniqueName]];
     NSInteger numberContainersToCreate = 5;
     __block NSMutableArray *containerArray = [NSMutableArray arrayWithCapacity:numberContainersToCreate];
     [self createContainersWithPrefix:containerNamePrefix numberToCreate:numberContainersToCreate arrayToPopulate:containerArray completionHandler:^(NSError *error) {
@@ -167,7 +168,7 @@
     AZSTestSemaphore *semaphore = [[AZSTestSemaphore alloc] init];
     
     // Prefix, max results, containerListingDetails, continuation token.
-    NSString *containerNamePrefix = [[NSString stringWithFormat:@"sampleioscontainer%@", [[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
+    NSString *containerNamePrefix = [NSString stringWithFormat:@"sampleioscontainer%@", [AZSTestHelpers uniqueName]];
     NSInteger numberContainersToCreate = 5;
     __block NSMutableArray *containerArray = [NSMutableArray arrayWithCapacity:numberContainersToCreate];
     [self createContainersWithPrefix:containerNamePrefix numberToCreate:numberContainersToCreate arrayToPopulate:containerArray completionHandler:^(NSError *error) {
@@ -215,7 +216,7 @@
     AZSTestSemaphore *semaphore = [[AZSTestSemaphore alloc] init];
     
     // Prefix, max results, containerListingDetails, continuation token.
-    NSString *containerNamePrefix = [[NSString stringWithFormat:@"sampleioscontainer%@", [[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
+    NSString *containerNamePrefix = [NSString stringWithFormat:@"sampleioscontainer%@", [AZSTestHelpers uniqueName]];
     NSInteger numberContainersToCreate = 5;
     __block NSMutableArray *containerArray = [NSMutableArray arrayWithCapacity:numberContainersToCreate];
     [self createContainersWithPrefix:containerNamePrefix numberToCreate:numberContainersToCreate arrayToPopulate:containerArray completionHandler:^(NSError *error) {
@@ -263,7 +264,7 @@
     AZSTestSemaphore *semaphore = [[AZSTestSemaphore alloc] init];
     
     // Prefix, max results, containerListingDetails, continuation token.
-    NSString *containerNamePrefix = [[NSString stringWithFormat:@"sampleioscontainer%@", [[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
+    NSString *containerNamePrefix = [NSString stringWithFormat:@"sampleioscontainer%@", [AZSTestHelpers uniqueName]];
     NSInteger numberContainersToCreate = 5;
     __block NSMutableArray *containerArray = [NSMutableArray arrayWithCapacity:numberContainersToCreate];
     [self createContainersWithPrefix:containerNamePrefix numberToCreate:numberContainersToCreate arrayToPopulate:containerArray completionHandler:^(NSError *error) {

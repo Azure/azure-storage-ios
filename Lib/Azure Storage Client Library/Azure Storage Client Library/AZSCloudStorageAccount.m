@@ -15,11 +15,17 @@
 // </copyright>
 // -----------------------------------------------------------------------------------------
 
+#import "AZSEnums.h"
+#import "AZSErrors.h"
 #import "AZSConstants.h"
 #import "AZSCloudStorageAccount.h"
 #import "AZSCloudBlobClient.h"
+#import "AZSOperationContext.h"
+#import "AZSSharedAccessSignatureHelper.h"
 #import "AZSStorageUri.h"
 #import "AZSStorageCredentials.h"
+#import "AZSUriQueryBuilder.h"
+#import "AZSUtil.h"
 
 @interface AZSCloudStorageAccount()
 
@@ -38,7 +44,7 @@
 
 @synthesize connectionString = _connectionString;
 
-+ (AZSCloudStorageAccount *)accountFromConnectionString:(NSString *)connectionString
++ (AZSCloudStorageAccount *)accountFromConnectionString:(NSString *)connectionString error:(NSError *__autoreleasing *)error
 {
     // Parse the connection string into settings:
     NSArray *settings = [connectionString componentsSeparatedByString:@";"];
@@ -75,15 +81,20 @@
     
     if (explicitBlobEndpoint)
     {
-        account = [[AZSCloudStorageAccount alloc] initWithCredentials:credentials blobEndpoint:explicitBlobEndpoint tableEndpoint:nil queueEndpoint:nil fileEndpoint:nil];
+        account = [[AZSCloudStorageAccount alloc] initWithCredentials:credentials blobEndpoint:explicitBlobEndpoint tableEndpoint:nil queueEndpoint:nil fileEndpoint:nil error:error];
     }
     else if (endpointSuffix)
     {
-        account = [[AZSCloudStorageAccount alloc] initWithCredentials:credentials useHttps:useHttps endpointSuffix:endpointSuffix];
+        account = [[AZSCloudStorageAccount alloc] initWithCredentials:credentials useHttps:useHttps endpointSuffix:endpointSuffix error:error];
     }
     else
     {
-        account = [[AZSCloudStorageAccount alloc] initWithCredentials:credentials useHttps:useHttps];
+        account = [[AZSCloudStorageAccount alloc] initWithCredentials:credentials useHttps:useHttps error:error];
+    }
+    
+    if (*error) {
+        // An error occurred.
+        return nil;
     }
     
     account->_connectionString = connectionString;
@@ -139,11 +150,12 @@
     return nil;
 }
 
--(instancetype) initWithCredentials:(AZSStorageCredentials *)storageCredentials blobEndpoint:(AZSStorageUri *)blobEndpoint tableEndpoint:(AZSStorageUri *)tableEndpoint queueEndpoint:(AZSStorageUri *)queueEndpoint fileEndpoint:(AZSStorageUri *)fileEndpoint
+-(instancetype) initWithCredentials:(AZSStorageCredentials *)storageCredentials blobEndpoint:(AZSStorageUri *)blobEndpoint tableEndpoint:(AZSStorageUri *)tableEndpoint queueEndpoint:(AZSStorageUri *)queueEndpoint fileEndpoint:(AZSStorageUri *)fileEndpoint error:(NSError *__autoreleasing *)error
 {
-    self = [self initWithCredentials:storageCredentials useHttps:NO endpointSuffix: nil];
+    self = [super init];
     if (self)
     {
+        _storageCredentials = storageCredentials;
         _blob_endpoint = blobEndpoint;
         _explicitEndpoints = YES;
     }
@@ -151,20 +163,27 @@
     return self;
 }
 
--(instancetype) initWithCredentials:(AZSStorageCredentials *)storageCredentials useHttps:(BOOL)useHttps
+-(instancetype) initWithCredentials:(AZSStorageCredentials *)storageCredentials useHttps:(BOOL)useHttps error:(NSError *__autoreleasing *)error
 {
-    self = [self initWithCredentials:storageCredentials useHttps:useHttps endpointSuffix: AZSCDefaultSuffix];
+    self = [self initWithCredentials:storageCredentials useHttps:useHttps endpointSuffix:AZSCDefaultSuffix error:error];
     
     return self;
 }
 
--(instancetype) initWithCredentials:(AZSStorageCredentials *)storageCredentials useHttps:(BOOL)useHttps endpointSuffix:(NSString *)endpointSuffix 
+-(instancetype) initWithCredentials:(AZSStorageCredentials *)storageCredentials useHttps:(BOOL)useHttps endpointSuffix:(NSString *)endpointSuffix error:(NSError *__autoreleasing *)error
 {
     self = [super init];
+    
+    if ([storageCredentials isSAS] && !storageCredentials.accountName) {
+        *error = [NSError errorWithDomain:AZSErrorDomain code:AZSEInvalidArgument userInfo:nil];
+        [[AZSUtil operationlessContext] logAtLevel:AZSLogLevelError withMessage:@"Storage credentials are missing an account name."];
+        return nil;
+    }
+    
     if (self)
     {
         _storageCredentials = storageCredentials;
-        _endpointSuffix = endpointSuffix;
+        _endpointSuffix = [endpointSuffix isEqualToString:AZSCDefaultSuffix] ? nil : endpointSuffix;
         _blob_endpoint = [self constructDefaultEndpointWithScheme:(useHttps ? AZSCHttps : AZSCHttp) hostnamePrefix:AZSCBlob endpointSuffix:endpointSuffix];
         _explicitEndpoints = NO;
         _useHttps = useHttps;
@@ -176,6 +195,24 @@
 -(AZSCloudBlobClient *) getBlobClient
 {
     return [[AZSCloudBlobClient alloc] initWithStorageUri:self.blob_endpoint credentials:self.storageCredentials];
+}
+
+- (NSString *) createSharedAccessSignatureWithParameters:(AZSSharedAccessAccountParameters *)parameters error:(NSError **)error
+{
+    if (![self.storageCredentials isSharedKey]) {
+        *error = [NSError errorWithDomain:AZSErrorDomain code:AZSEInvalidArgument userInfo:nil];
+        [[AZSUtil operationlessContext] logAtLevel:AZSLogLevelError withMessage:@"Cannot create SAS without account key."];
+        return nil;
+    }
+    
+    NSString *signature = [AZSSharedAccessSignatureHelper sharedAccessSignatureHashForAccountWithParameters:parameters accountName:self.storageCredentials.accountName credentials:self.storageCredentials error:error];
+    if (!signature) {
+        // An error occurred.
+        return nil;
+    }
+
+    const AZSUriQueryBuilder *builder = [AZSSharedAccessSignatureHelper sharedAccessSignatureForAccountWithParameters:parameters signature:signature error:error];
+    return [builder builderAsString];
 }
 
 @end

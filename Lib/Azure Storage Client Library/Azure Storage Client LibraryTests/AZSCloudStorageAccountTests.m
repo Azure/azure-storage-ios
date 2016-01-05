@@ -40,9 +40,9 @@
 
 -(BOOL)validateCorrectBlobURLIsCreatedWithConnectionString:(NSString *)connectionString desiredURL:(NSString *)desiredURL
 {
-    AZSCloudStorageAccount *account = [AZSCloudStorageAccount accountFromConnectionString:connectionString];
-    return [[[[account getBlobClient] containerReferenceFromName:AZSCContainer].storageUri primaryUri].absoluteString isEqualToString:[desiredURL stringByAppendingString:@"/container"]];
-
+    NSError *error = nil;
+    AZSCloudStorageAccount *account = [AZSCloudStorageAccount accountFromConnectionString:connectionString error:&error];
+    return !error && [[[[account getBlobClient] containerReferenceFromName:AZSCContainer].storageUri primaryUri].absoluteString isEqualToString:[desiredURL stringByAppendingString:@"/container"]];
 }
 
 - (void)testaccountFromConnectionString
@@ -90,23 +90,34 @@
     AZSStorageCredentials *accountKeyCreds = [[AZSStorageCredentials alloc] initWithAccountName:accountName accountKey:accountKey];
     //AZSStorageCredentials *sasCreds = [[AZSStorageCredentials alloc] initWithSASToken:@"sasToken"];
     
-    AZSCloudStorageAccount *account = [[AZSCloudStorageAccount alloc] initWithCredentials:accountKeyCreds useHttps:YES];
+    NSError *error = nil;
+    AZSCloudStorageAccount *account = [[AZSCloudStorageAccount alloc] initWithCredentials:accountKeyCreds useHttps:YES error:&error];
+    XCTAssertNil(error);
+    
     NSString *containerUri = [[[account getBlobClient] containerReferenceFromName:AZSCContainer].storageUri.primaryUri absoluteString];
     XCTAssertTrue([containerUri isEqualToString:@"https://accountName.blob.core.windows.net/container"], @"Incorrect container URI created.");
     
-    account = [[AZSCloudStorageAccount alloc] initWithCredentials:accountKeyCreds useHttps:NO];
+    account = [[AZSCloudStorageAccount alloc] initWithCredentials:accountKeyCreds useHttps:NO error:&error];
+    XCTAssertNil(error);
+    
     containerUri = [[[account getBlobClient] containerReferenceFromName:AZSCContainer].storageUri.primaryUri absoluteString];
     XCTAssertTrue([containerUri isEqualToString:@"http://accountName.blob.core.windows.net/container"], @"Incorrect container URI created.");
 
-    account = [[AZSCloudStorageAccount alloc] initWithCredentials:accountKeyCreds useHttps:YES endpointSuffix:@"sample.suffix"];
+    account = [[AZSCloudStorageAccount alloc] initWithCredentials:accountKeyCreds useHttps:YES endpointSuffix:@"sample.suffix" error:&error];
+    XCTAssertNil(error);
+    
     containerUri = [[[account getBlobClient] containerReferenceFromName:AZSCContainer].storageUri.primaryUri absoluteString];
     XCTAssertTrue([containerUri isEqualToString:@"https://accountName.blob.sample.suffix/container"], @"Incorrect container URI created.");
 
-    account = [[AZSCloudStorageAccount alloc] initWithCredentials:accountKeyCreds useHttps:NO endpointSuffix:@"sample.suffix"];
+    account = [[AZSCloudStorageAccount alloc] initWithCredentials:accountKeyCreds useHttps:NO endpointSuffix:@"sample.suffix" error:&error];
+    XCTAssertNil(error);
+    
     containerUri = [[[account getBlobClient] containerReferenceFromName:AZSCContainer].storageUri.primaryUri absoluteString];
     XCTAssertTrue([containerUri isEqualToString:@"http://accountName.blob.sample.suffix/container"], @"Incorrect container URI created.");
     
-    account = [[AZSCloudStorageAccount alloc] initWithCredentials:accountKeyCreds blobEndpoint:[[AZSStorageUri alloc] initWithPrimaryUri:[NSURL URLWithString:@"sample://full.blob.endpoint"]] tableEndpoint:nil queueEndpoint:nil fileEndpoint:nil];
+    account = [[AZSCloudStorageAccount alloc] initWithCredentials:accountKeyCreds blobEndpoint:[[AZSStorageUri alloc] initWithPrimaryUri:[NSURL URLWithString:@"sample://full.blob.endpoint"]] tableEndpoint:nil queueEndpoint:nil fileEndpoint:nil error:&error];
+    XCTAssertNil(error);
+    
     containerUri = [[[account getBlobClient] containerReferenceFromName:AZSCContainer].storageUri.primaryUri absoluteString];
     XCTAssertTrue([containerUri isEqualToString:@"sample://full.blob.endpoint/container"], @"Incorrect container URI created.");
 }

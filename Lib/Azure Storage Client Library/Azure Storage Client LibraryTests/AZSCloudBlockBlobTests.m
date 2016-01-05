@@ -34,7 +34,7 @@
 {
     [super setUp];
     AZSTestSemaphore *semaphore = [[AZSTestSemaphore alloc] init];
-    self.containerName = [[NSString stringWithFormat:@"sampleioscontainer%@", [[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
+    self.containerName = [NSString stringWithFormat:@"sampleioscontainer%@", [AZSTestHelpers uniqueName]];
     
     self.blobContainer = [self.blobClient containerReferenceFromName:self.containerName];
     [self.blobContainer createContainerIfNotExistsWithCompletionHandler:^(NSError *error, BOOL exists) {
@@ -61,7 +61,7 @@
 
 -(NSString *)generateRandomBlockID
 {
-    return [[[[NSString stringWithFormat:@"blockid%@", [[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString] dataUsingEncoding:NSUTF8StringEncoding] base64EncodedStringWithOptions:0];
+    return [[[NSString stringWithFormat:@"blockid%@", [AZSTestHelpers uniqueName]] dataUsingEncoding:NSUTF8StringEncoding] base64EncodedStringWithOptions:0];
 }
 
 - (void)testUploadDownload
@@ -69,7 +69,7 @@
     // Test uploading a blob in one shot (put blob / UploadFromData) and downloading to a stream.
     AZSTestSemaphore *semaphore = [[AZSTestSemaphore alloc] init];
     
-    NSString *blobName = [[NSString stringWithFormat:@"sampleblob%@", [[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
+    NSString *blobName = [NSString stringWithFormat:@"sampleblob%@", [AZSTestHelpers uniqueName]];
     NSString *blobText = @"sampleBlobText";
     
     AZSCloudBlockBlob *blockBlob = [self.blobContainer blockBlobReferenceFromName:blobName];
@@ -101,7 +101,7 @@
     // Test uploading a blob in one shot (put blob / UploadFromData) and downloading to a stream.
     AZSTestSemaphore *semaphore = [[AZSTestSemaphore alloc] init];
     
-    NSString *blobName = [[NSString stringWithFormat:@"sampleblob%@\u03b2%%@", [[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
+    NSString *blobName = [NSString stringWithFormat:@"sampleblob%@\u03b2%%@", [AZSTestHelpers uniqueName]];
     NSString *blobText = @"sampleBlobText";
     
     AZSCloudBlockBlob *blockBlob = [self.blobContainer blockBlobReferenceFromName:blobName];
@@ -131,7 +131,7 @@
 -(void)testBlobError
 {
     AZSTestSemaphore *semaphore = [[AZSTestSemaphore alloc] init];
-    NSString *blobName = [[NSString stringWithFormat:@"sampleblob%@", [[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
+    NSString *blobName = [NSString stringWithFormat:@"sampleblob%@", [AZSTestHelpers uniqueName]];
     AZSCloudBlockBlob *blockBlob = [self.blobContainer blockBlobReferenceFromName:blobName];
 
     NSOutputStream *targetStream = [NSOutputStream outputStreamToMemory];
@@ -264,7 +264,7 @@
     
     AZSTestSemaphore *semaphore = [[AZSTestSemaphore alloc] init];
     
-    NSString *blobName = [[NSString stringWithFormat:@"sampleblob%@", [[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
+    NSString *blobName = [NSString stringWithFormat:@"sampleblob%@", [AZSTestHelpers uniqueName]];
     NSString *blockIDPrefix = @"blockIDPrefix";
     NSString *blockDataPrefix = @"blockDataPrefix";
     
@@ -377,8 +377,8 @@
 
 -(void)runBlobDeleteSnapshotTestWithSnapshotOption:(AZSDeleteSnapshotsOption)deleteSnapshotsOption completionHandler:(void (^)(NSError *, NSError *, NSError *, NSError *, NSError *))completionHandler;
 {
-    NSString *blobName1 = [[NSString stringWithFormat:@"sampleblob%@", [[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
-    NSString *blobName2 = [[NSString stringWithFormat:@"sampleblob%@", [[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
+    NSString *blobName1 = [NSString stringWithFormat:@"sampleblob%@", [AZSTestHelpers uniqueName]];
+    NSString *blobName2 = [NSString stringWithFormat:@"sampleblob%@", [AZSTestHelpers uniqueName]];
     NSString *blobText = @"sampleBlobText";
     AZSCloudBlockBlob *blockBlob1 = [self.blobContainer blockBlobReferenceFromName:blobName1];
     AZSCloudBlockBlob *blockBlob2 = [self.blobContainer blockBlobReferenceFromName:blobName2];
@@ -481,7 +481,7 @@
 {
     AZSTestSemaphore *semaphore = [[AZSTestSemaphore alloc] init];
 
-    NSString *blobName = [[NSString stringWithFormat:@"sampleblob%@", [[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
+    NSString *blobName = [NSString stringWithFormat:@"sampleblob%@", [AZSTestHelpers uniqueName]];
     NSString *blobText = @"sampleBlobText";
     AZSCloudBlockBlob *blockBlob = [self.blobContainer blockBlobReferenceFromName:blobName];
     
@@ -525,7 +525,7 @@
 {
     AZSTestSemaphore *semaphore = [[AZSTestSemaphore alloc] init];
     
-    NSString *blobName = [[NSString stringWithFormat:@"sampleblob%@", [[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
+    NSString *blobName = [NSString stringWithFormat:@"sampleblob%@", [AZSTestHelpers uniqueName]];
     
     NSString *blobText = @"sampleBlobText";
     
@@ -555,7 +555,7 @@
     
     AZSTestSemaphore *semaphore = [[AZSTestSemaphore alloc] init];
     
-    NSString *blobName = [[NSString stringWithFormat:@"sampleblob%@", [[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
+    NSString *blobName = [NSString stringWithFormat:@"sampleblob%@", [AZSTestHelpers uniqueName]];
     
     NSString *blobText = @"sampleBlobText";
     NSString *blobTextafter1 = @"sampleBlobTextafter1";
@@ -622,7 +622,7 @@
     AZSTestSemaphore *semaphore = [[AZSTestSemaphore alloc] init];
     //   TODO:  Change all tests to use XCTestExpectation when we switch to XCode 6
 
-    NSString *blobName = [[NSString stringWithFormat:@"sampleblob%@", [[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
+    NSString *blobName = [NSString stringWithFormat:@"sampleblob%@", [AZSTestHelpers uniqueName]];
 
     NSMutableArray __block *blockIDs = [NSMutableArray arrayWithCapacity:5];
     NSMutableArray __block *blockDataArray = [NSMutableArray arrayWithCapacity:5];
@@ -677,7 +677,7 @@
 -(void)testUseTransactionalMD5
 {
     AZSTestSemaphore *semaphore = [[AZSTestSemaphore alloc] init];
-    NSString *blobName = [[NSString stringWithFormat:@"sampleblob%@", [[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
+    NSString *blobName = [NSString stringWithFormat:@"sampleblob%@", [AZSTestHelpers uniqueName]];
     AZSCloudBlockBlob *blockBlob = [self.blobContainer blockBlobReferenceFromName:blobName];
     
     NSString *blockDataString = @"SampleBlockData";
@@ -741,7 +741,7 @@
     // TODO: Improve this test to test auto-calculation of the MD5 of a much longer input blob.
     
     AZSTestSemaphore *semaphore = [[AZSTestSemaphore alloc] init];
-    NSString *blobName = [[NSString stringWithFormat:@"sampleblob%@", [[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
+    NSString *blobName = [NSString stringWithFormat:@"sampleblob%@", [AZSTestHelpers uniqueName]];
     AZSCloudBlockBlob *blockBlob = [self.blobContainer blockBlobReferenceFromName:blobName];
 
     NSString *blockDataString = @"SampleBlockData";
@@ -796,7 +796,7 @@
 -(void)testDisableContentMD5ValidationIncorrectCase
 {
     AZSTestSemaphore *semaphore = [[AZSTestSemaphore alloc] init];
-    NSString *blobName = [[NSString stringWithFormat:@"sampleblob%@", [[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
+    NSString *blobName = [NSString stringWithFormat:@"sampleblob%@", [AZSTestHelpers uniqueName]];
     AZSCloudBlockBlob *blockBlob = [self.blobContainer blockBlobReferenceFromName:blobName];
 
     NSString *blockDataString = @"SampleBlockData";
@@ -840,7 +840,7 @@
 -(void)testDisableContentMD5ValidationCorrectCase
 {
     AZSTestSemaphore *semaphore = [[AZSTestSemaphore alloc] init];
-    NSString *blobName = [[NSString stringWithFormat:@"sampleblob%@", [[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
+    NSString *blobName = [NSString stringWithFormat:@"sampleblob%@", [AZSTestHelpers uniqueName]];
     AZSCloudBlockBlob *blockBlob = [self.blobContainer blockBlobReferenceFromName:blobName];
     
     NSString *blockDataString = @"SampleBlockData";
@@ -884,7 +884,7 @@
     AZSTestSemaphore *semaphore = [[AZSTestSemaphore alloc] init];
     NSString *initialText = @"Some Sample text to roundtrip.";
     NSData *initialData = [initialText dataUsingEncoding:NSUTF8StringEncoding];
-    NSString *blobName = [[NSString stringWithFormat:@"sampleblob%@", [[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
+    NSString *blobName = [NSString stringWithFormat:@"sampleblob%@", [AZSTestHelpers uniqueName]];
     AZSCloudBlockBlob *blockBlob = [self.blobContainer blockBlobReferenceFromName:blobName];
     
     [blockBlob uploadFromData:initialData completionHandler:^(NSError *error) {
@@ -914,7 +914,7 @@
         AZSTestSemaphore *semaphore = [[AZSTestSemaphore alloc] init];
         NSString *initialText = @"Some Sample text to roundtrip.";
 
-        NSString *blobName = [[NSString stringWithFormat:@"sampleblob%@", [[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
+        NSString *blobName = [NSString stringWithFormat:@"sampleblob%@", [AZSTestHelpers uniqueName]];
         AZSCloudBlockBlob *blockBlob = [self.blobContainer blockBlobReferenceFromName:blobName];
 
         [blockBlob uploadFromText:initialText completionHandler:^(NSError *error) {
@@ -953,7 +953,7 @@
     [fileText writeToFile:filePath atomically:YES encoding:NSUTF8StringEncoding error:&error];
     XCTAssertNil(error, @"Error in writing initial file.  Error code = %ld, error domain = %@, error userinfo = %@", (long)error.code, error.domain, error.userInfo);
     
-    NSString *blobName = [[NSString stringWithFormat:@"sampleblob%@", [[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
+    NSString *blobName = [NSString stringWithFormat:@"sampleblob%@", [AZSTestHelpers uniqueName]];
     AZSCloudBlockBlob *blockBlob = [self.blobContainer blockBlobReferenceFromName:blobName];
     
     [blockBlob uploadFromFileWithPath:filePath completionHandler:^(NSError *error) {
@@ -994,7 +994,7 @@
     [fileText writeToURL:fileURL atomically:YES encoding:NSUTF8StringEncoding error:&error];
     XCTAssertNil(error, @"Error in writing initial file.  Error code = %ld, error domain = %@, error userinfo = %@", (long)error.code, error.domain, error.userInfo);
     
-    NSString *blobName = [[NSString stringWithFormat:@"sampleblob%@", [[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
+    NSString *blobName = [NSString stringWithFormat:@"sampleblob%@", [AZSTestHelpers uniqueName]];
     AZSCloudBlockBlob *blockBlob = [self.blobContainer blockBlobReferenceFromName:blobName];
 
     [blockBlob uploadFromFileWithURL:fileURL completionHandler:^(NSError *error) {
@@ -1024,10 +1024,10 @@
 -(void)testStartCopyFromBlob
 {
     AZSTestSemaphore *semaphore = [[AZSTestSemaphore alloc] init];
-    NSString *sourceBlobName = [[NSString stringWithFormat:@"sampleblob%@", [[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
+    NSString *sourceBlobName = [NSString stringWithFormat:@"sampleblob%@", [AZSTestHelpers uniqueName]];
     AZSCloudBlockBlob *sourceBlob = [self.blobContainer blockBlobReferenceFromName:sourceBlobName];
 
-    NSString *targetBlobName = [[NSString stringWithFormat:@"sampleblob%@", [[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
+    NSString *targetBlobName = [NSString stringWithFormat:@"sampleblob%@", [AZSTestHelpers uniqueName]];
     AZSCloudBlockBlob *targetBlob = [self.blobContainer blockBlobReferenceFromName:targetBlobName];
 
     NSString *blobDataString = @"SampleBlockData";
@@ -1062,10 +1062,10 @@
 -(void)testStartCopyFromURL
 {
     AZSTestSemaphore *semaphore = [[AZSTestSemaphore alloc] init];
-    NSString *sourceBlobName = [[NSString stringWithFormat:@"sampleblob%@", [[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
+    NSString *sourceBlobName = [NSString stringWithFormat:@"sampleblob%@", [AZSTestHelpers uniqueName]];
     AZSCloudBlockBlob *sourceBlob = [self.blobContainer blockBlobReferenceFromName:sourceBlobName];
     
-    NSString *targetBlobName = [[NSString stringWithFormat:@"sampleblob%@", [[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
+    NSString *targetBlobName = [NSString stringWithFormat:@"sampleblob%@", [AZSTestHelpers uniqueName]];
     AZSCloudBlockBlob *targetBlob = [self.blobContainer blockBlobReferenceFromName:targetBlobName];
     
     
@@ -1125,7 +1125,7 @@
 -(void)testAccessConditions
 {
     AZSTestSemaphore *semaphore = [[AZSTestSemaphore alloc] init];
-    NSString *sourceBlobName = [[NSString stringWithFormat:@"sampleblob%@", [[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
+    NSString *sourceBlobName = [NSString stringWithFormat:@"sampleblob%@", [AZSTestHelpers uniqueName]];
     AZSCloudBlockBlob *sourceBlob = [self.blobContainer blockBlobReferenceFromName:sourceBlobName];
     NSString *blobDataString = @"SampleBlockData";
 

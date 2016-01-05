@@ -19,6 +19,7 @@
 #import "Azure_Storage_Client_Library.h"
 #import "AZSBlobTestBase.h"
 #import "AZSConstants.h"
+#import "AZSTestHelpers.h"
 #import "AZSTestSemaphore.h"
 
 @interface AZSCloudBlobContainerTests : AZSBlobTestBase
@@ -33,7 +34,7 @@
 - (void)setUp
 {
     [super setUp];
-    self.containerName = [[NSString stringWithFormat:@"sampleioscontainer%@", [[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
+    self.containerName = [NSString stringWithFormat:@"sampleioscontainer%@", [AZSTestHelpers uniqueName]];
     self.blobContainer = [self.blobClient containerReferenceFromName:self.containerName];
     AZSTestSemaphore *semaphore = [[AZSTestSemaphore alloc] init];
     
@@ -63,7 +64,7 @@
 {
     AZSTestSemaphore *semaphore = [[AZSTestSemaphore alloc] init];
     
-    NSString *containerName = [[NSString stringWithFormat:@"sampleioscontainer%@", [[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
+    NSString *containerName = [NSString stringWithFormat:@"sampleioscontainer%@", [AZSTestHelpers uniqueName]];
     NSString *blobName = AZSCBlob;
     NSString *blobText = @"blobText";
     
@@ -113,7 +114,7 @@
 -(void)createBlobsForListingTestsWithCompletionHandler:(void (^)(NSArray *, NSString *))completionHandler
 {
     NSString *blobText = @"sampleBlobText";
-    NSString *blobNamePrefix = [[NSString stringWithFormat:@"sampleblob%@", [[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
+    NSString *blobNamePrefix = [NSString stringWithFormat:@"sampleblob%@", [AZSTestHelpers uniqueName]];
     
     NSMutableArray *blobs = [NSMutableArray arrayWithCapacity:6];
     

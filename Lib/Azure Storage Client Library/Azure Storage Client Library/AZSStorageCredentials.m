@@ -55,9 +55,15 @@
 
 - (instancetype)initWithSASToken:(NSString *)sasToken
 {
+    return [self initWithSASToken:sasToken accountName:nil];
+}
+
+- (instancetype)initWithSASToken:(NSString *)sasToken accountName:(NSString *)accountName
+{
     self = [super init];
     if (self)
     {
+        _accountName = accountName;
         _sasToken = sasToken;
         _queryBuilder = [[AZSUriQueryBuilder alloc] init];
         [self updateQueryBuilder];

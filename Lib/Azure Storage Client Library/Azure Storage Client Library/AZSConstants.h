@@ -183,6 +183,8 @@ FOUNDATION_EXPORT NSString *const AZSCSasPermissionsList;
 FOUNDATION_EXPORT NSString *const AZSCSasProtocolRestriction;
 FOUNDATION_EXPORT NSString *const AZSCSasProtocolsHttpsHttp;
 FOUNDATION_EXPORT NSString *const AZSCSasResource;
+FOUNDATION_EXPORT NSString *const AZSCSasResourceTypes;
+FOUNDATION_EXPORT NSString *const AZSCSasServices;
 FOUNDATION_EXPORT NSString *const AZSCSasServiceVersion;
 FOUNDATION_EXPORT NSString *const AZSCSasStartTime;
 FOUNDATION_EXPORT NSString *const AZSCSasStartPartionKey;

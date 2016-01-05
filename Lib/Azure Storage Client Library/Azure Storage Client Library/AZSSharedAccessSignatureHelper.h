@@ -20,14 +20,26 @@
 @class AZSCloudClient;
 @class AZSStorageUri;
 @class AZSSharedAccessHeaders;
+@class AZSSharedAccessAccountParameters;
 @class AZSSharedAccessBlobParameters;
+@class AZSStorageCredentials;
 @class AZSUriQueryBuilder;
 
 @interface AZSSharedAccessSignatureHelper : NSObject
 
+// Generate SAS Token
+
 +(AZSUriQueryBuilder *)sharedAccessSignatureForBlobWithParameters:(AZSSharedAccessBlobParameters*)parameters resourceType:(NSString*)resourceType signature:(NSString *)signature error:(NSError **)error;
 
++(AZSUriQueryBuilder *)sharedAccessSignatureForAccountWithParameters:(AZSSharedAccessAccountParameters*)parameters signature:(NSString *)signature error:(NSError **)error;
+
+// Generate Signature
+
 +(NSString *)sharedAccessSignatureHashForBlobWithParameters:(AZSSharedAccessBlobParameters*)parameters resourceName:(NSString*)resourceName client:(AZSCloudClient*)client error:(NSError **)error;
+
++(NSString *)sharedAccessSignatureHashForAccountWithParameters:(AZSSharedAccessAccountParameters*)parameters accountName:(NSString *)accountName credentials:(AZSStorageCredentials *)credentials error:(NSError **)error;
+
+// Permissions
 
 +(NSString *)stringFromPermissions:(AZSSharedAccessPermissions)permissions error:(NSError **)error;
 

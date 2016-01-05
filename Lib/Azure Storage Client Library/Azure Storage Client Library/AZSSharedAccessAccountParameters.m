@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------------------------
-// <copyright file="AZSTestBase.h" company="Microsoft">
+// <copyright file="AZSSharedAccessAccountPolicy.m" company="Microsoft">
 //    Copyright 2015 Microsoft Corporation
 //
 //    Licensed under the MIT License;
@@ -15,12 +15,24 @@
 // </copyright>
 // -----------------------------------------------------------------------------------------
 
-#import <XCTest/XCTest.h>
-@class AZSStorageCredentials;
-@class AZSCloudStorageAccount;
+#import "AZSOperationContext.h"
+#import "AZSSharedAccessAccountParameters.h"
+#import "AZSErrors.h"
+#import "AZSUtil.h"
 
-@interface AZSTestBase : XCTestCase
+@implementation AZSSharedAccessAccountParameters
 
-@property AZSCloudStorageAccount *account;
+-(instancetype) init
+{
+    self = [super init];
+    if (self) {
+        self.permissions = AZSSharedAccessPermissionsNone;
+        self.services = AZSSharedAccessServicesNone;
+        self.resourceTypes = AZSSharedAccessResourceTypesNone;
+        self.protocols = AZSSharedAccessProtocolAll;
+    }
+    
+    return self;
+}
 
 @end

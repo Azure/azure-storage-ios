@@ -34,7 +34,7 @@
     [super setUp];
     
     AZSTestSemaphore *semaphore = [[AZSTestSemaphore alloc] init];
-    self.containerName = [[NSString stringWithFormat:@"sampleioscontainer%@", [[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
+    self.containerName = [NSString stringWithFormat:@"sampleioscontainer%@", [AZSTestHelpers uniqueName]];
     self.blobContainer = [self.blobClient containerReferenceFromName:self.containerName];
 
     [self.blobContainer createContainerIfNotExistsWithCompletionHandler:^(NSError *err, BOOL exists) {
@@ -102,7 +102,7 @@
     // Test acquiring a container lease
     __block NSString *leaseID = [[NSUUID UUID] UUIDString];
     AZSTestSemaphore *semaphore = [[AZSTestSemaphore alloc] init];
-    NSString *containerName = [[NSString stringWithFormat:@"sampleioscontainer%@", [[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
+    NSString *containerName = [NSString stringWithFormat:@"sampleioscontainer%@", [AZSTestHelpers uniqueName]];
     AZSCloudBlobContainer *blobContainer = [self.blobClient containerReferenceFromName:containerName];
     
     [blobContainer createContainerIfNotExistsWithCompletionHandler:^(NSError *err, BOOL exists) {
@@ -123,7 +123,7 @@
                     [blobContainer deleteContainerIfExistsWithCompletionHandler:^(NSError *err, BOOL exists) {
                         // Infinite
                         NSString *leaseID2 = [[NSUUID UUID] UUIDString];
-                        NSString *containerName = [[NSString stringWithFormat:@"sampleioscontainer%@", [[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString];
+                        NSString *containerName = [NSString stringWithFormat:@"sampleioscontainer%@", [AZSTestHelpers uniqueName]];
                         AZSCloudBlobContainer *blobContainer = [self.blobClient containerReferenceFromName:containerName];
                         [blobContainer createContainerIfNotExistsWithCompletionHandler:^(NSError *err, BOOL exists) {
 
