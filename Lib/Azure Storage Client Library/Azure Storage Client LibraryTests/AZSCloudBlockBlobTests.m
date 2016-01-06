@@ -616,6 +616,56 @@
     [semaphore wait];
 }
 
+-(void)testDownloadAttributes
+{
+    AZSTestSemaphore *semaphore = [[AZSTestSemaphore alloc] init];
+    AZSCloudBlockBlob *blob = [self.blobContainer blockBlobReferenceFromName:AZSCBlob];
+    blob.properties.cacheControl = @"no-cache";
+    
+    [blob uploadFromText:@"text" completionHandler:^(NSError *err) {
+        XCTAssertNil(err, @"Error in blob creation.  Error code = %ld, error domain = %@, error userinfo = %@", (long)err.code, err.domain, err.userInfo);
+        
+        blob.properties.cacheControl = @"cache";
+        [blob downloadAttributesWithCompletionHandler:^(NSError * err) {
+            XCTAssertNil(err, @"Error in downloading attributes.  Error code = %ld, error domain = %@, error userinfo = %@", (long)err.code, err.domain, err.userInfo);
+            XCTAssertEqualObjects(blob.properties.cacheControl, @"no-cache");
+            
+            blob.properties.cacheControl = @"cache";
+            [blob downloadAttributesWithAccessCondition:[[AZSAccessCondition alloc] initWithIfMatchCondition:blob.properties.eTag] requestOptions:nil operationContext:nil completionHandler:^(NSError * err) {
+                XCTAssertNil(err, @"Error in downloading attributes with access condition.  Error code = %ld, error domain = %@, error userinfo = %@", (long)err.code, err.domain, err.userInfo);
+                XCTAssertEqualObjects(blob.properties.cacheControl, @"no-cache");
+            
+                AZSBlobRequestOptions *bro = [[AZSBlobRequestOptions alloc] init];
+                bro.storeBlobContentMD5 = YES;
+                bro.disableContentMD5Validation = NO;
+                [blob downloadAttributesWithAccessCondition:nil requestOptions:bro operationContext:nil completionHandler:^(NSError *error) {
+                    XCTAssertNil(error, @"Error in downloading attributes with request options.  Error code = %ld, error domain = %@, error userinfo = %@", (long)error.code, error.domain, error.userInfo);
+                    XCTAssertEqualObjects(blob.properties.cacheControl, @"no-cache");
+
+                    blob.properties.cacheControl = @"cache";
+                            
+                    AZSOperationContext *context = [[AZSOperationContext alloc] init];
+                    __block BOOL opContextFlag = NO;
+                    void (^testOp)(NSMutableURLRequest *, AZSOperationContext *) = ^(NSMutableURLRequest *request, AZSOperationContext *sendingOpContext) {
+                        XCTAssertFalse(opContextFlag);
+                        XCTAssertEqualObjects(blob.properties.cacheControl, @"cache");
+                        opContextFlag = YES;
+                    };
+                    context.sendingRequest = testOp;
+                            
+                    [blob downloadAttributesWithAccessCondition:nil requestOptions:nil operationContext:context completionHandler:^(NSError *error) {
+                        XCTAssertNil(error, @"Error in downloading attributes with operation context.  Error code = %ld, error domain = %@, error userinfo = %@", (long)error.code, error.domain, error.userInfo);
+                        XCTAssertEqualObjects(blob.properties.cacheControl, @"no-cache");
+                        XCTAssertTrue(opContextFlag);
+                                
+                        [semaphore signal];
+                    }];
+                }];
+            }];
+        }];
+    }];
+    [semaphore wait];
+}
 
 -(void)testLargeBlobDownload
 {

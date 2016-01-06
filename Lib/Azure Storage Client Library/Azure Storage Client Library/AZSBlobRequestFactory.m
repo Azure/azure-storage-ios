@@ -107,7 +107,7 @@
     return request;
 }
 
-+(NSMutableURLRequest *) fetchContainerAttributesWithAccessCondition:(AZSAccessCondition *)accessCondition urlComponents:(NSURLComponents *)urlComponents timeout:(NSTimeInterval)timeout operationContext:(AZSOperationContext *)operationContext
++(NSMutableURLRequest *) downloadContainerAttributesWithAccessCondition:(AZSAccessCondition *)accessCondition urlComponents:(NSURLComponents *)urlComponents timeout:(NSTimeInterval)timeout operationContext:(AZSOperationContext *)operationContext
 {
     // TODO: IOS 8 - update this to use urlComponents.queryItems
     urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:AZSCQueryRestypeContainer];
@@ -394,7 +394,7 @@
     return request;
 }
 
-+(NSMutableURLRequest *) fetchBlobAttributesWithAccessCondition:(AZSAccessCondition *)accessCondition snapshotTime:(NSString *)snapshotTime urlComponents:(NSURLComponents *)urlComponents timeout:(NSTimeInterval)timeout operationContext:(AZSOperationContext *)operationContext
++(NSMutableURLRequest *) downloadBlobAttributesWithAccessCondition:(AZSAccessCondition *)accessCondition snapshotTime:(NSString *)snapshotTime urlComponents:(NSURLComponents *)urlComponents timeout:(NSTimeInterval)timeout operationContext:(AZSOperationContext *)operationContext
 {
     // TODO: IOS 8 - update this to use urlComponents.queryItems
     if (snapshotTime)

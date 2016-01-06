@@ -242,7 +242,7 @@
     NSDate *testStart = [NSDate date];
     
     // Note that the blob doesn't exist, so this should always fail.
-    [self.blobContainer fetchAttributesWithAccessCondition:nil requestOptions:nil operationContext:operationContext completionHandler:^(NSError *error) {
+    [self.blobContainer downloadAttributesWithAccessCondition:nil requestOptions:nil operationContext:operationContext completionHandler:^(NSError *error) {
         NSDate *testEnd = [NSDate date];
         XCTAssertNotNil(error, @"Error not returned when it should have been.");
         XCTAssertTrue(currentRetryCount == 3, @"Incorrect number of retries attempted.");

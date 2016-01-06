@@ -431,7 +431,7 @@
         // 15 seconds
         [blob acquireLeaseWithLeaseTime:[[NSNumber alloc] initWithInt:15] proposedLeaseId:[[NSUUID UUID] UUIDString] completionHandler:^(NSError* err, NSString* resultLeaseID) {
             AZSCloudBlob *blobCopy = [self.blobContainer blockBlobReferenceFromName:AZSCBlob];
-            [blobCopy fetchAttributesWithCompletionHandler:^(NSError * err) {
+            [blobCopy downloadAttributesWithCompletionHandler:^(NSError * err) {
                 XCTAssertNil(err, @"Error in leasing.  Error code = %ld, error domain = %@, error userinfo = %@", (long)err.code, err.domain, err.userInfo);
                 XCTAssertEqual(blobCopy.properties.leaseDuration, AZSLeaseDurationFixed);
                 

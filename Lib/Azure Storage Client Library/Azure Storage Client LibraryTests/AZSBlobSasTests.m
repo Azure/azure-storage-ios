@@ -958,8 +958,9 @@
         [AZSTestHelpers checkPassageOfError:err expectToPass:(permissions & AZSSharedAccessPermissionsWrite) expectedHttpErrorCode:permissionsErrorCode message:@"Upload metadata"];
         
         // Test presence or absence Blob READ permissions
-        [blob fetchAttributesWithCompletionHandler:^(NSError * err) {
-            [AZSTestHelpers checkPassageOfError:err expectToPass:(permissions & AZSSharedAccessPermissionsRead) expectedHttpErrorCode:permissionsErrorCode message:@"Fetch attributes"];
+
+        [blob downloadAttributesWithCompletionHandler:^(NSError * err) {
+            [self checkPassageOfError:err expectToPass:(permissions & AZSSharedAccessPermissionsRead) expectedHttpErrorCode:permissionsErrorCode message:@"Fetch attributes"];
             
             // Test presence or absence Blob DELETE permissions
             [blob deleteWithCompletionHandler:^(NSError *err) {

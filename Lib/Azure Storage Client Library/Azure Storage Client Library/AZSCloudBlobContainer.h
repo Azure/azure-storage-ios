@@ -345,7 +345,7 @@ AZS_ASSUME_NONNULL_BEGIN
  |----------------|-------------|
  |NSError * | Nil if the operation succeeded without error, error with details about the failure otherwise.|
  */
-- (void)fetchAttributesWithCompletionHandler:(void (^)(NSError* __AZSNullable))completionHandler;
+- (void)downloadAttributesWithCompletionHandler:(void (^)(NSError* __AZSNullable))completionHandler;
 
 /** Retrieves the container's attributes.
  
@@ -358,7 +358,7 @@ AZS_ASSUME_NONNULL_BEGIN
  |----------------|-------------|
  |NSError * | Nil if the operation succeeded without error, error with details about the failure otherwise.|
  */
-- (void)fetchAttributesWithAccessCondition:(AZSNullable AZSAccessCondition *)accessCondition requestOptions:(AZSNullable AZSBlobRequestOptions *)requestOptions operationContext:(AZSNullable AZSOperationContext *)operationContext completionHandler:(void (^)(NSError* __AZSNullable))completionHandler;
+- (void)downloadAttributesWithAccessCondition:(AZSNullable AZSAccessCondition *)accessCondition requestOptions:(AZSNullable AZSBlobRequestOptions *)requestOptions operationContext:(AZSNullable AZSOperationContext *)operationContext completionHandler:(void (^)(NSError* __AZSNullable))completionHandler;
 
 /** Retrieves the stored container permissions.
  
