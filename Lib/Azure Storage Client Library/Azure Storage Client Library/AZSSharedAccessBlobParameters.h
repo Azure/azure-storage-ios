@@ -17,13 +17,14 @@
 
 #import <Foundation/Foundation.h>
 #import "AZSEnums.h"
+#import "AZSIPRange.h"
 #import "AZSMacros.h"
 #import "AZSSharedAccessHeaders.h"
 #import "AZSSharedAccessPolicy.h"
 
 AZS_ASSUME_NONNULL_BEGIN
 
-/** A shared access policy for blobs.  Specifies the start time, expiry time, and permissions for the SAS. */
+/** The shared access parameters for blobs and containers. Specifies the permissions and other restrictions bestowed on the SAS. */
 @interface AZSSharedAccessBlobParameters : NSObject
 
 /** The permissions to be included in the SAS token. */
@@ -40,6 +41,12 @@ AZS_ASSUME_NONNULL_BEGIN
 
 /** An identifier for a stored policy to be included in the SAS token. */
 @property (strong, AZSNullable) NSString *storedPolicyIdentifier;
+
+/** A single IP address or range of IP addresses from which the object may be accessed. */
+@property (strong, AZSNullable) AZSIPRange *ipAddressOrRange;
+
+/** The protocols with which the object may be accessed. */
+@property AZSSharedAccessProtocols protocols;
 
 /** Initializes a newly allocated AZSSharedAccessBlobParameters.
  

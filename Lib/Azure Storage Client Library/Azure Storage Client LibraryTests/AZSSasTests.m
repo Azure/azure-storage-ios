@@ -28,6 +28,7 @@
 #import "AZSCloudBlockBlob.h"
 #import "AZSCloudStorageAccount.h"
 #import "AZSContinuationToken.h"
+#import "AZSIPRange.h"
 #import "AZSOperationContext.h"
 #import "AZSRequestResult.h"
 #import "AZSResultSegment.h"
@@ -38,6 +39,7 @@
 #import "AZSTestHelpers.h"
 #import "AZSTestSemaphore.h"
 #import "AZSUriQueryBuilder.h"
+#import "arpa/inet.h"
 
 @interface AZSSasTests : AZSBlobTestBase
 
@@ -149,6 +151,199 @@
     [sasBlob uploadFromText:@"test" accessCondition:nil requestOptions:nil operationContext:context completionHandler:^(NSError *err) {
         [self checkPassageOfError:err expectToPass:YES errorCode:-1 message:@"Upload from text"];
         [semaphore signal];
+    }];
+    [semaphore wait];
+}
+
+- (void)testIpAddressOrRange
+{
+    AZSTestSemaphore *semaphore = [[AZSTestSemaphore alloc] init];
+    NSError *error = nil;
+
+    AZSSharedAccessBlobParameters *sp = [[AZSSharedAccessBlobParameters alloc] init];
+    sp.permissions = AZSSharedAccessPermissionsRead;
+    sp.sharedAccessExpiryTime = [[NSDate alloc] initWithTimeIntervalSinceNow:300];
+    
+    struct in_addr ip;
+    XCTAssertTrue(inet_aton([@"0.0.0.0" UTF8String], &ip));
+    sp.ipAddressOrRange = [[AZSIPRange alloc] initWithSingleIP:ip];
+    
+    // Ensure access attempt from invalid IP fails.
+    NSString *containerSasNone = [self.blobContainer createSharedAccessSignatureWithParameters:sp error:&error];
+    [self checkPassageOfError:error expectToPass:YES errorCode:-1 message:@"Create SAS token"];
+    AZSCloudBlobContainer *noneContainer = [[AZSCloudBlobContainer alloc] initWithStorageUri:
+            [[AZSStorageUri alloc] initWithPrimaryUri:[[[AZSUriQueryBuilder alloc] initWithQuery:containerSasNone] addToUri:self.blobContainer.storageUri.primaryUri]]];
+    XCTAssertTrue(noneContainer.client.credentials.isSAS);
+    
+    AZSCloudBlockBlob *noneBlob = [noneContainer blockBlobReferenceFromName:self.blockBlob.blobName];
+    [noneBlob downloadToStream:[[NSOutputStream alloc] initToMemory] completionHandler:^(NSError * err) {
+        [self checkPassageOfError:err expectToPass:NO errorCode:403 message:@"Download blob"];
+        
+        // Ensure access attempt from the single allowed IP succeeds.
+        struct in_addr ip2;
+        XCTAssertTrue(inet_aton([err.userInfo[@"AdditionalErrorDetails"][@"SourceIP"] UTF8String], &ip2));
+        sp.ipAddressOrRange = [[AZSIPRange alloc] initWithSingleIP:ip2];
+        
+        NSError *error = nil;
+        NSString *containerSasOne = [self.blobContainer createSharedAccessSignatureWithParameters:sp error:&error];
+        [self checkPassageOfError:error expectToPass:YES errorCode:-1 message:@"Create SAS token"];
+        AZSCloudBlobContainer *oneContainer = [[AZSCloudBlobContainer alloc] initWithStorageUri:
+                [[AZSStorageUri alloc] initWithPrimaryUri:[[[AZSUriQueryBuilder alloc] initWithQuery:containerSasOne] addToUri:self.blobContainer.storageUri.primaryUri]]];
+        XCTAssertTrue(oneContainer.client.credentials.isSAS);
+        
+        AZSCloudBlockBlob *oneBlob = [oneContainer blockBlobReferenceFromName:self.blockBlob.blobName];
+        [oneBlob downloadToStream:[[NSOutputStream alloc] initToMemory] completionHandler:^(NSError * err) {
+            [self checkPassageOfError:err expectToPass:YES errorCode:-1 message:@"Download blob"];
+            
+            // Ensure access attempt from one of many allowed IPs succeeds.
+            struct in_addr ip2;
+            XCTAssertTrue(inet_aton([@"255.255.255.255" UTF8String], &ip2));
+            sp.ipAddressOrRange = [[AZSIPRange alloc] initWithMinIP:ip maxIP:ip2];
+            
+            NSError *error = nil;
+            NSString *containerSasAll = [self.blobContainer createSharedAccessSignatureWithParameters:sp error:&error];
+            [self checkPassageOfError:error expectToPass:YES errorCode:-1 message:@"Create SAS token"];
+            AZSCloudBlobContainer *allContainer = [[AZSCloudBlobContainer alloc] initWithStorageUri:
+                    [[AZSStorageUri alloc] initWithPrimaryUri:[[[AZSUriQueryBuilder alloc] initWithQuery:containerSasAll] addToUri:self.blobContainer.storageUri.primaryUri]]];
+            XCTAssertTrue(allContainer.client.credentials.isSAS);
+            
+            AZSCloudBlockBlob *allBlob = [allContainer blockBlobReferenceFromName:self.blockBlob.blobName];
+            [allBlob downloadToStream:[[NSOutputStream alloc] initToMemory] completionHandler:^(NSError * err) {
+                [self checkPassageOfError:err expectToPass:YES errorCode:-1 message:@"Download blob"];
+        
+                [semaphore signal];
+            }];
+        }];
+    }];
+    [semaphore wait];
+}
+
+- (void)testIpAddressOrRangeString
+{
+    AZSTestSemaphore *semaphore = [[AZSTestSemaphore alloc] init];
+    NSError *error = nil;
+    
+    AZSSharedAccessBlobParameters *sp = [[AZSSharedAccessBlobParameters alloc] init];
+    sp.permissions = AZSSharedAccessPermissionsRead;
+    sp.sharedAccessExpiryTime = [[NSDate alloc] initWithTimeIntervalSinceNow:300];
+    sp.ipAddressOrRange = [[AZSIPRange alloc] initWithSingleIPString:@"0.0.0.0" error:&error];
+    [self checkPassageOfError:error expectToPass:YES errorCode:-1 message:@"Create IPRange"];
+    
+    // Ensure access attempt from invalid IP fails.
+    NSString *containerSasNone = [self.blobContainer createSharedAccessSignatureWithParameters:sp error:&error];
+    [self checkPassageOfError:error expectToPass:YES errorCode:-1 message:@"Create SAS token"];
+    AZSCloudBlobContainer *noneContainer = [[AZSCloudBlobContainer alloc] initWithStorageUri:
+            [[AZSStorageUri alloc] initWithPrimaryUri:[[[AZSUriQueryBuilder alloc] initWithQuery:containerSasNone] addToUri:self.blobContainer.storageUri.primaryUri]]];
+    XCTAssertTrue(noneContainer.client.credentials.isSAS);
+    
+    AZSCloudBlockBlob *noneBlob = [noneContainer blockBlobReferenceFromName:self.blockBlob.blobName];
+    [noneBlob downloadToStream:[[NSOutputStream alloc] initToMemory] completionHandler:^(NSError * err) {
+        [self checkPassageOfError:err expectToPass:NO errorCode:403 message:@"Download blob"];
+        XCTAssertNotNil(err.userInfo[@"AdditionalErrorDetails"][@"SourceIP"]);
+        
+        // Ensure access attempt from the single allowed IP succeeds.
+        NSError *error = nil;
+        sp.ipAddressOrRange = [[AZSIPRange alloc] initWithSingleIPString:err.userInfo[@"AdditionalErrorDetails"][@"SourceIP"] error:&error];
+        [self checkPassageOfError:error expectToPass:YES errorCode:-1 message:@"Create IPRange"];
+        
+        NSString *containerSasOne = [self.blobContainer createSharedAccessSignatureWithParameters:sp error:&error];
+        [self checkPassageOfError:error expectToPass:YES errorCode:-1 message:@"Create SAS token"];
+        AZSCloudBlobContainer *oneContainer = [[AZSCloudBlobContainer alloc] initWithStorageUri:
+                [[AZSStorageUri alloc] initWithPrimaryUri:[[[AZSUriQueryBuilder alloc] initWithQuery:containerSasOne] addToUri:self.blobContainer.storageUri.primaryUri]]];
+        XCTAssertTrue(oneContainer.client.credentials.isSAS);
+        
+        AZSCloudBlockBlob *oneBlob = [oneContainer blockBlobReferenceFromName:self.blockBlob.blobName];
+        [oneBlob downloadToStream:[[NSOutputStream alloc] initToMemory] completionHandler:^(NSError * err) {
+            [self checkPassageOfError:err expectToPass:YES errorCode:-1 message:@"Download blob"];
+            
+            // Ensure access attempt from one of many allowed IPs succeeds.
+            NSError *error = nil;
+            sp.ipAddressOrRange = [[AZSIPRange alloc] initWithMinIPString:@"0.0.0.0" maxIPString:@"255.255.255.255" error:&error];
+            [self checkPassageOfError:error expectToPass:YES errorCode:-1 message:@"Create IPRange"];
+            
+            NSString *containerSasAll = [self.blobContainer createSharedAccessSignatureWithParameters:sp error:&error];
+            [self checkPassageOfError:error expectToPass:YES errorCode:-1 message:@"Create SAS token"];
+            AZSCloudBlobContainer *allContainer = [[AZSCloudBlobContainer alloc] initWithStorageUri:
+                    [[AZSStorageUri alloc] initWithPrimaryUri:[[[AZSUriQueryBuilder alloc] initWithQuery:containerSasAll] addToUri:self.blobContainer.storageUri.primaryUri]]];
+            XCTAssertTrue(allContainer.client.credentials.isSAS);
+            
+            AZSCloudBlockBlob *allBlob = [allContainer blockBlobReferenceFromName:self.blockBlob.blobName];
+            [allBlob downloadToStream:[[NSOutputStream alloc] initToMemory] completionHandler:^(NSError * err) {
+                [self checkPassageOfError:err expectToPass:YES errorCode:-1 message:@"Download blob"];
+                
+                [semaphore signal];
+            }];
+        }];
+    }];
+    [semaphore wait];
+}
+
+- (void)testProtocolRestrictions
+{
+    AZSTestSemaphore *semaphore = [[AZSTestSemaphore alloc] init];
+    NSError *error = nil;
+    
+    AZSSharedAccessBlobParameters *sp = [[AZSSharedAccessBlobParameters alloc] init];
+    sp.permissions = AZSSharedAccessPermissionsRead;
+    sp.sharedAccessExpiryTime = [[NSDate alloc] initWithTimeIntervalSinceNow:300];
+    sp.protocols = AZSSharedAccessProtocolHttpsOnly;
+    
+    // Ensure using http with https only SAS fails.
+    NSString *containerSasHttps = [self.blobContainer createSharedAccessSignatureWithParameters:sp error:&error];
+    [self checkPassageOfError:error expectToPass:YES errorCode:-1 message:@"Create SAS token"];
+    AZSUriQueryBuilder *httpsBuilder = [[AZSUriQueryBuilder alloc] initWithQuery:containerSasHttps];
+    
+    NSURLComponents *uri = [NSURLComponents componentsWithURL:self.blobContainer.storageUri.primaryUri resolvingAgainstBaseURL:NO];
+    uri.scheme = AZSCHttp;
+    
+    AZSCloudBlobContainer *httpContainer = [[AZSCloudBlobContainer alloc] initWithStorageUri:
+            [[AZSStorageUri alloc] initWithPrimaryUri:[httpsBuilder addToUri:uri.URL]]];
+    XCTAssertTrue(httpContainer.client.credentials.isSAS);
+    
+    AZSCloudBlockBlob *httpBlob = [httpContainer blockBlobReferenceFromName:self.blockBlob.blobName];
+    [httpBlob downloadToStream:[[NSOutputStream alloc] initToMemory] completionHandler:^(NSError *err) {
+        [self checkPassageOfError:err expectToPass:NO errorCode:403 message:@"Download https only blob using http"];
+        XCTAssertTrue([(err.userInfo[@"Message"]) hasPrefix:@"This request is not authorized to perform this operation using this protocol."]);
+        
+        // Ensure using https with https only SAS succeeds.
+        uri.scheme = AZSCHttps;
+        AZSCloudBlobContainer *httpsContainer = [[AZSCloudBlobContainer alloc] initWithStorageUri:
+                [[AZSStorageUri alloc] initWithPrimaryUri:[httpsBuilder addToUri:uri.URL]]];
+        XCTAssertTrue(httpsContainer.client.credentials.isSAS);
+        
+        AZSCloudBlockBlob *httpsBlob = [httpsContainer blockBlobReferenceFromName:self.blockBlob.blobName];
+        [httpsBlob downloadToStream:[[NSOutputStream alloc] initToMemory] completionHandler:^(NSError *err) {
+            [self checkPassageOfError:err expectToPass:YES errorCode:-1 message:@"Download https only blob using https"];
+            
+            // Ensure using https with https,http SAS succeeds.
+            sp.protocols = AZSSharedAccessProtocolHttpsHttp;
+            NSError *error = nil;
+            NSString *containerSasHttp = [self.blobContainer createSharedAccessSignatureWithParameters:sp error:&error];
+            [self checkPassageOfError:error expectToPass:YES errorCode:-1 message:@"Create SAS token"];
+            AZSUriQueryBuilder *httpBuilder = [[AZSUriQueryBuilder alloc] initWithQuery:containerSasHttp];
+            
+            AZSCloudBlobContainer *httpsContainer = [[AZSCloudBlobContainer alloc] initWithStorageUri:
+                    [[AZSStorageUri alloc] initWithPrimaryUri:[httpBuilder addToUri:uri.URL]]];
+            XCTAssertTrue(httpsContainer.client.credentials.isSAS);
+            
+            AZSCloudBlockBlob *httpsBlob = [httpsContainer blockBlobReferenceFromName:self.blockBlob.blobName];
+            [httpsBlob downloadToStream:[[NSOutputStream alloc] initToMemory] completionHandler:^(NSError *err) {
+                [self checkPassageOfError:err expectToPass:YES errorCode:-1 message:@"Download blob using https"];
+                
+                // Ensure using http with https,http SAS succeeds.
+                uri.scheme = AZSCHttp;
+                AZSCloudBlobContainer *httpContainer = [[AZSCloudBlobContainer alloc] initWithStorageUri:
+                                 [[AZSStorageUri alloc] initWithPrimaryUri:[httpBuilder addToUri:uri.URL]]];
+                XCTAssertTrue(httpContainer.client.credentials.isSAS);
+                
+                AZSCloudBlockBlob *httpBlob = [httpContainer blockBlobReferenceFromName:self.blockBlob.blobName];
+                [httpBlob downloadToStream:[[NSOutputStream alloc] initToMemory] completionHandler:^(NSError *err) {
+                    [self checkPassageOfError:err expectToPass:YES errorCode:-1 message:@"Download blob using http"];
+                    
+                    [semaphore signal];
+                }];
+            }];
+        }];
     }];
     [semaphore wait];
 }

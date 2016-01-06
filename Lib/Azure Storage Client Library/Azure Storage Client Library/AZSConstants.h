@@ -29,6 +29,8 @@ FOUNDATION_EXPORT NSString *const AZSCDateFormatRFC;
 FOUNDATION_EXPORT NSString *const AZSCDateFormatRoundtrip;
 FOUNDATION_EXPORT NSString *const AZSCDefaultSuffix;
 FOUNDATION_EXPORT NSString *const AZSCEmptyString;
+FOUNDATION_EXPORT NSString *const AZSCHttp;
+FOUNDATION_EXPORT NSString *const AZSCHttps;
 FOUNDATION_EXPORT NSString *const AZSCHttpStatusCode;
 FOUNDATION_EXPORT NSString *const AZSCPosix;
 FOUNDATION_EXPORT NSString *const AZSCRawErrorData;
@@ -46,8 +48,6 @@ FOUNDATION_EXPORT NSString *const AZSCSettingsAccountName;
 FOUNDATION_EXPORT NSString *const AZSCSettingsBlobEndpoint;
 FOUNDATION_EXPORT NSString *const AZSCSettingsEndpointSuffix;
 FOUNDATION_EXPORT NSString *const AZSCSettingsEndpointsProtocol;
-FOUNDATION_EXPORT NSString *const AZSCSettingsHttp;
-FOUNDATION_EXPORT NSString *const AZSCSettingsHttps;
 FOUNDATION_EXPORT NSString *const AZSCSettingsSas;
 
 // Headers
@@ -172,6 +172,7 @@ FOUNDATION_EXPORT NSString *const AZSCSasContentType;
 FOUNDATION_EXPORT NSString *const AZSCSasEndPartionKey;
 FOUNDATION_EXPORT NSString *const AZSCSasEndRowKey;
 FOUNDATION_EXPORT NSString *const AZSCSasExpiryTime;
+FOUNDATION_EXPORT NSString *const AZSCSasIpAddressOrRange;
 FOUNDATION_EXPORT NSString *const AZSCSasPermissions;
 FOUNDATION_EXPORT NSString *const AZSCSasPermissionsRead;
 FOUNDATION_EXPORT NSString *const AZSCSasPermissionsAdd;
@@ -179,6 +180,8 @@ FOUNDATION_EXPORT NSString *const AZSCSasPermissionsCreate;
 FOUNDATION_EXPORT NSString *const AZSCSasPermissionsWrite;
 FOUNDATION_EXPORT NSString *const AZSCSasPermissionsDelete;
 FOUNDATION_EXPORT NSString *const AZSCSasPermissionsList;
+FOUNDATION_EXPORT NSString *const AZSCSasProtocolRestriction;
+FOUNDATION_EXPORT NSString *const AZSCSasProtocolsHttpsHttp;
 FOUNDATION_EXPORT NSString *const AZSCSasResource;
 FOUNDATION_EXPORT NSString *const AZSCSasServiceVersion;
 FOUNDATION_EXPORT NSString *const AZSCSasStartTime;
@@ -191,6 +194,7 @@ FOUNDATION_EXPORT NSString *const AZSCSasTemplateBlobParameters;
 FOUNDATION_EXPORT NSString *const AZSCSasTemplateBlobStringToSign;
 FOUNDATION_EXPORT NSString *const AZSCSasTemplateContainerCanonicalName;
 FOUNDATION_EXPORT NSString *const AZSCSasTemplateCredentials;
+FOUNDATION_EXPORT NSString *const AZSCSasTemplateIpRange;
 
 // XML
 FOUNDATION_EXPORT NSString *const AZSCXmlAccessPolicy;

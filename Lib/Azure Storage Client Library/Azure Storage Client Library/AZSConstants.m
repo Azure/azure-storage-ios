@@ -26,6 +26,8 @@ NSString *const AZSCDateFormatRFC = @"EEE, dd MMM yyyy HH':'mm':'ss 'GMT'";
 NSString *const AZSCDateFormatRoundtrip = @"yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'SSSSSSS'Z'";
 NSString *const AZSCDefaultSuffix = @"core.windows.net";
 NSString *const AZSCEmptyString = @"";
+NSString *const AZSCHttp = @"http";
+NSString *const AZSCHttps = @"https";
 NSString *const AZSCHttpStatusCode = @"HTTP Status Code";
 NSString *const AZSCPosix = @"en_US_POSIX";
 NSString *const AZSCRawErrorData = @"rawErrorData";
@@ -44,8 +46,6 @@ NSString *const AZSCSettingsAccountName = @"AccountName";
 NSString *const AZSCSettingsBlobEndpoint = @"BlobEndpoint";
 NSString *const AZSCSettingsEndpointSuffix = @"EndpointSuffix";
 NSString *const AZSCSettingsEndpointsProtocol = @"DefaultEndpointsProtocol";
-NSString *const AZSCSettingsHttp = @"http";
-NSString *const AZSCSettingsHttps = @"https";
 NSString *const AZSCSettingsSas = @"SharedAccessSignature";
 
 // Headers
@@ -170,6 +170,7 @@ NSString *const AZSCSasContentDisposition = @"rscd";
 NSString *const AZSCSasEndPartionKey = @"epk";
 NSString *const AZSCSasEndRowKey = @"erk";
 NSString *const AZSCSasExpiryTime = @"se";
+NSString *const AZSCSasIpAddressOrRange = @"sip";
 NSString *const AZSCSasPermissions = @"sp";
 NSString *const AZSCSasPermissionsRead = @"r";
 NSString *const AZSCSasPermissionsAdd = @"a";
@@ -177,6 +178,8 @@ NSString *const AZSCSasPermissionsCreate = @"c";
 NSString *const AZSCSasPermissionsWrite = @"w";
 NSString *const AZSCSasPermissionsDelete = @"d";
 NSString *const AZSCSasPermissionsList = @"l";
+NSString *const AZSCSasProtocolRestriction = @"spr";
+NSString *const AZSCSasProtocolsHttpsHttp = @"https,http";
 NSString *const AZSCSasResource = @"sr";
 NSString *const AZSCSasServiceVersion = @"sv";
 NSString *const AZSCSasStartTime = @"st";
@@ -186,9 +189,10 @@ NSString *const AZSCSasStoredIdentifier = @"si";
 NSString *const AZSCSasTableName = @"tn";
 NSString *const AZSCSasTemplateBlobCanonicalName = @"/%@/%@/%@/%@";
 NSString *const AZSCSasTemplateBlobParameters = @"%@\n%@\n%@\n%@\n%@\n%@";
-NSString *const AZSCSasTemplateBlobStringToSign =  @"%@\n%@\n%@\n%@\n%@\n\n\n%@";
+NSString *const AZSCSasTemplateBlobStringToSign =  @"%@\n%@\n%@\n%@\n%@\n%@\n%@\n%@";
 NSString *const AZSCSasTemplateContainerCanonicalName = @"/%@/%@/%@";
 NSString *const AZSCSasTemplateCredentials = @";SharedAccessSignature=%@";
+NSString *const AZSCSasTemplateIpRange = @"%@-%@";
 
 // XML
 NSString *const AZSCXmlAccessPolicy = @"AccessPolicy";

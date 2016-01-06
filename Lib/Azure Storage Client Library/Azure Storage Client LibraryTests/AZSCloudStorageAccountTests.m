@@ -50,14 +50,14 @@
     // Test connection string parsing.
     // TODO: Test connection string round-triping
     NSString *connectionString = [NSString stringWithFormat:AZSCSharedTemplateCredentials, AZSCEmptyString, @"xaccount", @"key"];
-    NSString *desiredURL = [NSString stringWithFormat:AZSCSharedTemplatePrimaryUri, AZSCSettingsHttps, @"xaccount", AZSCBlob, AZSCDefaultSuffix];
+    NSString *desiredURL = [NSString stringWithFormat:AZSCSharedTemplatePrimaryUri, AZSCHttps, @"xaccount", AZSCBlob, AZSCDefaultSuffix];
     XCTAssertTrue([self validateCorrectBlobURLIsCreatedWithConnectionString:connectionString desiredURL:desiredURL], @"Incorrect URL");
 
-    connectionString = [NSString stringWithFormat:@"%@%@", connectionString, [NSString stringWithFormat:AZSCSharedTemplateDefaultEndpoint, AZSCSettingsHttps, AZSCEmptyString]];
+    connectionString = [NSString stringWithFormat:@"%@%@", connectionString, [NSString stringWithFormat:AZSCSharedTemplateDefaultEndpoint, AZSCHttps, AZSCEmptyString]];
     XCTAssertTrue([self validateCorrectBlobURLIsCreatedWithConnectionString:connectionString desiredURL:desiredURL], @"Incorrect URL");
     
-    connectionString = [NSString stringWithFormat:@"%@;%@", connectionString, [NSString stringWithFormat:AZSCSharedTemplateDefaultEndpoint, AZSCSettingsHttp, AZSCEmptyString]];
-    desiredURL = [NSString stringWithFormat:AZSCSharedTemplatePrimaryUri, AZSCSettingsHttp, @"xaccount", AZSCBlob, AZSCDefaultSuffix];
+    connectionString = [NSString stringWithFormat:@"%@;%@", connectionString, [NSString stringWithFormat:AZSCSharedTemplateDefaultEndpoint, AZSCHttp, AZSCEmptyString]];
+    desiredURL = [NSString stringWithFormat:AZSCSharedTemplatePrimaryUri, AZSCHttp, @"xaccount", AZSCBlob, AZSCDefaultSuffix];
     XCTAssertTrue([self validateCorrectBlobURLIsCreatedWithConnectionString:connectionString desiredURL:desiredURL], @"Incorrect URL");
 
     desiredURL = @"http://sampleblobendpoint";
@@ -71,11 +71,11 @@
     XCTAssertTrue([self validateCorrectBlobURLIsCreatedWithConnectionString:connectionString desiredURL:desiredURL], @"Incorrect URL");
 
     connectionString = [NSString stringWithFormat:@"%@;%@", @"EndpointSuffix=test.endpoint.suffix", [NSString stringWithFormat:AZSCSharedTemplateCredentials, AZSCEmptyString, @"account", @"key"]];
-    desiredURL = [NSString stringWithFormat:AZSCSharedTemplatePrimaryUri, AZSCSettingsHttps, @"account", AZSCBlob, @"test.endpoint.suffix"];
+    desiredURL = [NSString stringWithFormat:AZSCSharedTemplatePrimaryUri, AZSCHttps, @"account", AZSCBlob, @"test.endpoint.suffix"];
     XCTAssertTrue([self validateCorrectBlobURLIsCreatedWithConnectionString:connectionString desiredURL:desiredURL], @"Incorrect URL");
 
-    connectionString = [[connectionString stringByAppendingString:@";"] stringByAppendingString:[NSString stringWithFormat:AZSCSharedTemplateDefaultEndpoint, AZSCSettingsHttp, AZSCEmptyString]];
-    desiredURL = [NSString stringWithFormat:AZSCSharedTemplatePrimaryUri, AZSCSettingsHttp, @"account", AZSCBlob, @"test.endpoint.suffix"];;
+    connectionString = [[connectionString stringByAppendingString:@";"] stringByAppendingString:[NSString stringWithFormat:AZSCSharedTemplateDefaultEndpoint, AZSCHttp, AZSCEmptyString]];
+    desiredURL = [NSString stringWithFormat:AZSCSharedTemplatePrimaryUri, AZSCHttp, @"account", AZSCBlob, @"test.endpoint.suffix"];;
     XCTAssertTrue([self validateCorrectBlobURLIsCreatedWithConnectionString:connectionString desiredURL:desiredURL], @"Incorrect URL");
 }
 

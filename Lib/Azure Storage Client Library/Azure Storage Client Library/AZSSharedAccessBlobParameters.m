@@ -27,6 +27,7 @@
     self = [super init];
     if (self) {
         self.permissions = AZSSharedAccessPermissionsNone;
+        self.protocols = AZSSharedAccessProtocolAll;
     }
     
     return self;

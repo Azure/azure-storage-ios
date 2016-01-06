@@ -38,12 +38,12 @@
         return nil;
     }
     
-    return [self sharedAccessSignatureWithPermissions:parameters.permissions sharedAccessStartTime:parameters.sharedAccessStartTime sharedAccessExpiryTime:parameters.sharedAccessExpiryTime startPartitionKey:nil startRowKey:nil endPartitionKey:nil endRowKey:nil headers:parameters.headers storedPolicyIdentifier:parameters.storedPolicyIdentifier resourceType:resourceType tableName:nil signature:signature error:error];
+    return [self sharedAccessSignatureWithPermissions:parameters.permissions sharedAccessStartTime:parameters.sharedAccessStartTime sharedAccessExpiryTime:parameters.sharedAccessExpiryTime startPartitionKey:nil startRowKey:nil endPartitionKey:nil endRowKey:nil headers:parameters.headers storedPolicyIdentifier:parameters.storedPolicyIdentifier resourceType:resourceType ipAddressOrRange:parameters.ipAddressOrRange protocols:parameters.protocols tableName:nil signature:signature error:error];
 }
 
 +(NSString *)sharedAccessSignatureHashForBlobWithParameters:(AZSSharedAccessBlobParameters *)parameters resourceName:(NSString *)resourceName client:(AZSCloudClient *)client error:(NSError **)error
 {
-    NSString *stringToSign = [self sharedAccessSignatureStringToSignWithPermissions:parameters.permissions sharedAccessStartTime:parameters.sharedAccessStartTime sharedAccessExpiryTime:parameters.sharedAccessExpiryTime resource:resourceName storedPolicyIdentifier:parameters.storedPolicyIdentifier error:error];
+    NSString *stringToSign = [self sharedAccessSignatureStringToSignWithPermissions:parameters.permissions sharedAccessStartTime:parameters.sharedAccessStartTime sharedAccessExpiryTime:parameters.sharedAccessExpiryTime resource:resourceName storedPolicyIdentifier:parameters.storedPolicyIdentifier ipAddressOrRange:parameters.ipAddressOrRange protocols:parameters.protocols error:error];
     
     if (!stringToSign) {
         // An error occurred. Error will have been set by sharedAccessSignatureStringToSignWithParameters.
@@ -59,7 +59,7 @@
     return testString ?: AZSCEmptyString;
 }
 
-+(AZSUriQueryBuilder *)sharedAccessSignatureWithPermissions:(AZSSharedAccessPermissions)permissions sharedAccessStartTime:(NSDate *)startTime sharedAccessExpiryTime:(NSDate *)expiryTime startPartitionKey:(NSString *)startPartitionKey startRowKey:(NSString *)startRowKey endPartitionKey:(NSString *)endPartitionKey endRowKey:(NSString *)endRowKey headers:(AZSSharedAccessHeaders *)headers storedPolicyIdentifier:(NSString *)storedPolicyIdentifier resourceType:(NSString *)resourceType tableName:(NSString *)tableName signature:(NSString *)signature error:(NSError **)error
++(AZSUriQueryBuilder *)sharedAccessSignatureWithPermissions:(AZSSharedAccessPermissions)permissions sharedAccessStartTime:(NSDate *)startTime sharedAccessExpiryTime:(NSDate *)expiryTime startPartitionKey:(NSString *)startPartitionKey startRowKey:(NSString *)startRowKey endPartitionKey:(NSString *)endPartitionKey endRowKey:(NSString *)endRowKey headers:(AZSSharedAccessHeaders *)headers storedPolicyIdentifier:(NSString *)storedPolicyIdentifier resourceType:(NSString *)resourceType ipAddressOrRange:(AZSIPRange*)ipAddressOrRange protocols:(AZSSharedAccessProtocols)protocols tableName:(NSString *)tableName signature:(NSString *)signature error:(NSError **)error
 {
     if (!signature) {
         *error = [NSError errorWithDomain:AZSErrorDomain code:AZSEInvalidArgument userInfo:nil];
@@ -68,13 +68,19 @@
     }
     
     AZSUriQueryBuilder *builder = [[AZSUriQueryBuilder alloc] init];
-    [builder addWithKey:AZSCSasServiceVersion value: AZSCTargetStorageVersion];
     [builder addIfNotNilOrEmptyWithKey:AZSCSasPermissions value:[AZSSharedAccessSignatureHelper stringFromPermissions:permissions error:error]];
-    
     if (*error) {
         // An error occurred.
         return nil;
     }
+    
+    [builder addIfNotNilOrEmptyWithKey:AZSCSasProtocolRestriction value:[AZSSharedAccessSignatureHelper stringFromProtocols:protocols error:error]];
+    if (*error) {
+        // An error occurred.
+        return nil;
+    }
+    
+    [builder addWithKey:AZSCSasServiceVersion value: AZSCTargetStorageVersion];
     
     NSString *startString = [AZSUtil utcTimeOrEmptyWithDate:startTime];
     [builder addIfNotNilOrEmptyWithKey:AZSCSasStartTime value:startString];
@@ -89,6 +95,7 @@
     
     [builder addIfNotNilOrEmptyWithKey:AZSCSasStoredIdentifier value:storedPolicyIdentifier];
     [builder addIfNotNilOrEmptyWithKey:AZSCSasResource value:resourceType];
+    [builder addIfNotNilOrEmptyWithKey:AZSCSasIpAddressOrRange value:ipAddressOrRange.rangeString];
     
     [builder addIfNotNilOrEmptyWithKey:AZSCSasTableName value:tableName];
     
@@ -117,7 +124,7 @@
     return [AZSUtil computeHmac256WithString:stringToSign credentials:credentials];
 }
 
-+(NSString *)sharedAccessSignatureStringToSignWithPermissions:(AZSSharedAccessPermissions)permissions sharedAccessStartTime:(NSDate *)startTime sharedAccessExpiryTime:(NSDate *)expiryTime resource:(NSString *)resource storedPolicyIdentifier:(NSString *)storedPolicyIdentifier error:(NSError **)error
++(NSString *)sharedAccessSignatureStringToSignWithPermissions:(AZSSharedAccessPermissions)permissions sharedAccessStartTime:(NSDate *)startTime sharedAccessExpiryTime:(NSDate *)expiryTime resource:(NSString *)resource storedPolicyIdentifier:(NSString *)storedPolicyIdentifier ipAddressOrRange:(AZSIPRange *)ipAddressOrRange protocols:(AZSSharedAccessProtocols)protocols error:(NSError **)error
 {
     if (!resource) {
         *error = [NSError errorWithDomain:AZSErrorDomain code:AZSEInvalidArgument userInfo:nil];
@@ -125,12 +132,31 @@
         return nil;
     }
     
-    // Todo: Add ipRange and procols
     NSString *stringToSign = [NSString stringWithFormat:AZSCSasTemplateBlobStringToSign,
-                              [self emptyIfNilString:[AZSSharedAccessSignatureHelper stringFromPermissions:permissions error:error]],
-                              [AZSUtil utcTimeOrEmptyWithDate:startTime], [AZSUtil utcTimeOrEmptyWithDate:expiryTime],
-            resource, [self emptyIfNilString:storedPolicyIdentifier], AZSCTargetStorageVersion];
+            [self emptyIfNilString:[AZSSharedAccessSignatureHelper stringFromPermissions:permissions error:error]],
+            [AZSUtil utcTimeOrEmptyWithDate:startTime], [AZSUtil utcTimeOrEmptyWithDate:expiryTime],
+            resource, [self emptyIfNilString:storedPolicyIdentifier], [self emptyIfNilString:ipAddressOrRange.rangeString],
+            [AZSSharedAccessSignatureHelper stringFromProtocols:protocols error:error], AZSCTargetStorageVersion];
     return (*error) ? nil : stringToSign;
+}
+
++(NSString *)stringFromProtocols:(AZSSharedAccessProtocols)protocols error:(NSError **)error
+{
+    switch (protocols) {
+        case AZSSharedAccessProtocolAll:
+            return AZSCEmptyString;
+            
+        case AZSSharedAccessProtocolHttpsOnly:
+            return AZSCHttps;
+            
+        case AZSSharedAccessProtocolHttpsHttp:
+            return AZSCSasProtocolsHttpsHttp;
+            
+        default:
+            *error = (*error) ?: [NSError errorWithDomain:AZSErrorDomain code:AZSEInvalidArgument userInfo:nil];
+            [[AZSUtil operationlessContext] logAtLevel:AZSLogLevelError withMessage:@"Unrecognized protocol restriction."];
+            return nil;
+    }
 }
 
 +(NSString *)stringFromPermissions:(AZSSharedAccessPermissions)permissions error:(NSError **)error

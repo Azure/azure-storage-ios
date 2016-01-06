@@ -293,3 +293,16 @@ typedef NS_OPTIONS(NSUInteger, AZSSharedAccessPermissions)
     AZSSharedAccessPermissionsBlobFull  = AZSSharedAccessPermissionsRead | AZSSharedAccessPermissionsAdd | AZSSharedAccessPermissionsCreate |
             AZSSharedAccessPermissionsWrite | AZSSharedAccessPermissionsDelete | AZSSharedAccessPermissionsList
 };
+
+/** Represents the protocols with which a SAS may be used. */
+typedef NS_ENUM(NSInteger, AZSSharedAccessProtocols)
+{
+    /** Specifies permission granted to use SAS with any protocol. */
+    AZSSharedAccessProtocolAll,
+    
+    /** Specifies permission granted to use SAS through HTTPS or HTTP. */
+    AZSSharedAccessProtocolHttpsHttp,
+    
+    /** Specifies permission granted to use SAS only through HTTPS. */
+    AZSSharedAccessProtocolHttpsOnly
+};

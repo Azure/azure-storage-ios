@@ -59,7 +59,7 @@
         endpointSuffix = settingsDictionary[AZSCSettingsEndpointSuffix];
     }
     
-    BOOL useHttps = ![((NSString *)settingsDictionary[AZSCSettingsEndpointsProtocol]) isEqualToString:AZSCSettingsHttp];
+    BOOL useHttps = ![((NSString *)settingsDictionary[AZSCSettingsEndpointsProtocol]) isEqualToString:AZSCHttp];
     
     AZSStorageCredentials *credentials = nil;
     if (settingsDictionary[AZSCSettingsAccountName] && settingsDictionary[AZSCSettingsAccountKey])
@@ -115,11 +115,11 @@
         }
         else if (self.endpointSuffix)
         {
-            _connectionString = [NSString stringWithFormat:AZSCSharedTemplateEndpointSuffix, (self.useHttps ? AZSCSettingsHttps : AZSCSettingsHttp), credentialsString, self.endpointSuffix];
+            _connectionString = [NSString stringWithFormat:AZSCSharedTemplateEndpointSuffix, (self.useHttps ? AZSCHttps : AZSCHttp), credentialsString, self.endpointSuffix];
         }
         else
         {
-            _connectionString = [NSString stringWithFormat:AZSCSharedTemplateDefaultEndpoint, (self.useHttps ? AZSCSettingsHttps : AZSCSettingsHttp), credentialsString];
+            _connectionString = [NSString stringWithFormat:AZSCSharedTemplateDefaultEndpoint, (self.useHttps ? AZSCHttps : AZSCHttp), credentialsString];
         }
     }
     
@@ -165,14 +165,13 @@
     {
         _storageCredentials = storageCredentials;
         _endpointSuffix = endpointSuffix;
-        _blob_endpoint = [self constructDefaultEndpointWithScheme:(useHttps ? AZSCSettingsHttps : AZSCSettingsHttp) hostnamePrefix:AZSCBlob endpointSuffix:endpointSuffix];
+        _blob_endpoint = [self constructDefaultEndpointWithScheme:(useHttps ? AZSCHttps : AZSCHttp) hostnamePrefix:AZSCBlob endpointSuffix:endpointSuffix];
         _explicitEndpoints = NO;
         _useHttps = useHttps;
     }
     
     return self;
 }
-
 
 -(AZSCloudBlobClient *) getBlobClient
 {
