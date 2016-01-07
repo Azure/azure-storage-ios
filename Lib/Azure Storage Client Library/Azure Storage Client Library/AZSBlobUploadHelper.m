@@ -16,6 +16,7 @@
 // -----------------------------------------------------------------------------------------
 
 #import <CommonCrypto/CommonDigest.h>
+#import "AZSConstants.h"
 #import "AZSBlobUploadHelper.h"
 #import "AZSCloudBlockBlob.h"
 #import "AZSBlockListItem.h"
@@ -62,7 +63,7 @@
     if (self)
     {
         _underlyingBlob = blockBlob;
-        _dataBuffer = [NSMutableData dataWithCapacity:4*1024*1024];  //TODO: This should be the max buffer size.
+        _dataBuffer = [NSMutableData dataWithCapacity:AZSCMaxBlockSize];  //TODO: This should be the max buffer size.
         _blockIDs = [NSMutableArray arrayWithCapacity:10];
         _maxOpenUploads = requestOptions.parallelismFactor;
         _blockUploadSemaphore = dispatch_semaphore_create(self.maxOpenUploads);
@@ -94,7 +95,7 @@
     }
     
     // TODO: Make this configurable.
-    NSUInteger maxSizePerBlock = 4*1024*1024;
+    NSUInteger maxSizePerBlock = AZSCMaxBlockSize;
     int bytesCopied = 0;
     
     while (bytesCopied < length)
@@ -122,14 +123,14 @@
     }
     
     NSData *blockData = self.dataBuffer;
-    self.dataBuffer = [NSMutableData dataWithCapacity:4*1028*1028];
+    self.dataBuffer = [NSMutableData dataWithCapacity:AZSCMaxBlockSize];
     
     if (self.requestOptions.storeBlobContentMD5)
     {
         CC_MD5_Update(&_md5Context, blockData.bytes, (unsigned int) blockData.length);
     }
     
-    NSString *blockID = [[[[NSString stringWithFormat:@"blockid%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:@""]] lowercaseString] dataUsingEncoding:NSUTF8StringEncoding] base64EncodedStringWithOptions:0];
+    NSString *blockID = [[[[NSString stringWithFormat:@"blockid%@",[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString]] lowercaseString] dataUsingEncoding:NSUTF8StringEncoding] base64EncodedStringWithOptions:0];
     [self.blockIDs addObject:[[AZSBlockListItem alloc] initWithBlockID:blockID blockListMode:AZSBlockListModeLatest size:blockData.length]];
     
     [self.underlyingBlob uploadBlockFromData:blockData blockID:blockID contentMD5:nil accessCondition:self.accessCondition requestOptions:self.requestOptions operationContext:self.operationContext completionHandler:^(NSError * error)
@@ -215,10 +216,10 @@
     {
         if (self.streamWaiting && [self hasSpaceAvailable])
         {
-            uint8_t buf[1024];
+            uint8_t buf[AZSCKilobyte];
             NSUInteger len = 0;
             
-            len = [inputStream read:buf maxLength:1024];
+            len = [inputStream read:buf maxLength:AZSCKilobyte];
             if (len)
             {
                 [self write:buf maxLength:len completionHandler:^{
@@ -240,10 +241,10 @@
             {
                 if ([self hasSpaceAvailable])
                 {
-                    uint8_t buf[1024];
+                    uint8_t buf[AZSCKilobyte];
                     NSUInteger len = 0;
                 
-                    len = [inputStream read:buf maxLength:1024];  // The 0 and -1 case should be handled by the EndEncountered and ErrorOccurred events.
+                    len = [inputStream read:buf maxLength:AZSCKilobyte];  // The 0 and -1 case should be handled by the EndEncountered and ErrorOccurred events.
                     if (len > 0)
                     {
                         [self write:buf maxLength:len completionHandler:^{

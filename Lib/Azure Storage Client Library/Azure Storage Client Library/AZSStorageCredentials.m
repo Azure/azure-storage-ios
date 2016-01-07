@@ -15,6 +15,7 @@
 // </copyright>
 // -----------------------------------------------------------------------------------------
 
+#import "AZSConstants.h"
 #import "AZSStorageCredentials.h"
 #import "AZSUriQueryBuilder.h"
 #import "AZSUtil.h"
@@ -54,9 +55,15 @@
 
 - (instancetype)initWithSASToken:(NSString *)sasToken
 {
+    return [self initWithSASToken:sasToken accountName:nil];
+}
+
+- (instancetype)initWithSASToken:(NSString *)sasToken accountName:(NSString *)accountName
+{
     self = [super init];
     if (self)
     {
+        _accountName = accountName;
         _sasToken = sasToken;
         _queryBuilder = [[AZSUriQueryBuilder alloc] init];
         [self updateQueryBuilder];
@@ -100,7 +107,7 @@
     }
     
     //TODO use targetstorageversion constant.
-    [self.queryBuilder addWithKey:@"api-version" value:@"2015-02-21"];
+    [self.queryBuilder addWithKey:AZSCQueryApiVersion value:AZSCTargetStorageVersion];
 }
 
 -(NSURL *) transformWithUri:(NSURL *)uri

@@ -15,6 +15,7 @@
 // </copyright>
 // -----------------------------------------------------------------------------------------
 
+#import "AZSConstants.h"
 #import "AZSRequestOptions.h"
 
 @interface AZSRequestOptions()
@@ -46,7 +47,7 @@
         _runLoopForDownloadSet = NO;
         _serverTimeout = 30;
         _serverTimeoutSet = NO;
-        _maximumDownloadBufferSize = 1024*1024;
+        _maximumDownloadBufferSize = AZSCKilobyte * AZSCKilobyte;
         _maximumDownloadBufferSizeSet = NO;
         _maximumExecutionTime = 600.0;
         _maximumExecutionTimeSet = NO;

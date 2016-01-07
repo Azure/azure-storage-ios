@@ -20,5 +20,7 @@
 @class AZSCloudStorageAccount;
 
 @interface AZSTestBase : XCTestCase
+
 @property AZSCloudStorageAccount *account;
+
 @end

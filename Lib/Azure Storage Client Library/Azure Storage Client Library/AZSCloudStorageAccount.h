@@ -18,8 +18,9 @@
 #import <Foundation/Foundation.h>
 #import "AZSMacros.h"
 
-@class AZSStorageCredentials;
 @class AZSCloudBlobClient;
+@class AZSSharedAccessAccountParameters;
+@class AZSStorageCredentials;
 @class AZSStorageUri;
 
 /** AZSCloudStorageAccount represents a given Storage Account.
@@ -38,20 +39,41 @@
  "DefaultEndpointsProtocol=https;AccountName=<accountName>;AccountKey=<accountKey>"
  
  @param connectionString The connection string to parse.
- @return The newly created AZSCloudStorageAccount object.
+ @param error A pointer to a NSError, to be set in case of failure.
+ @return The newly created AZSCloudStorageAccount object, or nil in case of failure.
  */
-+(AZSCloudStorageAccount *)accountFromConnectionString:(NSString *)connectionString;
++(AZSCloudStorageAccount *)accountFromConnectionString:(NSString *)connectionString error:(NSError **)error;
 
-/** Initialize a fresh AZSStorageCredentials object
+/** Initialize a fresh AZSCloudStorageAccount object
  
- @param storageCredentials The AZSStorageCredentials object contianing connection information
- @param useHttps Whether requests should use HTTPS or HTTP
- @return The freshly allocated AZSCloudStorageAccount.
+ @param storageCredentials The AZSStorageCredentials object containing connection information.
+ @param blobEndpoint An explicit blob endpoint to use in place of the one the account generates automatically.
+ @param tableEndpoint An explicit table endpoint to use in place of the one the account generates automatically.
+ @param queueEndpoint An explicit queue endpoint to use in place of the one the account generates automatically.
+ @param fileEndpoint An explicit file endpoint to use in place of the one the account generates automatically.
+ @param error A pointer to a NSError, to be set in case of failure.
+ @return The freshly allocated AZSCloudStorageAccount, or nil in case of failure.
  */
--(instancetype)initWithCredentials:(AZSStorageCredentials *)storageCredentials useHttps:(BOOL) useHttps;
--(instancetype) initWithCredentials:(AZSStorageCredentials *)storageCredentials blobEndpoint:(AZSStorageUri *)blobEndpoint tableEndpoint:(AZSStorageUri *)tableEndpoint queueEndpoint:(AZSStorageUri *)queueEndpoint fileEndpoint:(AZSStorageUri *)fileEndpoint;
--(instancetype) initWithCredentials:(AZSStorageCredentials *)storageCredentials useHttps:(BOOL)useHttps endpointSuffix:(NSString *)endpointSuffix AZS_DESIGNATED_INITIALIZER;
+-(instancetype) initWithCredentials:(AZSStorageCredentials *)storageCredentials blobEndpoint:(AZSStorageUri *)blobEndpoint tableEndpoint:(AZSStorageUri *)tableEndpoint queueEndpoint:(AZSStorageUri *)queueEndpoint fileEndpoint:(AZSStorageUri *)fileEndpoint error:(NSError **)error AZS_DESIGNATED_INITIALIZER;
 
+/** Initialize a fresh AZSCloudStorageAccount object
+ 
+ @param storageCredentials The AZSStorageCredentials object containing connection information.
+ @param useHttps Whether requests should use HTTPS or HTTP.
+ @param error A pointer to a NSError, to be set in case of failure.
+ @return The freshly allocated AZSCloudStorageAccount, or nil in case of failure.
+ */
+-(instancetype) initWithCredentials:(AZSStorageCredentials *)storageCredentials useHttps:(BOOL) useHttps error:(NSError **)error;
+
+/** Initialize a fresh AZSCloudStorageAccount object
+ 
+ @param storageCredentials The AZSStorageCredentials object containing connection information.
+ @param useHttps Whether requests should use HTTPS or HTTP.
+ @param endpointSuffix An explicit endpoint to use in place of the one the account generates automatically.
+ @param error A pointer to a NSError, to be set in case of failure.
+ @return The freshly allocated AZSCloudStorageAccount, or nil in case of failure.
+ */
+-(instancetype) initWithCredentials:(AZSStorageCredentials *)storageCredentials useHttps:(BOOL)useHttps endpointSuffix:(NSString *)endpointSuffix error:(NSError **)error AZS_DESIGNATED_INITIALIZER;
 
 /** Create an AZSCloudBlobClient object
  
@@ -60,4 +82,14 @@
 -(AZSCloudBlobClient *)getBlobClient;
 
 // TODO: Remainder of the account-parsing options.
+
+/** Creates a Shared Access Signature (SAS) token from the given parameters for this Account.
+ Note that logging in this method uses the global logger configured statically on the AZSOperationContext as there is no operation being performed to provide a local operation context.
+ 
+ @param parameters The shared access account parameters from which to create the SAS token.
+ @param error A pointer to a NSError*, to be set in the event of failure.
+ @returns The newly created SAS token.
+ */
+- (NSString *) createSharedAccessSignatureWithParameters:(AZSSharedAccessAccountParameters *)parameters error:(NSError **)error;
+
 @end

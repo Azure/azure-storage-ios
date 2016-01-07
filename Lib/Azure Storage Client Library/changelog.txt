@@ -1,0 +1,11 @@
+2015.XX.YY Version 0.2.0
+ * Renamed fetchAttributesWith* methods on AZSCloudBlob to downloadAttributesWith*.
+ * Added ability to store and retrieve shared access policies on blob containers.
+ * Added ability to generate shared access signatures for blobs and blob containers.
+ * Fixed a bug where retrying failed requests was off by default.
+ * Added support for IP Restricted SAS and Protocol Restricted SAS.
+ * Added support for Account level SAS.
+ * Updated service version to 2015-04-05.
+
+2015.09.22 Version 0.1.0
+ * Initial Release

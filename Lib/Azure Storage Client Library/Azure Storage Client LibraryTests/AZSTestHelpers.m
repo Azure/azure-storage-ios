@@ -15,11 +15,29 @@
 // </copyright>
 // -----------------------------------------------------------------------------------------
 
-#import "AZSTestHelpers.h"
 #import <XCTest/XCTest.h>
+#import "AZSConstants.h"
+#import "AZSTestHelpers.h"
 @import ObjectiveC;
 
 @implementation AZSTestHelpers
+
++ (void)checkPassageOfError:(NSError *)err expectToPass:(BOOL)expected expectedHttpErrorCode:(int)code message:(NSString *)message
+{
+    int badCode = [err.userInfo[AZSCHttpStatusCode] intValue];
+    if (expected) {
+        XCTAssertNil(err, @"%@ failed.", message);
+    }
+    else {
+        XCTAssertNotNil(err, @"%@ unexpectedly passed.", message);
+        XCTAssertEqual(code, badCode);
+    }
+}
+
++ (NSString *)uniqueName
+{
+    return [[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:AZSCEmptyString] lowercaseString];
+}
 
 @end
 
@@ -121,9 +139,9 @@ void RunLoopSourceCancelRoutine (void *info, CFRunLoopRef rl, CFStringRef mode)
         self.runLoopsRegistered = [NSMutableArray arrayWithCapacity:1];
         self.totalBytes = 0;
         self.errorCount = 0;
-        self.errors = [NSMutableString stringWithFormat:@""];
+        self.errors = [NSMutableString stringWithString:AZSCEmptyString];
         self.totalBlobSize = totalBlobSize;
-        self.currentBuffer = [NSMutableData dataWithLength:1024];
+        self.currentBuffer = [NSMutableData dataWithLength:AZSCKilobyte];
         self.isUpload = isUpload;
 
     }

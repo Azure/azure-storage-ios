@@ -63,10 +63,10 @@ typedef NS_ENUM(NSInteger, AZSContainerPublicAccessType)
 typedef NS_OPTIONS(NSUInteger, AZSContainerListingDetails)
 {
     /** No additional details retrieved with the container listing operation.*/
-    AZSContainerListingDetailsNone = 0,
+    AZSContainerListingDetailsNone = 0x0,
     
     /** Retrieve container metadata as well in the listing operation.*/
-    AZSContainerListingDetailsMetadata = 1 << 0,
+    AZSContainerListingDetailsMetadata = 0x1 << 0,
     
     /** Retrieve all details in the listing operation.*/
     AZSContainerListingDetailsAll = AZSContainerListingDetailsMetadata
@@ -76,19 +76,19 @@ typedef NS_OPTIONS(NSUInteger, AZSContainerListingDetails)
 typedef NS_OPTIONS(NSUInteger, AZSBlobListingDetails)
 {
     /** List only committed blobs, and do not return blob metadata.*/
-    AZSBlobListingDetailsNone = 0,
+    AZSBlobListingDetailsNone = 0x0,
     
     /** List committed blobs and blob snapshots.*/
-    AZSBlobListingDetailsSnapshots = 1 << 0,
+    AZSBlobListingDetailsSnapshots = 0x1 << 0,
     
     /** Retrieve blob metadata for each blob returned in the listing.*/
-    AZSBlobListingDetailsMetadata = 1 << 1,
+    AZSBlobListingDetailsMetadata = 0x1 << 1,
     
     /** List committed and uncommittee blobs.*/
-    AZSBlobListingDetailsUncommittedBlobs = 1 << 2,
+    AZSBlobListingDetailsUncommittedBlobs = 0x1 << 2,
     
     /** Include copy propertied in the listing.*/
-    AZSBlobListingDetailsCopy = 1 << 3,
+    AZSBlobListingDetailsCopy = 0x1 << 3,
     
     /** List all available committed blobs, uncommitted blobs, and snapshots, and return all metadata and copy status for those blobs.*/
     AZSBlobListingDetailsAll = AZSBlobListingDetailsSnapshots | AZSBlobListingDetailsMetadata | AZSBlobListingDetailsUncommittedBlobs | AZSBlobListingDetailsCopy
@@ -239,24 +239,120 @@ typedef NS_ENUM(NSInteger, AZSLeaseAction)
     AZSLeaseActionChange
 };
 
-/** The maximum level at which to log. */
+/** The maximum level at which to log. These values correspond to their respective ASL log levels. */
 typedef NS_ENUM(NSInteger, AZSLogLevel)
 {
     /** Don't log anything. */
-    AZSLogLevelNoLogging,
+    AZSLogLevelNoLogging = 0,
     
     /** Only log critical-level messages. */
-    AZSLogLevelCritical,
+    AZSLogLevelCritical = 2,
     
     /** Log error-level and critical-level messages. */
-    AZSLogLevelError,
+    AZSLogLevelError = 3,
     
     /** Log warning-, error-, and critical-level messages. */
-    AZSLogLevelWarning,
+    AZSLogLevelWarning = 4,
     
     /** Log info-, warning-, error-, and critical-level messages. */
-    AZSLogLevelInfo,
+    AZSLogLevelInfo = 6,
     
     /** Log all messages, including debugging messages. */
-    AZSLogLevelDebug
+    AZSLogLevelDebug = 7
+};
+
+/** Specifies the set of possible permissions for a shared access policy. **/
+typedef NS_OPTIONS(NSUInteger, AZSSharedAccessPermissions)
+{
+    /** Specifies no access granted. **/
+    AZSSharedAccessPermissionsNone            = 0x0,
+    
+    /** Specifies Read access granted. **/
+    AZSSharedAccessPermissionsRead            = 0x1 << 0,
+    
+    /** Specifies Add access granted. **/
+    AZSSharedAccessPermissionsAdd             = 0x1 << 1,
+    
+    /** Specifies Create access granted. **/
+    AZSSharedAccessPermissionsCreate          = 0x1 << 2,
+    
+    /** Specifies Write access granted. **/
+    AZSSharedAccessPermissionsWrite           = 0x1 << 3,
+    
+    /** Specifies Delete access granted. **/
+    AZSSharedAccessPermissionsDelete          = 0x1 << 4,
+    
+    /** Specifies List access granted. **/
+    AZSSharedAccessPermissionsList            = 0x1 << 5,
+    
+    /** Specifies Update access granted. **/
+    AZSSharedAccessPermissionsUpdate          = 0x1 << 6,
+    
+    /** Specifies Process Messages access granted. **/
+    AZSSharedAccessPermissionsProcessMessages = 0x1 << 7,
+    
+    /** Specifies All access granted. **/
+    AZSSharedAccessPermissionsAll           = AZSSharedAccessPermissionsRead | AZSSharedAccessPermissionsAdd | AZSSharedAccessPermissionsCreate |
+            AZSSharedAccessPermissionsWrite | AZSSharedAccessPermissionsDelete | AZSSharedAccessPermissionsList| AZSSharedAccessPermissionsUpdate |
+            AZSSharedAccessPermissionsProcessMessages,
+    
+    /** Specifies the permissions which are valid when used on the blob service. **/
+    AZSSharedAccessPermissionsBlobFull  = AZSSharedAccessPermissionsRead | AZSSharedAccessPermissionsAdd | AZSSharedAccessPermissionsCreate |
+            AZSSharedAccessPermissionsWrite | AZSSharedAccessPermissionsDelete | AZSSharedAccessPermissionsList
+};
+
+/** Represents the protocols with which a SAS may be used. */
+typedef NS_ENUM(NSInteger, AZSSharedAccessProtocols)
+{
+    /** Specifies permission granted to use SAS with any protocol. */
+    AZSSharedAccessProtocolAll,
+    
+    /** Specifies permission granted to use SAS through HTTPS or HTTP. */
+    AZSSharedAccessProtocolHttpsHttp,
+    
+    /** Specifies permission granted to use SAS only through HTTPS. */
+    AZSSharedAccessProtocolHttpsOnly
+};
+
+/** Specifies the set of possible services for a shared access policy. **/
+typedef NS_OPTIONS(NSUInteger, AZSSharedAccessServices)
+{
+    /** Specifies no access granted. **/
+    AZSSharedAccessServicesNone   = 0x0,
+    
+    /** Specifies Blob access granted. **/
+    AZSSharedAccessServicesBlob   = 0x1 << 0,
+    
+    /** Specifies File access granted. **/
+    AZSSharedAccessServicesFile   = 0x1 << 1,
+
+    /** Specifies Queue access granted. **/
+    AZSSharedAccessServicesQueue  = 0x1 << 2,
+    
+    /** Specifies Table access granted. **/
+    AZSSharedAccessServicesTable  = 0x1 << 3,
+    
+    /** Specifies All access granted. **/
+    AZSSharedAccessServicesAll    =
+            AZSSharedAccessServicesBlob | AZSSharedAccessServicesFile | AZSSharedAccessServicesQueue | AZSSharedAccessServicesTable
+};
+
+/** Specifies the set of possible resource types for a shared access policy. **/
+typedef NS_OPTIONS(NSUInteger, AZSSharedAccessResourceTypes)
+{
+    /** Specifies no access granted. **/
+    AZSSharedAccessResourceTypesNone        = 0x0,
+    
+    /** Specifies Service level access granted. **/
+    AZSSharedAccessResourceTypesService     = 0x1 << 0,
+    
+    /** Specifies Container level access granted. **/
+    AZSSharedAccessResourceTypesContainer   = 0x1 << 1,
+    
+    /** Specifies Object level access granted. **/
+    AZSSharedAccessResourceTypesObject      = 0x1 << 2,
+    
+    /** Specifies All access granted. **/
+    AZSSharedAccessResourceTypesAll         =
+            AZSSharedAccessResourceTypesService | AZSSharedAccessResourceTypesContainer | AZSSharedAccessResourceTypesObject
 };

@@ -15,6 +15,7 @@
 // </copyright>
 // -----------------------------------------------------------------------------------------
 
+#import "AZSConstants.h"
 #import "AZSNavigationUtil.h"
 #import "AZSStorageUri.h"
 #import "AZSUtil.h"
@@ -87,7 +88,7 @@
     
     NSMutableDictionary *queryParameters = [AZSUtil parseQueryWithQueryString:[blobAddress query]];
     
-    NSString *snapshotString = [queryParameters objectForKey:@"snapshot"];
+    NSString *snapshotString = [queryParameters objectForKey:AZSCQuerySnapshot];
     
     AZSStorageCredentials *creds = [AZSNavigationUtil parseSASQueryWithQueryParameters:queryParameters];
     
@@ -103,7 +104,6 @@
     urlComponents.path = blobAddress.path;
     NSURL *url = urlComponents.URL;
     
-    // NSMutableArray *result = [[NSMutableArray alloc] initWithObjects:url, creds, snapshotString, nil];
     NSMutableArray *result = [[NSMutableArray alloc] initWithArray:@[url ? url : [NSNull null], creds ? creds : [NSNull null], snapshotString ? snapshotString : [NSNull null]]];
     
     return result;
@@ -118,14 +118,14 @@
     for (NSString *key in queryParameters)
     {
         NSString *lowerKey = [key lowercaseString];
-        if ([lowerKey isEqualToString:@"sig"])
+        if ([lowerKey isEqualToString:AZSCQuerySig])
         {
             sasFound = YES;
         }
-        else if ([lowerKey isEqualToString:@"restype"] ||
-                    [lowerKey isEqualToString:@"comp"] ||
-                    [lowerKey isEqualToString:@"snapshot"] ||
-                    [lowerKey isEqualToString:@"api-version"])
+        else if ([lowerKey isEqualToString:AZSCQueryRestype] ||
+                    [lowerKey isEqualToString:AZSCQueryComp] ||
+                    [lowerKey isEqualToString:AZSCQuerySnapshot] ||
+                    [lowerKey isEqualToString:AZSCQueryApiVersion])
         {
             [removeList addObject:key];
         }
@@ -180,7 +180,7 @@
     int containerIndex = 1;
     if (isPathStyle)
     {
-        containerIndex = 2;
+        containerIndex++;
     }
     
     NSArray *uriParts = [uri pathComponents];
@@ -196,7 +196,7 @@
     }
     else
     {
-        NSString *blobName = @"";
+        NSString *blobName = AZSCEmptyString;
         NSMutableArray *mutableParts = [uriParts mutableCopy];
         [mutableParts removeObjectAtIndex:0];
         for (NSString *blobPiece in mutableParts)

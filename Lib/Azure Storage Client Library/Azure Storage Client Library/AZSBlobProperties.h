@@ -36,7 +36,7 @@ AZS_ASSUME_NONNULL_BEGIN
 /** The Content-Language header for the blob.  Set this, then upload the blob to set it on the service.*/
 @property (copy, AZSNullable) NSString *contentLanguage;
 
-/** The size of the blob, as far as the library is aware.  Call fetchAttributes to update.*/
+/** The size of the blob, as far as the library is aware.  Call downloadAttributes to update.*/
 @property (copy, AZSNullable) NSNumber *length;
 
 /** The Content-MD5 header for the blob.  Set this, then upload the blob to set it on the service.*/
@@ -45,25 +45,25 @@ AZS_ASSUME_NONNULL_BEGIN
 /** The Content-Type header for the blob.  Set this, then upload the blob to set it on the service.*/
 @property (copy, AZSNullable) NSString *contentType;
 
-/** The eTag of the blob, as far as the library is aware.  Call fetchAttributes to update.*/
+/** The eTag of the blob, as far as the library is aware.  Call downloadAttributes to update.*/
 @property (copy, AZSNullable) NSString *eTag;
 
-/** The last modified time of the blob, as far as the library is aware.  Call fetchAttributes to update.*/
+/** The last modified time of the blob, as far as the library is aware.  Call downloadAttributes to update.*/
 @property (copy, AZSNullable) NSDate *lastModified;
 
-/** The sequence number of the blob, as far as the library is aware.  Only valid for page blobs.  Call fetchAttributes to update.*/
+/** The sequence number of the blob, as far as the library is aware.  Only valid for page blobs.  Call downloadAttributes to update.*/
 @property (copy, AZSNullable) NSNumber *sequenceNumber;
 
 /** The blob type - block, page, or append.*/
 @property AZSBlobType blobType;
 
-/** The lease status of the blob, as far as the library is aware.  Call fetchAttributes to update.*/
+/** The lease status of the blob, as far as the library is aware.  Call downloadAttributes to update.*/
 @property AZSLeaseStatus leaseStatus;
 
-/** The lease state of the blob, as far as the library is aware.  Call fetchAttributes to update.*/
+/** The lease state of the blob, as far as the library is aware.  Call downloadAttributes to update.*/
 @property AZSLeaseState leaseState;
 
-/** The lease duration of the blob, as far as the library is aware.  Call fetchAttributes to update.*/
+/** The lease duration of the blob, as far as the library is aware.  Call downloadAttributes to update.*/
 @property AZSLeaseDuration leaseDuration;
 
 @end

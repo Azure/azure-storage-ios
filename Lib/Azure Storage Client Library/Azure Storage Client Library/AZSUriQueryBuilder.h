@@ -22,7 +22,11 @@
 
 @property (strong) NSMutableDictionary *parameters;
 
--(instancetype) init AZS_DESIGNATED_INITIALIZER;
+-(instancetype) init;
+
+-(instancetype) initWithQuery:(NSString*)query AZS_DESIGNATED_INITIALIZER;
+
+-(void) addIfNotNilOrEmptyWithKey:(NSString*)key value:(NSString*)value;
 
 -(void) addWithKey:(NSString*)key value:(NSString*)value;
 

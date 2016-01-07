@@ -74,6 +74,7 @@ static NSCondition *_globalLogCondition;
     {
         _clientRequestId = [[NSUUID UUID] UUIDString];
         _requestResults = [NSMutableArray arrayWithCapacity:1];
+        _retryPolicy = [[AZSRetryPolicyExponential alloc] init];
     }
     
     return self;
@@ -98,31 +99,8 @@ static NSCondition *_globalLogCondition;
 -(void)logAtLevel:(AZSLogLevel)logLevel withMessage:(NSString *)stringToLog,...
 {
     // TODO: add more helpful information to the message?
-    int aslLogLevel = 0;
-    switch (logLevel)
-    {
-        case AZSLogLevelCritical:
-            aslLogLevel = 2;
-            break;
-        case AZSLogLevelError:
-            aslLogLevel = 3;
-            break;
-        case AZSLogLevelWarning:
-            aslLogLevel = 4;
-            break;
-        case AZSLogLevelInfo:
-            aslLogLevel = 6;
-            break;
-        case AZSLogLevelDebug:
-            aslLogLevel = 7; //ASL_STRING_DEBUG?
-            break;
-        case AZSLogLevelNoLogging:
-            aslLogLevel = 0;
-            break;
-    }
-    
     // Don't log anything at this level.
-    if (aslLogLevel == 0)
+    if (logLevel == AZSLogLevelNoLogging)
     {
         return;
     }
@@ -152,7 +130,7 @@ static NSCondition *_globalLogCondition;
                 // We want to format the string only if the log message will not get filtered out.
                 // Unfortuantely, the _asl_evaluate_send is undocumented, so this may be unstable.
                 // TODO: Write a test to ensure that the logging works properly in future versions.
-                uint32_t _asl_eval = _asl_evaluate_send(_globalLogger, message, aslLogLevel);
+                uint32_t _asl_eval = _asl_evaluate_send(_globalLogger, message, logLevel);
                 if (_asl_eval != 0)
                 {
                     if (!finalLogString)
@@ -161,7 +139,7 @@ static NSCondition *_globalLogCondition;
                     }
                     
                     [_globalLogCondition lock];
-                    asl_log(_globalLogger, message, aslLogLevel, "%s", [finalLogString cStringUsingEncoding:NSUTF8StringEncoding]);
+                    asl_log(_globalLogger, message, logLevel, "%s", [finalLogString cStringUsingEncoding:NSUTF8StringEncoding]);
                     [_globalLogCondition unlock];
                 }
                 asl_free(message);
@@ -185,7 +163,7 @@ static NSCondition *_globalLogCondition;
             if (_logger && _logCondition)
             {
                 aslmsg message = asl_new(ASL_TYPE_MSG);
-                uint32_t _asl_eval = _asl_evaluate_send(_logger, message, aslLogLevel);
+                uint32_t _asl_eval = _asl_evaluate_send(_logger, message, logLevel);
                 if (_asl_eval != 0)
                 {
                     if (!finalLogString)
@@ -194,7 +172,7 @@ static NSCondition *_globalLogCondition;
                     }
                     
                     [_logCondition lock];
-                    asl_log(_logger, message, aslLogLevel, "%s", [finalLogString cStringUsingEncoding:NSUTF8StringEncoding]);
+                    asl_log(_logger, message, logLevel, "%s", [finalLogString cStringUsingEncoding:NSUTF8StringEncoding]);
                     [_logCondition unlock];
                 }
                 asl_free(message);

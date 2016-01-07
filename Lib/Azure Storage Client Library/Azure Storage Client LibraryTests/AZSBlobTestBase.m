@@ -35,7 +35,7 @@
 
 -(void)waitForCopyToCompleteWithBlob:(AZSCloudBlob *)blobToMonitor completionHandler:(void (^)(NSError *, BOOL))completionHandler
 {
-    [blobToMonitor fetchAttributesWithCompletionHandler:^(NSError *error) {
+    [blobToMonitor downloadAttributesWithCompletionHandler:^(NSError *error) {
         if (error)
         {
             completionHandler(error, YES);
