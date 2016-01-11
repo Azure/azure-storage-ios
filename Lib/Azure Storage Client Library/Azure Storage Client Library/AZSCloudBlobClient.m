@@ -73,7 +73,8 @@
     
     AZSBlobRequestOptions *modifiedOptions = [[AZSBlobRequestOptions copyOptions:requestOptions] applyDefaultsFromOptions:self.defaultRequestOptions];
     AZSStorageCommand * command = [[AZSStorageCommand alloc] initWithStorageCredentials:self.credentials storageUri:self.storageUri operationContext:operationContext];
-        
+    command.allowedStorageLocation = AZSAllowedStorageLocationPrimaryOrSecondary;
+    
     [command setBuildRequest:^ NSMutableURLRequest * (NSURLComponents *urlComponents, NSTimeInterval timeout, AZSOperationContext *operationContext)
      {
          return [AZSBlobRequestFactory listContainersWithPrefix:prefix containerListingDetails:containerListingDetails maxResults:maxResults continuationToken:continuationToken urlComponents:urlComponents timeout:timeout operationContext:operationContext];

@@ -142,7 +142,7 @@
     }
     AZSBlobRequestOptions *modifiedOptions = [[AZSBlobRequestOptions copyOptions:requestOptions] applyDefaultsFromOptions:self.client.defaultRequestOptions];
     AZSStorageCommand * command = [[AZSStorageCommand alloc] initWithStorageCredentials:self.client.credentials storageUri:self.storageUri calculateResponseMD5:!(modifiedOptions.disableContentMD5Validation) operationContext:operationContext];
-    
+    command.allowedStorageLocation = AZSAllowedStorageLocationPrimaryOrSecondary;
     [command setBuildRequest:^ NSMutableURLRequest * (NSURLComponents *urlComponents, NSTimeInterval timeout, AZSOperationContext *operationContext)
      {
          return [AZSBlobRequestFactory getBlobWithSnapshotTime:self.snapshotTime range:range getRangeContentMD5:modifiedOptions.useTransactionalMD5 accessCondition:accessCondition urlComponents:urlComponents timeout:timeout operationContext:operationContext];
@@ -328,12 +328,7 @@
     return;
 }
 
--(void)downloadAttributesWithCompletionHandler:(void (^)(NSError *))completionHandler
-{
-    return [self downloadAttributesWithAccessCondition:nil requestOptions:nil operationContext:nil completionHandler:completionHandler];
-}
-
-- (void)downloadAttributesWithAccessCondition:(AZSAccessCondition *)accessCondition requestOptions:(AZSBlobRequestOptions *)requestOptions operationContext:(AZSOperationContext *)operationContext completionHandler:(void (^)(NSError*))completionHandler
+- (void)downloadAttributesInternalWithPrimaryOnly:(BOOL)primaryOnly accessCondition:(AZSAccessCondition *)accessCondition requestOptions:(AZSBlobRequestOptions *)requestOptions operationContext:(AZSOperationContext *)operationContext completionHandler:(void (^)(NSError*))completionHandler
 {
     if (!operationContext)
     {
@@ -341,7 +336,7 @@
     }
     AZSBlobRequestOptions *modifiedOptions = [[AZSBlobRequestOptions copyOptions:requestOptions] applyDefaultsFromOptions:self.client.defaultRequestOptions];
     AZSStorageCommand * command = [[AZSStorageCommand alloc] initWithStorageCredentials:self.client.credentials storageUri:self.storageUri operationContext:operationContext];
-    
+    command.allowedStorageLocation = primaryOnly ? AZSAllowedStorageLocationPrimaryOnly : AZSAllowedStorageLocationPrimaryOrSecondary;
     [command setBuildRequest:^ NSMutableURLRequest * (NSURLComponents *urlComponents, NSTimeInterval timeout, AZSOperationContext *operationContext)
      {
          return [AZSBlobRequestFactory downloadBlobAttributesWithAccessCondition:accessCondition snapshotTime:self.snapshotTime urlComponents:urlComponents timeout:timeout operationContext:operationContext];
@@ -361,7 +356,7 @@
         {
             return error;
         }
-
+        
         if (parsedProperties.blobType != AZSBlobTypeUnspecified && parsedProperties.blobType != self.properties.blobType)
         {
             return [NSError errorWithDomain:AZSErrorDomain code:AZSEInvalidArgument userInfo:@{NSLocalizedDescriptionKey:@"Blob type on the local object does not match blob type on the service."}];
@@ -378,6 +373,17 @@
      {
          completionHandler(error);
      }];
+}
+
+
+-(void)downloadAttributesWithCompletionHandler:(void (^)(NSError *))completionHandler
+{
+    return [self downloadAttributesWithAccessCondition:nil requestOptions:nil operationContext:nil completionHandler:completionHandler];
+}
+
+- (void)downloadAttributesWithAccessCondition:(AZSAccessCondition *)accessCondition requestOptions:(AZSBlobRequestOptions *)requestOptions operationContext:(AZSOperationContext *)operationContext completionHandler:(void (^)(NSError*))completionHandler
+{
+    return [self downloadAttributesInternalWithPrimaryOnly:NO accessCondition:accessCondition requestOptions:requestOptions operationContext:operationContext completionHandler:completionHandler];
 }
 
 -(void)snapshotBlobWithMetadata:(NSMutableDictionary *)metadata completionHandler:(void (^)(NSError*, AZSCloudBlob *))completionHandler
@@ -429,14 +435,9 @@
     return;
 }
 
--(void)existsWithCompletionHandler:(void (^)(NSError*, BOOL))completionHandler
+-(void)existsInternalWithPrimaryOnly:(BOOL)primaryOnly accessCondition:(AZSAccessCondition *)accessCondition requestOptions:(AZSBlobRequestOptions *)requestOptions operationContext:(AZSOperationContext *)operationContext completionHandler:(void (^)(NSError*, BOOL))completionHandler
 {
-    [self existsWithAccessCondition:nil requestOptions:nil operationContext:nil completionHandler:completionHandler];
-}
-
--(void)existsWithAccessCondition:(AZSAccessCondition *)accessCondition requestOptions:(AZSBlobRequestOptions *)requestOptions operationContext:(AZSOperationContext *)operationContext completionHandler:(void (^)(NSError*, BOOL))completionHandler
-{
-    [self downloadAttributesWithAccessCondition:accessCondition requestOptions:requestOptions operationContext:operationContext completionHandler:^(NSError *error) {
+    [self downloadAttributesInternalWithPrimaryOnly:primaryOnly accessCondition:accessCondition requestOptions:requestOptions operationContext:operationContext completionHandler:^(NSError *error) {
         if (error)
         {
             if ([error.domain isEqualToString:AZSErrorDomain] && (error.code == AZSEServerError) && error.userInfo[AZSCHttpStatusCode] && (((NSNumber *)error.userInfo[AZSCHttpStatusCode]).intValue == 404))
@@ -453,6 +454,16 @@
             completionHandler(nil, YES);
         }
     }];
+}
+
+-(void)existsWithCompletionHandler:(void (^)(NSError*, BOOL))completionHandler
+{
+    [self existsWithAccessCondition:nil requestOptions:nil operationContext:nil completionHandler:completionHandler];
+}
+
+-(void)existsWithAccessCondition:(AZSAccessCondition *)accessCondition requestOptions:(AZSBlobRequestOptions *)requestOptions operationContext:(AZSOperationContext *)operationContext completionHandler:(void (^)(NSError*, BOOL))completionHandler
+{
+    return [self existsInternalWithPrimaryOnly:NO accessCondition:accessCondition requestOptions:requestOptions operationContext:operationContext completionHandler:completionHandler];
 }
 
 -(NSString *) createSharedAccessSignatureWithParameters:(AZSSharedAccessBlobParameters*)parameters error:(NSError **)error

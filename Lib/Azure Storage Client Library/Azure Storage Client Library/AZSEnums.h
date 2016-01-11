@@ -20,11 +20,13 @@
 /** The different Storage Locations */
 typedef NS_ENUM(NSInteger, AZSStorageLocation)
 {
-    /** The Primary Stoarge Location.*/
-    AZSStorageLocationPrimary//,
+    AZSStorageLocationUnspecified,
+    
+    /** The Primary Storage Location.*/
+    AZSStorageLocationPrimary,
     
     /** The Secondary Storage Location.*/
-//    AZSStorageLocationSecondary
+    AZSStorageLocationSecondary
 };
 
 /** The mode in which the library will target storage locations for requests when retrying.*/
@@ -34,10 +36,17 @@ typedef NS_ENUM(NSInteger, AZSStorageLocationMode)
     AZSStorageLocationModeUnspecified,
     
     /** Target only the primary storage location.*/
-    AZSStorageLocationModePrimaryOnly//,
-//    AZSStorageLocationModePrimaryThenSecondary,
-//    AZSStorageLocationModeSecondaryOnly,
-//    AZSStorageLocationModeSecondaryThenPrimary
+    AZSStorageLocationModePrimaryOnly,
+    AZSStorageLocationModePrimaryThenSecondary,
+    AZSStorageLocationModeSecondaryOnly,
+    AZSStorageLocationModeSecondaryThenPrimary
+};
+
+typedef NS_ENUM(NSInteger, AZSAllowedStorageLocation)
+{
+    AZSAllowedStorageLocationPrimaryOnly,
+    AZSAllowedStorageLocationSecondaryOnly,
+    AZSAllowedStorageLocationPrimaryOrSecondary
 };
 
 /** The different possible Container Public Access Types.*/

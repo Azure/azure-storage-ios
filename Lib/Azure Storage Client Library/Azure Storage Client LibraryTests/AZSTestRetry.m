@@ -79,6 +79,7 @@
         XCTAssertTrue(retryInfo.shouldRetry, @"Retry policy did not retry when it should have.  Status Code = %ldd",(long) (long) statusCode);
         XCTAssertTrue(retryInfo.targetLocation == AZSStorageLocationPrimary, @"Retry policy did not return the correct storage location.");
         XCTAssertTrue(retryInfo.updatedLocationMode == AZSStorageLocationModePrimaryOnly, @"Retry policy did not return the correct storage location mode.");
+        NSLog(@"%f", retryInfo.retryInterval);
         XCTAssertTrue(validateRetryInterval(retryInfo.retryInterval), @"Retry policy did not return the correct time to wait.");
     }
     else
@@ -94,42 +95,42 @@
     id<AZSRetryPolicy> retryPolicy = [[AZSRetryPolicyLinear alloc] initWithMaxAttempts:maxAttempts waitTimeBetweenRetries:waitTime];
     
     [self runRetryTestWithRetryPolicy:retryPolicy retryCount:1 statusCode:304 shouldSucceed:NO validateRetryInterval:^BOOL(double retryInterval) {
-        return retryInterval == waitTime;
+        return (fabs((retryInterval - waitTime)) < 0.1);
     }];
     
     [self runRetryTestWithRetryPolicy:retryPolicy retryCount:1 statusCode:401 shouldSucceed:NO validateRetryInterval:^BOOL(double retryInterval) {
-        return retryInterval == waitTime;
+        return (fabs((retryInterval - waitTime)) < 0.1);
     }];
     
     [self runRetryTestWithRetryPolicy:retryPolicy retryCount:1 statusCode:403 shouldSucceed:NO validateRetryInterval:^BOOL(double retryInterval) {
-        return retryInterval == waitTime;
+        return (fabs((retryInterval - waitTime)) < 0.1);
     }];
     
     [self runRetryTestWithRetryPolicy:retryPolicy retryCount:1 statusCode:404 shouldSucceed:NO validateRetryInterval:^BOOL(double retryInterval) {
-        return retryInterval == waitTime;
+        return (fabs((retryInterval - waitTime)) < 0.1);
     }];
     
     [self runRetryTestWithRetryPolicy:retryPolicy retryCount:1 statusCode:408 shouldSucceed:YES validateRetryInterval:^BOOL(double retryInterval) {
-        return retryInterval == waitTime;
+        return (fabs((retryInterval - waitTime)) < 0.1);
     }];
     
     [self runRetryTestWithRetryPolicy:retryPolicy retryCount:1 statusCode:500 shouldSucceed:YES validateRetryInterval:^BOOL(double retryInterval) {
-        return retryInterval == waitTime;
+        return (fabs((retryInterval - waitTime)) < 0.1);
     }];
     [self runRetryTestWithRetryPolicy:retryPolicy retryCount:5 statusCode:500 shouldSucceed:NO validateRetryInterval:^BOOL(double retryInterval) {
-        return retryInterval == waitTime;
+        return (fabs((retryInterval - waitTime)) < 0.1);
     }];
     
     [self runRetryTestWithRetryPolicy:retryPolicy retryCount:1 statusCode:501 shouldSucceed:NO validateRetryInterval:^BOOL(double retryInterval) {
-        return retryInterval == waitTime;
+        return (fabs((retryInterval - waitTime)) < 0.1);
     }];
     
     [self runRetryTestWithRetryPolicy:retryPolicy retryCount:1 statusCode:503 shouldSucceed:YES validateRetryInterval:^BOOL(double retryInterval) {
-        return retryInterval == waitTime;
+        return (fabs((retryInterval - waitTime)) < 0.1);
     }];
     
     [self runRetryTestWithRetryPolicy:retryPolicy retryCount:1 statusCode:505 shouldSucceed:NO validateRetryInterval:^BOOL(double retryInterval) {
-        return retryInterval == waitTime;
+        return (fabs((retryInterval - waitTime)) < 0.1);
     }];
 }
 
@@ -186,7 +187,7 @@
     retryPolicy = [[AZSRetryPolicyExponential alloc] initWithMaxAttempts:maxAttempts averageBackoffDelta:waitTime];
 
     [self runRetryTestWithRetryPolicy:retryPolicy retryCount:0 statusCode:500 shouldSucceed:YES validateRetryInterval:^BOOL(double retryInterval) {
-        return retryInterval == 0.5;
+        return (fabs((retryInterval - 0.5)) < 0.1);
     }];
     
     [self runRetryTestWithRetryPolicy:retryPolicy retryCount:1 statusCode:500 shouldSucceed:YES validateRetryInterval:^BOOL(double retryInterval) {
@@ -202,7 +203,7 @@
     }];
 
     [self runRetryTestWithRetryPolicy:retryPolicy retryCount:9 statusCode:500 shouldSucceed:YES validateRetryInterval:^BOOL(double retryInterval) {
-        return retryInterval == 120;
+        return (fabs((retryInterval - 120)) < 0.1);
     }];
 
 }
@@ -219,11 +220,11 @@
         currentRetryCount++;
         if (currentRetryCount == 1)
         {
-            return [[AZSRetryInfo alloc] initWithShouldRetry:YES targetLocation:AZSStorageLocationPrimary updatedLocationMode:AZSStorageLocationModePrimaryOnly retryInterval:4];
+            return [[AZSRetryInfo alloc] initWithShouldRetry:YES targetLocation:AZSStorageLocationPrimary updatedLocationMode:AZSStorageLocationModePrimaryOnly retryInterval:10];
         }
         else if (currentRetryCount == 2)
         {
-            return [[AZSRetryInfo alloc] initWithShouldRetry:YES targetLocation:AZSStorageLocationPrimary updatedLocationMode:AZSStorageLocationModePrimaryOnly retryInterval:5];
+            return [[AZSRetryInfo alloc] initWithShouldRetry:YES targetLocation:AZSStorageLocationPrimary updatedLocationMode:AZSStorageLocationModePrimaryOnly retryInterval:15];
         }
         else if (currentRetryCount == 3)
         {
@@ -246,7 +247,7 @@
         NSDate *testEnd = [NSDate date];
         XCTAssertNotNil(error, @"Error not returned when it should have been.");
         XCTAssertTrue(currentRetryCount == 3, @"Incorrect number of retries attempted.");
-        XCTAssertTrue(ABS([testEnd timeIntervalSinceDate:testStart] - 9.0) < 1.0, @"Incorrect amount of time waited in between retries.");
+        XCTAssertTrue(ABS([testEnd timeIntervalSinceDate:testStart] - 25.0) < 5.0, @"Incorrect amount of time waited in between retries.  Expected interval = 9.0.  Actual interval = %f", [testEnd timeIntervalSinceDate:testStart]);
         [semaphore signal];
     }];
     [semaphore wait];

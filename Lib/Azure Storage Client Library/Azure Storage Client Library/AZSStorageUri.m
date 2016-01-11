@@ -75,11 +75,10 @@
     {
         return self.primaryUri;
     }
-/*    else if (storageLocation == AZSStorageLocationSecondary)
+    else if (storageLocation == AZSStorageLocationSecondary)
     {
         return self.secondaryUri;
     }
- */
     else
     {
         NSException* myException = [NSException
