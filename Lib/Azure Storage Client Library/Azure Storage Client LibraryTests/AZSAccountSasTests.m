@@ -18,7 +18,6 @@
 #import <XCTest/XCTest.h>
 #import "AZSAccessCondition.h"
 #import "AZSBlobRequestOptions.h"
-#import "AZSBlobContainerPermissions.h"
 #import "AZSBlobTestBase.h"
 #import "AZSBlockListItem.h"
 #import "AZSConstants.h"

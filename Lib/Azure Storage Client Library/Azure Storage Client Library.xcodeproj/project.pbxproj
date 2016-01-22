@@ -27,8 +27,6 @@
 		693220351C16437100B07D98 /* AZSSharedAccessPolicy.m in Sources */ = {isa = PBXBuildFile; fileRef = 6932202F1C16437100B07D98 /* AZSSharedAccessPolicy.m */; };
 		693220361C16437100B07D98 /* AZSSharedAccessSignatureHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = 693220301C16437100B07D98 /* AZSSharedAccessSignatureHelper.h */; };
 		693220371C16437100B07D98 /* AZSSharedAccessSignatureHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 693220311C16437100B07D98 /* AZSSharedAccessSignatureHelper.m */; };
-		6932203C1C16438600B07D98 /* AZSBlobContainerPermissions.h in Headers */ = {isa = PBXBuildFile; fileRef = 693220381C16438600B07D98 /* AZSBlobContainerPermissions.h */; };
-		6932203D1C16438600B07D98 /* AZSBlobContainerPermissions.m in Sources */ = {isa = PBXBuildFile; fileRef = 693220391C16438600B07D98 /* AZSBlobContainerPermissions.m */; };
 		6932203E1C16438600B07D98 /* AZSSharedAccessBlobParameters.h in Headers */ = {isa = PBXBuildFile; fileRef = 6932203A1C16438600B07D98 /* AZSSharedAccessBlobParameters.h */; };
 		6932203F1C16438600B07D98 /* AZSSharedAccessBlobParameters.m in Sources */ = {isa = PBXBuildFile; fileRef = 6932203B1C16438600B07D98 /* AZSSharedAccessBlobParameters.m */; };
 		693220441C16439500B07D98 /* AZSTestSemaphore.m in Sources */ = {isa = PBXBuildFile; fileRef = 693220421C16439500B07D98 /* AZSTestSemaphore.m */; };
@@ -150,8 +148,6 @@
 		6932202F1C16437100B07D98 /* AZSSharedAccessPolicy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AZSSharedAccessPolicy.m; sourceTree = "<group>"; };
 		693220301C16437100B07D98 /* AZSSharedAccessSignatureHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AZSSharedAccessSignatureHelper.h; sourceTree = "<group>"; };
 		693220311C16437100B07D98 /* AZSSharedAccessSignatureHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AZSSharedAccessSignatureHelper.m; sourceTree = "<group>"; };
-		693220381C16438600B07D98 /* AZSBlobContainerPermissions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AZSBlobContainerPermissions.h; sourceTree = "<group>"; };
-		693220391C16438600B07D98 /* AZSBlobContainerPermissions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AZSBlobContainerPermissions.m; sourceTree = "<group>"; };
 		6932203A1C16438600B07D98 /* AZSSharedAccessBlobParameters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AZSSharedAccessBlobParameters.h; sourceTree = "<group>"; };
 		6932203B1C16438600B07D98 /* AZSSharedAccessBlobParameters.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AZSSharedAccessBlobParameters.m; sourceTree = "<group>"; };
 		693220411C16439500B07D98 /* AZSTestSemaphore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AZSTestSemaphore.h; sourceTree = "<group>"; };
@@ -295,8 +291,6 @@
 		B01AF6021AE0718F009A2022 /* Blob */ = {
 			isa = PBXGroup;
 			children = (
-				693220381C16438600B07D98 /* AZSBlobContainerPermissions.h */,
-				693220391C16438600B07D98 /* AZSBlobContainerPermissions.m */,
 				6932203A1C16438600B07D98 /* AZSSharedAccessBlobParameters.h */,
 				6932203B1C16438600B07D98 /* AZSSharedAccessBlobParameters.m */,
 				B01AF5F31AE06DDC009A2022 /* AZSCloudBlobClient.h */,
@@ -549,7 +543,6 @@
 				B082D1961BB0D2DB00A39C18 /* AZSRetryContext.h in Headers */,
 				B082D1971BB0D2DE00A39C18 /* AZSRetryPolicy.h in Headers */,
 				693220321C16437100B07D98 /* AZSSharedAccessHeaders.h in Headers */,
-				6932203C1C16438600B07D98 /* AZSBlobContainerPermissions.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -686,7 +679,6 @@
 				B07ED58D1AE9CAE70012E8C1 /* AZSBlobResponseParser.m in Sources */,
 				B058A4941B4F518C00BB0F57 /* AZSRetryPolicy.m in Sources */,
 				B01AF5F81AE06FFE009A2022 /* AZSCloudClient.m in Sources */,
-				6932203D1C16438600B07D98 /* AZSBlobContainerPermissions.m in Sources */,
 				B0322A5B1B7D91000084FC7B /* AZSErrors.m in Sources */,
 				6932203F1C16438600B07D98 /* AZSSharedAccessBlobParameters.m in Sources */,
 				693220351C16437100B07D98 /* AZSSharedAccessPolicy.m in Sources */,

@@ -55,9 +55,9 @@
 
 @interface AZSDownloadContainerPermissions : NSObject
 
-@property (strong) NSDictionary *storedPolicies;
+@property (strong) NSMutableDictionary *storedPolicies;
 +(instancetype)parseDownloadContainerPermissionsResponseWithData:(NSData *)data operationContext:(AZSOperationContext *)operationContext error:(NSError **)error;
-+(AZSBlobContainerPermissions *) createContainerPermissionsWithResponse:(NSHTTPURLResponse *)response operationContext:(AZSOperationContext *)operationContext error:(NSError **)error;
++(AZSContainerPublicAccessType) createContainerPermissionsWithResponse:(NSHTTPURLResponse *)response operationContext:(AZSOperationContext *)operationContext error:(NSError **)error;
 
 @end
 

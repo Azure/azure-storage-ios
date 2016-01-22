@@ -18,7 +18,6 @@
 #import <XCTest/XCTest.h>
 #import "AZSAccessCondition.h"
 #import "AZSBlobRequestOptions.h"
-#import "AZSBlobContainerPermissions.h"
 #import "AZSBlobTestBase.h"
 #import "AZSBlockListItem.h"
 #import "AZSConstants.h"
@@ -91,17 +90,15 @@
     }
 }
 
-- (void)checkEqualityOfContainerPermissions:(AZSBlobContainerPermissions *)permissions otherPermissions:(AZSBlobContainerPermissions *)otherPermissions
+- (void)checkEqualityOfContainerPermissions:(NSMutableDictionary *)permissions otherPermissions:(NSMutableDictionary *)otherPermissions
 {
-    XCTAssertTrue(permissions.publicAccess == otherPermissions.publicAccess);
+    XCTAssertEqual(permissions.count, otherPermissions.count);
     
-    XCTAssertEqual(permissions.sharedAccessPolicies.count, otherPermissions.sharedAccessPolicies.count);
-    
-    for (NSString *policyIdentifier in permissions.sharedAccessPolicies) {
-        AZSSharedAccessPolicy *policy = permissions.sharedAccessPolicies[policyIdentifier];
+    for (NSString *policyIdentifier in permissions) {
+        AZSSharedAccessPolicy *policy = permissions[policyIdentifier];
         XCTAssertNotNil(policy);
         
-        AZSSharedAccessPolicy *otherPolicy = otherPermissions.sharedAccessPolicies[policyIdentifier];
+        AZSSharedAccessPolicy *otherPolicy = otherPermissions[policyIdentifier];
         XCTAssertNotNil(otherPolicy);
         
         XCTAssertEqual(policy.permissions, otherPolicy.permissions);
@@ -359,16 +356,16 @@
     policy.sharedAccessStartTime = [[NSDate alloc] initWithTimeIntervalSinceNow:0];
     policy.sharedAccessExpiryTime = [[NSDate alloc] initWithTimeIntervalSinceNow:300];
     
-    AZSBlobContainerPermissions *permissions = [[AZSBlobContainerPermissions alloc] init];
-    permissions.sharedAccessPolicies[sp.storedPolicyIdentifier] = policy;
+    NSMutableDictionary *permissions = [NSMutableDictionary dictionaryWithDictionary:@{sp.storedPolicyIdentifier : policy}];
     [self.blobContainer uploadPermissions:permissions completionHandler:^(NSError *err) {
         [AZSTestHelpers checkPassageOfError:err expectToPass:YES expectedHttpErrorCode:-1 message:@"Upload permissions"];
         [NSThread sleepForTimeInterval:30];
         
         [self testContainerSASWithParameters:sp completionHandler:^{
-            [self.blobContainer downloadPermissionsWithCompletionHandler:^(NSError *error, AZSBlobContainerPermissions *storedPermissions) {
+            [self.blobContainer downloadPermissionsWithCompletionHandler:^(NSError *error, NSMutableDictionary *storedPermissions, AZSContainerPublicAccessType publicAccess) {
                 [AZSTestHelpers checkPassageOfError:err expectToPass:YES expectedHttpErrorCode:-1 message:@"Download permissions"];
                 [self checkEqualityOfContainerPermissions:permissions otherPermissions:storedPermissions];
+                XCTAssertEqual(publicAccess, AZSContainerPublicAccessTypeOff);
                 
                 [semaphore signal];
             }];
@@ -442,17 +439,17 @@
     policy.permissions = AZSSharedAccessPermissionsRead|AZSSharedAccessPermissionsWrite|AZSSharedAccessPermissionsList;
     policy.sharedAccessExpiryTime = [[NSDate alloc] initWithTimeIntervalSinceNow:300];
     
-    AZSBlobContainerPermissions *permissions = [[AZSBlobContainerPermissions alloc] init];
-    permissions.sharedAccessPolicies[@"readperm"] = policy;
+    NSMutableDictionary *permissions = [NSMutableDictionary dictionaryWithDictionary:@{@"readperm" : policy}];
     [self.blobContainer uploadPermissions:permissions completionHandler:^(NSError * err) {
         [AZSTestHelpers checkPassageOfError:err expectToPass:YES expectedHttpErrorCode:-1 message:@"Upload permissions"];
         
         [NSThread sleepForTimeInterval:30];
         
         [self testContainerSasBlobHeadersWithParameters:sp context:context completionHandler:^() {
-            [self.blobContainer downloadPermissionsWithCompletionHandler:^(NSError *error, AZSBlobContainerPermissions *storedPermissions) {
+            [self.blobContainer downloadPermissionsWithCompletionHandler:^(NSError *error, NSMutableDictionary *storedPermissions, AZSContainerPublicAccessType publicAccess) {
                 [AZSTestHelpers checkPassageOfError:err expectToPass:YES expectedHttpErrorCode:-1 message:@"Download permissions"];
                 [self checkEqualityOfContainerPermissions:permissions otherPermissions:storedPermissions];
+                XCTAssertEqual(publicAccess, AZSContainerPublicAccessTypeOff);
                 
                 [semaphore signal];
             }];
@@ -521,19 +518,19 @@
     policy2.permissions = AZSSharedAccessPermissionsRead;
     policy2.sharedAccessExpiryTime = policy.sharedAccessExpiryTime;
     
-    AZSBlobContainerPermissions *permissions = [[AZSBlobContainerPermissions alloc] init];
-    permissions.sharedAccessPolicies[sp.storedPolicyIdentifier] = policy;
-    permissions.sharedAccessPolicies[sp2.storedPolicyIdentifier] = policy2;
+    NSMutableDictionary *permissions = [NSMutableDictionary dictionaryWithDictionary:
+            @{sp.storedPolicyIdentifier : policy, sp2.storedPolicyIdentifier : policy2}];
     
     [self.blobContainer uploadPermissions:permissions completionHandler:^(NSError *err) {
         [AZSTestHelpers checkPassageOfError:err expectToPass:YES expectedHttpErrorCode:-1 message:@"Upload permissions"];
         
         [NSThread sleepForTimeInterval:30];
         
-        [self testContainerUpdateSasWithReadWriteParameters:sp readOnlyParameters:sp2 policies:permissions.sharedAccessPolicies completionHandler:^() {
-            [self.blobContainer downloadPermissionsWithCompletionHandler:^(NSError *error, AZSBlobContainerPermissions *storedPermissions) {
+        [self testContainerUpdateSasWithReadWriteParameters:sp readOnlyParameters:sp2 policies:permissions completionHandler:^() {
+            [self.blobContainer downloadPermissionsWithCompletionHandler:^(NSError *error, NSMutableDictionary *storedPermissions, AZSContainerPublicAccessType publicAccess) {
                 [AZSTestHelpers checkPassageOfError:err expectToPass:YES expectedHttpErrorCode:-1 message:@"Download permissions"];
                 [self checkEqualityOfContainerPermissions:permissions otherPermissions:storedPermissions];
+                XCTAssertEqual(publicAccess, AZSContainerPublicAccessTypeOff);
                 
                 [semaphore signal];
             }];
@@ -616,8 +613,7 @@
                 policy.sharedAccessExpiryTime = [[NSDate alloc] initWithTimeIntervalSinceNow:300];
                 
                 // Test with stored policy
-                __block AZSBlobContainerPermissions *containerPermissions = [[AZSBlobContainerPermissions alloc] init];
-                containerPermissions.sharedAccessPolicies[policy.policyIdentifier] = policy;
+                NSMutableDictionary *containerPermissions = [NSMutableDictionary dictionaryWithDictionary:@{policy.policyIdentifier : policy}];
                 AZSTestSemaphore *innerSemaphore = [[AZSTestSemaphore alloc] init];
                 NSError *error = nil;
                 
@@ -632,9 +628,10 @@
                     
                     dispatch_semaphore_wait(counter, DISPATCH_TIME_FOREVER);
                     [self testAccessWithSAS:sasToken permissions:accessPermissions container:container blob:blob completionHandler:^() {
-                        [container downloadPermissionsWithCompletionHandler:^(NSError *error, AZSBlobContainerPermissions *storedPermissions) {
+                        [container downloadPermissionsWithCompletionHandler:^(NSError *error, NSMutableDictionary *storedPermissions, AZSContainerPublicAccessType publicAccess) {
                             [AZSTestHelpers checkPassageOfError:err expectToPass:YES expectedHttpErrorCode:-1 message:@"Download permissions"];
                             [self checkEqualityOfContainerPermissions:containerPermissions otherPermissions:storedPermissions];
+                            XCTAssertEqual(publicAccess, AZSContainerPublicAccessTypeOff);
                             
                             dispatch_semaphore_signal(counter);
                             [innerSemaphore signal];
@@ -677,25 +674,24 @@
     [testBlob uploadFromText:@"test" completionHandler:^(NSError *err) {
         [AZSTestHelpers checkPassageOfError:err expectToPass:YES expectedHttpErrorCode:-1 message:@"Upload from text"];
         
-        AZSBlobContainerPermissions *permissions = [[AZSBlobContainerPermissions alloc] init];
-        permissions.publicAccess = AZSContainerPublicAccessTypeContainer;
-        [self.blobContainer uploadPermissions:permissions completionHandler:^(NSError * err) {
+        AZSContainerPublicAccessType publicAccess = AZSContainerPublicAccessTypeContainer;
+        [self.blobContainer uploadPermissions:nil publicAccess:publicAccess accessCondition:nil requestOptions:nil operationContext:nil completionHandler:^(NSError * err) {
             [AZSTestHelpers checkPassageOfError:err expectToPass:YES expectedHttpErrorCode:-1 message:@"Upload permissions"];
             
             [NSThread sleepForTimeInterval:35];
             
             [self testAccessWithSAS:nil permissions:AZSSharedAccessPermissionsList|AZSSharedAccessPermissionsRead container:self.blobContainer blob:testBlob completionHandler:^{
-                permissions.publicAccess = AZSContainerPublicAccessTypeBlob;
-                [self.blobContainer uploadPermissions:permissions completionHandler:^(NSError * err) {
+                AZSContainerPublicAccessType publicAccess = AZSContainerPublicAccessTypeBlob;
+                [self.blobContainer uploadPermissions:nil publicAccess:publicAccess accessCondition:nil requestOptions:nil operationContext:nil  completionHandler:^(NSError * err) {
                     [AZSTestHelpers checkPassageOfError:err expectToPass:YES expectedHttpErrorCode:-1 message:@"Upload Permissions"];
                     
                     [NSThread sleepForTimeInterval:30];
                     [self testAccessWithSAS:nil permissions:AZSSharedAccessPermissionsRead container:self.blobContainer blob:testBlob completionHandler:^{
-                        [AZSTestHelpers checkPassageOfError:err expectToPass:YES expectedHttpErrorCode:-1 message:@"Delete Container"];
                         
-                        [self.blobContainer downloadPermissionsWithCompletionHandler:^(NSError *err, AZSBlobContainerPermissions *storedPermissions) {
+                        [self.blobContainer downloadPermissionsWithCompletionHandler:^(NSError *err, NSMutableDictionary *storedPermissions, AZSContainerPublicAccessType storedPublicAccess) {
                             [AZSTestHelpers checkPassageOfError:err expectToPass:YES expectedHttpErrorCode:-1 message:@"Fetch permissions"];
-                            [self checkEqualityOfContainerPermissions:permissions otherPermissions:storedPermissions];
+                            XCTAssertEqual(storedPermissions.count, 0);
+                            XCTAssertEqual(publicAccess, storedPublicAccess);
                             
                             [semaphore signal];
                         }];
@@ -740,8 +736,7 @@
                 policy.sharedAccessExpiryTime = [[NSDate alloc] initWithTimeIntervalSinceNow:300];
                 
                 // Test with stored policy
-                AZSBlobContainerPermissions *containerPermissions = [[AZSBlobContainerPermissions alloc] init];
-                containerPermissions.sharedAccessPolicies[policy.policyIdentifier] = policy;
+                NSMutableDictionary *containerPermissions = [NSMutableDictionary dictionaryWithDictionary:@{policy.policyIdentifier : policy}];
                 AZSTestSemaphore *innerSemaphore = [[AZSTestSemaphore alloc] init];
                 __block NSError *error = nil;
                 
@@ -755,9 +750,10 @@
                     [AZSTestHelpers checkPassageOfError:error expectToPass:YES expectedHttpErrorCode:-1 message:@"Create SAS token"];
                     
                     [self testAccessWithSAS:sasToken permissions:accessPermissions container:nil blob:blob completionHandler:^() {
-                        [container downloadPermissionsWithCompletionHandler:^(NSError *error, AZSBlobContainerPermissions *storedPermissions) {
+                        [container downloadPermissionsWithCompletionHandler:^(NSError *error, NSMutableDictionary *storedPermissions, AZSContainerPublicAccessType publicAccess) {
                             [AZSTestHelpers checkPassageOfError:err expectToPass:YES expectedHttpErrorCode:-1 message:@"Download permissions"];
                             [self checkEqualityOfContainerPermissions:containerPermissions otherPermissions:storedPermissions];
+                            XCTAssertEqual(publicAccess, AZSContainerPublicAccessTypeOff);
                             
                             [innerSemaphore signal];
                         }];
@@ -799,16 +795,16 @@
     AZSSharedAccessPolicy *policy = [[AZSSharedAccessPolicy alloc] initWithIdentifier:sp.storedPolicyIdentifier];
     policy.permissions = AZSSharedAccessPermissionsRead|AZSSharedAccessPermissionsList;
     policy.sharedAccessExpiryTime = [[NSDate alloc] initWithTimeIntervalSinceNow:300];
-    AZSBlobContainerPermissions *permissions = [[AZSBlobContainerPermissions alloc] init];
-    permissions.sharedAccessPolicies[sp.storedPolicyIdentifier] = policy;
+    NSMutableDictionary *permissions = [NSMutableDictionary dictionaryWithDictionary:@{sp.storedPolicyIdentifier : policy}];
     
     [self.blobContainer uploadPermissions:permissions completionHandler:^(NSError *err) {
         [AZSTestHelpers checkPassageOfError:err expectToPass:YES expectedHttpErrorCode:-1 message:@"Upload Permissions"];
         
         [self testBlobSasWithParameters:sp completionHandler:^{
-            [self.blobContainer downloadPermissionsWithCompletionHandler:^(NSError *err, AZSBlobContainerPermissions *storedPermissions) {
+            [self.blobContainer downloadPermissionsWithCompletionHandler:^(NSError *err, NSMutableDictionary *storedPermissions, AZSContainerPublicAccessType publicAccess) {
                 [AZSTestHelpers checkPassageOfError:err expectToPass:YES expectedHttpErrorCode:-1 message:@"Fetch permissions"];
                 [self checkEqualityOfContainerPermissions:permissions otherPermissions:storedPermissions];
+                XCTAssertEqual(publicAccess, AZSContainerPublicAccessTypeOff);
                 
                 [semaphore signal];
             }];
@@ -877,15 +873,15 @@
     AZSSharedAccessPolicy *policy = [[AZSSharedAccessPolicy alloc] initWithIdentifier:sp.storedPolicyIdentifier];
     policy.permissions = AZSSharedAccessPermissionsRead|AZSSharedAccessPermissionsWrite|AZSSharedAccessPermissionsList;
     policy.sharedAccessExpiryTime = [[NSDate alloc] initWithTimeIntervalSinceNow:300];
-    AZSBlobContainerPermissions *permissions = [[AZSBlobContainerPermissions alloc] init];
-    permissions.sharedAccessPolicies[sp.storedPolicyIdentifier] = policy;
+    NSMutableDictionary *permissions = [NSMutableDictionary dictionaryWithDictionary:@{sp.storedPolicyIdentifier : policy}];
     [self.blobContainer uploadPermissions:permissions completionHandler:^(NSError * err) {
         [AZSTestHelpers checkPassageOfError:err expectToPass:YES expectedHttpErrorCode:-1 message:@"Upload permissions"];
         
         [self testBlobSasSharedAccessBlobHeadersWithParameters:sp context:context completionHandler:^() {
-            [self.blobContainer downloadPermissionsWithCompletionHandler:^(NSError *err, AZSBlobContainerPermissions *storedPermissions) {
+            [self.blobContainer downloadPermissionsWithCompletionHandler:^(NSError *err, NSMutableDictionary *storedPermissions, AZSContainerPublicAccessType publicAccess) {
                 [AZSTestHelpers checkPassageOfError:err expectToPass:YES expectedHttpErrorCode:-1 message:@"Fetch permissions"];
                 [self checkEqualityOfContainerPermissions:permissions otherPermissions:storedPermissions];
+                XCTAssertEqual(publicAccess, AZSContainerPublicAccessTypeOff);
                 
                 [semaphore signal];
             }];
