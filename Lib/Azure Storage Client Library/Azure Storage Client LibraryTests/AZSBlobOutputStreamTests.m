@@ -88,10 +88,9 @@
     [super tearDown];
 }
 
-- (BOOL)runInternalTestOutputStreamWithBlobSize:(NSUInteger)blobSize
+- (BOOL)runInternalTestOutputStreamWithBlobSize:(NSUInteger)blobSize blobToUpload:(AZSCloudBlob *)blob createOutputStreamCall:(AZSBlobOutputStream *(^)(AZSAccessCondition *, AZSBlobRequestOptions *, AZSOperationContext *))createOutputStreamCall
 {
     AZSTestSemaphore *semaphore = [[AZSTestSemaphore alloc] init];
-    NSString *blobName = @"blobName";
     unsigned int __block randSeed = (unsigned int)time(NULL);
 
     AZSUIntegerHolder *randSeedHolderCopy = [[AZSUIntegerHolder alloc]initWithNumber:randSeed];
@@ -128,8 +127,10 @@
         }
     }];
     
-    AZSCloudBlockBlob *blockBlob = [self.blobContainer blockBlobReferenceFromName:blobName];
-    AZSBlobOutputStream *blobOutputStream = [blockBlob createOutputStream];
+    AZSBlobRequestOptions *options = [[AZSBlobRequestOptions alloc] init];
+    options.absorbConditionalErrorsOnRetry = YES;
+
+    AZSBlobOutputStream *blobOutputStream = createOutputStreamCall(nil, options, nil);
     [blobOutputStream setDelegate:uploadDelegate];
     [blobOutputStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
     [blobOutputStream open];
@@ -148,7 +149,7 @@
     
     AZSByteValidationStream *targetStream = [[AZSByteValidationStream alloc]initWithRandomSeed:randSeed totalBlobSize:blobSize isUpload:NO];
     
-    [blockBlob downloadToStream:((NSOutputStream *)targetStream) accessCondition:nil requestOptions:nil operationContext:nil completionHandler:^(NSError * error) {
+    [blob downloadToStream:((NSOutputStream *)targetStream) accessCondition:nil requestOptions:nil operationContext:nil completionHandler:^(NSError * error) {
         XCTAssertNil(error, @"Error in downloading blob.  Error code = %ld, error domain = %@, error userinfo = %@", (long)error.code, error.domain, error.userInfo);
         XCTAssert(targetStream.totalBytes == blobSize, @"Downloaded blob is wrong size.  Size = %ld, expected size = %ld", (unsigned long)targetStream.totalBytes, (unsigned long)(blobSize));
         XCTAssertFalse(targetStream.dataCorrupt, @"Downloaded blob is corrupt.  Error count = %ld, first few errors = sample\nsample%@", (unsigned long)targetStream.errorCount, targetStream.errors);
@@ -166,39 +167,142 @@
 
 // Note: This test works with ~200 MB blobs (you can watch memory consumption, it doesn't rise that far),
 // but it takes a while.
--(void)testOutputStreamIterate
+-(void)testBlockBlobOutputStreamIterate
 {
     int failures = 0;
     for (int i = 0; i < 2; i++)
     {
         @autoreleasepool {
-            if ([self runInternalTestOutputStreamWithBlobSize:20000000])
+            NSString *blobName = @"blobName";
+            AZSCloudBlockBlob *blob = [self.blobContainer blockBlobReferenceFromName:blobName];
+            if ([self runInternalTestOutputStreamWithBlobSize:20000000 blobToUpload:blob createOutputStreamCall:^AZSBlobOutputStream *(AZSAccessCondition *accessCondition, AZSBlobRequestOptions *requestOptions, AZSOperationContext *operationContext) {
+                return [blob createOutputStreamWithAccessCondition:accessCondition requestOptions:requestOptions operationContext:operationContext];
+            }])
             {
                 failures++;
             }
         }
     }
-    XCTAssertTrue(0 == failures, @"%d failure(s) detected.", failures);
+    XCTAssertEqual(0, failures, @"%d failure(s) detected.", failures);
 }
 
--(BOOL)runTestUploadFromStreamWithBlobSize:(NSUInteger)blobSize
+// Note: This test works with ~200 MB blobs (you can watch memory consumption, it doesn't rise that far),
+// but it takes a while.
+-(void)testPageBlobOutputStreamCreateNewIterate
+{
+    int blobSize = 512*40000;
+    int failures = 0;
+    for (int i = 0; i < 2; i++)
+    {
+        @autoreleasepool {
+            NSString *blobName = @"blobName";
+            AZSCloudPageBlob *blob = [self.blobContainer pageBlobReferenceFromName:blobName];
+            if ([self runInternalTestOutputStreamWithBlobSize:blobSize blobToUpload:blob createOutputStreamCall:^AZSBlobOutputStream *(AZSAccessCondition *accessCondition, AZSBlobRequestOptions *requestOptions, AZSOperationContext *operationContext) {
+                return [blob createOutputStreamWithSize:[NSNumber numberWithInt:blobSize] sequenceNumber:[NSNumber numberWithInt:100] accessCondition:accessCondition requestOptions:requestOptions operationContext:operationContext];
+            }])
+            {
+                failures++;
+            }
+        }
+    }
+    XCTAssertEqual(0, failures, @"%d failure(s) detected.", failures);
+}
+
+// Note: This test works with ~200 MB blobs (you can watch memory consumption, it doesn't rise that far),
+// but it takes a while.
+-(void)testPageBlobOutputStreamExistingIterate
+{
+    int blobSize = 512*40000;
+    __block int failures = 0;
+    for (int i = 0; i < 2; i++)
+    {
+        @autoreleasepool {
+            AZSTestSemaphore *semaphore = [[AZSTestSemaphore alloc] init];
+            NSString *blobName = @"blobName";
+            AZSCloudPageBlob *blob = [self.blobContainer pageBlobReferenceFromName:blobName];
+            [blob createWithSize:[NSNumber numberWithInt:blobSize] completionHandler:^(NSError * _Nullable error) {
+                XCTAssertNil(error, @"Error in creating blob.  Error code = %ld, error domain = %@, error userinfo = %@", (long)error.code, error.domain, error.userInfo);
+                if ([self runInternalTestOutputStreamWithBlobSize:blobSize blobToUpload:blob createOutputStreamCall:^AZSBlobOutputStream *(AZSAccessCondition *accessCondition, AZSBlobRequestOptions *requestOptions, AZSOperationContext *operationContext) {
+                    return [blob createOutputStreamWithAccessCondition:accessCondition requestOptions:requestOptions operationContext:operationContext];
+                }])
+                {
+                    failures++;
+                }
+                [semaphore signal];
+            }];
+            [semaphore wait];
+        }
+    }
+    XCTAssertEqual(0, failures, @"%d failure(s) detected.", failures);
+}
+
+
+// Note: This test works with ~200 MB blobs (you can watch memory consumption, it doesn't rise that far),
+// but it takes a while.
+-(void)testAppendBlobOutputStreamCreateNewIterate
+{
+    int failures = 0;
+    for (int i = 0; i < 2; i++)
+    {
+        @autoreleasepool {
+            NSString *blobName = @"blobName";
+            AZSCloudAppendBlob *blob = [self.blobContainer appendBlobReferenceFromName:blobName];
+            if ([self runInternalTestOutputStreamWithBlobSize:20000000 blobToUpload:blob createOutputStreamCall:^AZSBlobOutputStream *(AZSAccessCondition *accessCondition, AZSBlobRequestOptions *requestOptions, AZSOperationContext *operationContext) {
+                return [blob createOutputStreamWithCreateNew:YES accessCondition:accessCondition requestOptions:requestOptions operationContext:operationContext];
+            }])
+            {
+                failures++;
+            }
+        }
+    }
+    XCTAssertEqual(0, failures, @"%d failure(s) detected.", failures);
+}
+
+// Note: This test works with ~200 MB blobs (you can watch memory consumption, it doesn't rise that far),
+// but it takes a while.
+-(void)testAppendBlobOutputStreamUseExistingIterate
+{
+    __block int failures = 0;
+    for (int i = 0; i < 2; i++)
+    {
+        @autoreleasepool {
+            AZSTestSemaphore *semaphore = [[AZSTestSemaphore alloc] init];
+            NSString *blobName = @"blobName";
+            AZSCloudAppendBlob *blob = [self.blobContainer appendBlobReferenceFromName:blobName];
+            [blob createWithCompletionHandler:^(NSError * _Nullable error) {
+                XCTAssertNil(error, @"Error in creating blob.  Error code = %ld, error domain = %@, error userinfo = %@", (long)error.code, error.domain, error.userInfo);
+                if ([self runInternalTestOutputStreamWithBlobSize:20000000 blobToUpload:blob createOutputStreamCall:^AZSBlobOutputStream *(AZSAccessCondition *accessCondition, AZSBlobRequestOptions *requestOptions, AZSOperationContext *operationContext) {
+                    return [blob createOutputStreamWithCreateNew:NO accessCondition:accessCondition requestOptions:requestOptions operationContext:operationContext];
+                }])
+                {
+                    failures++;
+                }
+                [semaphore signal];
+            }];
+            [semaphore wait];
+        }
+    }
+    XCTAssertEqual(0, failures, @"%d failure(s) detected.", failures);
+}
+
+-(BOOL)runTestUploadFromStreamWithBlobSize:(NSUInteger)blobSize blobToUpload:(AZSCloudBlob *)blob uploadCall:(void (^)(NSInputStream * , AZSAccessCondition *, AZSBlobRequestOptions *, AZSOperationContext *, void(^)(NSError * error)))uploadCall
 {
     AZSTestSemaphore *semaphore = [[AZSTestSemaphore alloc] init];
-    NSString *blobName = @"blobName";
     unsigned int __block randSeed = (unsigned int)time(NULL);
     BOOL __block testFailedInDownload = NO;
     
     AZSByteValidationStream *sourceStream = [[AZSByteValidationStream alloc]initWithRandomSeed:randSeed totalBlobSize:blobSize isUpload:YES];
-    AZSCloudBlockBlob *blockBlob = [self.blobContainer blockBlobReferenceFromName:blobName];
     AZSBlobRequestOptions *options = [[AZSBlobRequestOptions alloc] init];
     options.maximumDownloadBufferSize = 20000000;
     options.parallelismFactor = 2;
-    [blockBlob uploadFromStream:(NSInputStream *)sourceStream accessCondition:nil requestOptions:nil operationContext:nil completionHandler:^(NSError * error) {
+    options.absorbConditionalErrorsOnRetry = YES;
+    
+    uploadCall((NSInputStream *)sourceStream, nil, options, nil, ^(NSError * error) {
         XCTAssertNil(error, @"Error in uploading blob.  Error code = %ld, error domain = %@, error userinfo = %@", (long)error.code, error.domain, error.userInfo);
         
         AZSByteValidationStream *targetStream =[[AZSByteValidationStream alloc]initWithRandomSeed:randSeed totalBlobSize:blobSize isUpload:NO];
         
-        [blockBlob downloadToStream:((NSOutputStream *)targetStream) accessCondition:nil requestOptions:nil operationContext:nil completionHandler:^(NSError * error) {
+        [blob downloadToStream:((NSOutputStream *)targetStream) accessCondition:nil requestOptions:options operationContext:nil completionHandler:^(NSError * error) {
             XCTAssertNil(error, @"Error in downloading blob.  Error code = %ld, error domain = %@, error userinfo = %@", (long)error.code, error.domain, error.userInfo);
             XCTAssert(targetStream.totalBytes == blobSize, @"Downloaded blob is wrong size.  Size = %ld, expected size = %ld", (unsigned long)targetStream.totalBytes, (unsigned long)(blobSize));
             XCTAssertFalse(targetStream.dataCorrupt, @"Downloaded blob is corrupt.  Error count = %ld, first few errors = sample\nsample%@", (unsigned long)targetStream.errorCount, targetStream.errors);
@@ -210,24 +314,130 @@
             
             [semaphore signal];
         }];
-    }];
+
+    });
+    
     [semaphore wait];
     return testFailedInDownload;
 }
 
--(void)testFromToStreamIterate
+-(void)testBlockBlobFromToStreamIterate
 {
     int failures = 0;
     for (int i = 0; i < 2; i++)
     {
         @autoreleasepool {
-            if ([self runTestUploadFromStreamWithBlobSize:20000000])
+            
+            NSString *blobName = @"blobName";
+            AZSCloudBlockBlob *blob = [self.blobContainer blockBlobReferenceFromName:blobName];
+            
+            if ([self runTestUploadFromStreamWithBlobSize:20000000 blobToUpload:blob uploadCall:^(NSInputStream *sourceStream, AZSAccessCondition *accessCondition, AZSBlobRequestOptions *blobRequestOptions, AZSOperationContext *operationContext, void(^completionHandler)(NSError * error)) {
+                [blob uploadFromStream:sourceStream accessCondition:accessCondition requestOptions:blobRequestOptions operationContext:operationContext completionHandler:completionHandler];
+            }])
             {
                 failures++;
             }
         }
     }
-    XCTAssertTrue(0 == failures, @"%d failure(s) detected.", failures);
+    XCTAssertEqual(0, failures, @"%d failure(s) detected.", failures);
+}
+
+-(void)testPageBlobFromToStreamUseExistingIterate
+{
+    int blobSize = 512*40000;
+    __block int failures = 0;
+    for (int i = 0; i < 2; i++)
+    {
+        @autoreleasepool {
+            AZSTestSemaphore *semaphore = [[AZSTestSemaphore alloc] init];
+            NSString *blobName = @"blobName";
+            AZSCloudPageBlob *blob = [self.blobContainer pageBlobReferenceFromName:blobName];
+            
+            [blob createWithSize:[NSNumber numberWithInt:blobSize] completionHandler:^(NSError * _Nullable error) {
+                XCTAssertNil(error, @"Error in creating blob.  Error code = %ld, error domain = %@, error userinfo = %@", (long)error.code, error.domain, error.userInfo);
+                if ([self runTestUploadFromStreamWithBlobSize:blobSize blobToUpload:blob uploadCall:^(NSInputStream *sourceStream, AZSAccessCondition *accessCondition, AZSBlobRequestOptions *blobRequestOptions, AZSOperationContext *operationContext, void(^completionHandler)(NSError * error)) {
+                    [blob uploadFromStream:sourceStream accessCondition:accessCondition requestOptions:blobRequestOptions operationContext:operationContext completionHandler:completionHandler];
+                }])
+                {
+                    failures++;
+                }
+                [semaphore signal];
+            }];
+            [semaphore wait];
+        }
+    }
+    XCTAssertEqual(0, failures, @"%d failure(s) detected.", failures);
+}
+
+-(void)testPageBlobFromToStreamCreateNewIterate
+{
+    int blobSize = 512*40000;
+    int failures = 0;
+    for (int i = 0; i < 2; i++)
+    {
+        @autoreleasepool {
+            
+            NSString *blobName = @"blobName";
+            AZSCloudPageBlob *blob = [self.blobContainer pageBlobReferenceFromName:blobName];
+            
+            if ([self runTestUploadFromStreamWithBlobSize:blobSize blobToUpload:blob uploadCall:^(NSInputStream *sourceStream, AZSAccessCondition *accessCondition, AZSBlobRequestOptions *blobRequestOptions, AZSOperationContext *operationContext, void(^completionHandler)(NSError * error)) {
+                [blob uploadFromStream:sourceStream size:[NSNumber numberWithInt:blobSize] initialSequenceNumber:[NSNumber numberWithInt:100] accessCondition:accessCondition requestOptions:blobRequestOptions operationContext:operationContext completionHandler:completionHandler];
+            }])
+            {
+                failures++;
+            }
+        }
+    }
+    XCTAssertEqual(0, failures, @"%d failure(s) detected.", failures);
+}
+
+-(void)testAppendBlobFromToStreamUseExistingIterate
+{
+    int blobSize = 20000000;
+    __block int failures = 0;
+    for (int i = 0; i < 2; i++)
+    {
+        @autoreleasepool {
+            AZSTestSemaphore *semaphore = [[AZSTestSemaphore alloc] init];
+            NSString *blobName = @"blobName";
+            AZSCloudAppendBlob *blob = [self.blobContainer appendBlobReferenceFromName:blobName];
+            
+            [blob createWithCompletionHandler:^(NSError * _Nullable error) {
+                XCTAssertNil(error, @"Error in creating blob.  Error code = %ld, error domain = %@, error userinfo = %@", (long)error.code, error.domain, error.userInfo);
+                if ([self runTestUploadFromStreamWithBlobSize:blobSize blobToUpload:blob uploadCall:^(NSInputStream *sourceStream, AZSAccessCondition *accessCondition, AZSBlobRequestOptions *blobRequestOptions, AZSOperationContext *operationContext, void(^completionHandler)(NSError * error)) {
+                    [blob uploadFromStream:sourceStream createNew:NO accessCondition:accessCondition requestOptions:blobRequestOptions operationContext:operationContext completionHandler:completionHandler];
+                }])
+                {
+                    failures++;
+                }
+                [semaphore signal];
+            }];
+            [semaphore wait];
+        }
+    }
+    XCTAssertEqual(0, failures, @"%d failure(s) detected.", failures);
+}
+
+-(void)testAppendBlobFromToStreamCreateNewIterate
+{
+    int blobSize = 20000000;
+    int failures = 0;
+    for (int i = 0; i < 2; i++)
+    {
+        @autoreleasepool {
+            
+            NSString *blobName = @"blobName";
+            AZSCloudAppendBlob *blob = [self.blobContainer appendBlobReferenceFromName:blobName];
+            
+            if ([self runTestUploadFromStreamWithBlobSize:blobSize blobToUpload:blob uploadCall:^(NSInputStream *sourceStream, AZSAccessCondition *accessCondition, AZSBlobRequestOptions *blobRequestOptions, AZSOperationContext *operationContext, void(^completionHandler)(NSError * error)) {
+                [blob uploadFromStream:sourceStream createNew:YES accessCondition:accessCondition requestOptions:blobRequestOptions operationContext:operationContext completionHandler:completionHandler];
+            }])
+            {
+                failures++;
+            }
+        }
+    }
+    XCTAssertEqual(0, failures, @"%d failure(s) detected.", failures);
 }
 
 @end

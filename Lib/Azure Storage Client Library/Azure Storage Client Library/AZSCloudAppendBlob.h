@@ -18,6 +18,8 @@
 #import <Foundation/Foundation.h>
 #import "AZSCloudBlob.h"
 
+@class AZSBlobOutputStream;
+
 AZS_ASSUME_NONNULL_BEGIN
 
 @interface AZSCloudAppendBlob : AZSCloudBlob
@@ -157,6 +159,71 @@ AZS_ASSUME_NONNULL_BEGIN
  |NSNumber * | The append offset for this append operation - the offset where this block was committed|
  */
 -(void)appendBlockWithData:(NSData *)blockData contentMD5:(AZSNullable NSString *)contentMD5 accessCondition:(AZSNullable AZSAccessCondition *)accessCondition requestOptions:(AZSNullable AZSBlobRequestOptions *)requestOptions operationContext:(AZSNullable AZSOperationContext *)operationContext completionHandler:(void (^)(NSError * __AZSNullable, NSNumber *appendOffset))completionHandler;
+
+/** Creates an output stream that is capable of writing to the blob.
+ 
+ This method returns an instance of AZSBlobOutputStream.  The caller can then assign a delegate and schedule the stream in a runloop
+ (similar to any other NSOutputStream.)  See AZSBlobOutputStream documentation for details.
+ 
+ @param createNew YES if the blob should be created from scratch (will overwrite a pre-existing blob), NO if the blob already exists and the 
+ stream data should be appended to the end.
+ @returns The created AZSBlobOutputStream, capable of writing to this blob.
+ */
+- (AZSBlobOutputStream *)createOutputStreamWithCreateNew:(BOOL)createNew;
+
+/** Creates an output stream that is capable of writing to the blob.
+ 
+ This method returns an instance of AZSBlobOutputStream.  The caller can then assign a delegate and schedule the stream in a runloop
+ (similar to any other NSOutputStream.)  See AZSBlobOutputStream documentation for details.
+ 
+ @param createNew YES if the blob should be created from scratch (will overwrite a pre-existing blob), NO if the blob already exists and the
+ stream data should be appended to the end.
+ @param accessCondition The access condition for the request.
+ @param requestOptions The options to use for the request.
+ @param operationContext The operation context to use for the call.
+ 
+ @returns The created AZSBlobOutputStream, capable of writing to this blob.
+ */
+- (AZSBlobOutputStream *)createOutputStreamWithCreateNew:(BOOL)createNew accessCondition:(AZSNullable AZSAccessCondition *)accessCondition requestOptions:(AZSNullable AZSBlobRequestOptions *)requestOptions operationContext:(AZSNullable AZSOperationContext *)operationContext;
+
+/** Uploades a blob from given source stream.
+ 
+ This operation will schedule the input sourceStream on a runloop (created in a new thread), and read in all data as long as it is able.  This will
+ chunk the data into blocks, and upload each of those blocks to the service.  Finally, when the stream is finished, it will upload a block list
+ consisting of all read data.
+ 
+ No more than one block's worth of data will be uploaded at a time.  Block size is configurable in the AZSBlobRequestOptions (see – uploadFromStream:accessCondition:requestOptions:operationContext:completionHandler:).  Maximum
+ number of outstanding downloads is also configurable in the AZSBlobRequestOptions.
+ 
+ @param sourceStream The stream containing the data that the blob should contain.
+ @param completionHandler The block of code to execute when the upload call completes.
+ 
+ | Parameter name | Description |
+ |----------------|-------------|
+ |NSError * | Nil if the operation succeeded without error, error with details about the failure otherwise.|
+ */
+-(void)uploadFromStream:(NSInputStream *)sourceStream createNew:(BOOL)createNew completionHandler:(void (^)(NSError* __AZSNullable))completionHandler;
+
+/** Uploades a blob from given source stream.
+ 
+ This operation will schedule the input sourceStream on a runloop (created in a new thread), and read in all data as long as it is able.  This will
+ chunk the data into blocks, and upload each of those blocks to the service.  Finally, when the stream is finished, it will upload a block list
+ consisting of all read data.
+ 
+ No more than one block's worth of data will be uploaded at a time.  Block size is configurable in the AZSBlobRequestOptions.  Maximum
+ number of outstanding downloads is also configurable in the AZSBlobRequestOptions.
+ 
+ @param sourceStream The stream containing the data that the blob should contain.
+ @param accessCondition The access condition for the request.
+ @param requestOptions The options to use for the request.
+ @param operationContext The operation context to use for the call.
+ @param completionHandler The block of code to execute when the upload call completes.
+ 
+ | Parameter name | Description |
+ |----------------|-------------|
+ |NSError * | Nil if the operation succeeded without error, error with details about the failure otherwise.|
+ */
+-(void)uploadFromStream:(NSInputStream *)sourceStream createNew:(BOOL)createNew accessCondition:(AZSNullable AZSAccessCondition *)accessCondition requestOptions:(AZSNullable AZSBlobRequestOptions *)requestOptions operationContext:(AZSNullable AZSOperationContext *)operationContext completionHandler:(void (^)(NSError* __AZSNullable))completionHandler;
 
 @end
 

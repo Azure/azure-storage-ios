@@ -56,10 +56,10 @@ AZS_ASSUME_NONNULL_BEGIN
 @property AZSSequenceNumberOperator sequenceNumberOperator;
 
 /** The request will fail if the append blob will be greater than this after the append operation.  Append block API only.*/
-@property (copy, readonly, AZSNullable) NSNumber *maxSize;
+@property (copy, AZSNullable) NSNumber *maxSize;
 
 /** The request will fail if the append position before appending the current block is not equal to this.  Append block API only.*/
-@property (copy, readonly, AZSNullable) NSNumber *appendPosition;
+@property (copy, AZSNullable) NSNumber *appendPosition;
 
 /** Initialize a new AZSAccessCondition object with a 'If-Match' condition.
  
@@ -106,6 +106,8 @@ AZS_ASSUME_NONNULL_BEGIN
  
  @param leaseId The lease ID to specify for the request.*/
 -(instancetype) initWithLeaseId:(NSString*)leaseId AZS_DESIGNATED_INITIALIZER;
+
+-(instancetype)init AZS_DESIGNATED_INITIALIZER;
 
 +(instancetype) cloneWithEtag:(NSString*)etag accessCondition:(AZSNullable AZSAccessCondition*)condition;
 

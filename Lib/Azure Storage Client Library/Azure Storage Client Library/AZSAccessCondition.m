@@ -18,17 +18,13 @@
 #import "AZSAccessCondition.h"
 #import "AZSUtil.h"
 
-@interface AZSAccessCondition()
-
--(instancetype)init AZS_DESIGNATED_INITIALIZER;
-
-@end
 
 @implementation AZSAccessCondition
 
 -(instancetype) init
 {
-    return nil;
+    self = [super init];
+    return self;
 }
 
 -(instancetype) initWithIfMatchCondition:(NSString*)eTag

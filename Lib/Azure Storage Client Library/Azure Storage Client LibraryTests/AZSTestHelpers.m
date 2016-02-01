@@ -294,7 +294,6 @@ void RunLoopSourceCancelRoutine (void *info, CFRunLoopRef rl, CFStringRef mode)
     
     self.totalBytes = totalBytes;
     self.totalBlobSize = totalBlobSize;
-    
     if (self.totalBytes >= self.totalBlobSize)
     {
         self.isStreamClosed = YES;

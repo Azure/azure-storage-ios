@@ -27,6 +27,24 @@
 #import "AZSExecutor.h"
 #import "AZSBlobResponseParser.h"
 #import "AZSUtil.h"
+#import "AZSBlobUploadHelper.h"
+#import "AZSAccessCondition.h"
+#import "AZSBlobOutputStream.h"
+
+@interface AZSAppendBlobUploadFromStreamInputContainer : NSObject
+
+@property (strong) NSInputStream *sourceStream;
+@property (strong) AZSCloudAppendBlob *targetBlob;
+@property (strong) AZSAccessCondition *accessCondition;
+@property (strong) AZSBlobRequestOptions *blobRequestOptions;
+@property (strong) AZSOperationContext *operationContext;
+@property (copy) void (^completionHandler)(NSError*);
+
+@end
+
+@implementation AZSAppendBlobUploadFromStreamInputContainer
+
+@end
 
 @implementation AZSCloudAppendBlob
 
@@ -189,6 +207,118 @@
     {
         completionHandler(error, appendPosition);
     }];
+}
+
+-(void)runBlobUploadFromStreamWithContainer:(AZSAppendBlobUploadFromStreamInputContainer *)inputContainer
+{
+    @autoreleasepool {
+        NSRunLoop *runLoopForUpload = [NSRunLoop currentRunLoop];
+        BOOL __block blobFinished = NO;
+        
+        // The blob will already exist in this case.
+        AZSBlobUploadHelper *blobUploadHelper = [[AZSBlobUploadHelper alloc] initToAppendBlob:inputContainer.targetBlob createNew:NO accessCondition:inputContainer.accessCondition requestOptions:inputContainer.blobRequestOptions operationContext:inputContainer.operationContext completionHandler:^(NSError * error) {
+            [inputContainer.sourceStream close];
+            [inputContainer.sourceStream removeFromRunLoop:runLoopForUpload forMode:NSDefaultRunLoopMode];
+            blobFinished = YES;
+            if (inputContainer.completionHandler)
+            {
+                inputContainer.completionHandler(error);
+            }
+        }];
+        
+        [inputContainer.sourceStream setDelegate:blobUploadHelper];
+        
+        [inputContainer.sourceStream scheduleInRunLoop:runLoopForUpload forMode:NSDefaultRunLoopMode];
+        
+        [inputContainer.sourceStream open];
+        
+        BOOL runLoopSuccess = YES;
+        while ((!blobFinished) && runLoopSuccess)
+        {
+            // Adding an autoreleasepool here, otherwise the NSDate objects build up until the entire upload has finished.
+            @autoreleasepool {
+                NSDate *loopUntil = [NSDate dateWithTimeIntervalSinceNow:0.1];
+                runLoopSuccess = [runLoopForUpload runMode:NSDefaultRunLoopMode beforeDate:loopUntil];
+            }
+        }
+    }
+}
+
+-(void)uploadFromStream:(NSInputStream *)sourceStream createNew:(BOOL)createNew completionHandler:(void (^)(NSError * _Nullable))completionHandler
+{
+    [self uploadFromStream:sourceStream createNew:createNew accessCondition:nil requestOptions:nil operationContext:nil completionHandler:completionHandler];
+}
+
+-(void)uploadFromStream:(NSInputStream *)sourceStream createNew:(BOOL)createNew accessCondition:(AZSAccessCondition *)accessCondition requestOptions:(AZSBlobRequestOptions *)requestOptions operationContext:(AZSOperationContext *)operationContext completionHandler:(void (^)(NSError * _Nullable))completionHandler
+{
+    // TODO: Allow user to give us an input run loop if desired.
+    AZSBlobRequestOptions *modifiedOptions = [[AZSBlobRequestOptions copyOptions:requestOptions] applyDefaultsFromOptions:self.client.defaultRequestOptions];
+    if (operationContext == nil)
+    {
+        operationContext = [[AZSOperationContext alloc] init];
+    }
+    
+    if (accessCondition)
+    {
+        AZSAccessCondition *newAccessCondition = [[AZSAccessCondition alloc] init];
+        if (accessCondition.leaseId)
+        {
+            newAccessCondition.leaseId = accessCondition.leaseId;
+        }
+        if (accessCondition.appendPosition)
+        {
+            newAccessCondition.appendPosition = accessCondition.appendPosition;
+        }
+        if (accessCondition.maxSize)
+        {
+            newAccessCondition.maxSize = accessCondition.maxSize;
+        }
+        accessCondition = newAccessCondition;
+    }
+    
+    AZSAppendBlobUploadFromStreamInputContainer *inputContainer = [[AZSAppendBlobUploadFromStreamInputContainer alloc] init];
+    inputContainer.sourceStream = sourceStream;
+    inputContainer.accessCondition = accessCondition;
+    inputContainer.blobRequestOptions = modifiedOptions;
+    inputContainer.operationContext = operationContext;
+    inputContainer.completionHandler = completionHandler;
+    inputContainer.targetBlob = self;
+    
+    if (createNew)
+    {
+        [self createWithAccessCondition:accessCondition requestOptions:requestOptions operationContext:operationContext completionHandler:^(NSError * _Nullable error) {
+            if (error)
+            {
+                completionHandler(error);
+            }
+            else
+            {
+                [NSThread detachNewThreadSelector:@selector(runBlobUploadFromStreamWithContainer:) toTarget:self withObject:inputContainer];
+            }
+        }];
+    }
+    else
+    {
+        [NSThread detachNewThreadSelector:@selector(runBlobUploadFromStreamWithContainer:) toTarget:self withObject:inputContainer];
+    }
+    return;
+}
+
+-(AZSBlobOutputStream *)createOutputStreamWithCreateNew:(BOOL)createNew
+{
+    return [self createOutputStreamWithCreateNew:createNew accessCondition:nil requestOptions:nil operationContext:nil];
+}
+
+-(AZSBlobOutputStream *)createOutputStreamWithCreateNew:(BOOL)createNew accessCondition:(AZSAccessCondition *)accessCondition requestOptions:(AZSBlobRequestOptions *)requestOptions operationContext:(AZSOperationContext *)operationContext
+{
+    if (!operationContext)
+    {
+        operationContext = [[AZSOperationContext alloc] init];
+    }
+    AZSBlobRequestOptions *modifiedOptions = [[AZSBlobRequestOptions copyOptions:requestOptions] applyDefaultsFromOptions:self.client.defaultRequestOptions];
+    
+    // TODO: Check access conditions properly (download attributes if necessary.).  Also for UploadFromStream.
+    return [[AZSBlobOutputStream alloc] initToAppendBlob:self createNew:createNew accessCondition:accessCondition requestOptions:modifiedOptions operationContext:operationContext];
 }
 
 @end
