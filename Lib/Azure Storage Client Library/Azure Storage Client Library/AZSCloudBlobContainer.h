@@ -75,32 +75,36 @@ AZS_ASSUME_NONNULL_BEGIN
 /** Initializes a newly allocated AZSCloudBlobContainer object.
  
  @param containerAbsoluteUrl The absolute URL to this container.
+ @param error A pointer to a NSError*, to be set in the event of failure.
  @returns The newly allocated object.
  */
-- (instancetype)initWithUrl:(NSURL *)containerAbsoluteUrl;
+- (instancetype)initWithUrl:(NSURL *)containerAbsoluteUrl error:(NSError **)error;
 
 /** Initializes a newly allocated AZSCloudBlobContainer object.
  
  @param containerAbsoluteUrl The absolute URL to this container.
  @param credentials The AZSStorageCredentials used to authenticate to the container.
+ @param error A pointer to a NSError*, to be set in the event of failure.
  @returns The newly allocated object.
  */
-- (instancetype)initWithUrl:(NSURL *)containerAbsoluteUrl credentials:(AZSNullable AZSStorageCredentials *)credentials;
+- (instancetype)initWithUrl:(NSURL *)containerAbsoluteUrl credentials:(AZSNullable AZSStorageCredentials *)credentials error:(NSError **)error;
 
 /** Initializes a newly allocated AZSCloudBlobContainer object.
  
  @param containerAbsoluteUri The StorageURI to this container.
+ @param error A pointer to a NSError*, to be set in the event of failure.
  @returns The newly allocated object.
  */
-- (instancetype)initWithStorageUri:(AZSStorageUri *)containerAbsoluteUri;
+- (instancetype)initWithStorageUri:(AZSStorageUri *)containerAbsoluteUri error:(NSError **)error;
 
 /** Initializes a newly allocated AZSCloudBlobContainer object.
  
  @param containerAbsoluteUri The StorageURI to this container.
  @param credentials The AZSStorageCredentials used to authenticate to the container.
+ @param error A pointer to a NSError*, to be set in the event of failure.
  @returns The newly allocated object.
  */
-- (instancetype)initWithStorageUri:(AZSStorageUri *)containerAbsoluteUri credentials:(AZSNullable AZSStorageCredentials *)credentials AZS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithStorageUri:(AZSStorageUri *)containerAbsoluteUri credentials:(AZSNullable AZSStorageCredentials *)credentials error:(NSError **)error AZS_DESIGNATED_INITIALIZER;
 
 /** Creates the container on the service.  Will fail if the container already exists.
  

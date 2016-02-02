@@ -32,6 +32,7 @@ NSString *const AZSCHttpStatusCode = @"HTTP Status Code";
 NSString *const AZSCPosix = @"en_US_POSIX";
 NSString *const AZSCRawErrorData = @"rawErrorData";
 NSString *const AZSCTargetStorageVersion = @"2015-04-05";
+NSString *const AZSCTrue = @"true";
 NSString *const AZSCUserAgent = @"iOS-v0.1.1";
 NSString *const AZSCUtc = @"UTC";
 
@@ -39,14 +40,19 @@ NSInteger const AZSCKilobyte = 1024;
 NSInteger const AZSCMaxBlockSize = 4 * AZSCKilobyte * AZSCKilobyte;
 NSInteger const AZSCSnapshotIndex = 2;
 
-
 // Account Settings
 NSString *const AZSCSettingsAccountKey = @"AccountKey";
 NSString *const AZSCSettingsAccountName = @"AccountName";
 NSString *const AZSCSettingsBlobEndpoint = @"BlobEndpoint";
+NSString *const AZSCSettingsEmulator = @"UseDevelopmentStorage";
 NSString *const AZSCSettingsEndpointSuffix = @"EndpointSuffix";
 NSString *const AZSCSettingsEndpointsProtocol = @"DefaultEndpointsProtocol";
 NSString *const AZSCSettingsSas = @"SharedAccessSignature";
+
+// Emulator
+NSString *const AZSCEmulatorUrl = @"http://127.0.0.1:10000/devstoraccount1";
+NSString *const AZSCEmulatorAccount = @"devstoraccount1";
+NSString *const AZSCEmulatorAccountKey = @"Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==";
 
 // Headers
 NSString *const AZSCHeaderPrefix = @"x-ms-";
@@ -110,7 +116,6 @@ NSString *const AZSCHeaderValueOnly = @"only";
 NSString *const AZSCHeaderValueRelease = @"release";
 NSString *const AZSCHeaderValueRenew = @"renew";
 NSString *const AZSCHeaderValueSnapshots = @"snapshots";
-NSString *const AZSCHeaderValueTrue = @"true";
 NSString *const AZSCHeaderValueUncommitted = @"uncommitted";
 NSString *const AZSCHeaderValueUncommittedBlobs = @"uncommittedblobs";
 NSString *const AZSCHeaderValueUserAgent = @"Azure-Storage/0.1.1-preview (iOS %@)";

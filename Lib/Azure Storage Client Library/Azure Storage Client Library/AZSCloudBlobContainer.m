@@ -57,27 +57,43 @@
     return nil;
 }
 
-- (instancetype)initWithUrl:(NSURL *)containerAbsoluteUrl
+- (instancetype)initWithUrl:(NSURL *)containerAbsoluteUrl error:(NSError **)error
 {
-    return [self initWithUrl:containerAbsoluteUrl credentials:nil];
+    return [self initWithUrl:containerAbsoluteUrl credentials:nil error:error];
 }
 
-- (instancetype)initWithUrl:(NSURL *)containerAbsoluteUrl credentials:(AZSStorageCredentials *)credentials
+- (instancetype)initWithUrl:(NSURL *)containerAbsoluteUrl credentials:(AZSStorageCredentials *)credentials error:(NSError **)error
 {
-    return [self initWithStorageUri:[[AZSStorageUri alloc] initWithPrimaryUri:containerAbsoluteUrl] credentials:credentials];
+    return [self initWithStorageUri:[[AZSStorageUri alloc] initWithPrimaryUri:containerAbsoluteUrl] credentials:credentials error:error];
 }
 
-- (instancetype)initWithStorageUri:(AZSStorageUri *)containerAbsoluteUrl
+- (instancetype)initWithStorageUri:(AZSStorageUri *)containerAbsoluteUrl error:(NSError **)error
 {
-    return [self initWithStorageUri:containerAbsoluteUrl credentials:nil];
+    return [self initWithStorageUri:containerAbsoluteUrl credentials:nil error:error];
 }
 
-- (instancetype)initWithStorageUri:(AZSStorageUri *)containerAbsoluteUrl credentials:(AZSStorageCredentials *)credentials
+- (instancetype)initWithStorageUri:(AZSStorageUri *)containerAbsoluteUrl credentials:(AZSStorageCredentials *)credentials error:(NSError **)error
 {
     self = [super init];
     if (self)
     {
-        [self parseQueryAndVerifyWithUri:containerAbsoluteUrl credentials:credentials];
+        NSMutableArray *parseQueryResults = [AZSNavigationUtil parseBlobQueryAndVerifyWithStorageUri:containerAbsoluteUrl];
+        
+        if (([credentials isSAS] || [credentials isSharedKey]) && ![parseQueryResults[1] isKindOfClass:[NSNull class]]) {
+            *error = [NSError errorWithDomain:AZSErrorDomain code:AZSEInvalidArgument userInfo:nil];
+            [[AZSUtil operationlessContext] logAtLevel:AZSLogLevelError withMessage:@"Multiple credentials provided."];
+            return nil;
+        }
+        
+        credentials = (credentials ?: ([parseQueryResults[1] isKindOfClass:[NSNull class]] ? nil : parseQueryResults[1]));
+        
+        _storageUri = ([parseQueryResults[0] isKindOfClass:[NSNull class]] ? nil : parseQueryResults[0]);
+        _client = [[AZSCloudBlobClient alloc] initWithStorageUri: [AZSNavigationUtil getServiceClientBaseAddressWithStorageUri:_storageUri usePathStyle:[AZSUtil usePathStyleAddressing:[containerAbsoluteUrl primaryUri]] error:error] credentials:credentials];
+        if (*error) {
+            return nil;
+        }
+        
+        _name = [AZSNavigationUtil getContainerNameWithContainerAddress:_storageUri.primaryUri isPathStyle:[AZSUtil usePathStyleAddressing:_storageUri.primaryUri]];
         _properties = [[AZSBlobContainerProperties alloc] init];
         _metadata = [[NSMutableDictionary alloc] init];
     }
@@ -609,20 +625,6 @@
     if (parsedLastModified) {
         self.properties.lastModified = parsedLastModified;
     }
-}
-
-// Note: this should only be called from the constructor
--(void)parseQueryAndVerifyWithUri:(AZSStorageUri *)uri credentials:(AZSStorageCredentials *)credentials
-{
-    NSMutableArray *parseQueryResults = [AZSNavigationUtil parseBlobQueryAndVerifyWithStorageUri:uri];
-    
-    _storageUri = ([[parseQueryResults objectAtIndex:0] isKindOfClass:[NSNull class]] ? nil : [parseQueryResults objectAtIndex:0]);
-    
-    // todo: if (parsedCreds && creds) != null then throw mult creds
-    
-    _client = [[AZSCloudBlobClient alloc] initWithStorageUri: [AZSNavigationUtil getServiceClientBaseAddressWithStorageUri:self.storageUri usePathStyle:[AZSUtil usePathStyleAddressing:[uri primaryUri]]] credentials:(credentials != nil ? credentials : ([[parseQueryResults objectAtIndex:1] isKindOfClass:[NSNull class]] ? nil : [parseQueryResults objectAtIndex:1]))];
-    
-    _name = [AZSNavigationUtil getContainerNameWithContainerAddress:self.storageUri.primaryUri isPathStyle:[AZSUtil usePathStyleAddressing:self.storageUri.primaryUri]];
 }
 
 - (AZSCloudBlockBlob *)blockBlobReferenceFromName:(NSString *)blobName

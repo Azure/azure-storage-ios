@@ -1,4 +1,6 @@
 2015.XX.YY Version 0.2.0
+ * Added support for the Storage Emulator to Account connection strings.
+ * Added support for path-style URIs to the Blob service.
  * Renamed fetchAttributesWith* methods on AZSCloudBlob to downloadAttributesWith*.
  * Added ability to store and retrieve shared access policies on blob containers.
  * Added ability to generate shared access signatures for blobs and blob containers.

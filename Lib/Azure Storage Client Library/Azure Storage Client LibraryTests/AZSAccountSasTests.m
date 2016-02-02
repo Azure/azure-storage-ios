@@ -150,15 +150,19 @@
             NSURLComponents *uri = [NSURLComponents componentsWithURL:blob.storageUri.primaryUri resolvingAgainstBaseURL:NO];
             uri.scheme = AZSCHttp;
             AZSUriQueryBuilder *httpsBuilder = [[AZSUriQueryBuilder alloc] initWithQuery:accountSasHttps];
-            AZSCloudBlockBlob *httpBlob = [[AZSCloudBlockBlob alloc] initWithUrl:[httpsBuilder addToUri:uri.URL]];
+            AZSCloudBlockBlob *httpBlob = [[AZSCloudBlockBlob alloc] initWithUrl:[httpsBuilder addToUri:uri.URL] error:&error];
+            XCTAssertNil(error);
             
             [httpBlob downloadToStream:[[NSOutputStream alloc] initToMemory] completionHandler:^(NSError *err) {
                 [AZSTestHelpers checkPassageOfError:err expectToPass:NO expectedHttpErrorCode:403 message:@"Download https only blob using http"];
                 XCTAssertTrue([(err.userInfo[@"Message"]) hasPrefix:@"This request is not authorized to perform this operation using this protocol."]);
         
                 // Ensure using https with https only SAS succeeds.
+                NSError *error = nil;
                 uri.scheme = AZSCHttps;
-                AZSCloudBlockBlob *httpsBlob = [[AZSCloudBlockBlob alloc] initWithUrl:[httpsBuilder addToUri:uri.URL]];
+                AZSCloudBlockBlob *httpsBlob = [[AZSCloudBlockBlob alloc] initWithUrl:[httpsBuilder addToUri:uri.URL] error:&error];
+                XCTAssertNil(error);
+                
                 [httpsBlob downloadToStream:[[NSOutputStream alloc] initToMemory] completionHandler:^(NSError *err) {
                     [AZSTestHelpers checkPassageOfError:err expectToPass:YES expectedHttpErrorCode:-1 message:@"Download https only blob using https"];
             
@@ -169,15 +173,19 @@
                     [AZSTestHelpers checkPassageOfError:error expectToPass:YES expectedHttpErrorCode:-1 message:@"Create SAS token"];
                     
                     AZSUriQueryBuilder *httpBuilder = [[AZSUriQueryBuilder alloc] initWithQuery:accountSasHttp];
-                    AZSCloudBlockBlob *httpsBlob = [[AZSCloudBlockBlob alloc] initWithUrl:[httpBuilder addToUri:uri.URL]];
+                    AZSCloudBlockBlob *httpsBlob = [[AZSCloudBlockBlob alloc] initWithUrl:[httpBuilder addToUri:uri.URL] error:&error];
+                    XCTAssertNil(error);
                     
                     [httpsBlob downloadToStream:[[NSOutputStream alloc] initToMemory] completionHandler:^(NSError *err) {
                         [AZSTestHelpers checkPassageOfError:err expectToPass:YES expectedHttpErrorCode:-1 message:@"Download blob using https"];
 
                         // Ensure using http with https,http SAS succeeds.
                         uri.scheme = AZSCHttp;
-                
-                        AZSCloudBlockBlob *httpBlob = [[AZSCloudBlockBlob alloc] initWithUrl:[httpBuilder addToUri:uri.URL]];
+                        
+                        NSError *error = nil;
+                        AZSCloudBlockBlob *httpBlob = [[AZSCloudBlockBlob alloc] initWithUrl:[httpBuilder addToUri:uri.URL] error:&error];
+                        XCTAssertNil(error);
+                        
                         [httpBlob downloadToStream:[[NSOutputStream alloc] initToMemory] completionHandler:^(NSError *err) {
                             [AZSTestHelpers checkPassageOfError:err expectToPass:YES expectedHttpErrorCode:-1 message:@"Download blob using http"];
                             

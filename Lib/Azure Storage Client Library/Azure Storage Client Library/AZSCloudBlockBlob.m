@@ -51,21 +51,21 @@
 
 @implementation AZSCloudBlockBlob
 
-- (instancetype)initWithUrl:(NSURL *)blobAbsoluteUrl
+- (instancetype)initWithUrl:(NSURL *)blobAbsoluteUrl error:(NSError **)error
 {
-    return [self initWithUrl:blobAbsoluteUrl credentials:nil snapshotTime:nil];
+    return [self initWithUrl:blobAbsoluteUrl credentials:nil snapshotTime:nil error:error];
 }
-- (instancetype)initWithUrl:(NSURL *)blobAbsoluteUrl credentials:(AZSStorageCredentials *)credentials snapshotTime:(NSString *)snapshotTime
+- (instancetype)initWithUrl:(NSURL *)blobAbsoluteUrl credentials:(AZSStorageCredentials *)credentials snapshotTime:(NSString *)snapshotTime error:(NSError **)error
 {
-    return [self initWithStorageUri:[[AZSStorageUri alloc] initWithPrimaryUri:blobAbsoluteUrl] credentials:credentials snapshotTime:snapshotTime];
+    return [self initWithStorageUri:[[AZSStorageUri alloc] initWithPrimaryUri:blobAbsoluteUrl] credentials:credentials snapshotTime:snapshotTime error:error];
 }
-- (instancetype)initWithStorageUri:(AZSStorageUri *)blobAbsoluteUri
+- (instancetype)initWithStorageUri:(AZSStorageUri *)blobAbsoluteUri error:(NSError **)error
 {
-    return [self initWithStorageUri:blobAbsoluteUri credentials:nil snapshotTime:nil];
+    return [self initWithStorageUri:blobAbsoluteUri credentials:nil snapshotTime:nil error:error];
 }
-- (instancetype)initWithStorageUri:(AZSStorageUri *)blobAbsoluteUri credentials:(AZSStorageCredentials *)credentials snapshotTime:(NSString *)snapshotTime
+- (instancetype)initWithStorageUri:(AZSStorageUri *)blobAbsoluteUri credentials:(AZSStorageCredentials *)credentials snapshotTime:(NSString *)snapshotTime error:(NSError **)error
 {
-    self = [super initWithStorageUri:blobAbsoluteUri credentials:credentials snapshotTime:snapshotTime];
+    self = [super initWithStorageUri:blobAbsoluteUri credentials:credentials snapshotTime:snapshotTime error:error];
     if (self)
     {
         self.properties.blobType = AZSBlobTypeBlockBlob;
