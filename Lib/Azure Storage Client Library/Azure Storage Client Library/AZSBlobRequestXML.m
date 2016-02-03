@@ -16,7 +16,6 @@
 // -----------------------------------------------------------------------------------------
 
 #import <libxml/xmlwriter.h>
-#import "AZSBlobContainerPermissions.h"
 #import "AZSBlobRequestXML.h"
 #import "AZSBlockListItem.h"
 #import "AZSConstants.h"
@@ -107,7 +106,7 @@
     return result;
 }
 
-+(NSString *) createStoredPoliciesXMLFromPermissions:(AZSBlobContainerPermissions *)permissions operationContext:(AZSOperationContext *)operationContext error:(NSError **)error
++(NSString *) createStoredPoliciesXMLFromPermissions:(NSMutableDictionary *)permissions operationContext:(AZSOperationContext *)operationContext error:(NSError **)error
 {
     xmlBufferPtr buffer;
     xmlTextWriterPtr writer;
@@ -134,9 +133,9 @@
     returnCode = xmlTextWriterStartElement(writer, (const xmlChar *)[AZSCXmlSignedIdentifiers UTF8String]);
     [AZSBlobRequestXML checkReturnCodeAndCreateErrorWithReturnCode:returnCode operationContext:operationContext error:error];
     
-    for (NSString *key in permissions.sharedAccessPolicies)
+    for (NSString *key in permissions)
     {
-        AZSSharedAccessPolicy *policy = [permissions.sharedAccessPolicies objectForKey:key];
+        AZSSharedAccessPolicy *policy = permissions[key];
         // <SignedIdentifier>
         returnCode = xmlTextWriterStartElement(writer, (const xmlChar *)[AZSCXmlSignedIdentifier UTF8String]);
         [AZSBlobRequestXML checkReturnCodeAndCreateErrorWithReturnCode:returnCode operationContext:operationContext error:error];

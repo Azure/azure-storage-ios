@@ -76,7 +76,8 @@
         [blob uploadFromText:blobText completionHandler:^(NSError *error) {
             XCTAssertNil(error, @"Error in uploading blob.  Error code = %ld, error domain = %@, error userinfo = %@", (long)error.code, error.domain, error.userInfo);
             
-            AZSCloudBlobContainer *containerPublic = [[AZSCloudBlobContainer alloc] initWithStorageUri:container.storageUri];
+            AZSCloudBlobContainer *containerPublic = [[AZSCloudBlobContainer alloc] initWithStorageUri:container.storageUri error:&error];
+            XCTAssertNil(error);
             
             NSMutableArray *blobs = [[NSMutableArray alloc] initWithCapacity:1];
             [self listAllBlobsFlatInContainer:containerPublic arrayToPopulate:blobs continuationToken:nil prefix:nil blobListingDetails:AZSBlobListingDetailsAll maxResults:1 completionHandler:^(NSError *error) {
@@ -90,7 +91,10 @@
                     XCTAssertNotNil(error, @"Did not throw intended error when listing blobs in a blob-level public container.");
                 }
                 
-                AZSCloudBlockBlob *blobPublic = [[AZSCloudBlockBlob alloc] initWithStorageUri:blob.storageUri];
+                NSError *initError;
+                AZSCloudBlockBlob *blobPublic = [[AZSCloudBlockBlob alloc] initWithStorageUri:blob.storageUri error:&initError];
+                XCTAssertNil(initError);
+                
                 [blobPublic downloadToTextWithCompletionHandler:^(NSError *error, NSString *resultText) {
                     XCTAssertNil(error, @"Error in downloading blob.  Error code = %ld, error domain = %@, error userinfo = %@", (long)error.code, error.domain, error.userInfo);
                     XCTAssertTrue([blobText isEqualToString:resultText], @"Text strings do not match.");

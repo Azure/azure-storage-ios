@@ -52,28 +52,50 @@
     return nil;
 }
 
-- (instancetype)initWithUrl:(NSURL *)blobAbsoluteUrl
+- (instancetype)initWithUrl:(NSURL *)blobAbsoluteUrl error:(NSError **)error
 {
-    return [self initWithUrl:blobAbsoluteUrl credentials:nil snapshotTime:nil];
+    return [self initWithUrl:blobAbsoluteUrl credentials:nil snapshotTime:nil error:error];
 }
-- (instancetype)initWithUrl:(NSURL *)blobAbsoluteUrl credentials:(AZSStorageCredentials *)credentials snapshotTime:(NSString *)snapshotTime
+- (instancetype)initWithUrl:(NSURL *)blobAbsoluteUrl credentials:(AZSStorageCredentials *)credentials snapshotTime:(NSString *)snapshotTime error:(NSError **)error
 {
-    return [self initWithStorageUri:[[AZSStorageUri alloc] initWithPrimaryUri:blobAbsoluteUrl] credentials:credentials snapshotTime:snapshotTime];
+    return [self initWithStorageUri:[[AZSStorageUri alloc] initWithPrimaryUri:blobAbsoluteUrl] credentials:credentials snapshotTime:snapshotTime error:error];
 }
-- (instancetype)initWithStorageUri:(AZSStorageUri *)blobAbsoluteUri
+- (instancetype)initWithStorageUri:(AZSStorageUri *)blobAbsoluteUri error:(NSError **)error
 {
-    return [self initWithStorageUri:blobAbsoluteUri credentials:nil snapshotTime:nil];
+    return [self initWithStorageUri:blobAbsoluteUri credentials:nil snapshotTime:nil error:error];
 }
-- (instancetype)initWithStorageUri:(AZSStorageUri *)blobAbsoluteUri credentials:(AZSStorageCredentials *)credentials snapshotTime:(NSString *)snapshotTime
+- (instancetype)initWithStorageUri:(AZSStorageUri *)blobAbsoluteUri credentials:(AZSStorageCredentials *)credentials snapshotTime:(NSString *)snapshotTime error:(NSError **)error
 {
     self = [super init];
     if (self)
     {
+        NSMutableArray *parseQueryResults = [AZSNavigationUtil parseBlobQueryAndVerifyWithStorageUri:blobAbsoluteUri];
+        
+        if (([credentials isSAS] || [credentials isSharedKey]) && ![parseQueryResults[1] isKindOfClass:[NSNull class]]) {
+            *error = [NSError errorWithDomain:AZSErrorDomain code:AZSEInvalidArgument userInfo:nil];
+            [[AZSUtil operationlessContext] logAtLevel:AZSLogLevelError withMessage:@"Multiple credentials provided."];
+            return nil;
+        }
+        
+        if (snapshotTime && ![parseQueryResults[AZSCSnapshotIndex] isKindOfClass:[NSNull class]]) {
+            *error = [NSError errorWithDomain:AZSErrorDomain code:AZSEInvalidArgument userInfo:nil];
+            [[AZSUtil operationlessContext] logAtLevel:AZSLogLevelError withMessage:@"Multiple snapshot times provided."];
+            return nil;
+        }
+        
+        credentials = (credentials ?: ([parseQueryResults[1] isKindOfClass:[NSNull class]] ? nil : parseQueryResults[1]));
+        
+        _storageUri = ([parseQueryResults[0] isKindOfClass:[NSNull class]] ? nil : parseQueryResults[0]);
+        _client = [[AZSCloudBlobClient alloc] initWithStorageUri: [AZSNavigationUtil getServiceClientBaseAddressWithStorageUri:_storageUri usePathStyle:[AZSUtil usePathStyleAddressing:[blobAbsoluteUri primaryUri]] error:error] credentials:credentials];
+        if (*error) {
+            return nil;
+        }
+        
+        _snapshotTime = snapshotTime ?: ([parseQueryResults[AZSCSnapshotIndex] isKindOfClass:[NSNull class]] ? nil : parseQueryResults[AZSCSnapshotIndex]);
         _blobCopyState = [[AZSCopyState alloc] init];
         _metadata = [[NSMutableDictionary alloc] init];
         _properties = [[AZSBlobProperties alloc] init];
-        _snapshotTime = snapshotTime;
-        [self parseQueryAndVerifyWithUri:blobAbsoluteUri credentials:credentials];
+        _blobName = [AZSNavigationUtil getBlobNameWithBlobAddress:_storageUri.primaryUri isPathStyle:[AZSUtil usePathStyleAddressing:_storageUri.primaryUri]];
     }
     
     return self;
@@ -742,27 +764,6 @@
             properties.length = [NSNumber numberWithLongLong:[response expectedContentLength]];
         }
     }
-}
-
-// Note: This should only be called from the constructor
--(void)parseQueryAndVerifyWithUri:(AZSStorageUri *)uri credentials:(AZSStorageCredentials *)credentials
-{
-    NSMutableArray *parseQueryResults = [AZSNavigationUtil parseBlobQueryAndVerifyWithStorageUri:uri];
-    
-    _storageUri = ([[parseQueryResults objectAtIndex:0] isKindOfClass:[NSNull class]] ? nil : [parseQueryResults objectAtIndex:0]);
-    
-    // todo: if (parsedcreds && creds) but they're not equal then throw mult creds
-    
-    // todo: if (parsedSnap && snap) but they're not equal then throw mult snapshots
-    
-    if ([parseQueryResults count] > AZSCSnapshotIndex)
-    {
-        _snapshotTime = ([[parseQueryResults objectAtIndex:AZSCSnapshotIndex] isKindOfClass:[NSNull class]] ? nil : [parseQueryResults objectAtIndex:AZSCSnapshotIndex]);
-    }
-    
-    _client = [[AZSCloudBlobClient alloc] initWithStorageUri: [AZSNavigationUtil getServiceClientBaseAddressWithStorageUri:self.storageUri usePathStyle:[AZSUtil usePathStyleAddressing:[uri primaryUri]]] credentials:(credentials != nil ? credentials : ([[parseQueryResults objectAtIndex:1] isKindOfClass:[NSNull class]] ? nil : [parseQueryResults objectAtIndex:1]))];
-    
-    _blobName = [AZSNavigationUtil getBlobNameWithBlobAddress:self.storageUri.primaryUri isPathStyle:[AZSUtil usePathStyleAddressing:self.storageUri.primaryUri]];
 }
 
 -(void)downloadToDataWithCompletionHandler:(void (^)(NSError *, NSData *))completionHandler

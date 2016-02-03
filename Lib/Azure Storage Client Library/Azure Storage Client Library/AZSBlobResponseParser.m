@@ -15,7 +15,6 @@
 // </copyright>
 // -----------------------------------------------------------------------------------------
 
-#import "AZSBlobContainerPermissions.h"
 #import "AZSBlobResponseParser.h"
 #import "AZSBlockListItem.h"
 #import "AZSBlobContainerProperties.h"
@@ -526,10 +525,6 @@
             {
                 currentStoredPolicy.policyIdentifier = builder;
             }
-            else if ([currentNode isEqualToString:AZSCXmlAccessPolicy])
-            {
-                //currentStoredPolicy.snapshotTime = builder;
-            }
             
             builder = [[NSMutableString alloc] init];
         }
@@ -548,6 +543,7 @@
             {
                 currentStoredPolicy.permissions = [AZSSharedAccessSignatureHelper permissionsFromString:builder error:error];
             }
+            
             builder = [[NSMutableString alloc] init];
         }
     };
@@ -571,7 +567,7 @@
     return permissions;
 }
 
-+(AZSBlobContainerPermissions *) createContainerPermissionsWithResponse:(NSHTTPURLResponse *)response operationContext:(AZSOperationContext *)operationContext error:(NSError **)error;
++(AZSContainerPublicAccessType) createContainerPermissionsWithResponse:(NSHTTPURLResponse *)response operationContext:(AZSOperationContext *)operationContext error:(NSError **)error;
 {
     NSString *publicAccess = [response.allHeaderFields objectForKey:@"x-ms-blob-public-access"];
     AZSContainerPublicAccessType accessType = AZSContainerPublicAccessTypeOff;
@@ -587,14 +583,10 @@
         }
         else {
             *error = [NSError errorWithDomain:AZSErrorDomain code:AZSEInvalidArgument userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"Invalid Public Access Type: %@", publicAccess]}];
-            return nil;
         }
     }
     
-    AZSBlobContainerPermissions *permissions = [[AZSBlobContainerPermissions alloc] init];
-    permissions.publicAccess = accessType;
-    
-    return permissions;
+    return accessType;
 }
 
 @end

@@ -24,8 +24,6 @@
 
 @implementation AZSUtil
 
-static NSInteger pathStylePorts[20] = {10000, 10001, 10002, 10003, 10004, 10100, 10101, 10102, 10103, 10104, 11000, 11001, 11002, 11003, 10004, 11100, 11101, 11102, 11103, 11104};
-
 +(NSDateFormatter *) dateFormatterWithFormat:(NSString *)format
 {
     static NSDateFormatter *df = nil;
@@ -175,69 +173,35 @@ static NSInteger pathStylePorts[20] = {10000, 10001, 10002, 10003, 10004, 10100,
 
 +(BOOL) usePathStyleAddressing:(NSURL *)url
 {
-    if (url)
-    {
-        if (![url host])
-            
-        {
+    static NSInteger pathStylePorts[20] = {10000, 10001, 10002, 10003, 10004, 10100, 10101, 10102, 10103, 10104, 11000, 11001, 11002, 11003, 10004, 11100, 11101, 11102, 11103, 11104};
+    
+    // Path-style is something like: https://10.234.234.106:10100/accountname/containername/blobname
+    if (url) {
+        NSString *host = [url host];
+        if (!host) {
             return YES;
         }
         
-        // Path-style is something like:
-        // https://10.234.234.106:10100/accountname/containername/blobname
-        
-        //todo: check "hostnametype != DNS" -- no idea how to replicate this in objC.  (copy from Java code)
-        /* Java code:
-         
-         Utility.java
-         
-         * Returns a value that indicates whether a specified URI is a path-style URI.
-         *
-         * @param baseURI
-         *            A <code>java.net.URI</code> value that represents the URI being checked.
-         * @return <code>true</code> if the specified URI is path-style; otherwise, <code>false</code>.
-        public static boolean determinePathStyleFromUri(final URI baseURI) {
-            String path = baseURI.getPath();
-            if (path != null && path.startsWith("/")) {
-                path = path.substring(1);
-            }
-            
-            // if the path is null or empty, this is not path-style
-            if (Utility.isNullOrEmpty(path)) {
-                return false;
-            }
-            
-            // if this contains a port or has a host which is not DNS, this is path-style
-            return pathStylePorts.contains(baseURI.getPort()) || !isHostDnsName(baseURI);
-        }
-        
-         * Returns a boolean indicating whether the host of the specified URI is DNS.
-         *
-         * @param uri
-         *            The URI whose host to evaluate.
-         * @return <code>true</code> if the host is DNS; otherwise, <code>false</code>.
-        private static boolean isHostDnsName(URI uri) {
-            String host = uri.getHost();
-            for (int i = 0; i < host.length(); i++) {
-                char hostChar = host.charAt(i);
-                if (!Character.isDigit(hostChar) && !(hostChar == '.')) {
-                    return true;
-                }
-            }
-            return false;
-        }
-         */
-        
-        for (int i = 0; i < 20; i++)
-        {
-            if (pathStylePorts[i] == [url.port intValue])
-            {
-                return YES;
+        for (int i = 0; i < 20; i++) {
+            if (pathStylePorts[i] == [url.port intValue]) {
+                return [AZSUtil isPathDnsNameWithHost:host];
             }
         }
     }
     
     return NO;
+}
+
++(BOOL) isPathDnsNameWithHost:(NSString *)host
+{
+    for (int i = 0; i < [host length]; i++) {
+        char hostC = [host characterAtIndex:i];
+        if (hostC != '.' || hostC <= '0' || hostC >= '9') {
+            return NO;
+        }
+    }
+    
+    return YES;
 }
 
 +(NSString *) computeHmac256WithString:(NSString*)stringToSign credentials:(AZSStorageCredentials *)credentials

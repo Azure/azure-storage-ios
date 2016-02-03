@@ -68,10 +68,10 @@ AZS_ASSUME_NONNULL_BEGIN
 // TODO: snapshotqualifieduri, issnapshot, etc.
 
 // Initializers are not commented because callers shouldn't be creating AZSCloudBlob objects directly.
-- (instancetype)initWithUrl:(NSURL *)blobAbsoluteUrl;
-- (instancetype)initWithUrl:(NSURL *)blobAbsoluteUrl credentials:(AZSNullable AZSStorageCredentials *)credentials snapshotTime:(AZSNullable NSString *)snapshotTime;
-- (instancetype)initWithStorageUri:(AZSStorageUri *)blobAbsoluteUri;
-- (instancetype)initWithStorageUri:(AZSStorageUri *)blobAbsoluteUri credentials:(AZSNullable AZSStorageCredentials *)credentials snapshotTime:(AZSNullable NSString *)snapshotTime AZS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithUrl:(NSURL *)blobAbsoluteUrl error:(NSError **)error;
+- (instancetype)initWithUrl:(NSURL *)blobAbsoluteUrl credentials:(AZSNullable AZSStorageCredentials *)credentials snapshotTime:(AZSNullable NSString *)snapshotTime error:(NSError **)error;
+- (instancetype)initWithStorageUri:(AZSStorageUri *)blobAbsoluteUri error:(NSError **)error;
+- (instancetype)initWithStorageUri:(AZSStorageUri *)blobAbsoluteUri credentials:(AZSNullable AZSStorageCredentials *)credentials snapshotTime:(AZSNullable NSString *)snapshotTime error:(NSError **)error AZS_DESIGNATED_INITIALIZER;
 - (instancetype)initWithContainer:(AZSCloudBlobContainer *)blobContainer name:(NSString *)blobName;
 - (instancetype)initWithContainer:(AZSCloudBlobContainer *)blobContainer name:(NSString *)blobName snapshotTime:(AZSNullable NSString *)snapshotTime AZS_DESIGNATED_INITIALIZER;
 

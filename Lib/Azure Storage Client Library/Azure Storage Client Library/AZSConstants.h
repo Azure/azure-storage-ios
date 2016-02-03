@@ -35,6 +35,7 @@ FOUNDATION_EXPORT NSString *const AZSCHttpStatusCode;
 FOUNDATION_EXPORT NSString *const AZSCPosix;
 FOUNDATION_EXPORT NSString *const AZSCRawErrorData;
 FOUNDATION_EXPORT NSString *const AZSCTargetStorageVersion;
+FOUNDATION_EXPORT NSString *const AZSCTrue;
 FOUNDATION_EXPORT NSString *const AZSCUserAgent;
 FOUNDATION_EXPORT NSString *const AZSCUtc;
 
@@ -46,9 +47,15 @@ FOUNDATION_EXPORT NSInteger const AZSCSnapshotIndex;
 FOUNDATION_EXPORT NSString *const AZSCSettingsAccountKey;
 FOUNDATION_EXPORT NSString *const AZSCSettingsAccountName;
 FOUNDATION_EXPORT NSString *const AZSCSettingsBlobEndpoint;
+FOUNDATION_EXPORT NSString *const AZSCSettingsEmulator;
 FOUNDATION_EXPORT NSString *const AZSCSettingsEndpointSuffix;
 FOUNDATION_EXPORT NSString *const AZSCSettingsEndpointsProtocol;
 FOUNDATION_EXPORT NSString *const AZSCSettingsSas;
+
+// Emulator
+FOUNDATION_EXPORT NSString *const AZSCEmulatorUrl;
+FOUNDATION_EXPORT NSString *const AZSCEmulatorAccount;
+FOUNDATION_EXPORT NSString *const AZSCEmulatorAccountKey;
 
 // Headers
 FOUNDATION_EXPORT NSString *const AZSCHeaderPrefix;
@@ -112,7 +119,6 @@ FOUNDATION_EXPORT NSString *const AZSCHeaderValueOnly;
 FOUNDATION_EXPORT NSString *const AZSCHeaderValueRelease;
 FOUNDATION_EXPORT NSString *const AZSCHeaderValueRenew;
 FOUNDATION_EXPORT NSString *const AZSCHeaderValueSnapshots;
-FOUNDATION_EXPORT NSString *const AZSCHeaderValueTrue;
 FOUNDATION_EXPORT NSString *const AZSCHeaderValueUncommitted;
 FOUNDATION_EXPORT NSString *const AZSCHeaderValueUncommittedBlobs;
 FOUNDATION_EXPORT NSString *const AZSCHeaderValueUserAgent;

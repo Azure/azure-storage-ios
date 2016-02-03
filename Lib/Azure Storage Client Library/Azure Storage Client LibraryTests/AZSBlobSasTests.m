@@ -18,7 +18,6 @@
 #import <XCTest/XCTest.h>
 #import "AZSAccessCondition.h"
 #import "AZSBlobRequestOptions.h"
-#import "AZSBlobContainerPermissions.h"
 #import "AZSBlobTestBase.h"
 #import "AZSBlockListItem.h"
 #import "AZSConstants.h"
@@ -91,17 +90,15 @@
     }
 }
 
-- (void)checkEqualityOfContainerPermissions:(AZSBlobContainerPermissions *)permissions otherPermissions:(AZSBlobContainerPermissions *)otherPermissions
+- (void)checkEqualityOfContainerPermissions:(NSMutableDictionary *)permissions otherPermissions:(NSMutableDictionary *)otherPermissions
 {
-    XCTAssertTrue(permissions.publicAccess == otherPermissions.publicAccess);
+    XCTAssertEqual(permissions.count, otherPermissions.count);
     
-    XCTAssertEqual(permissions.sharedAccessPolicies.count, otherPermissions.sharedAccessPolicies.count);
-    
-    for (NSString *policyIdentifier in permissions.sharedAccessPolicies) {
-        AZSSharedAccessPolicy *policy = permissions.sharedAccessPolicies[policyIdentifier];
+    for (NSString *policyIdentifier in permissions) {
+        AZSSharedAccessPolicy *policy = permissions[policyIdentifier];
         XCTAssertNotNil(policy);
         
-        AZSSharedAccessPolicy *otherPolicy = otherPermissions.sharedAccessPolicies[policyIdentifier];
+        AZSSharedAccessPolicy *otherPolicy = otherPermissions[policyIdentifier];
         XCTAssertNotNil(otherPolicy);
         
         XCTAssertEqual(policy.permissions, otherPolicy.permissions);
@@ -147,7 +144,9 @@
         XCTAssertFalse(match.location == NSNotFound);
     };
     
-    AZSCloudBlockBlob *sasBlob = [[AZSCloudBlockBlob alloc] initWithStorageUri:[self addToQuery:self.blockBlob.storageUri queryString:sas]];
+    AZSCloudBlockBlob *sasBlob = [[AZSCloudBlockBlob alloc] initWithStorageUri:[self addToQuery:self.blockBlob.storageUri queryString:sas] error:&error];
+    XCTAssertNil(error);
+    
     [sasBlob uploadFromText:@"test" accessCondition:nil requestOptions:nil operationContext:context completionHandler:^(NSError *err) {
         [AZSTestHelpers checkPassageOfError:err expectToPass:YES expectedHttpErrorCode:-1 message:@"Upload from text"];
         [semaphore signal];
@@ -172,7 +171,8 @@
     NSString *containerSasNone = [self.blobContainer createSharedAccessSignatureWithParameters:sp error:&error];
     [AZSTestHelpers checkPassageOfError:error expectToPass:YES expectedHttpErrorCode:-1 message:@"Create SAS token"];
     AZSCloudBlobContainer *noneContainer = [[AZSCloudBlobContainer alloc] initWithStorageUri:
-                                            [[AZSStorageUri alloc] initWithPrimaryUri:[[[AZSUriQueryBuilder alloc] initWithQuery:containerSasNone] addToUri:self.blobContainer.storageUri.primaryUri]]];
+            [[AZSStorageUri alloc] initWithPrimaryUri:[[[AZSUriQueryBuilder alloc] initWithQuery:containerSasNone] addToUri:self.blobContainer.storageUri.primaryUri]] error:&error];
+    XCTAssertNil(error);
     XCTAssertTrue(noneContainer.client.credentials.isSAS);
     
     AZSCloudBlockBlob *noneBlob = [noneContainer blockBlobReferenceFromName:self.blockBlob.blobName];
@@ -188,7 +188,8 @@
         NSString *containerSasOne = [self.blobContainer createSharedAccessSignatureWithParameters:sp error:&error];
         [AZSTestHelpers checkPassageOfError:error expectToPass:YES expectedHttpErrorCode:-1 message:@"Create SAS token"];
         AZSCloudBlobContainer *oneContainer = [[AZSCloudBlobContainer alloc] initWithStorageUri:
-                                               [[AZSStorageUri alloc] initWithPrimaryUri:[[[AZSUriQueryBuilder alloc] initWithQuery:containerSasOne] addToUri:self.blobContainer.storageUri.primaryUri]]];
+                [[AZSStorageUri alloc] initWithPrimaryUri:[[[AZSUriQueryBuilder alloc] initWithQuery:containerSasOne] addToUri:self.blobContainer.storageUri.primaryUri]] error:&error];
+        XCTAssertNil(error);
         XCTAssertTrue(oneContainer.client.credentials.isSAS);
         
         AZSCloudBlockBlob *oneBlob = [oneContainer blockBlobReferenceFromName:self.blockBlob.blobName];
@@ -204,7 +205,8 @@
             NSString *containerSasAll = [self.blobContainer createSharedAccessSignatureWithParameters:sp error:&error];
             [AZSTestHelpers checkPassageOfError:error expectToPass:YES expectedHttpErrorCode:-1 message:@"Create SAS token"];
             AZSCloudBlobContainer *allContainer = [[AZSCloudBlobContainer alloc] initWithStorageUri:
-                                                   [[AZSStorageUri alloc] initWithPrimaryUri:[[[AZSUriQueryBuilder alloc] initWithQuery:containerSasAll] addToUri:self.blobContainer.storageUri.primaryUri]]];
+                    [[AZSStorageUri alloc] initWithPrimaryUri:[[[AZSUriQueryBuilder alloc] initWithQuery:containerSasAll] addToUri:self.blobContainer.storageUri.primaryUri]] error:&error];
+            XCTAssertNil(error);
             XCTAssertTrue(allContainer.client.credentials.isSAS);
             
             AZSCloudBlockBlob *allBlob = [allContainer blockBlobReferenceFromName:self.blockBlob.blobName];
@@ -233,7 +235,8 @@
     NSString *containerSasNone = [self.blobContainer createSharedAccessSignatureWithParameters:sp error:&error];
     [AZSTestHelpers checkPassageOfError:error expectToPass:YES expectedHttpErrorCode:-1 message:@"Create SAS token"];
     AZSCloudBlobContainer *noneContainer = [[AZSCloudBlobContainer alloc] initWithStorageUri:
-                                            [[AZSStorageUri alloc] initWithPrimaryUri:[[[AZSUriQueryBuilder alloc] initWithQuery:containerSasNone] addToUri:self.blobContainer.storageUri.primaryUri]]];
+            [[AZSStorageUri alloc] initWithPrimaryUri:[[[AZSUriQueryBuilder alloc] initWithQuery:containerSasNone] addToUri:self.blobContainer.storageUri.primaryUri]] error:&error];
+    XCTAssertNil(error);
     XCTAssertTrue(noneContainer.client.credentials.isSAS);
     
     AZSCloudBlockBlob *noneBlob = [noneContainer blockBlobReferenceFromName:self.blockBlob.blobName];
@@ -249,7 +252,8 @@
         NSString *containerSasOne = [self.blobContainer createSharedAccessSignatureWithParameters:sp error:&error];
         [AZSTestHelpers checkPassageOfError:error expectToPass:YES expectedHttpErrorCode:-1 message:@"Create SAS token"];
         AZSCloudBlobContainer *oneContainer = [[AZSCloudBlobContainer alloc] initWithStorageUri:
-                                               [[AZSStorageUri alloc] initWithPrimaryUri:[[[AZSUriQueryBuilder alloc] initWithQuery:containerSasOne] addToUri:self.blobContainer.storageUri.primaryUri]]];
+                [[AZSStorageUri alloc] initWithPrimaryUri:[[[AZSUriQueryBuilder alloc] initWithQuery:containerSasOne] addToUri:self.blobContainer.storageUri.primaryUri]] error:&error];
+        XCTAssertNil(error);
         XCTAssertTrue(oneContainer.client.credentials.isSAS);
         
         AZSCloudBlockBlob *oneBlob = [oneContainer blockBlobReferenceFromName:self.blockBlob.blobName];
@@ -264,7 +268,8 @@
             NSString *containerSasAll = [self.blobContainer createSharedAccessSignatureWithParameters:sp error:&error];
             [AZSTestHelpers checkPassageOfError:error expectToPass:YES expectedHttpErrorCode:-1 message:@"Create SAS token"];
             AZSCloudBlobContainer *allContainer = [[AZSCloudBlobContainer alloc] initWithStorageUri:
-                                                   [[AZSStorageUri alloc] initWithPrimaryUri:[[[AZSUriQueryBuilder alloc] initWithQuery:containerSasAll] addToUri:self.blobContainer.storageUri.primaryUri]]];
+                    [[AZSStorageUri alloc] initWithPrimaryUri:[[[AZSUriQueryBuilder alloc] initWithQuery:containerSasAll] addToUri:self.blobContainer.storageUri.primaryUri]] error:&error];
+            XCTAssertNil(error);
             XCTAssertTrue(allContainer.client.credentials.isSAS);
             
             AZSCloudBlockBlob *allBlob = [allContainer blockBlobReferenceFromName:self.blockBlob.blobName];
@@ -297,7 +302,8 @@
     uri.scheme = AZSCHttp;
     
     AZSCloudBlobContainer *httpContainer = [[AZSCloudBlobContainer alloc] initWithStorageUri:
-                                            [[AZSStorageUri alloc] initWithPrimaryUri:[httpsBuilder addToUri:uri.URL]]];
+            [[AZSStorageUri alloc] initWithPrimaryUri:[httpsBuilder addToUri:uri.URL]] error:&error];
+    XCTAssertNil(error);
     XCTAssertTrue(httpContainer.client.credentials.isSAS);
     
     AZSCloudBlockBlob *httpBlob = [httpContainer blockBlobReferenceFromName:self.blockBlob.blobName];
@@ -306,9 +312,11 @@
         XCTAssertTrue([(err.userInfo[@"Message"]) hasPrefix:@"This request is not authorized to perform this operation using this protocol."]);
         
         // Ensure using https with https only SAS succeeds.
+        NSError *error = nil;
         uri.scheme = AZSCHttps;
         AZSCloudBlobContainer *httpsContainer = [[AZSCloudBlobContainer alloc] initWithStorageUri:
-                                                 [[AZSStorageUri alloc] initWithPrimaryUri:[httpsBuilder addToUri:uri.URL]]];
+                [[AZSStorageUri alloc] initWithPrimaryUri:[httpsBuilder addToUri:uri.URL]] error:&error];
+        XCTAssertNil(error);
         XCTAssertTrue(httpsContainer.client.credentials.isSAS);
         
         AZSCloudBlockBlob *httpsBlob = [httpsContainer blockBlobReferenceFromName:self.blockBlob.blobName];
@@ -323,7 +331,8 @@
             AZSUriQueryBuilder *httpBuilder = [[AZSUriQueryBuilder alloc] initWithQuery:containerSasHttp];
             
             AZSCloudBlobContainer *httpsContainer = [[AZSCloudBlobContainer alloc] initWithStorageUri:
-                                                     [[AZSStorageUri alloc] initWithPrimaryUri:[httpBuilder addToUri:uri.URL]]];
+                    [[AZSStorageUri alloc] initWithPrimaryUri:[httpBuilder addToUri:uri.URL]] error:&error];
+            XCTAssertNil(error);
             XCTAssertTrue(httpsContainer.client.credentials.isSAS);
             
             AZSCloudBlockBlob *httpsBlob = [httpsContainer blockBlobReferenceFromName:self.blockBlob.blobName];
@@ -331,9 +340,11 @@
                 [AZSTestHelpers checkPassageOfError:err expectToPass:YES expectedHttpErrorCode:-1 message:@"Download blob using https"];
                 
                 // Ensure using http with https,http SAS succeeds.
+                NSError *error = nil;
                 uri.scheme = AZSCHttp;
                 AZSCloudBlobContainer *httpContainer = [[AZSCloudBlobContainer alloc] initWithStorageUri:
-                                                        [[AZSStorageUri alloc] initWithPrimaryUri:[httpBuilder addToUri:uri.URL]]];
+                        [[AZSStorageUri alloc] initWithPrimaryUri:[httpBuilder addToUri:uri.URL]] error:&error];
+                XCTAssertNil(error);
                 XCTAssertTrue(httpContainer.client.credentials.isSAS);
                 
                 AZSCloudBlockBlob *httpBlob = [httpContainer blockBlobReferenceFromName:self.blockBlob.blobName];
@@ -359,16 +370,16 @@
     policy.sharedAccessStartTime = [[NSDate alloc] initWithTimeIntervalSinceNow:0];
     policy.sharedAccessExpiryTime = [[NSDate alloc] initWithTimeIntervalSinceNow:300];
     
-    AZSBlobContainerPermissions *permissions = [[AZSBlobContainerPermissions alloc] init];
-    permissions.sharedAccessPolicies[sp.storedPolicyIdentifier] = policy;
+    NSMutableDictionary *permissions = [NSMutableDictionary dictionaryWithDictionary:@{sp.storedPolicyIdentifier : policy}];
     [self.blobContainer uploadPermissions:permissions completionHandler:^(NSError *err) {
         [AZSTestHelpers checkPassageOfError:err expectToPass:YES expectedHttpErrorCode:-1 message:@"Upload permissions"];
         [NSThread sleepForTimeInterval:30];
         
         [self testContainerSASWithParameters:sp completionHandler:^{
-            [self.blobContainer downloadPermissionsWithCompletionHandler:^(NSError *error, AZSBlobContainerPermissions *storedPermissions) {
+            [self.blobContainer downloadPermissionsWithCompletionHandler:^(NSError *error, NSMutableDictionary *storedPermissions, AZSContainerPublicAccessType publicAccess) {
                 [AZSTestHelpers checkPassageOfError:err expectToPass:YES expectedHttpErrorCode:-1 message:@"Download permissions"];
                 [self checkEqualityOfContainerPermissions:permissions otherPermissions:storedPermissions];
+                XCTAssertEqual(publicAccess, AZSContainerPublicAccessTypeOff);
                 
                 [semaphore signal];
             }];
@@ -393,7 +404,8 @@
     NSString *containerReadListSAS = [self.blobContainer createSharedAccessSignatureWithParameters:sp error:&error];
     [AZSTestHelpers checkPassageOfError:error expectToPass:YES expectedHttpErrorCode:-1 message:@"Create SAS token"];
     
-    AZSCloudBlobContainer *readListContainer = [[AZSCloudBlobContainer alloc] initWithStorageUri:[self addToQuery:self.blobContainer.storageUri queryString:containerReadListSAS]];
+    AZSCloudBlobContainer *readListContainer = [[AZSCloudBlobContainer alloc] initWithStorageUri:[self addToQuery:self.blobContainer.storageUri queryString:containerReadListSAS] error:&error];
+    XCTAssertNil(error);
     XCTAssertTrue([readListContainer.client.credentials isSAS]);
     
     AZSCloudBlockBlob *blobFromSasContainer = [readListContainer blockBlobReferenceFromName:self.blockBlob.blobName];
@@ -401,7 +413,9 @@
         [AZSTestHelpers checkPassageOfError:err expectToPass:YES expectedHttpErrorCode:-1 message:@"Download blobFromSasContainer to stream"];
         
         // Withhold client and check new container's client has correct permissions
-        AZSCloudBlobContainer *containerFromURI = [[AZSCloudBlobContainer alloc] initWithStorageUri:[self addToQuery:readListContainer.storageUri queryString:[self.blobContainer createSharedAccessSignatureWithParameters:sp error:&error]]];
+        NSError *initError;
+        AZSCloudBlobContainer *containerFromURI = [[AZSCloudBlobContainer alloc] initWithStorageUri:[self addToQuery:readListContainer.storageUri queryString:[self.blobContainer createSharedAccessSignatureWithParameters:sp error:&error]] error:&initError];
+        XCTAssertNil(initError);
         [AZSTestHelpers checkPassageOfError:error expectToPass:YES expectedHttpErrorCode:-1 message:@"Create SAS token"];
         XCTAssertTrue([containerFromURI.client.credentials isSAS]);
         
@@ -442,17 +456,17 @@
     policy.permissions = AZSSharedAccessPermissionsRead|AZSSharedAccessPermissionsWrite|AZSSharedAccessPermissionsList;
     policy.sharedAccessExpiryTime = [[NSDate alloc] initWithTimeIntervalSinceNow:300];
     
-    AZSBlobContainerPermissions *permissions = [[AZSBlobContainerPermissions alloc] init];
-    permissions.sharedAccessPolicies[@"readperm"] = policy;
+    NSMutableDictionary *permissions = [NSMutableDictionary dictionaryWithDictionary:@{@"readperm" : policy}];
     [self.blobContainer uploadPermissions:permissions completionHandler:^(NSError * err) {
         [AZSTestHelpers checkPassageOfError:err expectToPass:YES expectedHttpErrorCode:-1 message:@"Upload permissions"];
         
         [NSThread sleepForTimeInterval:30];
         
         [self testContainerSasBlobHeadersWithParameters:sp context:context completionHandler:^() {
-            [self.blobContainer downloadPermissionsWithCompletionHandler:^(NSError *error, AZSBlobContainerPermissions *storedPermissions) {
+            [self.blobContainer downloadPermissionsWithCompletionHandler:^(NSError *error, NSMutableDictionary *storedPermissions, AZSContainerPublicAccessType publicAccess) {
                 [AZSTestHelpers checkPassageOfError:err expectToPass:YES expectedHttpErrorCode:-1 message:@"Download permissions"];
                 [self checkEqualityOfContainerPermissions:permissions otherPermissions:storedPermissions];
+                XCTAssertEqual(publicAccess, AZSContainerPublicAccessTypeOff);
                 
                 [semaphore signal];
             }];
@@ -493,7 +507,8 @@
     AZSStorageCredentials *creds = [[AZSStorageCredentials alloc] initWithSASToken:[self.blobContainer createSharedAccessSignatureWithParameters:sp error:&error]];
     [AZSTestHelpers checkPassageOfError:error expectToPass:YES expectedHttpErrorCode:-1 message:@"Create SAS token"];
     
-    AZSCloudBlobContainer *container = [[AZSCloudBlobContainer alloc] initWithStorageUri:self.blobContainer.storageUri credentials:creds];
+    AZSCloudBlobContainer *container = [[AZSCloudBlobContainer alloc] initWithStorageUri:self.blobContainer.storageUri credentials:creds error:&error];
+    XCTAssertNil(error);
     AZSCloudBlockBlob *sasBlob = [container blockBlobReferenceFromName:self.blockBlob.blobName];
     
     [sasBlob downloadToStream:[[NSOutputStream alloc] initToMemory] accessCondition:nil requestOptions:nil operationContext:context completionHandler:^(NSError * err) {
@@ -521,19 +536,19 @@
     policy2.permissions = AZSSharedAccessPermissionsRead;
     policy2.sharedAccessExpiryTime = policy.sharedAccessExpiryTime;
     
-    AZSBlobContainerPermissions *permissions = [[AZSBlobContainerPermissions alloc] init];
-    permissions.sharedAccessPolicies[sp.storedPolicyIdentifier] = policy;
-    permissions.sharedAccessPolicies[sp2.storedPolicyIdentifier] = policy2;
+    NSMutableDictionary *permissions = [NSMutableDictionary dictionaryWithDictionary:
+            @{sp.storedPolicyIdentifier : policy, sp2.storedPolicyIdentifier : policy2}];
     
     [self.blobContainer uploadPermissions:permissions completionHandler:^(NSError *err) {
         [AZSTestHelpers checkPassageOfError:err expectToPass:YES expectedHttpErrorCode:-1 message:@"Upload permissions"];
         
         [NSThread sleepForTimeInterval:30];
         
-        [self testContainerUpdateSasWithReadWriteParameters:sp readOnlyParameters:sp2 policies:permissions.sharedAccessPolicies completionHandler:^() {
-            [self.blobContainer downloadPermissionsWithCompletionHandler:^(NSError *error, AZSBlobContainerPermissions *storedPermissions) {
+        [self testContainerUpdateSasWithReadWriteParameters:sp readOnlyParameters:sp2 policies:permissions completionHandler:^() {
+            [self.blobContainer downloadPermissionsWithCompletionHandler:^(NSError *error, NSMutableDictionary *storedPermissions, AZSContainerPublicAccessType publicAccess) {
                 [AZSTestHelpers checkPassageOfError:err expectToPass:YES expectedHttpErrorCode:-1 message:@"Download permissions"];
                 [self checkEqualityOfContainerPermissions:permissions otherPermissions:storedPermissions];
+                XCTAssertEqual(publicAccess, AZSContainerPublicAccessTypeOff);
                 
                 [semaphore signal];
             }];
@@ -572,7 +587,9 @@
             NSString *sasToken2 = [self.blobContainer createSharedAccessSignatureWithParameters:sp2 error:&error];
             [AZSTestHelpers checkPassageOfError:error expectToPass:YES expectedHttpErrorCode:-1 message:@"Create SAS token"];
             
-            AZSCloudBlobContainer *sasContainer = [[AZSCloudBlobContainer alloc] initWithStorageUri:[self addToQuery:self.blobContainer.storageUri queryString:sasToken2]];
+            AZSCloudBlobContainer *sasContainer = [[AZSCloudBlobContainer alloc] initWithStorageUri:[self addToQuery:self.blobContainer.storageUri queryString:sasToken2] error:&error];
+            XCTAssertNil(error);
+            
             testBlob = [sasContainer blockBlobReferenceFromName:[NSString stringWithFormat:@"sasBlob2%@", sp.storedPolicyIdentifier]];
             [testBlob uploadFromText:@"test" completionHandler:^(NSError *err) {
                 [AZSTestHelpers checkPassageOfError:err expectToPass:NO expectedHttpErrorCode:403 message:@"Upload from text"];
@@ -616,8 +633,7 @@
                 policy.sharedAccessExpiryTime = [[NSDate alloc] initWithTimeIntervalSinceNow:300];
                 
                 // Test with stored policy
-                __block AZSBlobContainerPermissions *containerPermissions = [[AZSBlobContainerPermissions alloc] init];
-                containerPermissions.sharedAccessPolicies[policy.policyIdentifier] = policy;
+                NSMutableDictionary *containerPermissions = [NSMutableDictionary dictionaryWithDictionary:@{policy.policyIdentifier : policy}];
                 AZSTestSemaphore *innerSemaphore = [[AZSTestSemaphore alloc] init];
                 NSError *error = nil;
                 
@@ -632,9 +648,10 @@
                     
                     dispatch_semaphore_wait(counter, DISPATCH_TIME_FOREVER);
                     [self testAccessWithSAS:sasToken permissions:accessPermissions container:container blob:blob completionHandler:^() {
-                        [container downloadPermissionsWithCompletionHandler:^(NSError *error, AZSBlobContainerPermissions *storedPermissions) {
+                        [container downloadPermissionsWithCompletionHandler:^(NSError *error, NSMutableDictionary *storedPermissions, AZSContainerPublicAccessType publicAccess) {
                             [AZSTestHelpers checkPassageOfError:err expectToPass:YES expectedHttpErrorCode:-1 message:@"Download permissions"];
                             [self checkEqualityOfContainerPermissions:containerPermissions otherPermissions:storedPermissions];
+                            XCTAssertEqual(publicAccess, AZSContainerPublicAccessTypeOff);
                             
                             dispatch_semaphore_signal(counter);
                             [innerSemaphore signal];
@@ -677,25 +694,24 @@
     [testBlob uploadFromText:@"test" completionHandler:^(NSError *err) {
         [AZSTestHelpers checkPassageOfError:err expectToPass:YES expectedHttpErrorCode:-1 message:@"Upload from text"];
         
-        AZSBlobContainerPermissions *permissions = [[AZSBlobContainerPermissions alloc] init];
-        permissions.publicAccess = AZSContainerPublicAccessTypeContainer;
-        [self.blobContainer uploadPermissions:permissions completionHandler:^(NSError * err) {
+        AZSContainerPublicAccessType publicAccess = AZSContainerPublicAccessTypeContainer;
+        [self.blobContainer uploadPermissions:nil publicAccess:publicAccess accessCondition:nil requestOptions:nil operationContext:nil completionHandler:^(NSError * err) {
             [AZSTestHelpers checkPassageOfError:err expectToPass:YES expectedHttpErrorCode:-1 message:@"Upload permissions"];
             
             [NSThread sleepForTimeInterval:35];
             
             [self testAccessWithSAS:nil permissions:AZSSharedAccessPermissionsList|AZSSharedAccessPermissionsRead container:self.blobContainer blob:testBlob completionHandler:^{
-                permissions.publicAccess = AZSContainerPublicAccessTypeBlob;
-                [self.blobContainer uploadPermissions:permissions completionHandler:^(NSError * err) {
+                AZSContainerPublicAccessType publicAccess = AZSContainerPublicAccessTypeBlob;
+                [self.blobContainer uploadPermissions:nil publicAccess:publicAccess accessCondition:nil requestOptions:nil operationContext:nil  completionHandler:^(NSError * err) {
                     [AZSTestHelpers checkPassageOfError:err expectToPass:YES expectedHttpErrorCode:-1 message:@"Upload Permissions"];
                     
                     [NSThread sleepForTimeInterval:30];
                     [self testAccessWithSAS:nil permissions:AZSSharedAccessPermissionsRead container:self.blobContainer blob:testBlob completionHandler:^{
-                        [AZSTestHelpers checkPassageOfError:err expectToPass:YES expectedHttpErrorCode:-1 message:@"Delete Container"];
                         
-                        [self.blobContainer downloadPermissionsWithCompletionHandler:^(NSError *err, AZSBlobContainerPermissions *storedPermissions) {
+                        [self.blobContainer downloadPermissionsWithCompletionHandler:^(NSError *err, NSMutableDictionary *storedPermissions, AZSContainerPublicAccessType storedPublicAccess) {
                             [AZSTestHelpers checkPassageOfError:err expectToPass:YES expectedHttpErrorCode:-1 message:@"Fetch permissions"];
-                            [self checkEqualityOfContainerPermissions:permissions otherPermissions:storedPermissions];
+                            XCTAssertEqual(storedPermissions.count, 0);
+                            XCTAssertEqual(publicAccess, storedPublicAccess);
                             
                             [semaphore signal];
                         }];
@@ -740,8 +756,7 @@
                 policy.sharedAccessExpiryTime = [[NSDate alloc] initWithTimeIntervalSinceNow:300];
                 
                 // Test with stored policy
-                AZSBlobContainerPermissions *containerPermissions = [[AZSBlobContainerPermissions alloc] init];
-                containerPermissions.sharedAccessPolicies[policy.policyIdentifier] = policy;
+                NSMutableDictionary *containerPermissions = [NSMutableDictionary dictionaryWithDictionary:@{policy.policyIdentifier : policy}];
                 AZSTestSemaphore *innerSemaphore = [[AZSTestSemaphore alloc] init];
                 __block NSError *error = nil;
                 
@@ -755,9 +770,10 @@
                     [AZSTestHelpers checkPassageOfError:error expectToPass:YES expectedHttpErrorCode:-1 message:@"Create SAS token"];
                     
                     [self testAccessWithSAS:sasToken permissions:accessPermissions container:nil blob:blob completionHandler:^() {
-                        [container downloadPermissionsWithCompletionHandler:^(NSError *error, AZSBlobContainerPermissions *storedPermissions) {
+                        [container downloadPermissionsWithCompletionHandler:^(NSError *error, NSMutableDictionary *storedPermissions, AZSContainerPublicAccessType publicAccess) {
                             [AZSTestHelpers checkPassageOfError:err expectToPass:YES expectedHttpErrorCode:-1 message:@"Download permissions"];
                             [self checkEqualityOfContainerPermissions:containerPermissions otherPermissions:storedPermissions];
+                            XCTAssertEqual(publicAccess, AZSContainerPublicAccessTypeOff);
                             
                             [innerSemaphore signal];
                         }];
@@ -799,16 +815,16 @@
     AZSSharedAccessPolicy *policy = [[AZSSharedAccessPolicy alloc] initWithIdentifier:sp.storedPolicyIdentifier];
     policy.permissions = AZSSharedAccessPermissionsRead|AZSSharedAccessPermissionsList;
     policy.sharedAccessExpiryTime = [[NSDate alloc] initWithTimeIntervalSinceNow:300];
-    AZSBlobContainerPermissions *permissions = [[AZSBlobContainerPermissions alloc] init];
-    permissions.sharedAccessPolicies[sp.storedPolicyIdentifier] = policy;
+    NSMutableDictionary *permissions = [NSMutableDictionary dictionaryWithDictionary:@{sp.storedPolicyIdentifier : policy}];
     
     [self.blobContainer uploadPermissions:permissions completionHandler:^(NSError *err) {
         [AZSTestHelpers checkPassageOfError:err expectToPass:YES expectedHttpErrorCode:-1 message:@"Upload Permissions"];
         
         [self testBlobSasWithParameters:sp completionHandler:^{
-            [self.blobContainer downloadPermissionsWithCompletionHandler:^(NSError *err, AZSBlobContainerPermissions *storedPermissions) {
+            [self.blobContainer downloadPermissionsWithCompletionHandler:^(NSError *err, NSMutableDictionary *storedPermissions, AZSContainerPublicAccessType publicAccess) {
                 [AZSTestHelpers checkPassageOfError:err expectToPass:YES expectedHttpErrorCode:-1 message:@"Fetch permissions"];
                 [self checkEqualityOfContainerPermissions:permissions otherPermissions:storedPermissions];
+                XCTAssertEqual(publicAccess, AZSContainerPublicAccessTypeOff);
                 
                 [semaphore signal];
             }];
@@ -835,12 +851,15 @@
     NSString *blobURL = [NSString stringWithFormat:@"%@?%@", [[self.blockBlob.storageUri urlWithLocation:AZSStorageLocationPrimary] absoluteString], [self.blockBlob createSharedAccessSignatureWithParameters:sp error:&error]];
     [AZSTestHelpers checkPassageOfError:error expectToPass:YES expectedHttpErrorCode:-1 message:@"Create SAS token"];
     
-    AZSCloudBlockBlob *sasBlob = [[AZSCloudBlockBlob alloc] initWithUrl:[[NSURL alloc] initWithString:blobURL]];
+    AZSCloudBlockBlob *sasBlob = [[AZSCloudBlockBlob alloc] initWithUrl:[[NSURL alloc] initWithString:blobURL] error:&error];
+    XCTAssertNil(error);
     [sasBlob downloadToStream:[[NSOutputStream alloc] initToMemory] completionHandler:^(NSError * err) {
         [AZSTestHelpers checkPassageOfError:err expectToPass:YES expectedHttpErrorCode:-1 message:@"Dowload to stream"];
         
         // Withhold the client and ensure the new blob's client still has SAS permissions
-        AZSCloudBlockBlob *blobFromUri = [[AZSCloudBlockBlob alloc] initWithStorageUri:[self addToQuery:self.blockBlob.storageUri queryString:[self.blockBlob createSharedAccessSignatureWithParameters:sp error:&error]]];
+        NSError *initError;
+        AZSCloudBlockBlob *blobFromUri = [[AZSCloudBlockBlob alloc] initWithStorageUri:[self addToQuery:self.blockBlob.storageUri queryString:[self.blockBlob createSharedAccessSignatureWithParameters:sp error:&error]] error:&initError];
+        XCTAssertNil(initError);
         [AZSTestHelpers checkPassageOfError:error expectToPass:YES expectedHttpErrorCode:-1 message:@"Create SAS token"];
         XCTAssertTrue([blobFromUri.client.credentials isSAS]);
         
@@ -877,15 +896,15 @@
     AZSSharedAccessPolicy *policy = [[AZSSharedAccessPolicy alloc] initWithIdentifier:sp.storedPolicyIdentifier];
     policy.permissions = AZSSharedAccessPermissionsRead|AZSSharedAccessPermissionsWrite|AZSSharedAccessPermissionsList;
     policy.sharedAccessExpiryTime = [[NSDate alloc] initWithTimeIntervalSinceNow:300];
-    AZSBlobContainerPermissions *permissions = [[AZSBlobContainerPermissions alloc] init];
-    permissions.sharedAccessPolicies[sp.storedPolicyIdentifier] = policy;
+    NSMutableDictionary *permissions = [NSMutableDictionary dictionaryWithDictionary:@{sp.storedPolicyIdentifier : policy}];
     [self.blobContainer uploadPermissions:permissions completionHandler:^(NSError * err) {
         [AZSTestHelpers checkPassageOfError:err expectToPass:YES expectedHttpErrorCode:-1 message:@"Upload permissions"];
         
         [self testBlobSasSharedAccessBlobHeadersWithParameters:sp context:context completionHandler:^() {
-            [self.blobContainer downloadPermissionsWithCompletionHandler:^(NSError *err, AZSBlobContainerPermissions *storedPermissions) {
+            [self.blobContainer downloadPermissionsWithCompletionHandler:^(NSError *err, NSMutableDictionary *storedPermissions, AZSContainerPublicAccessType publicAccess) {
                 [AZSTestHelpers checkPassageOfError:err expectToPass:YES expectedHttpErrorCode:-1 message:@"Fetch permissions"];
                 [self checkEqualityOfContainerPermissions:permissions otherPermissions:storedPermissions];
+                XCTAssertEqual(publicAccess, AZSContainerPublicAccessTypeOff);
                 
                 [semaphore signal];
             }];
@@ -922,7 +941,8 @@
                          [self.blockBlob createSharedAccessSignatureWithParameters:sp error:&error]];
     [AZSTestHelpers checkPassageOfError:error expectToPass:YES expectedHttpErrorCode:-1 message:@"Create SAS token"];
     
-    AZSCloudBlockBlob *sasBlob = [[AZSCloudBlockBlob alloc] initWithUrl:[[NSURL alloc] initWithString:blobURL]];
+    AZSCloudBlockBlob *sasBlob = [[AZSCloudBlockBlob alloc] initWithUrl:[[NSURL alloc] initWithString:blobURL] error:&error];
+    XCTAssertNil(error);
     
     context.responseReceived = ^void(NSMutableURLRequest *req, NSHTTPURLResponse *resp, AZSOperationContext *ctxt) {
         XCTAssertTrue([@"no-cache" isEqualToString:resp.allHeaderFields[AZSCXmlContentCacheControl]]);
@@ -943,13 +963,15 @@
     const AZSStorageCredentials *creds = [[AZSStorageCredentials alloc] initWithSASToken:sasToken];
     const int permissionsErrorCode = (sasToken) ? 403 : 404;
     
+    NSError *error;
     if (container) {
-        container = [[AZSCloudBlobContainer alloc] initWithStorageUri:[creds transformWithStorageUri:container.storageUri]];
+        container = [[AZSCloudBlobContainer alloc] initWithStorageUri:[creds transformWithStorageUri:container.storageUri] error:&error];
         blob = [container blockBlobReferenceFromName:blob.blobName];
     }
     else {
-        blob = [[AZSCloudBlockBlob alloc] initWithStorageUri:[self addToQuery:blob.storageUri queryString:sasToken]];
+        blob = [[AZSCloudBlockBlob alloc] initWithStorageUri:[self addToQuery:blob.storageUri queryString:sasToken] error:&error];
     }
+    XCTAssertNil(error);
     
     __block AZSContinuationToken *token = [[AZSContinuationToken alloc] init];
     

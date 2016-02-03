@@ -250,7 +250,7 @@
         [AZSUtil addOptionalHeaderToRequest:request header:AZSCHeaderRange stringValue:[NSString stringWithFormat:@"%lu-%lu",(unsigned long)range.location, ((unsigned long)range.location + (unsigned long)range.length)]];
         if (getRangeContentMD5)
         {
-            [AZSUtil addOptionalHeaderToRequest:request header:AZSCHeaderRangeGetContent stringValue:AZSCHeaderValueTrue];
+            [AZSUtil addOptionalHeaderToRequest:request header:AZSCHeaderRangeGetContent stringValue:AZSCTrue];
         }
     }
     

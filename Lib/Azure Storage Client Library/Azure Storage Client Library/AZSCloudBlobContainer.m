@@ -35,7 +35,6 @@
 #import "AZSContinuationToken.h"
 #import "AZSResultSegment.h"
 #import "AZSBlobContainerProperties.h"
-#import "AZSBlobContainerPermissions.h"
 #import "AZSBlobRequestXML.h"
 #import "AZSSharedAccessBlobParameters.h"
 #import "AZSSharedAccessSignatureHelper.h"
@@ -58,27 +57,43 @@
     return nil;
 }
 
-- (instancetype)initWithUrl:(NSURL *)containerAbsoluteUrl
+- (instancetype)initWithUrl:(NSURL *)containerAbsoluteUrl error:(NSError **)error
 {
-    return [self initWithUrl:containerAbsoluteUrl credentials:nil];
+    return [self initWithUrl:containerAbsoluteUrl credentials:nil error:error];
 }
 
-- (instancetype)initWithUrl:(NSURL *)containerAbsoluteUrl credentials:(AZSStorageCredentials *)credentials
+- (instancetype)initWithUrl:(NSURL *)containerAbsoluteUrl credentials:(AZSStorageCredentials *)credentials error:(NSError **)error
 {
-    return [self initWithStorageUri:[[AZSStorageUri alloc] initWithPrimaryUri:containerAbsoluteUrl] credentials:credentials];
+    return [self initWithStorageUri:[[AZSStorageUri alloc] initWithPrimaryUri:containerAbsoluteUrl] credentials:credentials error:error];
 }
 
-- (instancetype)initWithStorageUri:(AZSStorageUri *)containerAbsoluteUrl
+- (instancetype)initWithStorageUri:(AZSStorageUri *)containerAbsoluteUrl error:(NSError **)error
 {
-    return [self initWithStorageUri:containerAbsoluteUrl credentials:nil];
+    return [self initWithStorageUri:containerAbsoluteUrl credentials:nil error:error];
 }
 
-- (instancetype)initWithStorageUri:(AZSStorageUri *)containerAbsoluteUrl credentials:(AZSStorageCredentials *)credentials
+- (instancetype)initWithStorageUri:(AZSStorageUri *)containerAbsoluteUrl credentials:(AZSStorageCredentials *)credentials error:(NSError **)error
 {
     self = [super init];
     if (self)
     {
-        [self parseQueryAndVerifyWithUri:containerAbsoluteUrl credentials:credentials];
+        NSMutableArray *parseQueryResults = [AZSNavigationUtil parseBlobQueryAndVerifyWithStorageUri:containerAbsoluteUrl];
+        
+        if (([credentials isSAS] || [credentials isSharedKey]) && ![parseQueryResults[1] isKindOfClass:[NSNull class]]) {
+            *error = [NSError errorWithDomain:AZSErrorDomain code:AZSEInvalidArgument userInfo:nil];
+            [[AZSUtil operationlessContext] logAtLevel:AZSLogLevelError withMessage:@"Multiple credentials provided."];
+            return nil;
+        }
+        
+        credentials = (credentials ?: ([parseQueryResults[1] isKindOfClass:[NSNull class]] ? nil : parseQueryResults[1]));
+        
+        _storageUri = ([parseQueryResults[0] isKindOfClass:[NSNull class]] ? nil : parseQueryResults[0]);
+        _client = [[AZSCloudBlobClient alloc] initWithStorageUri: [AZSNavigationUtil getServiceClientBaseAddressWithStorageUri:_storageUri usePathStyle:[AZSUtil usePathStyleAddressing:[containerAbsoluteUrl primaryUri]] error:error] credentials:credentials];
+        if (*error) {
+            return nil;
+        }
+        
+        _name = [AZSNavigationUtil getContainerNameWithContainerAddress:_storageUri.primaryUri isPathStyle:[AZSUtil usePathStyleAddressing:_storageUri.primaryUri]];
         _properties = [[AZSBlobContainerProperties alloc] init];
         _metadata = [[NSMutableDictionary alloc] init];
     }
@@ -256,12 +271,12 @@
     return;
 }
 
--(void)uploadPermissions:(AZSBlobContainerPermissions *)permissions completionHandler:(void (^)(NSError *))completionHandler
+-(void)uploadPermissions:(NSMutableDictionary *)permissions completionHandler:(void (^)(NSError *))completionHandler
 {
-    [self uploadPermissions:permissions accessCondition:nil requestOptions:nil operationContext:nil completionHandler:completionHandler];
+    [self uploadPermissions:permissions publicAccess:AZSContainerPublicAccessTypeOff accessCondition:nil requestOptions:nil operationContext:nil completionHandler:completionHandler];
 }
 
-- (void)uploadPermissions:(AZSBlobContainerPermissions *)permissions accessCondition:(AZSAccessCondition *)accessCondition requestOptions:(AZSBlobRequestOptions *)requestOptions operationContext:(AZSOperationContext *)operationContext completionHandler:(void (^)(NSError *))completionHandler
+- (void)uploadPermissions:(NSMutableDictionary *)permissions publicAccess:(AZSContainerPublicAccessType)publicAccess accessCondition:(AZSAccessCondition *)accessCondition requestOptions:(AZSBlobRequestOptions *)requestOptions operationContext:(AZSOperationContext *)operationContext completionHandler:(void (^)(NSError *))completionHandler
 {
     if (!operationContext) {
         operationContext = [[AZSOperationContext alloc] init];
@@ -279,7 +294,7 @@
     
     [command setSource:sourceData];
     [command setBuildRequest:^ NSMutableURLRequest * (NSURLComponents *urlComponents, NSTimeInterval timeout, AZSOperationContext *operationContext) {
-        return [AZSBlobRequestFactory uploadContainerPermissionsWithLength:sourceData.length urlComponents:urlComponents options:requestOptions accessCondition:accessCondition publicAccess:permissions.publicAccess timeout:timeout operationContext:operationContext];
+        return [AZSBlobRequestFactory uploadContainerPermissionsWithLength:sourceData.length urlComponents:urlComponents options:requestOptions accessCondition:accessCondition publicAccess:publicAccess timeout:timeout operationContext:operationContext];
     }];
     
     [command setAuthenticationHandler:self.client.authenticationHandler];
@@ -340,12 +355,12 @@
      }];
 }
 
-- (void)downloadPermissionsWithCompletionHandler:(void (^)(NSError* __AZSNullable, AZSBlobContainerPermissions * __AZSNullable))completionHandler
+- (void)downloadPermissionsWithCompletionHandler:(void (^)(NSError* __AZSNullable, NSMutableDictionary *, AZSContainerPublicAccessType))completionHandler
 {
     [self downloadPermissionsWithAccessCondition:nil requestOptions:nil operationContext:nil completionHandler:completionHandler];
 }
 
-- (void)downloadPermissionsWithAccessCondition:(AZSNullable AZSAccessCondition *)accessCondition requestOptions:(AZSNullable AZSBlobRequestOptions *)requestOptions operationContext:(AZSNullable AZSOperationContext *)operationContext completionHandler:(void (^)(NSError* __AZSNullable, AZSBlobContainerPermissions * __AZSNullable))completionHandler
+- (void)downloadPermissionsWithAccessCondition:(AZSNullable AZSAccessCondition *)accessCondition requestOptions:(AZSNullable AZSBlobRequestOptions *)requestOptions operationContext:(AZSNullable AZSOperationContext *)operationContext completionHandler:(void (^)(NSError* __AZSNullable, NSMutableDictionary *, AZSContainerPublicAccessType))completionHandler
 {
     if (!operationContext) {
         operationContext = [[AZSOperationContext alloc] init];
@@ -364,53 +379,21 @@
         return [AZSResponseParser preprocessResponseWithResponse:urlResponse requestResult:requestResult operationContext:operationContext];
     }];
     
+    __block AZSContainerPublicAccessType publicAccess = AZSContainerPublicAccessTypeOff;
     [command setPostProcessResponse:^id(NSHTTPURLResponse * urlResponse, AZSRequestResult * requestResult, NSOutputStream *outputStream, AZSOperationContext * operationContext, NSError ** error) {
         if (*error) {
             return *error;
         }
 
-        AZSBlobContainerPermissions *permissions = [AZSDownloadContainerPermissions createContainerPermissionsWithResponse:urlResponse operationContext:operationContext error:error];
-        NSDictionary *policies = [AZSDownloadContainerPermissions parseDownloadContainerPermissionsResponseWithData:[outputStream propertyForKey:NSStreamDataWrittenToMemoryStreamKey] operationContext:operationContext error:error].storedPolicies;
-        for (NSString *policyIdentifier in policies) {
-            permissions.sharedAccessPolicies[policyIdentifier] = policies[policyIdentifier];
-        }
+        publicAccess = [AZSDownloadContainerPermissions createContainerPermissionsWithResponse:urlResponse operationContext:operationContext error:error];
+        NSMutableDictionary *policies = [AZSDownloadContainerPermissions parseDownloadContainerPermissionsResponseWithData:[outputStream propertyForKey:NSStreamDataWrittenToMemoryStreamKey] operationContext:operationContext error:error].storedPolicies;
         
-        if (*error) {
-            return *error;
-        }
-        
-        return permissions;
+        return (*error) ?: policies;
     }];
-
     
     [AZSExecutor ExecuteWithStorageCommand:command requestOptions:modifiedOptions operationContext:operationContext completionHandler:^(NSError *error, id result) {
-         completionHandler(error, result);
+         completionHandler(error, result, publicAccess);
      }];
-}
-
-+ (AZSBlobContainerPermissions *) createContainerACLFromPublicAccess:(NSString *)publicAccess error:(NSError **)error
-{
-    AZSContainerPublicAccessType accessType = AZSContainerPublicAccessTypeOff;
-    
-    if (publicAccess && [publicAccess length] > 0) {
-        NSString *lowerCasePublicAccess = [publicAccess lowercaseString];
-        
-        if ([AZSCContainer isEqual:lowerCasePublicAccess]) {
-            accessType = AZSContainerPublicAccessTypeContainer;
-        }
-        else if ([AZSCBlob isEqual:lowerCasePublicAccess]) {
-            accessType = AZSContainerPublicAccessTypeBlob;
-        }
-        else {
-            *error = [NSError errorWithDomain:AZSErrorDomain code:AZSEInvalidArgument userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"Invalid Public Access Type: %@", publicAccess]}];
-            return nil;
-        }
-    }
-    
-    AZSBlobContainerPermissions *permissions = [[AZSBlobContainerPermissions alloc] init];
-    permissions.publicAccess = accessType;
-    
-    return permissions;
 }
 
 - (void)acquireLeaseWithLeaseTime:(NSNumber *)leaseTime proposedLeaseId:(NSString *)proposedLeaseId completionHandler:(void (^)(NSError*, NSString *))completionHandler
@@ -642,20 +625,6 @@
     if (parsedLastModified) {
         self.properties.lastModified = parsedLastModified;
     }
-}
-
-// Note: this should only be called from the constructor
--(void)parseQueryAndVerifyWithUri:(AZSStorageUri *)uri credentials:(AZSStorageCredentials *)credentials
-{
-    NSMutableArray *parseQueryResults = [AZSNavigationUtil parseBlobQueryAndVerifyWithStorageUri:uri];
-    
-    _storageUri = ([[parseQueryResults objectAtIndex:0] isKindOfClass:[NSNull class]] ? nil : [parseQueryResults objectAtIndex:0]);
-    
-    // todo: if (parsedCreds && creds) != null then throw mult creds
-    
-    _client = [[AZSCloudBlobClient alloc] initWithStorageUri: [AZSNavigationUtil getServiceClientBaseAddressWithStorageUri:self.storageUri usePathStyle:[AZSUtil usePathStyleAddressing:[uri primaryUri]]] credentials:(credentials != nil ? credentials : ([[parseQueryResults objectAtIndex:1] isKindOfClass:[NSNull class]] ? nil : [parseQueryResults objectAtIndex:1]))];
-    
-    _name = [AZSNavigationUtil getContainerNameWithContainerAddress:self.storageUri.primaryUri isPathStyle:[AZSUtil usePathStyleAddressing:self.storageUri.primaryUri]];
 }
 
 - (AZSCloudBlockBlob *)blockBlobReferenceFromName:(NSString *)blobName

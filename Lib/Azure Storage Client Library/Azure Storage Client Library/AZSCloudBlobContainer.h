@@ -31,9 +31,9 @@ AZS_ASSUME_NONNULL_BEGIN
 @class AZSContinuationToken;
 @class AZSBlobResultSegment;
 @class AZSBlobContainerProperties;
-@class AZSBlobContainerPermissions;
 @class AZSSharedAccessBlobParameters;
 @class AZSSharedAccessHeaders;
+@class AZSSharedAccessPolicy;
 @class AZSStorageCredentials;
 
 // TODO: Figure out if we should combine all these into one generic 'Null response completion handler' or something.
@@ -75,32 +75,36 @@ AZS_ASSUME_NONNULL_BEGIN
 /** Initializes a newly allocated AZSCloudBlobContainer object.
  
  @param containerAbsoluteUrl The absolute URL to this container.
+ @param error A pointer to a NSError*, to be set in the event of failure.
  @returns The newly allocated object.
  */
-- (instancetype)initWithUrl:(NSURL *)containerAbsoluteUrl;
+- (instancetype)initWithUrl:(NSURL *)containerAbsoluteUrl error:(NSError **)error;
 
 /** Initializes a newly allocated AZSCloudBlobContainer object.
  
  @param containerAbsoluteUrl The absolute URL to this container.
  @param credentials The AZSStorageCredentials used to authenticate to the container.
+ @param error A pointer to a NSError*, to be set in the event of failure.
  @returns The newly allocated object.
  */
-- (instancetype)initWithUrl:(NSURL *)containerAbsoluteUrl credentials:(AZSNullable AZSStorageCredentials *)credentials;
+- (instancetype)initWithUrl:(NSURL *)containerAbsoluteUrl credentials:(AZSNullable AZSStorageCredentials *)credentials error:(NSError **)error;
 
 /** Initializes a newly allocated AZSCloudBlobContainer object.
  
  @param containerAbsoluteUri The StorageURI to this container.
+ @param error A pointer to a NSError*, to be set in the event of failure.
  @returns The newly allocated object.
  */
-- (instancetype)initWithStorageUri:(AZSStorageUri *)containerAbsoluteUri;
+- (instancetype)initWithStorageUri:(AZSStorageUri *)containerAbsoluteUri error:(NSError **)error;
 
 /** Initializes a newly allocated AZSCloudBlobContainer object.
  
  @param containerAbsoluteUri The StorageURI to this container.
  @param credentials The AZSStorageCredentials used to authenticate to the container.
+ @param error A pointer to a NSError*, to be set in the event of failure.
  @returns The newly allocated object.
  */
-- (instancetype)initWithStorageUri:(AZSStorageUri *)containerAbsoluteUri credentials:(AZSNullable AZSStorageCredentials *)credentials AZS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithStorageUri:(AZSStorageUri *)containerAbsoluteUri credentials:(AZSNullable AZSStorageCredentials *)credentials error:(NSError **)error AZS_DESIGNATED_INITIALIZER;
 
 /** Creates the container on the service.  Will fail if the container already exists.
  
@@ -321,11 +325,12 @@ AZS_ASSUME_NONNULL_BEGIN
  |----------------|-------------|
  |NSError *       | Nil if the operation succeeded without error, error with details about the failure otherwise.|
  */
-- (void)uploadPermissions:(AZSBlobContainerPermissions *)permissions completionHandler:(void (^)(NSError *))completionHandler;
+- (void)uploadPermissions:(NSMutableDictionary *)permissions completionHandler:(void (^)(NSError *))completionHandler;
 
 /** Uploads a set of permissions for the container.
  
  @param permissions The permissions to upload.
+ @param publicAccess The public access level for the container.
  @param accessCondition The access conditions for the container.
  @param requestOptions Specifies any additional options for the request. Specifying nil will use the default request options from the associated client.
  @param operationContext Represents the context for the current operation.  Can be used to track requests to the storage service, and to provide additional runtime information about the operation.
@@ -335,7 +340,7 @@ AZS_ASSUME_NONNULL_BEGIN
  |----------------|-------------|
  |NSError *       | Nil if the operation succeeded without error, error with details about the failure otherwise.|
  */
-- (void)uploadPermissions:(AZSBlobContainerPermissions *)permissions accessCondition:(AZSAccessCondition * __AZSNullable)accessCondition requestOptions:(AZSBlobRequestOptions * __AZSNullable)requestOptions operationContext:(AZSOperationContext * __AZSNullable)operationContext completionHandler:(void (^)(NSError *))completionHandler;
+- (void)uploadPermissions:(NSMutableDictionary * __AZSNullable)permissions publicAccess:(AZSContainerPublicAccessType)publicAccess accessCondition:(AZSAccessCondition * __AZSNullable)accessCondition requestOptions:(AZSBlobRequestOptions * __AZSNullable)requestOptions operationContext:(AZSOperationContext * __AZSNullable)operationContext completionHandler:(void (^)(NSError *))completionHandler;
 
 /** Retrieves the container's attributes.
  
@@ -368,7 +373,7 @@ AZS_ASSUME_NONNULL_BEGIN
  |----------------|-------------|
  |NSError * | Nil if the operation succeeded without error, error with details about the failure otherwise.|
  */
-- (void)downloadPermissionsWithCompletionHandler:(void (^)(NSError* __AZSNullable, AZSBlobContainerPermissions * __AZSNullable))completionHandler;
+- (void)downloadPermissionsWithCompletionHandler:(void (^)(NSError* __AZSNullable, NSMutableDictionary *, AZSContainerPublicAccessType))completionHandler;
 
 /** Retrieves the stored container permissions.
  
@@ -381,7 +386,7 @@ AZS_ASSUME_NONNULL_BEGIN
  |----------------|-------------|
  |NSError * | Nil if the operation succeeded without error, error with details about the failure otherwise.|
  */
-- (void)downloadPermissionsWithAccessCondition:(AZSAccessCondition * __AZSNullable)accessCondition requestOptions:(AZSBlobRequestOptions * __AZSNullable)requestOptions operationContext:(AZSNullable AZSOperationContext *)operationContext completionHandler:(void (^)(NSError* __AZSNullable, AZSBlobContainerPermissions * __AZSNullable))completionHandler;
+- (void)downloadPermissionsWithAccessCondition:(AZSAccessCondition * __AZSNullable)accessCondition requestOptions:(AZSBlobRequestOptions * __AZSNullable)requestOptions operationContext:(AZSNullable AZSOperationContext *)operationContext completionHandler:(void (^)(NSError* __AZSNullable, NSMutableDictionary *, AZSContainerPublicAccessType))completionHandler;
 
 /** Acquires a lease on this container.
  

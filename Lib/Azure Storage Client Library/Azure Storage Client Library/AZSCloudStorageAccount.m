@@ -51,10 +51,23 @@
     NSMutableDictionary *settingsDictionary = [NSMutableDictionary dictionaryWithCapacity:10];
     for (NSString *setting in settings)
     {
-        NSUInteger equals = [setting rangeOfString:@"="].location;
-        NSString *key = [setting substringToIndex:equals];
-        NSString *value = [setting substringFromIndex:equals + 1];
+        NSUInteger equalsIndex = [setting rangeOfString:@"="].location;
+        if (equalsIndex > connectionString.length) {
+            *error = [NSError errorWithDomain:AZSErrorDomain code:AZSEInvalidArgument userInfo:nil];
+            [[AZSUtil operationlessContext] logAtLevel:AZSLogLevelError withMessage:@"Invalid connection string."];
+            return nil;
+        }
+        
+        NSString *key = [setting substringToIndex:equalsIndex];
+        NSString *value = [setting substringFromIndex:equalsIndex + 1];
         settingsDictionary[key] = value;
+    }
+    
+    if ([[settingsDictionary[AZSCSettingsEmulator] lowercaseString] isEqualToString:AZSCTrue]) {
+        settingsDictionary[AZSCSettingsBlobEndpoint] = AZSCEmulatorUrl;
+        settingsDictionary[AZSCSettingsEndpointsProtocol] = AZSCHttp;
+        settingsDictionary[AZSCSettingsAccountName] = AZSCEmulatorAccount;
+        settingsDictionary[AZSCSettingsAccountKey] = AZSCEmulatorAccountKey;
     }
     
     AZSCloudStorageAccount *account = nil;
@@ -174,7 +187,7 @@
 {
     self = [super init];
     
-    if ([storageCredentials isSAS] && !storageCredentials.accountName) {
+    if (!storageCredentials.accountName) {
         *error = [NSError errorWithDomain:AZSErrorDomain code:AZSEInvalidArgument userInfo:nil];
         [[AZSUtil operationlessContext] logAtLevel:AZSLogLevelError withMessage:@"Storage credentials are missing an account name."];
         return nil;
