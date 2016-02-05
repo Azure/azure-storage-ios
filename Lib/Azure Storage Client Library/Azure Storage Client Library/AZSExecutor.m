@@ -449,6 +449,7 @@
     @autoreleasepool {
         self.runLoopForDownload = [NSRunLoop currentRunLoop];
         [outputStream scheduleInRunLoop:self.runLoopForDownload forMode:NSDefaultRunLoopMode];
+        [self.outputStream open];
         dispatch_semaphore_signal(self.semaphoreForRunloopCreation);
         
         // TODO: Make the below timeout value for the runloop configurable.
@@ -517,6 +518,7 @@
     self.runLoopForDownload = self.requestOptions.runLoopForDownload;
     if (self.runLoopForDownload == nil)
     {
+        // In this case, we will open the stream inside the createAndSpinRunloopWithOutputStream method.
         self.semaphoreForRunloopCreation = dispatch_semaphore_create(0);
 
         [NSThread detachNewThreadSelector:@selector(createAndSpinRunloopWithOutputStream:) toTarget:self withObject:self.outputStream];
@@ -526,10 +528,10 @@
     else
     {
         [self.outputStream scheduleInRunLoop:self.runLoopForDownload forMode:NSDefaultRunLoopMode];
+        [self.outputStream open];
     }
     
     
-    [self.outputStream open];
 
     completionHandler(NSURLSessionResponseAllow);
 }

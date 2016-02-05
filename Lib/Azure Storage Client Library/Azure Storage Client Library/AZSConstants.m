@@ -118,7 +118,7 @@ NSString *const AZSCHeaderValueRenew = @"renew";
 NSString *const AZSCHeaderValueSnapshots = @"snapshots";
 NSString *const AZSCHeaderValueUncommitted = @"uncommitted";
 NSString *const AZSCHeaderValueUncommittedBlobs = @"uncommittedblobs";
-NSString *const AZSCHeaderValueUserAgent = @"Azure-Storage/0.1.1-preview (iOS %@)";
+NSString *const AZSCHeaderValueUserAgent = @"Azure-Storage/0.1.2-preview (iOS %@)";
 
 // HTTP Methods
 NSString *const AZSCHttpDelete = @"DELETE";

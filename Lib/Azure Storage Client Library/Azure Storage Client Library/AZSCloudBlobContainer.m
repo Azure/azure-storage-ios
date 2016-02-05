@@ -79,7 +79,7 @@
     {
         NSMutableArray *parseQueryResults = [AZSNavigationUtil parseBlobQueryAndVerifyWithStorageUri:containerAbsoluteUrl];
         
-        if (([credentials isSAS] || [credentials isSharedKey]) && ![parseQueryResults[1] isKindOfClass:[NSNull class]]) {
+        if (([credentials isSAS] || [credentials isSharedKey]) && (![parseQueryResults[1] isKindOfClass:[NSNull class]] && ([parseQueryResults[1] isSAS] || [parseQueryResults[1] isSharedKey]))) {
             *error = [NSError errorWithDomain:AZSErrorDomain code:AZSEInvalidArgument userInfo:nil];
             [[AZSUtil operationlessContext] logAtLevel:AZSLogLevelError withMessage:@"Multiple credentials provided."];
             return nil;
