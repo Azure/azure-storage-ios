@@ -7,7 +7,7 @@ The library currently supports almost all block blob operations (some exceptions
 
 #Usage overview
 
-To use the library, clone the repo and open the XCode project.  Build the library (the 'Azure Storage Client Library' target), and then build the Framework (the 'Framework' target).  This will create the .framework file on your desktop.  Then, in your code, in Build Phases->Link Binary With Libraries, add in the Azure Storage Client Library framework, and the libxml2.2.dylib.  Finally, import "Azure Storage Client Library/Azure_Storage_Client_Library.h" in your code file.
+To use the library, clone the repo and open the Xcode project.  Build the library (the 'Azure Storage Client Library' target), and then build the Framework (the 'Framework' target).  This will create the .framework file on your desktop.  Then, in your code, in Build Phases->Link Binary With Libraries, add in the Azure Storage Client Library framework, and the libxml2.2.dylib.  Finally, import "Azure Storage Client Library/Azure_Storage_Client_Library.h" in your code file.
 
 Here is a small code sample that creates and deletes a blob:
 
