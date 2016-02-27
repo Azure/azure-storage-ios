@@ -59,12 +59,12 @@
         _error = error;
         _serviceRequestID = response.allHeaderFields[AZSCHeaderRequestId];
         
-        if (response.allHeaderFields[AZSCXmlContentLength])
+        if (response.allHeaderFields[AZSCContentLength])
         {
-            _contentReceivedLength = [NSNumber numberWithLongLong:[response.allHeaderFields[AZSCXmlContentLength] longLongValue]].unsignedIntegerValue;
+            _contentReceivedLength = [NSNumber numberWithLongLong:[response.allHeaderFields[AZSCContentLength] longLongValue]].unsignedIntegerValue;
         }
         
-        _contentReceivedMD5 = response.allHeaderFields[AZSCXmlContentMd5];
+        _contentReceivedMD5 = response.allHeaderFields[AZSCContentMd5];
         _etag = response.allHeaderFields[AZSCXmlETag];
         
         if (response.allHeaderFields[AZSCHeaderValueDate])

@@ -54,6 +54,9 @@ AZS_ASSUME_NONNULL_BEGIN
 /** The sequence number of the blob, as far as the library is aware.  Only valid for page blobs.  Call downloadAttributes to update.*/
 @property (copy, AZSNullable) NSNumber *sequenceNumber;
 
+/** The committed block count of the blob, as far as the library is aware.  Only valid for append blobs.  Call fetchAttributes to update.*/
+@property (copy, AZSNullable) NSNumber *appendBlobCommittedBlockCount;
+
 /** The blob type - block, page, or append.*/
 @property AZSBlobType blobType;
 

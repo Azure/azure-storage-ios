@@ -16,12 +16,12 @@
 // -----------------------------------------------------------------------------------------
 
 #import <XCTest/XCTest.h>
-#import <CommonCrypto/CommonDigest.h>
 #import "Azure_Storage_Client_Library.h"
 #import "AZSBlobTestBase.h"
 #import "AZSConstants.h"
 #import "AZSTestHelpers.h"
 #import "AZSTestSemaphore.h"
+#import "AZSUtil.h"
 
 @interface AZSCloudBlockBlobTests : AZSBlobTestBase
 @property NSString *containerName;
@@ -733,10 +733,7 @@
     NSString *blockDataString = @"SampleBlockData";
     NSData *blockData = [blockDataString dataUsingEncoding:NSUTF8StringEncoding];
     
-    unsigned char md5Bytes[CC_MD5_DIGEST_LENGTH];
-    CC_MD5(blockData.bytes, (unsigned int) blockData.length, md5Bytes);
-    NSData *dataTemp = [[NSData alloc] initWithBytes:md5Bytes length:CC_MD5_DIGEST_LENGTH];
-    NSString *actualContentMD5 = [dataTemp base64EncodedStringWithOptions:0];
+    NSString *actualContentMD5 = [AZSUtil calculateMD5FromData:blockData];
     
     AZSBlobRequestOptions *bro = [[AZSBlobRequestOptions alloc] init];
     bro.useTransactionalMD5 = YES;
@@ -746,7 +743,7 @@
     {
         if (![request.URL.absoluteString hasSuffix:[AZSCXmlBlockList lowercaseString]])
         {
-            XCTAssert([[request allHTTPHeaderFields][AZSCXmlContentMd5] compare:actualContentMD5 options:NSLiteralSearch] == NSOrderedSame, @"Incorrect content-MD5 calculated by the library.");
+            XCTAssert([[request allHTTPHeaderFields][AZSCContentMd5] compare:actualContentMD5 options:NSLiteralSearch] == NSOrderedSame, @"Incorrect content-MD5 calculated by the library.");
         }
     };
     
@@ -797,10 +794,7 @@
     NSString *blockDataString = @"SampleBlockData";
     NSData *blockData = [blockDataString dataUsingEncoding:NSUTF8StringEncoding];
     
-    unsigned char md5Bytes[CC_MD5_DIGEST_LENGTH];
-    CC_MD5(blockData.bytes, (unsigned int) blockData.length, md5Bytes);
-    NSData *dataTemp = [[NSData alloc] initWithBytes:md5Bytes length:CC_MD5_DIGEST_LENGTH];
-    NSString *actualContentMD5 = [dataTemp base64EncodedStringWithOptions:0];
+    NSString *actualContentMD5 = [AZSUtil calculateMD5FromData:blockData];
     NSString *blockID = [self generateRandomBlockID];
     
     AZSBlobRequestOptions *bro = [[AZSBlobRequestOptions alloc] init];
@@ -852,10 +846,6 @@
     NSString *blockDataString = @"SampleBlockData";
     NSData *blockData = [blockDataString dataUsingEncoding:NSUTF8StringEncoding];
     
-    unsigned char md5Bytes[CC_MD5_DIGEST_LENGTH];
-    CC_MD5(blockData.bytes, (unsigned int) blockData.length, md5Bytes);
-    // NSData *dataTemp = [[NSData alloc] initWithBytes:md5Bytes length:CC_MD5_DIGEST_LENGTH];
-    // NSString *actualContentMD5 = [dataTemp base64EncodedStringWithOptions:0];
     NSString *blockID = [self generateRandomBlockID];
     AZSBlobRequestOptions *bro = [[AZSBlobRequestOptions alloc] init];
     bro.storeBlobContentMD5 = YES;
@@ -896,10 +886,7 @@
     NSString *blockDataString = @"SampleBlockData";
     NSData *blockData = [blockDataString dataUsingEncoding:NSUTF8StringEncoding];
     
-    unsigned char md5Bytes[CC_MD5_DIGEST_LENGTH];
-    CC_MD5(blockData.bytes, (unsigned int) blockData.length, md5Bytes);
-    NSData *dataTemp = [[NSData alloc] initWithBytes:md5Bytes length:CC_MD5_DIGEST_LENGTH];
-    NSString *actualContentMD5 = [dataTemp base64EncodedStringWithOptions:0];
+    NSString *actualContentMD5 = [AZSUtil calculateMD5FromData:blockData];
     NSString *blockID = [self generateRandomBlockID];
     AZSBlobRequestOptions *bro = [[AZSBlobRequestOptions alloc] init];
     bro.storeBlobContentMD5 = YES;

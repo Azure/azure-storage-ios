@@ -16,6 +16,7 @@
 // -----------------------------------------------------------------------------------------
 
 #import "AZSConstants.h"
+#import "AZSErrors.h"
 #import "AZSStorageCommand.h"
 #import "AZSOperationContext.h"
 #import "AZSRequestResult.h"
@@ -48,6 +49,7 @@
     {
         _storageUri = storageUri;
         _calculateResponseMD5 = calculateResponseMD5;
+        _allowedStorageLocation = AZSAllowedStorageLocationPrimaryOnly;
         
         // Give a default error-processing implementation.
         // TODO: This now couples the execution layer with the protocol layer.  Decide if this is correct or not.
@@ -73,5 +75,41 @@
         [authenticationHandler signRequest:urlRequest operationContext:operationContext];
     }];
 }
+
+-(void) setAllowedStorageLocation:(AZSAllowedStorageLocation)allowedStorageLocation
+{
+    NSError *error; // This should never error out.
+    [self setAllowedStorageLocation:allowedStorageLocation withLockLocation:AZSStorageLocationUnspecified error:&error];
+}
+
+-(void) setAllowedStorageLocation:(AZSAllowedStorageLocation)allowedStorageLocation withLockLocation:(AZSStorageLocation)lockLocation error:(NSError**)error
+{
+    switch (lockLocation)
+    {
+        case AZSStorageLocationPrimary:
+        {
+            if (allowedStorageLocation == AZSAllowedStorageLocationSecondaryOnly)
+            {
+                *error = [NSError errorWithDomain:AZSErrorDomain code:AZSEInvalidArgument userInfo:@{NSLocalizedDescriptionKey:@"Cannot set storage location mode to secondary only if the location is already primary only."}];
+            }
+            _allowedStorageLocation = AZSAllowedStorageLocationPrimaryOnly;
+            break;
+        }
+        case AZSStorageLocationSecondary:
+        {
+            if (allowedStorageLocation == AZSAllowedStorageLocationPrimaryOnly)
+            {
+                *error = [NSError errorWithDomain:AZSErrorDomain code:AZSEInvalidArgument userInfo:@{NSLocalizedDescriptionKey:@"Cannot set storage location mode to primary only if the location is already secondary only."}];
+            }
+            _allowedStorageLocation = AZSAllowedStorageLocationSecondaryOnly;
+            break;
+        }
+        case AZSStorageLocationUnspecified:
+        {
+            _allowedStorageLocation = allowedStorageLocation;
+            break;
+        }
+    }
+}	
 
 @end

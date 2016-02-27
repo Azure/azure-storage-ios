@@ -24,6 +24,7 @@
     BOOL _serverTimeoutSet;
     BOOL _maximumDownloadBufferSizeSet;
     BOOL _maximumExecutionTimeSet;
+    BOOL _storageLocationModeSet;
 }
 
 -(AZSRequestOptions *)copy;
@@ -37,6 +38,7 @@
 @synthesize maximumDownloadBufferSize = _maximumDownloadBufferSize;
 @synthesize maximumExecutionTime = _maximumExecutionTime;
 @synthesize operationExpiryTime = _operationExpiryTime;
+@synthesize storageLocationMode = _storageLocationMode;
 
 -(instancetype)init
 {
@@ -51,6 +53,8 @@
         _maximumDownloadBufferSizeSet = NO;
         _maximumExecutionTime = 600.0;
         _maximumExecutionTimeSet = NO;
+        _storageLocationMode = AZSStorageLocationModePrimaryOnly;
+        _storageLocationModeSet = NO;
     }
     
     return self;
@@ -97,6 +101,11 @@
         if (sourceOptions->_maximumExecutionTimeSet)
         {
             self.maximumExecutionTime = sourceOptions.maximumExecutionTime;
+        }
+        
+        if (sourceOptions->_storageLocationModeSet)
+        {
+            self.storageLocationMode = sourceOptions.storageLocationMode;
         }
         
         _operationExpiryTime = [NSDate dateWithTimeIntervalSinceNow:self.maximumExecutionTime];
@@ -147,6 +156,17 @@
 {
     _maximumExecutionTime = maximumExecutionTime;
     _maximumExecutionTimeSet = YES;
+}
+
+-(AZSStorageLocationMode)storageLocationMode
+{
+    return _storageLocationMode;
+}
+
+-(void)setStorageLocationMode:(AZSStorageLocationMode)storageLocationMode
+{
+    _storageLocationMode = storageLocationMode;
+    _storageLocationModeSet = YES;
 }
 
 @end

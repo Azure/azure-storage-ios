@@ -150,7 +150,7 @@
     urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:AZSCQueryCompAcl];
     NSMutableURLRequest *request = [AZSRequestFactory putRequestWithUrlComponents:urlComponents timeout:timeout];
 
-    [request setValue:[NSString stringWithFormat:@"%lu", (unsigned long)length] forHTTPHeaderField:AZSCXmlContentLength];
+    [request setValue:[NSString stringWithFormat:@"%lu", (unsigned long)length] forHTTPHeaderField:AZSCContentLength];
     
     [AZSBlobRequestFactory addAccessTypeToRequest:request accessType:publicAccess];
     
@@ -163,28 +163,28 @@
 {
     // TODO: IOS 8 - update this to use urlComponents.queryItems
     NSMutableURLRequest *request = [AZSRequestFactory putRequestWithUrlComponents:urlComponents timeout:timeout];
-    [request setValue:[NSString stringWithFormat:@"%lu", (unsigned long)length] forHTTPHeaderField:AZSCXmlContentLength];
-    [request setValue:AZSCXmlBlobBlockBlob forHTTPHeaderField:AZSCHeaderBlobType];
+    [request setValue:[NSString stringWithFormat:@"%lu", (unsigned long)length] forHTTPHeaderField:AZSCContentLength];
+    [request setValue:AZSCBlobBlockBlob forHTTPHeaderField:AZSCHeaderBlobType];
     
     [AZSRequestFactory addMetadataToRequest:request metadata:cloudMetadata];
     [AZSBlobRequestFactory addBlobPropertiesToRequest:request properties:blobProperties];
     
     [AZSRequestFactory applyAccessConditionToRequest:request condition:accessCondition];
-    [AZSUtil addOptionalHeaderToRequest:request header:AZSCXmlContentMd5 stringValue:contentMD5];
+    [AZSUtil addOptionalHeaderToRequest:request header:AZSCContentMd5 stringValue:contentMD5];
     return request;
 }
 
-+(NSMutableURLRequest *) putBlockWithLength:(NSUInteger)length blockID:(NSString *)blockID contentMD5:(NSString *)contentMD5 AccessCondition:(AZSAccessCondition *)accessCondition urlComponents:(NSURLComponents *)urlComponents timeout:(NSTimeInterval)timeout operationContext:(AZSOperationContext *)operationContext
++(NSMutableURLRequest *) putBlockWithLength:(NSUInteger)length blockID:(NSString *)blockID contentMD5:(NSString *)contentMD5 accessCondition:(AZSAccessCondition *)accessCondition urlComponents:(NSURLComponents *)urlComponents timeout:(NSTimeInterval)timeout operationContext:(AZSOperationContext *)operationContext
 {
     urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:AZSCQueryCompBlock];
     urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:[NSString stringWithFormat:AZSCQueryTemplateBlockId,blockID]];
 
     // TODO: IOS 8 - update this to use urlComponents.queryItems
     NSMutableURLRequest *request = [AZSRequestFactory putRequestWithUrlComponents:urlComponents timeout:timeout];
-    [request setValue:[NSString stringWithFormat:@"%lu", (unsigned long)length] forHTTPHeaderField:AZSCXmlContentLength];
+    [request setValue:[NSString stringWithFormat:@"%lu", (unsigned long)length] forHTTPHeaderField:AZSCContentLength];
     
     [AZSRequestFactory applyLeaseIdToRequest:request condition:accessCondition];
-    [AZSUtil addOptionalHeaderToRequest:request header:AZSCXmlContentMd5 stringValue:contentMD5];
+    [AZSUtil addOptionalHeaderToRequest:request header:AZSCContentMd5 stringValue:contentMD5];
     [AZSRequestFactory applyAccessConditionToRequest:request condition:accessCondition];
     return request;
 }
@@ -194,13 +194,13 @@
     urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:AZSCQueryCompBlockList];
     // TODO: IOS 8 - update this to use urlComponents.queryItems
     NSMutableURLRequest *request = [AZSRequestFactory putRequestWithUrlComponents:urlComponents timeout:timeout];
-    [request setValue:[NSString stringWithFormat:@"%lu", (unsigned long)length] forHTTPHeaderField:AZSCXmlContentLength];
+    [request setValue:[NSString stringWithFormat:@"%lu", (unsigned long)length] forHTTPHeaderField:AZSCContentLength];
     
     [AZSRequestFactory addMetadataToRequest:request metadata:cloudMetadata];
     [AZSBlobRequestFactory addBlobPropertiesToRequest:request properties:blobProperties];
     
     [AZSRequestFactory applyAccessConditionToRequest:request condition:accessCondition];
-    [AZSUtil addOptionalHeaderToRequest:request header:AZSCXmlContentMd5 stringValue:contentMD5];
+    [AZSUtil addOptionalHeaderToRequest:request header:AZSCContentMd5 stringValue:contentMD5];
     
     return request;
 }
@@ -446,6 +446,138 @@
     return request;
 }
 
++(NSMutableURLRequest *) createPageBlobWithSize:(NSNumber *)totalBlobSize sequenceNumber:(NSNumber *)sequenceNumber blobProperties:(AZSBlobProperties *)blobProperties cloudMetadata:(NSMutableDictionary *)cloudMetadata accessCondition:(AZSAccessCondition *)accessCondition urlComponents:(NSURLComponents *)urlComponents timeout:(NSTimeInterval)timeout operationContext:(AZSOperationContext *)operationContext
+{
+    NSMutableURLRequest *request = [AZSRequestFactory putRequestWithUrlComponents:urlComponents timeout:timeout];
+    [request setValue:AZSCBlobPageBlob forHTTPHeaderField:AZSCHeaderBlobType];
+    
+    [AZSRequestFactory addMetadataToRequest:request metadata:cloudMetadata];
+    [AZSBlobRequestFactory addBlobPropertiesToRequest:request properties:blobProperties];
+    [AZSRequestFactory applyAccessConditionToRequest:request condition:accessCondition];
+    
+    [AZSBlobRequestFactory addTotalContentSizeToRequest:request size:totalBlobSize];
+    [AZSBlobRequestFactory addSequenceNumberToRequest:request sequenceNumber:sequenceNumber];
+    
+    return request;
+}
+
++(NSMutableURLRequest *) putPagesWithPageRange:(NSRange)pageRange clear:(BOOL)clear contentMD5:(NSString *)contentMD5 accessCondition:(AZSAccessCondition *)accessCondition urlComponents:(NSURLComponents *)urlComponents timeout:(NSTimeInterval)timeout operationContext:(AZSOperationContext *)operationContext
+{
+    urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:AZSCQueryCompPage];
+    
+    // TODO: IOS 8 - update this to use urlComponents.queryItems
+    NSMutableURLRequest *request = [AZSRequestFactory putRequestWithUrlComponents:urlComponents timeout:timeout];
+    
+    [AZSRequestFactory applyLeaseIdToRequest:request condition:accessCondition];
+    unsigned long endByte;
+    if (pageRange.length >= 1)
+    {
+        endByte = (unsigned long)(pageRange.location + pageRange.length - 1);
+    }
+    else
+    {
+        endByte = pageRange.location;
+    }
+    
+    [request setValue:[NSString stringWithFormat:AZSCQueryTemplateBytes, (unsigned long)pageRange.location, (unsigned long)endByte] forHTTPHeaderField:AZSCHeaderRange];
+        
+    if (clear)
+    {
+        [request setValue:@"0" forHTTPHeaderField:AZSCContentLength];
+        [request setValue:AZSCHeaderValueClear forHTTPHeaderField:AZSCHeaderPageWrite];
+    }
+    else
+    {
+        [request setValue:[NSString stringWithFormat:@"%lu", (unsigned long)pageRange.length] forHTTPHeaderField:AZSCContentLength];
+        [request setValue:AZSCHeaderValueUpdate forHTTPHeaderField:AZSCHeaderPageWrite];
+        [AZSUtil addOptionalHeaderToRequest:request header:AZSCContentMd5 stringValue:contentMD5];
+    }
+    [AZSRequestFactory applyAccessConditionToRequest:request condition:accessCondition];
+    [AZSBlobRequestFactory applySequenceNumberConditionToRequest:request condition:accessCondition];
+    return request;
+}
+
++(NSMutableURLRequest *) getPageRangesWithRange:(NSRange)range snapshotTime:(NSString *)snapshotTime accessCondition:(AZSAccessCondition *)accessCondition urlComponents:(NSURLComponents *)urlComponents timeout:(NSTimeInterval)timeout operationContext:(AZSOperationContext *)operationContext
+{
+    urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:AZSCQueryCompPageList];
+    if (snapshotTime)
+    {
+        urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:[NSString stringWithFormat:AZSCQueryTemplateSnapshot, snapshotTime]];
+    }
+    
+    NSMutableURLRequest *request = [AZSRequestFactory getRequestWithUrlComponents:urlComponents timeout:timeout];
+    
+    if (range.length > 0)
+    {
+        [AZSUtil addOptionalHeaderToRequest:request header:AZSCHeaderRange stringValue:[NSString stringWithFormat:AZSCQueryTemplateBytes,(unsigned long)range.location, ((unsigned long)range.location + (unsigned long)range.length)]];
+    }
+
+    [AZSRequestFactory applyAccessConditionToRequest:request condition:accessCondition];
+    return request;
+}
+
++(NSMutableURLRequest *) resizePageBlobWithSize:(NSNumber *)totalBlobSize accessCondition:(AZSAccessCondition *)accessCondition urlComponents:(NSURLComponents *)urlComponents timeout:(NSTimeInterval)timeout operationContext:(AZSOperationContext *)operationContext
+{
+    urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:AZSCQueryCompProperties];
+    NSMutableURLRequest *request = [AZSRequestFactory putRequestWithUrlComponents:urlComponents timeout:timeout];
+    
+    [AZSBlobRequestFactory addTotalContentSizeToRequest:request size:totalBlobSize];
+    [AZSRequestFactory applyAccessConditionToRequest:request condition:accessCondition];
+    return request;
+}
+
++(NSMutableURLRequest *) setPageBlobSequenceNumberWithNewSequenceNumber:(NSNumber *)newSequenceNumber isIncrement:(BOOL)isIncrement useMaximum:(BOOL)useMaximum accessCondition:(AZSAccessCondition *)accessCondition urlComponents:(NSURLComponents *)urlComponents timeout:(NSTimeInterval)timeout operationContext:(AZSOperationContext *)operationContext
+{
+    urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:AZSCQueryCompProperties];
+    NSMutableURLRequest *request = [AZSRequestFactory putRequestWithUrlComponents:urlComponents timeout:timeout];
+    
+    if (isIncrement)
+    {
+        [request setValue:AZSCHeaderValueIncrement forHTTPHeaderField:AZSCHeaderSequenceNumberAction];
+    }
+    else
+    {
+        [request setValue:newSequenceNumber.stringValue forHTTPHeaderField:AZSCHeaderBlobSequenceNumber];
+        if (useMaximum)
+        {
+            [request setValue:AZSCHeaderValueMax forHTTPHeaderField:AZSCHeaderSequenceNumberAction];
+        }
+        else
+        {
+            [request setValue:AZSCHeaderValueUpdate forHTTPHeaderField:AZSCHeaderSequenceNumberAction];
+        }
+    }
+    [AZSRequestFactory applyAccessConditionToRequest:request condition:accessCondition];
+    return request;
+}
+
++(NSMutableURLRequest *) createAppendBlobWithBlobProperties:(AZSBlobProperties *)blobProperties cloudMetadata:(NSMutableDictionary *)cloudMetadata accessCondition:(AZSAccessCondition *)accessCondition urlComponents:(NSURLComponents *)urlComponents timeout:(NSTimeInterval)timeout operationContext:(AZSOperationContext *)operationContext
+{
+    NSMutableURLRequest *request = [AZSRequestFactory putRequestWithUrlComponents:urlComponents timeout:timeout];
+    [request setValue:AZSCBlobAppendBlob forHTTPHeaderField:AZSCHeaderBlobType];
+    
+    [AZSRequestFactory addMetadataToRequest:request metadata:cloudMetadata];
+    [AZSBlobRequestFactory addBlobPropertiesToRequest:request properties:blobProperties];
+    [AZSRequestFactory applyAccessConditionToRequest:request condition:accessCondition];
+        
+    return request;
+}
+
++(NSMutableURLRequest *) appendBlockWithLength:(NSUInteger)length contentMD5:(NSString *)contentMD5 accessCondition:(AZSAccessCondition *)accessCondition urlComponents:(NSURLComponents *)urlComponents timeout:(NSTimeInterval)timeout operationContext:(AZSOperationContext *)operationContext
+{
+    urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:AZSCQueryCompAppendBlock];
+    
+    // TODO: IOS 8 - update this to use urlComponents.queryItems
+    NSMutableURLRequest *request = [AZSRequestFactory putRequestWithUrlComponents:urlComponents timeout:timeout];
+    [request setValue:[NSString stringWithFormat:@"%lu", (unsigned long)length] forHTTPHeaderField:AZSCContentLength];
+    
+    [AZSRequestFactory applyLeaseIdToRequest:request condition:accessCondition];
+    [AZSUtil addOptionalHeaderToRequest:request header:AZSCContentMd5 stringValue:contentMD5];
+    [AZSRequestFactory applyAccessConditionToRequest:request condition:accessCondition];
+    [AZSBlobRequestFactory applyMaxSizeAndAppendPositionToRequest:request condition:accessCondition];
+    return request;
+}
+
 +(void) addBlobPropertiesToRequest:(NSMutableURLRequest*)request properties:(AZSBlobProperties*)blobProperties
 {
     if (blobProperties)
@@ -495,6 +627,47 @@
 +(void) addLeaseBreakPeriodToRequest:(NSMutableURLRequest*)request leaseBreakPeriod:(NSNumber*)leaseBreakPeriod
 {
     [AZSUtil addOptionalHeaderToRequest:request header:AZSCHeaderLeaseBreakPeriod intValue:leaseBreakPeriod];
+}
+
++(void) addTotalContentSizeToRequest:(NSMutableURLRequest *)request size:(NSNumber *)size
+{
+    [AZSUtil addOptionalHeaderToRequest:request header:AZSCHeaderBlobContentLength intValue:size];
+}
+
++(void) addSequenceNumberToRequest:(NSMutableURLRequest *)request sequenceNumber:(NSNumber *)sequenceNumber
+{
+    [AZSUtil addOptionalHeaderToRequest:request header:AZSCHeaderBlobSequenceNumber intValue:sequenceNumber];
+}
+
++(void) applySequenceNumberConditionToRequest:(NSMutableURLRequest *)request condition:(AZSAccessCondition *)accessCondition
+{
+    switch (accessCondition.sequenceNumberOperator) {
+        case AZSSequenceNumberOperatorNone:
+            break;
+        case AZSSequenceNumberOperatorLessThanOrEqualTo:
+            [request setValue:accessCondition.sequenceNumber.stringValue forHTTPHeaderField:AZSCHeaderIfSequenceNumberLE];
+            break;
+        case AZSSequenceNumberOperatorEqualTo:
+            [request setValue:accessCondition.sequenceNumber.stringValue forHTTPHeaderField:AZSCHeaderIfSequenceNumberEQ];
+            break;
+        case AZSSequenceNumberOperatorLessThan:
+            [request setValue:accessCondition.sequenceNumber.stringValue forHTTPHeaderField:AZSCHeaderIfSequenceNumberLT];
+            break;
+        default:
+            break;
+    }
+}
+
++(void) applyMaxSizeAndAppendPositionToRequest:(NSMutableURLRequest *)request condition:(AZSAccessCondition *)accessCondition
+{
+    if (accessCondition.maxSize)
+    {
+        [request setValue:accessCondition.maxSize.stringValue forHTTPHeaderField:AZSCHeaderBlobConditionMaxSize];
+    }
+    if (accessCondition.appendPosition)
+    {
+        [request setValue:accessCondition.appendPosition.stringValue forHTTPHeaderField:AZSCHeaderBlobConditionAppendPos];
+    }
 }
 
 @end

@@ -17,6 +17,7 @@
 
 #import <Foundation/Foundation.h>
 #import "AZSMacros.h"
+#import "AZSEnums.h"
 
 AZS_ASSUME_NONNULL_BEGIN
 
@@ -48,6 +49,18 @@ AZS_ASSUME_NONNULL_BEGIN
 /** The lease ID for this request.*/
 @property (copy, AZSNullable) NSString* leaseId;
 
+/** The sequence number to compare using the sequenceNumberOperator.  The request will fail if the comparison fails.  Page blobs only.*/
+@property (copy, readonly, AZSNullable) NSNumber *sequenceNumber;
+
+/** The operator to use to compare the sequence number here and the one on the service.  Page blobs only.*/
+@property AZSSequenceNumberOperator sequenceNumberOperator;
+
+/** The request will fail if the append blob will be greater than this after the append operation.  Append block API only.*/
+@property (copy, AZSNullable) NSNumber *maxSize;
+
+/** The request will fail if the append position before appending the current block is not equal to this.  Append block API only.*/
+@property (copy, AZSNullable) NSNumber *appendPosition;
+
 /** Initialize a new AZSAccessCondition object with a 'If-Match' condition.
  
  @param eTag The ETag that must match on the service; otherwise the request will fail.
@@ -72,12 +85,29 @@ AZS_ASSUME_NONNULL_BEGIN
  */
 -(instancetype) initWithIfNotModifiedSinceCondition:(NSDate*)modifiedDate AZS_DESIGNATED_INITIALIZER;
 
+/** Initialize a new AZSAccessCondition object with a 'If-Sequence-Number-Less-Than-Or-Equal-To' condition.*/
+-(instancetype) initWithIfSequenceNumberLessThanOrEqualTo:(NSNumber *)sequenceNumber AZS_DESIGNATED_INITIALIZER;
+
+/** Initialize a new AZSAccessCondition object with a 'If-Sequence-Number-Less-Than' condition.*/
+-(instancetype) initWithIfSequenceNumberLessThan:(NSNumber *)sequenceNumber AZS_DESIGNATED_INITIALIZER;
+
+/** Initialize a new AZSAccessCondition object with a 'If-Sequence-Number-Equal-To' condition.*/
+-(instancetype) initWithIfSequenceNumberEqualTo:(NSNumber *)sequenceNumber AZS_DESIGNATED_INITIALIZER;
+
+/** Initialize a new AZSAccessCondition object with a 'If-Max-Size-Less-Than-Or-Equal-To' condition.*/
+-(instancetype) initWithIfMaxSizeLessThanOrEqualTo:(NSNumber *)maxSize AZS_DESIGNATED_INITIALIZER;
+
+/** Initialize a new AZSAccessCondition object with a 'If-Append-Position-Equal-To' condition.*/
+-(instancetype) initWithIfAppendPositionEqualTo:(NSNumber *)appendPosition AZS_DESIGNATED_INITIALIZER;
+
 /** Initialize a new AZSAccessCondition object with a lease ID.
  Note that if you wish to specify both a lease ID and another access condition, you must use
  one of the other initializers, and then specify the lease ID afterwards.
  
  @param leaseId The lease ID to specify for the request.*/
 -(instancetype) initWithLeaseId:(NSString*)leaseId AZS_DESIGNATED_INITIALIZER;
+
+-(instancetype)init AZS_DESIGNATED_INITIALIZER;
 
 +(instancetype) cloneWithEtag:(NSString*)etag accessCondition:(AZSNullable AZSAccessCondition*)condition;
 

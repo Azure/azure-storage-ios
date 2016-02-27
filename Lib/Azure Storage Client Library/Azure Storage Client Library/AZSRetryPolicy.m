@@ -22,22 +22,35 @@
 
 @interface AZSRetryPolicyUtil : NSObject
 
-+(AZSRetryInfo *)evaluateRetryContext:(AZSRetryContext *)retryContext maxAttempts:(NSUInteger)maxAttempts;
++(AZSRetryInfo *)evaluateRetryContext:(AZSRetryContext *)retryContext maxAttempts:(NSUInteger)maxAttempts lastPrimaryAttempt:(NSDate * __strong *)lastPrimaryAttempt lastSecondaryAttempt:(NSDate * __strong *)lastSecondaryAttempt;
++(void)alignRetryIntervalWithRetryInfo:(AZSRetryInfo *)retryInfo lastPrimaryAttempt:(NSDate * __strong *)lastPrimaryAttempt lastSecondaryAttempt:(NSDate * __strong *)lastSecondaryAttempt;
 
 @end
 
 @implementation AZSRetryPolicyUtil
 
-// TODO: enable support for retry-secondary, once we have read-from-secondary.
-+(AZSRetryInfo *)evaluateRetryContext:(AZSRetryContext *)retryContext maxAttempts:(NSUInteger)maxAttempts
++(AZSRetryInfo *)evaluateRetryContext:(AZSRetryContext *)retryContext maxAttempts:(NSUInteger)maxAttempts lastPrimaryAttempt:(NSDate * __strong *)lastPrimaryAttempt lastSecondaryAttempt:(NSDate * __strong *)lastSecondaryAttempt
 {
     if (retryContext.currentRetryCount >= maxAttempts)
     {
         return [[AZSRetryInfo alloc] initDontRetry];
     }
     
+    switch (retryContext.lastRequestResult.targetLocation) {
+        case AZSStorageLocationPrimary:
+            *lastPrimaryAttempt = retryContext.lastRequestResult.endTime;
+            break;
+        case AZSStorageLocationSecondary:
+            *lastSecondaryAttempt = retryContext.lastRequestResult.endTime;
+            break;
+        default:
+            break;
+    }
+    
     NSInteger lastStatusCode = retryContext.lastRequestResult.response.statusCode;
-    if ((lastStatusCode >= 300) && (lastStatusCode < 500) && (lastStatusCode != 408 /* Request Timeout */))
+    BOOL secondaryNotFound = ((retryContext.lastRequestResult.targetLocation == AZSStorageLocationSecondary) && (lastStatusCode == 404));
+    
+    if ((lastStatusCode >= 300) && (lastStatusCode < 500) && (lastStatusCode != 408 /* Request Timeout */) && (!secondaryNotFound))
     {
         return [[AZSRetryInfo alloc] initDontRetry];
     }
@@ -47,7 +60,47 @@
         return [[AZSRetryInfo alloc] initDontRetry];
     }
     
-    return [[AZSRetryInfo alloc] initWithRetryContext:retryContext];
+    AZSRetryInfo *retryInfo = [[AZSRetryInfo alloc] initWithRetryContext:retryContext];
+    
+    if (secondaryNotFound && retryContext.currentLocationMode != AZSStorageLocationModeSecondaryOnly)
+    {
+        retryInfo.updatedLocationMode = AZSStorageLocationModePrimaryOnly;
+        retryInfo.targetLocation = AZSStorageLocationPrimary;
+    }
+    
+    return retryInfo;
+}
+
++(void)alignRetryIntervalWithRetryInfo:(AZSRetryInfo *)retryInfo lastPrimaryAttempt:(NSDate * __strong *)lastPrimaryAttempt lastSecondaryAttempt:(NSDate * __strong *)lastSecondaryAttempt
+{
+    NSDate *lastAttempt;
+    switch (retryInfo.targetLocation)
+    {
+        case AZSStorageLocationPrimary:
+        {
+            lastAttempt = *lastPrimaryAttempt;
+            break;
+        }
+        case AZSStorageLocationSecondary:
+        {
+            lastAttempt = *lastSecondaryAttempt;
+            break;
+        }
+        case AZSStorageLocationUnspecified:
+        {
+            break;
+        }
+    }
+    
+    if (lastAttempt)
+    {
+        NSTimeInterval sinceLastAttempt = [[NSDate date] timeIntervalSinceDate:lastAttempt];
+        retryInfo.retryInterval = MAX(0, (retryInfo.retryInterval - sinceLastAttempt));
+    }
+    else
+    {
+        retryInfo.retryInterval = 0;
+    }
 }
 
 @end
@@ -67,6 +120,12 @@
 
 @end
 
+@interface AZSRetryPolicyLinear()
+
+@property NSDate *lastPrimaryAttempt;
+@property NSDate *lastSecondaryAttempt;
+
+@end
 
 @implementation AZSRetryPolicyLinear
 
@@ -82,6 +141,8 @@
     {
         _maxAttempts = maxAttempts;
         _waitTimeBetweenRetries = waitTimeBetweenRetries;
+        _lastPrimaryAttempt = nil;
+        _lastSecondaryAttempt = nil;
     }
     
     return self;
@@ -89,12 +150,11 @@
 
 -(AZSRetryInfo *)evaluateRetryContext:(AZSRetryContext *)retryContext withOperationContext:(AZSOperationContext *)operationContext
 {
-    AZSRetryInfo *retryInfo = [AZSRetryPolicyUtil evaluateRetryContext:retryContext maxAttempts:self.maxAttempts];
+    AZSRetryInfo *retryInfo = [AZSRetryPolicyUtil evaluateRetryContext:retryContext maxAttempts:self.maxAttempts lastPrimaryAttempt:&_lastPrimaryAttempt lastSecondaryAttempt:&_lastSecondaryAttempt];
     if (retryInfo.shouldRetry)
     {
-        // TODO: Once we have read-from-secondary support, this needs to be more complicated, with the wait time being the amount of time
-        // since the last request to this storage location.
         retryInfo.retryInterval = self.waitTimeBetweenRetries;
+        [AZSRetryPolicyUtil alignRetryIntervalWithRetryInfo:retryInfo lastPrimaryAttempt:&_lastPrimaryAttempt lastSecondaryAttempt:&_lastSecondaryAttempt];
     }
     return retryInfo;
 }
@@ -106,6 +166,12 @@
 
 @end
 
+@interface AZSRetryPolicyExponential()
+
+@property NSDate *lastPrimaryAttempt;
+@property NSDate *lastSecondaryAttempt;
+
+@end
 
 @implementation AZSRetryPolicyExponential
 
@@ -121,13 +187,15 @@
     {
         _maxAttempts = maxAttempts;
         _averageBackoffDelta = averageBackoffDelta;
+        _lastPrimaryAttempt = nil;
+        _lastSecondaryAttempt = nil;
     }
     return self;
 }
 
 -(AZSRetryInfo *)evaluateRetryContext:(AZSRetryContext *)retryContext withOperationContext:(AZSOperationContext *)operationContext
 {
-    AZSRetryInfo *retryInfo = [AZSRetryPolicyUtil evaluateRetryContext:retryContext maxAttempts:self.maxAttempts];
+    AZSRetryInfo *retryInfo = [AZSRetryPolicyUtil evaluateRetryContext:retryContext maxAttempts:self.maxAttempts lastPrimaryAttempt:&_lastPrimaryAttempt lastSecondaryAttempt:&_lastSecondaryAttempt];
     if (retryInfo.shouldRetry)
     {
         double maxExponentialRetryInterval = 120;
@@ -151,9 +219,8 @@
         }
         double interval = MAX(MIN((increment < 0) ? maxExponentialRetryInterval : increment, maxExponentialRetryInterval), minExponentialRetryInterval);
         
-        // TODO: Once we have read-from-secondary support, this needs to be more complicated, with the wait time being the amount of time
-        // since the last request to this storage location.
         retryInfo.retryInterval = interval;
+        [AZSRetryPolicyUtil alignRetryIntervalWithRetryInfo:retryInfo lastPrimaryAttempt:&_lastPrimaryAttempt lastSecondaryAttempt:&_lastSecondaryAttempt];
     }
     return retryInfo;
 

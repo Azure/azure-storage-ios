@@ -41,6 +41,14 @@ AZS_ASSUME_NONNULL_BEGIN
 /** The number of simultaneous outstanding block uploads to permit when uploading a blob as a series of blocks.*/
 @property NSInteger parallelismFactor;
 
+/** If YES, when uploading an append blob in a streaming fashion, conditional errors should be ignored.
+ 
+ When uploading append blobs in a streaming fashion, an append-offset conditional header is used to avoid duplicate blocks.
+ If this is set to YES, errors from the append-offset header will be ignored when the error is coming from a block already being written to the service.
+ Only set this to YES if there is no possiblity of multiple writers writing to the blob simultaneously.  Otherwise, data corruption can occur.
+ */
+@property BOOL absorbConditionalErrorsOnRetry;
+
 // TODO: Implement logic to upload a blob as a single Put Blob call if below the below threshold.
 //@property NSInteger *singleBlobUploadThreshold;
 

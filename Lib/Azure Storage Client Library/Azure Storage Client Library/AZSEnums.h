@@ -20,11 +20,13 @@
 /** The different Storage Locations */
 typedef NS_ENUM(NSInteger, AZSStorageLocation)
 {
-    /** The Primary Stoarge Location.*/
-    AZSStorageLocationPrimary//,
+    AZSStorageLocationUnspecified,
+    
+    /** The Primary Storage Location.*/
+    AZSStorageLocationPrimary,
     
     /** The Secondary Storage Location.*/
-//    AZSStorageLocationSecondary
+    AZSStorageLocationSecondary
 };
 
 /** The mode in which the library will target storage locations for requests when retrying.*/
@@ -34,10 +36,17 @@ typedef NS_ENUM(NSInteger, AZSStorageLocationMode)
     AZSStorageLocationModeUnspecified,
     
     /** Target only the primary storage location.*/
-    AZSStorageLocationModePrimaryOnly//,
-//    AZSStorageLocationModePrimaryThenSecondary,
-//    AZSStorageLocationModeSecondaryOnly,
-//    AZSStorageLocationModeSecondaryThenPrimary
+    AZSStorageLocationModePrimaryOnly,
+    AZSStorageLocationModePrimaryThenSecondary,
+    AZSStorageLocationModeSecondaryOnly,
+    AZSStorageLocationModeSecondaryThenPrimary
+};
+
+typedef NS_ENUM(NSInteger, AZSAllowedStorageLocation)
+{
+    AZSAllowedStorageLocationPrimaryOnly,
+    AZSAllowedStorageLocationSecondaryOnly,
+    AZSAllowedStorageLocationPrimaryOrSecondary
 };
 
 /** The different possible Container Public Access Types.*/
@@ -355,4 +364,20 @@ typedef NS_OPTIONS(NSUInteger, AZSSharedAccessResourceTypes)
     /** Specifies All access granted. **/
     AZSSharedAccessResourceTypesAll         =
             AZSSharedAccessResourceTypesService | AZSSharedAccessResourceTypesContainer | AZSSharedAccessResourceTypesObject
+};
+
+/** Specifies the sequence number operator to use in a sequence number access condition.*/
+typedef NS_ENUM(NSInteger, AZSSequenceNumberOperator)
+{
+    /** Specifies no sequence number operator.*/
+    AZSSequenceNumberOperatorNone,
+    
+    /** Specifies that the request should only complete if the sequence number on the blob is less than or equal to the sequence number in the access condition.*/
+    AZSSequenceNumberOperatorLessThanOrEqualTo,
+
+    /** Specifies that the request should only complete if the sequence number on the blob is less than the sequence number in the access condition.*/
+    AZSSequenceNumberOperatorLessThan,
+    
+    /** Specifies that the request should only complete if the sequence number on the blob is equal to the sequence number in the access condition.*/
+    AZSSequenceNumberOperatorEqualTo
 };

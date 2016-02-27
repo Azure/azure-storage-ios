@@ -18,19 +18,58 @@
 #import <XCTest/XCTest.h>
 #import "AZSConstants.h"
 #import "AZSTestHelpers.h"
+#import "Azure_Storage_Client_Library.h"
+
 @import ObjectiveC;
 
 @implementation AZSTestHelpers
-
-+ (void)checkPassageOfError:(NSError *)err expectToPass:(BOOL)expected expectedHttpErrorCode:(int)code message:(NSString *)message
++(NSMutableData *)generateSampleDataWithSeed:(unsigned int *)seed length:(unsigned int)length
 {
-    int badCode = [err.userInfo[AZSCHttpStatusCode] intValue];
-    if (expected) {
-        XCTAssertNil(err, @"%@ failed.", message);
+    NSMutableData *sampleData = [NSMutableData dataWithLength:length];
+    Byte* sampleDataBytes = [sampleData mutableBytes];
+    for (int i = 0; i < length; i++)
+    {
+        sampleDataBytes[i] = rand_r(seed) % 256;
     }
-    else {
-        XCTAssertNotNil(err, @"%@ unexpectedly passed.", message);
-        XCTAssertEqual(code, badCode);
+    return sampleData;
+}
+
++(void)listAllInDirectoryOrContainer:(NSObject *)objectToList useFlatBlobListing:(BOOL)useFlatBlobListing blobArrayToPopulate:(NSMutableArray *)blobArrayToPopulate directoryArrayToPopulate:(NSMutableArray *)directoryArrayToPopulate continuationToken:(AZSContinuationToken *)continuationToken prefix:(NSString *)prefix blobListingDetails:(AZSBlobListingDetails)blobListingDetails maxResults:(NSUInteger)maxResults completionHandler:(void (^)(NSError *))completionHandler
+{
+    void (^tempCompletion)(NSError *, AZSBlobResultSegment *) = ^void(NSError *error, AZSBlobResultSegment *results) {
+        if (error)
+        {
+            completionHandler(error);
+        }
+        else
+        {
+            [blobArrayToPopulate addObjectsFromArray:results.blobs];
+            [directoryArrayToPopulate addObjectsFromArray:results.directories];
+            if (results.continuationToken)
+            {
+                [AZSTestHelpers listAllInDirectoryOrContainer:objectToList useFlatBlobListing:useFlatBlobListing blobArrayToPopulate:blobArrayToPopulate directoryArrayToPopulate:directoryArrayToPopulate continuationToken:results.continuationToken prefix:prefix blobListingDetails:blobListingDetails maxResults:maxResults completionHandler:completionHandler];
+            }
+            else
+            {
+                completionHandler(nil);
+            }
+        }
+    };
+    
+//    SEL selector = NSSelectorFromString(@"listBlobsSegmentedWithContinuationToken:prefix:useFlatBlobListing:blobListingDetails:maxResults:completionHandler:");
+    
+//    if ([objectToList respondsToSelector:selector])
+    if ([objectToList isKindOfClass:[AZSCloudBlobContainer class]])
+    {
+        // It's a container
+        AZSCloudBlobContainer *container = (AZSCloudBlobContainer *)objectToList;
+        [container listBlobsSegmentedWithContinuationToken:continuationToken prefix:nil useFlatBlobListing:useFlatBlobListing blobListingDetails:blobListingDetails maxResults:maxResults completionHandler:tempCompletion];
+    }
+    else
+    {
+        // It's a directory
+        AZSCloudBlobDirectory *directory = (AZSCloudBlobDirectory *)objectToList;
+        [directory listBlobsSegmentedWithContinuationToken:continuationToken useFlatBlobListing:useFlatBlobListing blobListingDetails:blobListingDetails maxResults:maxResults completionHandler:tempCompletion];
     }
 }
 
@@ -255,7 +294,6 @@ void RunLoopSourceCancelRoutine (void *info, CFRunLoopRef rl, CFStringRef mode)
     
     self.totalBytes = totalBytes;
     self.totalBlobSize = totalBlobSize;
-    
     if (self.totalBytes >= self.totalBlobSize)
     {
         self.isStreamClosed = YES;
