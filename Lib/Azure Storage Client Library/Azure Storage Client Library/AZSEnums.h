@@ -37,15 +37,27 @@ typedef NS_ENUM(NSInteger, AZSStorageLocationMode)
     
     /** Target only the primary storage location.*/
     AZSStorageLocationModePrimaryOnly,
+    
+    /** If the operation supports, start with the primary storage location.  If the operation fails, retry with the secondary.*/
     AZSStorageLocationModePrimaryThenSecondary,
+    
+    /** Target only the secondary storage location.*/
     AZSStorageLocationModeSecondaryOnly,
+    
+    /** If the operation supports, start with the secondary storage location.  If the operation fails, retry with the primary.*/
     AZSStorageLocationModeSecondaryThenPrimary
 };
 
+/** Which storage locations are permitted for a given operation.*/
 typedef NS_ENUM(NSInteger, AZSAllowedStorageLocation)
 {
+    /* The operation can only target the primary location.  This is the case for most operations.*/
     AZSAllowedStorageLocationPrimaryOnly,
+    
+    /* The operation can only target the secondary location.*/
     AZSAllowedStorageLocationSecondaryOnly,
+    
+    /* The operation can target either location.  This is the case for some read operations.*/
     AZSAllowedStorageLocationPrimaryOrSecondary
 };
 

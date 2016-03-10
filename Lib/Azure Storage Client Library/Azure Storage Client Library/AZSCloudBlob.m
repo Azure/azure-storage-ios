@@ -328,7 +328,7 @@
     return;
 }
 
-- (void)downloadAttributesInternalWithPrimaryOnly:(BOOL)primaryOnly accessCondition:(AZSAccessCondition *)accessCondition requestOptions:(AZSBlobRequestOptions *)requestOptions operationContext:(AZSOperationContext *)operationContext completionHandler:(void (^)(NSError*))completionHandler
+- (void)downloadAttributesWithPrimaryOnly:(BOOL)primaryOnly accessCondition:(AZSAccessCondition *)accessCondition requestOptions:(AZSBlobRequestOptions *)requestOptions operationContext:(AZSOperationContext *)operationContext completionHandler:(void (^)(NSError*))completionHandler
 {
     if (!operationContext)
     {
@@ -383,7 +383,7 @@
 
 - (void)downloadAttributesWithAccessCondition:(AZSAccessCondition *)accessCondition requestOptions:(AZSBlobRequestOptions *)requestOptions operationContext:(AZSOperationContext *)operationContext completionHandler:(void (^)(NSError*))completionHandler
 {
-    return [self downloadAttributesInternalWithPrimaryOnly:NO accessCondition:accessCondition requestOptions:requestOptions operationContext:operationContext completionHandler:completionHandler];
+    return [self downloadAttributesWithPrimaryOnly:NO accessCondition:accessCondition requestOptions:requestOptions operationContext:operationContext completionHandler:completionHandler];
 }
 
 -(void)snapshotBlobWithMetadata:(NSMutableDictionary *)metadata completionHandler:(void (^)(NSError*, AZSCloudBlob *))completionHandler
@@ -437,7 +437,7 @@
 
 -(void)existsInternalWithPrimaryOnly:(BOOL)primaryOnly accessCondition:(AZSAccessCondition *)accessCondition requestOptions:(AZSBlobRequestOptions *)requestOptions operationContext:(AZSOperationContext *)operationContext completionHandler:(void (^)(NSError*, BOOL))completionHandler
 {
-    [self downloadAttributesInternalWithPrimaryOnly:primaryOnly accessCondition:accessCondition requestOptions:requestOptions operationContext:operationContext completionHandler:^(NSError *error) {
+    [self downloadAttributesWithPrimaryOnly:primaryOnly accessCondition:accessCondition requestOptions:requestOptions operationContext:operationContext completionHandler:^(NSError *error) {
         if (error)
         {
             if ([error.domain isEqualToString:AZSErrorDomain] && (error.code == AZSEServerError) && error.userInfo[AZSCHttpStatusCode] && (((NSNumber *)error.userInfo[AZSCHttpStatusCode]).intValue == 404))

@@ -51,7 +51,6 @@
 {
     if (value)
     {
-        // TODO: What if it's not a long?
         [request addValue:[NSString stringWithFormat:@"%ld", [value longValue]] forHTTPHeaderField:header];
     }
 }

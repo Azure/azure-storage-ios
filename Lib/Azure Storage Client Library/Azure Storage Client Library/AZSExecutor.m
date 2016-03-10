@@ -809,24 +809,15 @@
 {
     switch (locationMode) {
         case AZSStorageLocationModePrimaryOnly:
-        {
-            return AZSStorageLocationPrimary;
-        }
         case AZSStorageLocationModePrimaryThenSecondary:
+        case AZSStorageLocationModeUnspecified:
         {
             return AZSStorageLocationPrimary;
         }
         case AZSStorageLocationModeSecondaryOnly:
-        {
-            return AZSStorageLocationSecondary;
-        }
         case AZSStorageLocationModeSecondaryThenPrimary:
         {
             return AZSStorageLocationSecondary;
-        }
-        case AZSStorageLocationModeUnspecified:
-        {
-            return AZSStorageLocationPrimary;
         }
     }
 }

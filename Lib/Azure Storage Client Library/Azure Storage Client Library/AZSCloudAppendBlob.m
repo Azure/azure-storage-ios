@@ -137,25 +137,22 @@
         {
             completionHandler(error, NO);
         }
+        else if (exists)
+        {
+            completionHandler(nil, NO);
+        }
         else
         {
-            if (exists)
-            {
-                completionHandler(nil, NO);
-            }
-            else
-            {
-                [self createWithAccessCondition:accessCondition requestOptions:requestOptions operationContext:operationContext completionHandler:^(NSError *error) {
-                    if (error)
-                    {
-                        completionHandler(error, NO);
-                    }
-                    else
-                    {
-                        completionHandler(nil, YES);
-                    }
-                }];
-            }
+            [self createWithAccessCondition:accessCondition requestOptions:requestOptions operationContext:operationContext completionHandler:^(NSError *error) {
+                if (error)
+                {
+                    completionHandler(error, NO);
+                }
+                else
+                {
+                    completionHandler(nil, YES);
+                }
+            }];
         }
     }];
 }

@@ -72,7 +72,7 @@
     {
         _underlyingBlob = blockBlob;
         _blobType = AZSBlobTypeBlockBlob;
-        _dataBuffer = [NSMutableData dataWithCapacity:AZSCMaxBlockSize];  //TODO: This should be the user-settable.
+        _dataBuffer = [NSMutableData dataWithCapacity:AZSCMaxBlockSize];  //TODO: This should be user-settable.
         _blockIDs = [NSMutableArray arrayWithCapacity:10];
         _maxOpenUploads = requestOptions.parallelismFactor;
         _blockUploadSemaphore = dispatch_semaphore_create(self.maxOpenUploads);
@@ -99,7 +99,7 @@
     {
         _underlyingBlob = pageBlob;
         _blobType = AZSBlobTypePageBlob;
-        _dataBuffer = [NSMutableData dataWithCapacity:AZSCMaxBlockSize];  //TODO: This should be the user-settable.
+        _dataBuffer = [NSMutableData dataWithCapacity:AZSCMaxBlockSize];  //TODO: This should be user-settable.
         _maxOpenUploads = requestOptions.parallelismFactor;
         _blockUploadSemaphore = dispatch_semaphore_create(self.maxOpenUploads);
         _streamWaiting = NO;
@@ -131,7 +131,7 @@
         _underlyingBlob = appendBlob;
         _blobType = AZSBlobTypeAppendBlob;
         _dataBuffer = [NSMutableData dataWithCapacity:AZSCMaxBlockSize];  //TODO: This should be the user-settable.
-        _maxOpenUploads = 1;//requestOptions.parallelismFactor;  //TODO: Investigate if it ever makes sense for this to be anything other than 1.
+        _maxOpenUploads = 1; //TODO: Investigate if this should always be 1, or if we should use the value in requestOptions.parallelismFactor.
         _blockUploadSemaphore = dispatch_semaphore_create(self.maxOpenUploads);
         _streamWaiting = NO;
         _uploadLock = [[NSObject alloc] init];
