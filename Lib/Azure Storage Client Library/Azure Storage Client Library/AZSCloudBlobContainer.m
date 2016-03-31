@@ -240,8 +240,6 @@
                 AZSCloudBlob *blob;
                 switch (blobListItem.properties.blobType)
                 {
-                    case AZSBlobTypeUnspecified:
-                        break;
                     case AZSBlobTypeAppendBlob:
                         blob = [[AZSCloudAppendBlob alloc] initWithContainer:self name:blobListItem.name snapshotTime:blobListItem.snapshotTime];
                         break;
@@ -251,7 +249,9 @@
                     case AZSBlobTypePageBlob:
                         blob = [[AZSCloudPageBlob alloc] initWithContainer:self name:blobListItem.name snapshotTime:blobListItem.snapshotTime];
                         break;
+                    case AZSBlobTypeUnspecified:
                     default:
+                        blob = [[AZSCloudBlob alloc] initWithContainer:self name:blobListItem.name snapshotTime:blobListItem.snapshotTime];
                         break;
                 }
                 

@@ -184,25 +184,32 @@
     
     maxAttempts = 10;
     waitTime = 1.0;
+    int retryCount = 0;
+    double upperBoundRandomness = 1.2;
+    double lowerBoundRandomness = 0.8;
     retryPolicy = [[AZSRetryPolicyExponential alloc] initWithMaxAttempts:maxAttempts averageBackoffDelta:waitTime];
 
-    [self runRetryTestWithRetryPolicy:retryPolicy retryCount:0 statusCode:500 shouldSucceed:YES validateRetryInterval:^BOOL(double retryInterval) {
+    [self runRetryTestWithRetryPolicy:retryPolicy retryCount:retryCount statusCode:500 shouldSucceed:YES validateRetryInterval:^BOOL(double retryInterval) {
         return (fabs((retryInterval - 0.5)) < 0.1);
     }];
     
-    [self runRetryTestWithRetryPolicy:retryPolicy retryCount:1 statusCode:500 shouldSucceed:YES validateRetryInterval:^BOOL(double retryInterval) {
-        return ((retryInterval < (1.0*1.2)) && (retryInterval > (1.0*0.8)));
+    retryCount = 1;
+    [self runRetryTestWithRetryPolicy:retryPolicy retryCount:retryCount statusCode:500 shouldSucceed:YES validateRetryInterval:^BOOL(double retryInterval) {
+        return ((retryInterval < (waitTime*upperBoundRandomness)) && (retryInterval > (waitTime*lowerBoundRandomness)));
+    }];
+    
+    retryCount = 3;
+    [self runRetryTestWithRetryPolicy:retryPolicy retryCount:retryCount statusCode:500 shouldSucceed:YES validateRetryInterval:^BOOL(double retryInterval) {
+        return ((retryInterval < ((pow(2, retryCount) - 1)*waitTime*upperBoundRandomness)) && (retryInterval > ((pow(2, retryCount) - 1)*waitTime*lowerBoundRandomness)));
     }];
 
-    [self runRetryTestWithRetryPolicy:retryPolicy retryCount:3 statusCode:500 shouldSucceed:YES validateRetryInterval:^BOOL(double retryInterval) {
-        return ((retryInterval < (7*1.0*1.2)) && (retryInterval > (7*1.0*0.8)));
+    retryCount = 6;
+    [self runRetryTestWithRetryPolicy:retryPolicy retryCount:retryCount statusCode:500 shouldSucceed:YES validateRetryInterval:^BOOL(double retryInterval) {
+        return ((retryInterval < ((pow(2, retryCount) - 1)*waitTime*upperBoundRandomness)) && (retryInterval > ((pow(2, retryCount) - 1)*waitTime*lowerBoundRandomness)));
     }];
 
-    [self runRetryTestWithRetryPolicy:retryPolicy retryCount:6 statusCode:500 shouldSucceed:YES validateRetryInterval:^BOOL(double retryInterval) {
-        return ((retryInterval < (63*1.0*1.2)) && (retryInterval > (63*1.0*0.8)));
-    }];
-
-    [self runRetryTestWithRetryPolicy:retryPolicy retryCount:9 statusCode:500 shouldSucceed:YES validateRetryInterval:^BOOL(double retryInterval) {
+    retryCount = 9;
+    [self runRetryTestWithRetryPolicy:retryPolicy retryCount:retryCount statusCode:500 shouldSucceed:YES validateRetryInterval:^BOOL(double retryInterval) {
         return (fabs((retryInterval - 120)) < 0.1);
     }];
 

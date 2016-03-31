@@ -229,7 +229,7 @@ AZS_ASSUME_NONNULL_BEGIN
 /** Performs one segmented blob listing operation.
  
  This method lists the blobs in the given container.  It will perform exactly one REST call, which will list blobs
- beginning with the container represented in the AZSContinuationToken.  If no token is provided, it will list 
+ beginning with the blob represented in the AZSContinuationToken.  If no token is provided, it will list
  blobs from the beginning.  Only blobs that begin with the input prefix will be listed.
  
  Any number of blobs can be listed, from zero up to a set maximum.  Even if this method returns zero results, if
@@ -253,7 +253,7 @@ AZS_ASSUME_NONNULL_BEGIN
 /** Performs one segmented blob listing operation.
  
  This method lists the blobs in the given container.  It will perform exactly one REST call, which will list blobs
- beginning with the container represented in the AZSContinuationToken.  If no token is provided, it will list
+ beginning with the blob represented in the AZSContinuationToken.  If no token is provided, it will list
  blobs from the beginning.  Only blobs that begin with the input prefix will be listed.
  
  Any number of blobs can be listed, from zero up to a set maximum.  Even if this method returns zero results, if

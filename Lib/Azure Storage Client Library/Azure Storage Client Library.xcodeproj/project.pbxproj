@@ -35,7 +35,6 @@
 		6970FD9E1C1A0BF0000F2EBB /* AZSConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 6970FD9C1C1A0BF0000F2EBB /* AZSConstants.m */; };
 		69A278031C24A4DB00981FF0 /* AZSSharedAccessAccountParameters.h in Headers */ = {isa = PBXBuildFile; fileRef = 69A278011C24A4DB00981FF0 /* AZSSharedAccessAccountParameters.h */; };
 		69A278041C24A4DB00981FF0 /* AZSSharedAccessAccountParameters.m in Sources */ = {isa = PBXBuildFile; fileRef = 69A278021C24A4DB00981FF0 /* AZSSharedAccessAccountParameters.m */; };
-		69A278061C24A69700981FF0 /* AZSBlobSasTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 69A278051C24A69700981FF0 /* AZSBlobSasTests.m */; };
 		69A278081C24A6A000981FF0 /* AZSAccountSasTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 69A278071C24A6A000981FF0 /* AZSAccountSasTests.m */; };
 		69BE84101C223F2B00AF170E /* AZSIPRange.h in Headers */ = {isa = PBXBuildFile; fileRef = 69BE840E1C223F2B00AF170E /* AZSIPRange.h */; };
 		69BE84111C223F2B00AF170E /* AZSIPRange.m in Sources */ = {isa = PBXBuildFile; fileRef = 69BE840F1C223F2B00AF170E /* AZSIPRange.m */; };
@@ -167,7 +166,6 @@
 		6970FD9C1C1A0BF0000F2EBB /* AZSConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AZSConstants.m; sourceTree = "<group>"; };
 		69A278011C24A4DB00981FF0 /* AZSSharedAccessAccountParameters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AZSSharedAccessAccountParameters.h; sourceTree = "<group>"; };
 		69A278021C24A4DB00981FF0 /* AZSSharedAccessAccountParameters.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AZSSharedAccessAccountParameters.m; sourceTree = "<group>"; };
-		69A278051C24A69700981FF0 /* AZSBlobSasTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AZSBlobSasTests.m; sourceTree = "<group>"; };
 		69A278071C24A6A000981FF0 /* AZSAccountSasTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AZSAccountSasTests.m; sourceTree = "<group>"; };
 		69BE840E1C223F2B00AF170E /* AZSIPRange.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AZSIPRange.h; sourceTree = "<group>"; };
 		69BE840F1C223F2B00AF170E /* AZSIPRange.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AZSIPRange.m; sourceTree = "<group>"; };
@@ -487,7 +485,6 @@
 				693220451C16439D00B07D98 /* Resources */,
 				BE45105A1A9D252300C3F971 /* Supporting Files */,
 				69A278071C24A6A000981FF0 /* AZSAccountSasTests.m */,
-				69A278051C24A69700981FF0 /* AZSBlobSasTests.m */,
 				B05A0E791B1262BD005DCF06 /* AZSCloudBlobContainerTests.m */,
 				B05A0E7B1B12645C005DCF06 /* AZSCloudStorageAccountTests.m */,
 				B05A0E7D1B1264E8005DCF06 /* AZSCloudBlobClientTests.m */,
@@ -767,7 +764,6 @@
 				B09BDEAA1C1A4BB5004D2F94 /* AZSCloudBlobDirectoryTests.m in Sources */,
 				BE90F9021B3DEC7900CD278B /* AZSNavigationUtil.m in Sources */,
 				69FF6EBF1B83C56200AF4FDE /* AZSLeaseTests.m in Sources */,
-				69A278061C24A69700981FF0 /* AZSBlobSasTests.m in Sources */,
 				B0DD6B631C2087C5004B3A7D /* AZSCloudPageBlobTests.m in Sources */,
 				B02EF9941B14F10B005F1DE2 /* AZSBlobTestBase.m in Sources */,
 				B05A0E7C1B12645C005DCF06 /* AZSCloudStorageAccountTests.m in Sources */,
