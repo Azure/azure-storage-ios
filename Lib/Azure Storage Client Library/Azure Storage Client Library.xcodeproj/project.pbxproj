@@ -21,22 +21,22 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
-		693220321C16437100B07D98 /* AZSSharedAccessHeaders.h in Headers */ = {isa = PBXBuildFile; fileRef = 6932202C1C16437100B07D98 /* AZSSharedAccessHeaders.h */; };
+		693220321C16437100B07D98 /* AZSSharedAccessHeaders.h in Headers */ = {isa = PBXBuildFile; fileRef = 6932202C1C16437100B07D98 /* AZSSharedAccessHeaders.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		693220331C16437100B07D98 /* AZSSharedAccessHeaders.m in Sources */ = {isa = PBXBuildFile; fileRef = 6932202D1C16437100B07D98 /* AZSSharedAccessHeaders.m */; };
-		693220341C16437100B07D98 /* AZSSharedAccessPolicy.h in Headers */ = {isa = PBXBuildFile; fileRef = 6932202E1C16437100B07D98 /* AZSSharedAccessPolicy.h */; };
+		693220341C16437100B07D98 /* AZSSharedAccessPolicy.h in Headers */ = {isa = PBXBuildFile; fileRef = 6932202E1C16437100B07D98 /* AZSSharedAccessPolicy.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		693220351C16437100B07D98 /* AZSSharedAccessPolicy.m in Sources */ = {isa = PBXBuildFile; fileRef = 6932202F1C16437100B07D98 /* AZSSharedAccessPolicy.m */; };
-		693220361C16437100B07D98 /* AZSSharedAccessSignatureHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = 693220301C16437100B07D98 /* AZSSharedAccessSignatureHelper.h */; };
+		693220361C16437100B07D98 /* AZSSharedAccessSignatureHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = 693220301C16437100B07D98 /* AZSSharedAccessSignatureHelper.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		693220371C16437100B07D98 /* AZSSharedAccessSignatureHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 693220311C16437100B07D98 /* AZSSharedAccessSignatureHelper.m */; };
-		6932203E1C16438600B07D98 /* AZSSharedAccessBlobParameters.h in Headers */ = {isa = PBXBuildFile; fileRef = 6932203A1C16438600B07D98 /* AZSSharedAccessBlobParameters.h */; };
+		6932203E1C16438600B07D98 /* AZSSharedAccessBlobParameters.h in Headers */ = {isa = PBXBuildFile; fileRef = 6932203A1C16438600B07D98 /* AZSSharedAccessBlobParameters.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6932203F1C16438600B07D98 /* AZSSharedAccessBlobParameters.m in Sources */ = {isa = PBXBuildFile; fileRef = 6932203B1C16438600B07D98 /* AZSSharedAccessBlobParameters.m */; };
 		693220441C16439500B07D98 /* AZSTestSemaphore.m in Sources */ = {isa = PBXBuildFile; fileRef = 693220421C16439500B07D98 /* AZSTestSemaphore.m */; };
 		693220461C16439D00B07D98 /* Resources in Resources */ = {isa = PBXBuildFile; fileRef = 693220451C16439D00B07D98 /* Resources */; };
-		6970FD9D1C1A0BF0000F2EBB /* AZSConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = 6970FD9B1C1A0BF0000F2EBB /* AZSConstants.h */; };
+		6970FD9D1C1A0BF0000F2EBB /* AZSConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = 6970FD9B1C1A0BF0000F2EBB /* AZSConstants.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6970FD9E1C1A0BF0000F2EBB /* AZSConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 6970FD9C1C1A0BF0000F2EBB /* AZSConstants.m */; };
-		69A278031C24A4DB00981FF0 /* AZSSharedAccessAccountParameters.h in Headers */ = {isa = PBXBuildFile; fileRef = 69A278011C24A4DB00981FF0 /* AZSSharedAccessAccountParameters.h */; };
+		69A278031C24A4DB00981FF0 /* AZSSharedAccessAccountParameters.h in Headers */ = {isa = PBXBuildFile; fileRef = 69A278011C24A4DB00981FF0 /* AZSSharedAccessAccountParameters.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		69A278041C24A4DB00981FF0 /* AZSSharedAccessAccountParameters.m in Sources */ = {isa = PBXBuildFile; fileRef = 69A278021C24A4DB00981FF0 /* AZSSharedAccessAccountParameters.m */; };
 		69A278081C24A6A000981FF0 /* AZSAccountSasTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 69A278071C24A6A000981FF0 /* AZSAccountSasTests.m */; };
-		69BE84101C223F2B00AF170E /* AZSIPRange.h in Headers */ = {isa = PBXBuildFile; fileRef = 69BE840E1C223F2B00AF170E /* AZSIPRange.h */; };
+		69BE84101C223F2B00AF170E /* AZSIPRange.h in Headers */ = {isa = PBXBuildFile; fileRef = 69BE840E1C223F2B00AF170E /* AZSIPRange.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		69BE84111C223F2B00AF170E /* AZSIPRange.m in Sources */ = {isa = PBXBuildFile; fileRef = 69BE840F1C223F2B00AF170E /* AZSIPRange.m */; };
 		69FF6EBF1B83C56200AF4FDE /* AZSLeaseTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 69FF6EBE1B83C56200AF4FDE /* AZSLeaseTests.m */; };
 		B01734011B0A59BE00E5807C /* AZSCloudBlob.m in Sources */ = {isa = PBXBuildFile; fileRef = B01734001B0A59BE00E5807C /* AZSCloudBlob.m */; };
@@ -106,14 +106,14 @@
 		B082D1951BB0D2D900A39C18 /* AZSRetryInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = B058A48C1B4F516900BB0F57 /* AZSRetryInfo.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		B082D1961BB0D2DB00A39C18 /* AZSRetryContext.h in Headers */ = {isa = PBXBuildFile; fileRef = B058A48F1B4F517D00BB0F57 /* AZSRetryContext.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		B082D1971BB0D2DE00A39C18 /* AZSRetryPolicy.h in Headers */ = {isa = PBXBuildFile; fileRef = B058A4921B4F518C00BB0F57 /* AZSRetryPolicy.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		B09BDEA71C1A4787004D2F94 /* AZSCloudBlobDirectory.h in Headers */ = {isa = PBXBuildFile; fileRef = B09BDEA51C1A4787004D2F94 /* AZSCloudBlobDirectory.h */; };
+		B09BDEA71C1A4787004D2F94 /* AZSCloudBlobDirectory.h in Headers */ = {isa = PBXBuildFile; fileRef = B09BDEA51C1A4787004D2F94 /* AZSCloudBlobDirectory.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		B09BDEA81C1A4787004D2F94 /* AZSCloudBlobDirectory.m in Sources */ = {isa = PBXBuildFile; fileRef = B09BDEA61C1A4787004D2F94 /* AZSCloudBlobDirectory.m */; };
 		B09BDEAA1C1A4BB5004D2F94 /* AZSCloudBlobDirectoryTests.m in Sources */ = {isa = PBXBuildFile; fileRef = B09BDEA91C1A4BB5004D2F94 /* AZSCloudBlobDirectoryTests.m */; };
 		B0C0F5E81B44C8FC0080DC49 /* AZSResponseParser.m in Sources */ = {isa = PBXBuildFile; fileRef = B0C0F5E71B44C8FC0080DC49 /* AZSResponseParser.m */; };
-		B0DD6B601C208105004B3A7D /* AZSCloudPageBlob.h in Headers */ = {isa = PBXBuildFile; fileRef = B0DD6B5E1C208105004B3A7D /* AZSCloudPageBlob.h */; };
+		B0DD6B601C208105004B3A7D /* AZSCloudPageBlob.h in Headers */ = {isa = PBXBuildFile; fileRef = B0DD6B5E1C208105004B3A7D /* AZSCloudPageBlob.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		B0DD6B611C208105004B3A7D /* AZSCloudPageBlob.m in Sources */ = {isa = PBXBuildFile; fileRef = B0DD6B5F1C208105004B3A7D /* AZSCloudPageBlob.m */; };
 		B0DD6B631C2087C5004B3A7D /* AZSCloudPageBlobTests.m in Sources */ = {isa = PBXBuildFile; fileRef = B0DD6B621C2087C5004B3A7D /* AZSCloudPageBlobTests.m */; };
-		B0DD6B661C209175004B3A7D /* AZSCloudAppendBlob.h in Headers */ = {isa = PBXBuildFile; fileRef = B0DD6B641C209175004B3A7D /* AZSCloudAppendBlob.h */; };
+		B0DD6B661C209175004B3A7D /* AZSCloudAppendBlob.h in Headers */ = {isa = PBXBuildFile; fileRef = B0DD6B641C209175004B3A7D /* AZSCloudAppendBlob.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		B0DD6B671C209175004B3A7D /* AZSCloudAppendBlob.m in Sources */ = {isa = PBXBuildFile; fileRef = B0DD6B651C209175004B3A7D /* AZSCloudAppendBlob.m */; };
 		BE4510441A9D252300C3F971 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE4510431A9D252300C3F971 /* Foundation.framework */; };
 		BE45104B1A9D252300C3F971 /* Azure_Storage_Client_Library.m in Sources */ = {isa = PBXBuildFile; fileRef = BE45104A1A9D252300C3F971 /* Azure_Storage_Client_Library.m */; };
@@ -547,34 +547,34 @@
 				B082D1841BB0D28F00A39C18 /* AZSCloudBlockBlob.h in Headers */,
 				B082D1831BB0D28C00A39C18 /* AZSCloudBlobClient.h in Headers */,
 				B082D1851BB0D29300A39C18 /* AZSCloudBlobContainer.h in Headers */,
-				69A278031C24A4DB00981FF0 /* AZSSharedAccessAccountParameters.h in Headers */,
 				B082D1861BB0D29700A39C18 /* AZSBlobRequestOptions.h in Headers */,
-				69BE84101C223F2B00AF170E /* AZSIPRange.h in Headers */,
 				B082D1871BB0D29E00A39C18 /* AZSCloudBlob.h in Headers */,
 				B082D1881BB0D2A100A39C18 /* AZSBlockListItem.h in Headers */,
 				B082D1891BB0D2A400A39C18 /* AZSBlobContainerProperties.h in Headers */,
 				B082D18A1BB0D2A600A39C18 /* AZSBlobProperties.h in Headers */,
-				B09BDEA71C1A4787004D2F94 /* AZSCloudBlobDirectory.h in Headers */,
 				B082D18B1BB0D2AB00A39C18 /* AZSCopyState.h in Headers */,
-				693220361C16437100B07D98 /* AZSSharedAccessSignatureHelper.h in Headers */,
 				B082D18C1BB0D2AE00A39C18 /* AZSBlobOutputStream.h in Headers */,
 				B082D18D1BB0D2BD00A39C18 /* AZSCloudClient.h in Headers */,
-				B0DD6B661C209175004B3A7D /* AZSCloudAppendBlob.h in Headers */,
 				B082D18E1BB0D2C000A39C18 /* AZSStorageCredentials.h in Headers */,
-				693220341C16437100B07D98 /* AZSSharedAccessPolicy.h in Headers */,
 				B082D18F1BB0D2C200A39C18 /* AZSStorageUri.h in Headers */,
 				B082D1901BB0D2C500A39C18 /* AZSCloudStorageAccount.h in Headers */,
 				B082D1911BB0D2CA00A39C18 /* Azure_Storage_Client_Library.h in Headers */,
-				B082D1921BB0D2D100A39C18 /* AZSResultSegment.h in Headers */,
-				B082D1931BB0D2D400A39C18 /* AZSContinuationToken.h in Headers */,
+				69A278031C24A4DB00981FF0 /* AZSSharedAccessAccountParameters.h in Headers */,
+				69BE84101C223F2B00AF170E /* AZSIPRange.h in Headers */,
+				B09BDEA71C1A4787004D2F94 /* AZSCloudBlobDirectory.h in Headers */,
+				693220361C16437100B07D98 /* AZSSharedAccessSignatureHelper.h in Headers */,
+				B0DD6B661C209175004B3A7D /* AZSCloudAppendBlob.h in Headers */,
+				693220341C16437100B07D98 /* AZSSharedAccessPolicy.h in Headers */,
 				6970FD9D1C1A0BF0000F2EBB /* AZSConstants.h in Headers */,
 				B0DD6B601C208105004B3A7D /* AZSCloudPageBlob.h in Headers */,
-				B082D1941BB0D2D600A39C18 /* AZSAccessCondition.h in Headers */,
 				6932203E1C16438600B07D98 /* AZSSharedAccessBlobParameters.h in Headers */,
+				693220321C16437100B07D98 /* AZSSharedAccessHeaders.h in Headers */,
+				B082D1921BB0D2D100A39C18 /* AZSResultSegment.h in Headers */,
+				B082D1931BB0D2D400A39C18 /* AZSContinuationToken.h in Headers */,
+				B082D1941BB0D2D600A39C18 /* AZSAccessCondition.h in Headers */,
 				B082D1951BB0D2D900A39C18 /* AZSRetryInfo.h in Headers */,
 				B082D1961BB0D2DB00A39C18 /* AZSRetryContext.h in Headers */,
 				B082D1971BB0D2DE00A39C18 /* AZSRetryPolicy.h in Headers */,
-				693220321C16437100B07D98 /* AZSSharedAccessHeaders.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -685,7 +685,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "set -e\n\n# If we're already inside this script then die\nif [ -n \"$RW_MULTIPLATFORM_BUILD_IN_PROGRESS\" ]; then\nexit 0\nfi\nexport RW_MULTIPLATFORM_BUILD_IN_PROGRESS=1\n\nRW_FRAMEWORK_NAME=${PROJECT_NAME}\nRW_INPUT_STATIC_LIB=\"lib${PROJECT_NAME}.a\"\nRW_FRAMEWORK_LOCATION=\"${BUILT_PRODUCTS_DIR}/${RW_FRAMEWORK_NAME}.framework\"\n\nfunction build_static_library {\n    echo \"CONFIGURATION = ${CONFIGURATION}\"\n    # Will rebuild the static library as specified\n    #     build_static_library sdk\n    xcrun xcodebuild -project \"${PROJECT_FILE_PATH}\" \\\n    -target \"Azure Storage Client Library\" \\\n    -configuration \"${CONFIGURATION}\" \\\n    -sdk \"${1}\" -verbose \\\n    ONLY_ACTIVE_ARCH=NO \\\n    ARCHS=\"${2}\" \\\n    BUILD_DIR=\"${BUILD_DIR}\" \\\n    OBJROOT=\"${OBJROOT}\" \\\n    OTHER_CFLAGS=\"-fembed-bitcode\" \\\n    BUILD_ROOT=\"${BUILD_ROOT}\" \\\n    SYMROOT=\"${SYMROOT}\" $ACTION >&1\n}\n\nfunction make_fat_library {\n    # Will smash 2 static libs together\n    #     make_fat_library in1 in2 out\n    xcrun lipo -create \"${1}\" \"${2}\" -output \"${3}\"\n}\n\n# 1 - Extract the platform (iphoneos/iphonesimulator) from the SDK name\nif [[ \"$SDK_NAME\" =~ ([A-Za-z]+) ]]; then\nRW_SDK_PLATFORM=${BASH_REMATCH[1]}\nelse\necho \"Could not find platform name from SDK_NAME: $SDK_NAME\"\nexit 1\nfi\n\n# 2 - Extract the version from the SDK\nif [[ \"$SDK_NAME\" =~ ([0-9]+.*$) ]]; then\nRW_SDK_VERSION=${BASH_REMATCH[1]}\nelse\necho \"Could not find sdk version from SDK_NAME: $SDK_NAME\"\nexit 1\nfi\n\n# 3 - Determine the other platform\nif [ \"$RW_SDK_PLATFORM\" == \"iphoneos\" ]; then\nRW_OTHER_PLATFORM=iphonesimulator\nARCHS_TO_BUILD=\"armv7 armv7s arm64\"\nOTHER_ARCHS_TO_BUILD=\"i386 x86_64\"\nelse\nRW_OTHER_PLATFORM=iphoneos\nARCHS_TO_BUILD=\"i386 x86_64\"\nOTHER_ARCHS_TO_BUILD=\"armv7 armv7s arm64\"\nfi\n\n# 4 - Find the build directory\nif [[ \"$BUILT_PRODUCTS_DIR\" =~ (.*)$RW_SDK_PLATFORM$ ]]; then\nRW_OTHER_BUILT_PRODUCTS_DIR=\"${BASH_REMATCH[1]}${RW_OTHER_PLATFORM}\"\nelse\necho \"Could not find other platform build directory.\"\nexit 1\nfi\n\necho \"${SDK_NAME}\"\necho \"${RW_OTHER_PLATFORM}\"\necho \"${RW_SDK_VERSION}\"\n\n# Build the library\nbuild_static_library \"${SDK_NAME}\" \"${ARCHS_TO_BUILD}\"\n\n# Build the other platform.\nbuild_static_library \"${RW_OTHER_PLATFORM}${RW_SDK_VERSION}\" \"${OTHER_ARCHS_TO_BUILD}\"\n\n\n# Join the 2 static libs into 1 and push into the .framework\nmake_fat_library \"${BUILT_PRODUCTS_DIR}/${RW_INPUT_STATIC_LIB}\" \\\n\"${RW_OTHER_BUILT_PRODUCTS_DIR}/${RW_INPUT_STATIC_LIB}\" \\\n\"${RW_FRAMEWORK_LOCATION}/Versions/A/${RW_FRAMEWORK_NAME}\"\n\n# Ensure that the framework is present in both platform's build directories\ncp -a \"${RW_FRAMEWORK_LOCATION}/Versions/A/${RW_FRAMEWORK_NAME}\" \\\n\"${RW_OTHER_BUILT_PRODUCTS_DIR}/${RW_FRAMEWORK_NAME}.framework/Versions/A/${RW_FRAMEWORK_NAME}\"\n\n# Copy the framework to the user's desktop\nditto \"${RW_FRAMEWORK_LOCATION}\" \"${HOME}/Desktop/${RW_FRAMEWORK_NAME}.framework\"";
+			shellScript = "set -e\n\n# If we're already inside this script then die\nif [ -n \"$RW_MULTIPLATFORM_BUILD_IN_PROGRESS\" ]; then\nexit 0\nfi\nexport RW_MULTIPLATFORM_BUILD_IN_PROGRESS=1\n\nRW_FRAMEWORK_NAME=${PROJECT_NAME}\nRW_INPUT_STATIC_LIB=\"lib${PROJECT_NAME}.a\"\nRW_FRAMEWORK_LOCATION=\"${BUILT_PRODUCTS_DIR}/${RW_FRAMEWORK_NAME}.framework\"\n\nfunction build_static_library {\n    echo \"CONFIGURATION = ${CONFIGURATION}\"\n    # Will rebuild the static library as specified\n    #     build_static_library sdk\n    xcrun xcodebuild -project \"${PROJECT_FILE_PATH}\" \\\n    -target \"Azure Storage Client Library\" \\\n    -configuration \"${CONFIGURATION}\" \\\n    -sdk \"${1}\" -verbose \\\n    ONLY_ACTIVE_ARCH=NO \\\n    ARCHS=\"${2}\" \\\n    BUILD_DIR=\"${BUILD_DIR}\" \\\n    OBJROOT=\"${OBJROOT}\" \\\n    OTHER_CFLAGS=\"-fembed-bitcode\" \\\n    BUILD_ROOT=\"${BUILD_ROOT}\" \\\n    SYMROOT=\"${SYMROOT}\" $ACTION >&1\n}\n\nfunction make_fat_library {\n    # Will smash 2 static libs together\n    #     make_fat_library in1 in2 out\n    xcrun lipo -create \"${1}\" \"${2}\" -output \"${3}\"\n}\n\n# 1 - Extract the platform (iphoneos/iphonesimulator) from the SDK name\nif [[ \"$SDK_NAME\" =~ ([A-Za-z]+) ]]; then\nRW_SDK_PLATFORM=${BASH_REMATCH[1]}\nelse\necho \"Could not find platform name from SDK_NAME: $SDK_NAME\"\nexit 1\nfi\n\n# 2 - Extract the version from the SDK\nif [[ \"$SDK_NAME\" =~ ([0-9]+.*$) ]]; then\nRW_SDK_VERSION=${BASH_REMATCH[1]}\nelse\necho \"Could not find sdk version from SDK_NAME: $SDK_NAME\"\nexit 1\nfi\n\n# 3 - Determine the other platform\nif [ \"$RW_SDK_PLATFORM\" == \"iphoneos\" ]; then\nRW_OTHER_PLATFORM=iphonesimulator\nARCHS_TO_BUILD=\"armv7 armv7s arm64\"\nOTHER_ARCHS_TO_BUILD=\"i386 x86_64\"\nelse\nRW_OTHER_PLATFORM=iphoneos\nARCHS_TO_BUILD=\"i386 x86_64\"\nOTHER_ARCHS_TO_BUILD=\"armv7 armv7s arm64\"\nfi\n\n# 4 - Find the build directory\nif [[ \"$BUILT_PRODUCTS_DIR\" =~ (.*)$RW_SDK_PLATFORM$ ]]; then\nRW_OTHER_BUILT_PRODUCTS_DIR=\"${BASH_REMATCH[1]}${RW_OTHER_PLATFORM}\"\nelse\necho \"Could not find other platform build directory.\"\nexit 1\nfi\n\n# Build the library\nbuild_static_library \"${SDK_NAME}\" \"${ARCHS_TO_BUILD}\"\n\n# Build the other platform.\nbuild_static_library \"${RW_OTHER_PLATFORM}${RW_SDK_VERSION}\" \"${OTHER_ARCHS_TO_BUILD}\"\n\n\n# Join the 2 static libs into 1 and push into the .framework\nmake_fat_library \"${BUILT_PRODUCTS_DIR}/${RW_INPUT_STATIC_LIB}\" \\\n\"${RW_OTHER_BUILT_PRODUCTS_DIR}/${RW_INPUT_STATIC_LIB}\" \\\n\"${RW_FRAMEWORK_LOCATION}/Versions/A/${RW_FRAMEWORK_NAME}\"\n\n# Ensure that the framework is present in both platform's build directories\ncp -a \"${RW_FRAMEWORK_LOCATION}/Versions/A/${RW_FRAMEWORK_NAME}\" \\\n\"${RW_OTHER_BUILT_PRODUCTS_DIR}/${RW_FRAMEWORK_NAME}.framework/Versions/A/${RW_FRAMEWORK_NAME}\"\n\n# Copy the framework to the user's desktop\nditto \"${RW_FRAMEWORK_LOCATION}\" \"${HOME}/Desktop/${RW_FRAMEWORK_NAME}.framework\"";
 		};
 /* End PBXShellScriptBuildPhase section */
 
