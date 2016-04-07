@@ -1,0 +1,4 @@
+module asl [system] [extern_c] {
+    header "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/usr/include/asl.h"
+    export *
+}
