@@ -15,48 +15,60 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "BE45103F1A9D252300C3F971"
-               BuildableName = "libAzure Storage Client Library.a"
-               BlueprintName = "Azure Storage Client Library"
-               ReferencedContainer = "container:Azure Storage Client Library.xcodeproj">
+               BuildableName = "libAZSClient.a"
+               BlueprintName = "AZSClient"
+               ReferencedContainer = "container:AZSClient.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
+      buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      shouldUseLaunchSchemeArgsEnv = "YES"
-      buildConfiguration = "Debug">
+      shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
          <TestableReference
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "BE45104F1A9D252300C3F971"
-               BuildableName = "Azure Storage Client LibraryTests.xctest"
-               BlueprintName = "Azure Storage Client LibraryTests"
-               ReferencedContainer = "container:Azure Storage Client Library.xcodeproj">
+               BuildableName = "AZSClient.xctest"
+               BlueprintName = "AZSClientTests"
+               ReferencedContainer = "container:AZSClient.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
+      <AdditionalOptions>
+      </AdditionalOptions>
    </TestAction>
    <LaunchAction
+      buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       launchStyle = "0"
       useCustomWorkingDirectory = "NO"
-      buildConfiguration = "Debug"
       ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "YES"
+      debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "BE45103F1A9D252300C3F971"
+            BuildableName = "libAZSClient.a"
+            BlueprintName = "AZSClient"
+            ReferencedContainer = "container:AZSClient.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </LaunchAction>
    <ProfileAction
+      buildConfiguration = "Release"
       shouldUseLaunchSchemeArgsEnv = "YES"
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
-      buildConfiguration = "Release"
       debugDocumentVersioning = "YES">
    </ProfileAction>
    <AnalyzeAction

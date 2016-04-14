@@ -21,7 +21,7 @@
 #import "AZSBlobTestBase.h"
 #import "AZSTestHelpers.h"
 #import "AZSTestSemaphore.h"
-#import "Azure_Storage_Client_Library.h"
+#import "AZSClient.h"
 
 @interface AZSBlobUploadTestDelegate : NSObject <NSStreamDelegate>
 

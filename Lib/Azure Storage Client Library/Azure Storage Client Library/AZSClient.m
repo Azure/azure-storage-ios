@@ -15,8 +15,8 @@
 // </copyright>
 // -----------------------------------------------------------------------------------------
 
-#import "Azure_Storage_Client_Library.h"
+#import "AZSClient.h"
 
-@implementation Azure_Storage_Client_Library
+@implementation AZSClient
 
 @end

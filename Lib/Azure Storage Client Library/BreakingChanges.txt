@@ -1,0 +1,3 @@
+Breaking changes since 0.1.0:
+
+ - Changed the package/framework name and the global header name to be shorter, from "Azure_Storage_Client_Library/Azure_Storage_Client_Library.h" to "AZSClient/AZSClient.h"

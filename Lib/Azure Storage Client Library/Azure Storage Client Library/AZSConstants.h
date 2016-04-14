@@ -37,7 +37,6 @@ FOUNDATION_EXPORT NSString *const AZSCPosix;
 FOUNDATION_EXPORT NSString *const AZSCRawErrorData;
 FOUNDATION_EXPORT NSString *const AZSCTargetStorageVersion;
 FOUNDATION_EXPORT NSString *const AZSCTrue;
-FOUNDATION_EXPORT NSString *const AZSCUserAgent;
 FOUNDATION_EXPORT NSString *const AZSCUtc;
 FOUNDATION_EXPORT NSString *const AZSCBlobAppendBlob;
 FOUNDATION_EXPORT NSString *const AZSCBlobBlockBlob;
