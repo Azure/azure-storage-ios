@@ -26,7 +26,6 @@
 {
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[urlComponents URL] cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:timeout];
     [request setHTTPMethod:AZSCHttpPut];
-    [request setValue:AZSCUserAgent forHTTPHeaderField:AZSCHeaderUserAgent];
     [request setValue:AZSCTargetStorageVersion forHTTPHeaderField:AZSCHeaderVersion];
     
     return request;
@@ -36,7 +35,6 @@
 {
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[urlComponents URL] cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:timeout];
     [request setHTTPMethod:AZSCHttpGet];
-    [request setValue:AZSCUserAgent forHTTPHeaderField:AZSCHeaderUserAgent];
     [request setValue:AZSCTargetStorageVersion forHTTPHeaderField:AZSCHeaderVersion];
     
     return request;
@@ -46,7 +44,6 @@
 {
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[urlComponents URL] cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:timeout];
     [request setHTTPMethod:AZSCHttpHead];
-    [request setValue:AZSCUserAgent forHTTPHeaderField:AZSCHeaderUserAgent];
     [request setValue:AZSCTargetStorageVersion forHTTPHeaderField:AZSCHeaderVersion];
     
     return request;
@@ -56,8 +53,7 @@
 {
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[urlComponents URL] cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:timeout];
     [request setHTTPMethod:AZSCHttpDelete];
-    [request setValue:AZSCUserAgent forHTTPHeaderField:AZSCHeaderUserAgent];
-    [request setValue:AZSCTargetStorageVersion forHTTPHeaderField:AZSCHeaderVersion];
+	    [request setValue:AZSCTargetStorageVersion forHTTPHeaderField:AZSCHeaderVersion];
     
     return request;
 }

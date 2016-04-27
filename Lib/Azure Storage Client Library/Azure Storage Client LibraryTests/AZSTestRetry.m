@@ -20,7 +20,7 @@
 #import "AZSBlobTestBase.h"
 #import "AZSTestHelpers.h"
 #import "AZSTestSemaphore.h"
-#import "Azure_Storage_Client_Library.h"
+#import "AZSClient.h"
 
 // TODO: Figure out a way to not have to document this.  Unfortunately, it will show up in the exported documentation.
 /** A retry policy, used for testing only.  Reserved for internal use. */

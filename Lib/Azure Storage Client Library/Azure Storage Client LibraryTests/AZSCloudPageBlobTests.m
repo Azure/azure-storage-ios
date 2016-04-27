@@ -17,7 +17,7 @@
 
 #import <XCTest/XCTest.h>
 #import "AZSBlobTestBase.h"
-#import "Azure_Storage_Client_Library.h"
+#import "AZSClient.h"
 #import "AZSTestHelpers.h"
 #import "AZSTestSemaphore.h"
 #import "AZSUtil.h"

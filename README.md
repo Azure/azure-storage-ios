@@ -3,11 +3,13 @@
 This library is designed to help you build iOS applications that use Microsoft Azure Storage.
 At the moment, the library is in a preview stage, so thank you for taking a look!  It will be some time before the library is stable.  In the meantime, we would like to get as much input as possible from the community.  Please let us know of any issues you encounter by opening an issue on Github.
 
-The library currently supports almost all block blob operations (some exceptions noted below.)  Other blob types (page, append) and other services (table, queue, file) are forthcoming, depending on demand.
+The library currently supports almost all blob operations (some exceptions noted below.)  Other services (table, queue, file) are forthcoming, depending on demand.
 
 #Usage overview
 
-To use the library, clone the repo and open the XCode project.  Build the library (the 'Azure Storage Client Library' target), and then build the Framework (the 'Framework' target).  This will create the .framework file on your desktop.  Then, in your code, in Build Phases->Link Binary With Libraries, add in the Azure Storage Client Library framework, and the libxml2.2.dylib.  Finally, import "Azure Storage Client Library/Azure_Storage_Client_Library.h" in your code file.
+The recommended way to use the library is through a Cocoapod, available at https://cocoapods.org/pods/AZSClient.
+
+Otherwise, you can build the library from soruce.  To do so, clone the repo and open the Xcode project.  Build the library (the 'Azure Storage Client Library' target), and then build the Framework (the 'Framework' target).  This will create the .framework file on your desktop.  Then, in your code, in Build Phases->Link Binary With Libraries, add in the Azure Storage Client Library framework, and the libxml2.2.dylib.  Finally, import "AZSClient/AZSClient.h" in your code file.
 
 Here is a small code sample that creates and deletes a blob:
 
@@ -78,31 +80,28 @@ Here is a small code sample that creates and deletes a blob:
 In general, all methods in the Storage Client that make service calls are asynchronous, roughly in the style of NSURLSession.  When you call methods on the Storage Client that interact with the Storage Service, you need to pass in a completion handler block to handle the results of the operation.  Service calls will return before the operation is complete.
 
 More detailed examples can be found in the test code; better samples are coming soon.
-Also coming soon: API docs, a getting-started guide, a CocoaPod, and a downloadable framework file.  This page will be updated with the relevant links when they're available.
+Also coming soon: API docs, a getting-started guide, and a downloadable framework file.  This page will be updated with the relevant links when they're available.
 
 #Functionality
 
 - Create/List/Delete/Lease Containers.
-- Create/List/Read/Update/Delete/Lease/StartAsyncCopy Block Blobs.
-  - Read/Write from/to Block Blobs with an NSStream, NSString, NSData, or local file.
-  - Put Block, Put Block List, Get Block List.
+- Create/List/Read/Update/Delete/Lease/StartAsyncCopy Blobs.
+  - Read/Write from/to Blobs with an NSStream, NSString, NSData, or local file.
+  - Operations for specific blob types (block operations for block blobs, etc.)
 - Container and Blob properties and metadata.
+- Blob virtual directories.
 - Use Shared Key authentication or SAS authentication.
 - Access conditions, automatic retries and retry policies, and logging.
 
 #Missing functionality
 
 The following functionality is all coming soon:
-- SAS token generation.  Currently, the library supports Shared Key authentication, and SAS tokens.  Using a SAS token is the correct choice in most real-world mobile scenarios.  The library currently lacks the functionality to create SAS tokens, however.  This is not generally useful in real-world production scenarios, but can be helpful in testing.
-- AZSCloudBlobDirectory support.  Currently, all blob listing operations will list blobs flat in the container.  Support for a pseudo-directory structure like that in the other Storage client libraries is forthcoming.  (Real directories are not supported by the blob service.)
 - If you want to download a blob's contents to a stream, this is possible using the DownloadToStream method on AZSCloudBlob.  However, it is not yet possible to open an input stream that reads directly from the blob.
 - There are a number of internal details that will change in the upcoming releases.  If you look at the internals of the library (or fork it), be prepared.  Much of this will be clean-up related.
 
 #Specific areas we would like feedback on:
 
 - NSOperation support.  We have had requests to use NSOperation as the primary method of using the library - methods such as 'UploadFromText' would return an NSOperation, that could then be scheduled in an operation queue.  However, this approach seems to have several drawbacks, notably along the lines of error handling and data return.  (For example, imagine trying to implement a 'CreateIfNotExists' method, using 'Exists' and 'Create'.  If they both returned an NSOperation, you could have the 'Create' operation depend on the 'Exists' operation, but the 'Create' operation would need to behave differently in the case that 'Exists' returns an error, or that the resource already exists.)  If you have suggestions, please discuss in the wiki, or open an issue.
-- The library currently supports block blobs only.  We will then add page blobs, tables, queues, and files, depending on the demand.  How much do you see yourself wanting to use these other services?
-- We are planning on purposely leaving out some features entirely, features that are likely not very important for the iOS scenario.  Get/Set service properties, for example.  Do you have use for such a feature?
 - The Azure Storage client currently uses NSURLSession behind the scenes to perform the HTTP requests.  Currently, the client does not expose the delegate queue or various session configuration options to users, other than what will be exposed in the RequestOptions object.  Is this something you would like to have control over?
 
 #Logging

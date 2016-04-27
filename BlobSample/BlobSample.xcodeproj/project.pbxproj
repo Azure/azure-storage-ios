@@ -12,11 +12,11 @@
 		B06813641BB8C85E007067DA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B06813621BB8C85E007067DA /* Main.storyboard */; };
 		B06813661BB8C85E007067DA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B06813651BB8C85E007067DA /* Assets.xcassets */; };
 		B06813691BB8C85E007067DA /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B06813671BB8C85E007067DA /* LaunchScreen.storyboard */; };
-		B06813841BB9500C007067DA /* BlobListViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B06813831BB9500C007067DA /* BlobListViewCell.swift */; settings = {ASSET_TAGS = (); }; };
-		B06813861BB95363007067DA /* BlobListTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B06813851BB95363007067DA /* BlobListTableViewController.swift */; settings = {ASSET_TAGS = (); }; };
+		B06813841BB9500C007067DA /* BlobListViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B06813831BB9500C007067DA /* BlobListViewCell.swift */; };
+		B06813861BB95363007067DA /* BlobListTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B06813851BB95363007067DA /* BlobListTableViewController.swift */; };
 		B068138A1BB98E56007067DA /* libxml2.2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = B06813891BB98E56007067DA /* libxml2.2.tbd */; };
-		B068138B1BB98F44007067DA /* Azure Storage Client Library.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B06813871BB98E41007067DA /* Azure Storage Client Library.framework */; };
-		B0A7D9BC1BB9B8AF003AC57D /* GetBlobViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A7D9BB1BB9B8AF003AC57D /* GetBlobViewController.swift */; settings = {ASSET_TAGS = (); }; };
+		B09559EA1CD15096008E0C7A /* AZSClient.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B09559E91CD15096008E0C7A /* AZSClient.framework */; };
+		B0A7D9BC1BB9B8AF003AC57D /* GetBlobViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A7D9BB1BB9B8AF003AC57D /* GetBlobViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,8 +29,8 @@
 		B068136A1BB8C85E007067DA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B06813831BB9500C007067DA /* BlobListViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlobListViewCell.swift; sourceTree = "<group>"; };
 		B06813851BB95363007067DA /* BlobListTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlobListTableViewController.swift; sourceTree = "<group>"; };
-		B06813871BB98E41007067DA /* Azure Storage Client Library.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "Azure Storage Client Library.framework"; path = "../../../Desktop/Azure Storage Client Library.framework"; sourceTree = "<group>"; };
 		B06813891BB98E56007067DA /* libxml2.2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libxml2.2.tbd; path = usr/lib/libxml2.2.tbd; sourceTree = SDKROOT; };
+		B09559E91CD15096008E0C7A /* AZSClient.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AZSClient.framework; path = ../../../../Desktop/AZSClient.framework; sourceTree = "<group>"; };
 		B0A7D9B81BB9A188003AC57D /* BlobSample-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BlobSample-Bridging-Header.h"; sourceTree = "<group>"; };
 		B0A7D9BB1BB9B8AF003AC57D /* GetBlobViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GetBlobViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -41,7 +41,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B068138A1BB98E56007067DA /* libxml2.2.tbd in Frameworks */,
-				B068138B1BB98F44007067DA /* Azure Storage Client Library.framework in Frameworks */,
+				B09559EA1CD15096008E0C7A /* AZSClient.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -51,8 +51,8 @@
 		B06813521BB8C85E007067DA = {
 			isa = PBXGroup;
 			children = (
+				B09559E91CD15096008E0C7A /* AZSClient.framework */,
 				B06813891BB98E56007067DA /* libxml2.2.tbd */,
-				B06813871BB98E41007067DA /* Azure Storage Client Library.framework */,
 				B068135D1BB8C85E007067DA /* BlobSample */,
 				B068135C1BB8C85E007067DA /* Products */,
 			);
@@ -275,9 +275,10 @@
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ENABLE_MODULES = YES;
 				EXCLUDED_RECURSIVE_SEARCH_PATH_SUBDIRECTORIES = "*.nib *.lproj *.gch *.xcode* *.xcassets (*) .DS_Store CVS .svn .git .hg *.pbproj *.pbxproj";
-				FRAMEWORK_SEARCH_PATHS = "~/Desktop/**";
+				FRAMEWORK_SEARCH_PATHS = "~/Desktop";
 				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = BlobSample/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.microsoft.azure.storage.BlobSample;
@@ -296,9 +297,10 @@
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ENABLE_MODULES = YES;
 				EXCLUDED_RECURSIVE_SEARCH_PATH_SUBDIRECTORIES = "*.nib *.lproj *.gch *.xcode* *.xcassets (*) .DS_Store CVS .svn .git .hg *.pbproj *.pbxproj";
-				FRAMEWORK_SEARCH_PATHS = "~/Desktop/**";
+				FRAMEWORK_SEARCH_PATHS = "~/Desktop";
 				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = BlobSample/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.microsoft.azure.storage.BlobSample;

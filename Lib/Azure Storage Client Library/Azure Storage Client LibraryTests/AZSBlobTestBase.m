@@ -16,7 +16,7 @@
 // -----------------------------------------------------------------------------------------
 
 #import "AZSBlobTestBase.h"
-#import "Azure_Storage_Client_Library.h"
+#import "AZSClient.h"
 
 @implementation AZSBlobTestBase
 

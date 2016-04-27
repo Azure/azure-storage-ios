@@ -37,7 +37,6 @@ NSString *const AZSCPosix = @"en_US_POSIX";
 NSString *const AZSCRawErrorData = @"rawErrorData";
 NSString *const AZSCTargetStorageVersion = @"2015-04-05";
 NSString *const AZSCTrue = @"true";
-NSString *const AZSCUserAgent = @"iOS-v0.1.1";
 NSString *const AZSCUtc = @"UTC";
 NSString *const AZSCBlobAppendBlob = @"AppendBlob";
 NSString *const AZSCBlobBlockBlob = @"BlockBlob";
@@ -146,7 +145,7 @@ NSString *const AZSCHeaderValueRenew = @"renew";
 NSString *const AZSCHeaderValueSnapshots = @"snapshots";
 NSString *const AZSCHeaderValueUncommitted = @"uncommitted";
 NSString *const AZSCHeaderValueUncommittedBlobs = @"uncommittedblobs";
-NSString *const AZSCHeaderValueUserAgent = @"Azure-Storage/0.1.2-preview (iOS %@)";
+NSString *const AZSCHeaderValueUserAgent = @"Azure-Storage/0.2.0-preview (iOS %@)";
 NSString *const AZSCHeaderValueUpdate = @"update";
 
 // HTTP Methods
