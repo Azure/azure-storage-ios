@@ -15,6 +15,7 @@
 // </copyright>
 // -----------------------------------------------------------------------------------------
 
+#import "AZSConstants.h"
 #import "AZSCloudBlob.h"
 #import "AZSCloudBlobContainer.h"
 #import "AZSStorageUri.h"
@@ -26,6 +27,7 @@
 #import "AZSBlobRequestOptions.h"
 #import "AZSBlobProperties.h"
 #import "AZSCopyState.h"
+#import "AZSUriQueryBuilder.h"
 #import "AZSUtil.h"
 #import "AZSAccessCondition.h"
 #import "AZSResponseParser.h"
@@ -33,6 +35,7 @@
 #import "AZSRequestResult.h"
 #import "AZSErrors.h"
 #import "AZSRequestFactory.h"
+#import "AZSSharedAccessSignatureHelper.h"
 #import "AZSStorageCredentials.h"
 #import "AZSBlobResponseParser.h"
 
@@ -49,28 +52,50 @@
     return nil;
 }
 
-- (instancetype)initWithUrl:(NSURL *)blobAbsoluteUrl
+- (instancetype)initWithUrl:(NSURL *)blobAbsoluteUrl error:(NSError **)error
 {
-    return [self initWithUrl:blobAbsoluteUrl credentials:nil snapshotTime:nil];
+    return [self initWithUrl:blobAbsoluteUrl credentials:nil snapshotTime:nil error:error];
 }
-- (instancetype)initWithUrl:(NSURL *)blobAbsoluteUrl credentials:(AZSStorageCredentials *)credentials snapshotTime:(NSString *)snapshotTime
+- (instancetype)initWithUrl:(NSURL *)blobAbsoluteUrl credentials:(AZSStorageCredentials *)credentials snapshotTime:(NSString *)snapshotTime error:(NSError **)error
 {
-    return [self initWithStorageUri:[[AZSStorageUri alloc] initWithPrimaryUri:blobAbsoluteUrl] credentials:credentials snapshotTime:snapshotTime];
+    return [self initWithStorageUri:[[AZSStorageUri alloc] initWithPrimaryUri:blobAbsoluteUrl] credentials:credentials snapshotTime:snapshotTime error:error];
 }
-- (instancetype)initWithStorageUri:(AZSStorageUri *)blobAbsoluteUri
+- (instancetype)initWithStorageUri:(AZSStorageUri *)blobAbsoluteUri error:(NSError **)error
 {
-    return [self initWithStorageUri:blobAbsoluteUri credentials:nil snapshotTime:nil];
+    return [self initWithStorageUri:blobAbsoluteUri credentials:nil snapshotTime:nil error:error];
 }
-- (instancetype)initWithStorageUri:(AZSStorageUri *)blobAbsoluteUri credentials:(AZSStorageCredentials *)credentials snapshotTime:(NSString *)snapshotTime
+- (instancetype)initWithStorageUri:(AZSStorageUri *)blobAbsoluteUri credentials:(AZSStorageCredentials *)credentials snapshotTime:(NSString *)snapshotTime error:(NSError **)error
 {
     self = [super init];
     if (self)
     {
+        NSMutableArray *parseQueryResults = [AZSNavigationUtil parseBlobQueryAndVerifyWithStorageUri:blobAbsoluteUri];
+        
+        if (([credentials isSAS] || [credentials isSharedKey]) && ![parseQueryResults[1] isKindOfClass:[NSNull class]]) {
+            *error = [NSError errorWithDomain:AZSErrorDomain code:AZSEInvalidArgument userInfo:nil];
+            [[AZSUtil operationlessContext] logAtLevel:AZSLogLevelError withMessage:@"Multiple credentials provided."];
+            return nil;
+        }
+        
+        if (snapshotTime && ![parseQueryResults[AZSCSnapshotIndex] isKindOfClass:[NSNull class]]) {
+            *error = [NSError errorWithDomain:AZSErrorDomain code:AZSEInvalidArgument userInfo:nil];
+            [[AZSUtil operationlessContext] logAtLevel:AZSLogLevelError withMessage:@"Multiple snapshot times provided."];
+            return nil;
+        }
+        
+        credentials = (credentials ?: ([parseQueryResults[1] isKindOfClass:[NSNull class]] ? nil : parseQueryResults[1]));
+        
+        _storageUri = ([parseQueryResults[0] isKindOfClass:[NSNull class]] ? nil : parseQueryResults[0]);
+        _client = [[AZSCloudBlobClient alloc] initWithStorageUri: [AZSNavigationUtil getServiceClientBaseAddressWithStorageUri:_storageUri usePathStyle:[AZSUtil usePathStyleAddressing:[blobAbsoluteUri primaryUri]] error:error] credentials:credentials];
+        if (*error) {
+            return nil;
+        }
+        
+        _snapshotTime = snapshotTime ?: ([parseQueryResults[AZSCSnapshotIndex] isKindOfClass:[NSNull class]] ? nil : parseQueryResults[AZSCSnapshotIndex]);
         _blobCopyState = [[AZSCopyState alloc] init];
         _metadata = [[NSMutableDictionary alloc] init];
         _properties = [[AZSBlobProperties alloc] init];
-        _snapshotTime = snapshotTime;
-        [self parseQueryAndVerifyWithUri:blobAbsoluteUri credentials:credentials];
+        _blobName = [AZSNavigationUtil getBlobNameWithBlobAddress:_storageUri.primaryUri isPathStyle:[AZSUtil usePathStyleAddressing:_storageUri.primaryUri]];
     }
     
     return self;
@@ -117,7 +142,7 @@
     }
     AZSBlobRequestOptions *modifiedOptions = [[AZSBlobRequestOptions copyOptions:requestOptions] applyDefaultsFromOptions:self.client.defaultRequestOptions];
     AZSStorageCommand * command = [[AZSStorageCommand alloc] initWithStorageCredentials:self.client.credentials storageUri:self.storageUri calculateResponseMD5:!(modifiedOptions.disableContentMD5Validation) operationContext:operationContext];
-    
+    command.allowedStorageLocation = AZSAllowedStorageLocationPrimaryOrSecondary;
     [command setBuildRequest:^ NSMutableURLRequest * (NSURLComponents *urlComponents, NSTimeInterval timeout, AZSOperationContext *operationContext)
      {
          return [AZSBlobRequestFactory getBlobWithSnapshotTime:self.snapshotTime range:range getRangeContentMD5:modifiedOptions.useTransactionalMD5 accessCondition:accessCondition urlComponents:urlComponents timeout:timeout operationContext:operationContext];
@@ -303,12 +328,7 @@
     return;
 }
 
--(void)fetchAttributesWithCompletionHandler:(void (^)(NSError *))completionHandler
-{
-    return [self fetchAttributesWithAccessCondition:nil requestOptions:nil operationContext:nil completionHandler:completionHandler];
-}
-
-- (void)fetchAttributesWithAccessCondition:(AZSAccessCondition *)accessCondition requestOptions:(AZSBlobRequestOptions *)requestOptions operationContext:(AZSOperationContext *)operationContext completionHandler:(void (^)(NSError*))completionHandler
+- (void)downloadAttributesWithPrimaryOnly:(BOOL)primaryOnly accessCondition:(AZSAccessCondition *)accessCondition requestOptions:(AZSBlobRequestOptions *)requestOptions operationContext:(AZSOperationContext *)operationContext completionHandler:(void (^)(NSError*))completionHandler
 {
     if (!operationContext)
     {
@@ -316,10 +336,10 @@
     }
     AZSBlobRequestOptions *modifiedOptions = [[AZSBlobRequestOptions copyOptions:requestOptions] applyDefaultsFromOptions:self.client.defaultRequestOptions];
     AZSStorageCommand * command = [[AZSStorageCommand alloc] initWithStorageCredentials:self.client.credentials storageUri:self.storageUri operationContext:operationContext];
-    
+    command.allowedStorageLocation = primaryOnly ? AZSAllowedStorageLocationPrimaryOnly : AZSAllowedStorageLocationPrimaryOrSecondary;
     [command setBuildRequest:^ NSMutableURLRequest * (NSURLComponents *urlComponents, NSTimeInterval timeout, AZSOperationContext *operationContext)
      {
-         return [AZSBlobRequestFactory fetchBlobAttributesWithAccessCondition:accessCondition snapshotTime:self.snapshotTime urlComponents:urlComponents timeout:timeout operationContext:operationContext];
+         return [AZSBlobRequestFactory downloadBlobAttributesWithAccessCondition:accessCondition snapshotTime:self.snapshotTime urlComponents:urlComponents timeout:timeout operationContext:operationContext];
      }];
     
     [command setAuthenticationHandler:self.client.authenticationHandler];
@@ -336,7 +356,7 @@
         {
             return error;
         }
-
+        
         if (parsedProperties.blobType != AZSBlobTypeUnspecified && parsedProperties.blobType != self.properties.blobType)
         {
             return [NSError errorWithDomain:AZSErrorDomain code:AZSEInvalidArgument userInfo:@{NSLocalizedDescriptionKey:@"Blob type on the local object does not match blob type on the service."}];
@@ -353,6 +373,17 @@
      {
          completionHandler(error);
      }];
+}
+
+
+-(void)downloadAttributesWithCompletionHandler:(void (^)(NSError *))completionHandler
+{
+    return [self downloadAttributesWithAccessCondition:nil requestOptions:nil operationContext:nil completionHandler:completionHandler];
+}
+
+- (void)downloadAttributesWithAccessCondition:(AZSAccessCondition *)accessCondition requestOptions:(AZSBlobRequestOptions *)requestOptions operationContext:(AZSOperationContext *)operationContext completionHandler:(void (^)(NSError*))completionHandler
+{
+    return [self downloadAttributesWithPrimaryOnly:NO accessCondition:accessCondition requestOptions:requestOptions operationContext:operationContext completionHandler:completionHandler];
 }
 
 -(void)snapshotBlobWithMetadata:(NSMutableDictionary *)metadata completionHandler:(void (^)(NSError*, AZSCloudBlob *))completionHandler
@@ -381,7 +412,7 @@
     }];
     
     [command setPostProcessResponse:^id(NSHTTPURLResponse *urlResponse, AZSRequestResult *requestResult, NSOutputStream *outputStream, AZSOperationContext *operationContext, NSError **error) {
-        NSString *snapshotTime = [urlResponse.allHeaderFields valueForKey:@"x-ms-snapshot"];
+        NSString *snapshotTime = urlResponse.allHeaderFields[AZSCHeaderSnapshot];
         
         AZSCloudBlob *snapshotBlob = [[AZSCloudBlob alloc] initWithContainer:self.blobContainer name:self.blobName snapshotTime:snapshotTime];
         
@@ -404,17 +435,12 @@
     return;
 }
 
--(void)existsWithCompletionHandler:(void (^)(NSError*, BOOL))completionHandler
+-(void)existsInternalWithPrimaryOnly:(BOOL)primaryOnly accessCondition:(AZSAccessCondition *)accessCondition requestOptions:(AZSBlobRequestOptions *)requestOptions operationContext:(AZSOperationContext *)operationContext completionHandler:(void (^)(NSError*, BOOL))completionHandler
 {
-    [self existsWithAccessCondition:nil requestOptions:nil operationContext:nil completionHandler:completionHandler];
-}
-
--(void)existsWithAccessCondition:(AZSAccessCondition *)accessCondition requestOptions:(AZSBlobRequestOptions *)requestOptions operationContext:(AZSOperationContext *)operationContext completionHandler:(void (^)(NSError*, BOOL))completionHandler
-{
-    [self fetchAttributesWithAccessCondition:accessCondition requestOptions:requestOptions operationContext:operationContext completionHandler:^(NSError *error) {
+    [self downloadAttributesWithPrimaryOnly:primaryOnly accessCondition:accessCondition requestOptions:requestOptions operationContext:operationContext completionHandler:^(NSError *error) {
         if (error)
         {
-            if ([error.domain isEqualToString:AZSErrorDomain] && (error.code == AZSEServerError) && error.userInfo[@"HTTP Status Code"] && (((NSNumber *)error.userInfo[@"HTTP Status Code"]).intValue == 404))
+            if ([error.domain isEqualToString:AZSErrorDomain] && (error.code == AZSEServerError) && error.userInfo[AZSCHttpStatusCode] && (((NSNumber *)error.userInfo[AZSCHttpStatusCode]).intValue == 404))
             {
                 completionHandler(nil, NO);
             }
@@ -428,6 +454,40 @@
             completionHandler(nil, YES);
         }
     }];
+}
+
+-(void)existsWithCompletionHandler:(void (^)(NSError*, BOOL))completionHandler
+{
+    [self existsWithAccessCondition:nil requestOptions:nil operationContext:nil completionHandler:completionHandler];
+}
+
+-(void)existsWithAccessCondition:(AZSAccessCondition *)accessCondition requestOptions:(AZSBlobRequestOptions *)requestOptions operationContext:(AZSOperationContext *)operationContext completionHandler:(void (^)(NSError*, BOOL))completionHandler
+{
+    return [self existsInternalWithPrimaryOnly:NO accessCondition:accessCondition requestOptions:requestOptions operationContext:operationContext completionHandler:completionHandler];
+}
+
+-(NSString *) createSharedAccessSignatureWithParameters:(AZSSharedAccessBlobParameters*)parameters error:(NSError **)error
+{
+    if (![self.client.credentials isSharedKey]) {
+        *error = [NSError errorWithDomain:AZSErrorDomain code:AZSEInvalidArgument userInfo:nil];
+        [[AZSUtil operationlessContext] logAtLevel:AZSLogLevelError withMessage:@"Cannot create SAS without account key."];
+        return nil;
+    }
+    
+    NSString *signature = [AZSSharedAccessSignatureHelper sharedAccessSignatureHashForBlobWithParameters:parameters resourceName:[self createSharedAccessCanonicalName] client:self.client error:error];
+    
+    if (!signature) {
+        // An error occurred.
+        return nil;
+    }
+    
+    const AZSUriQueryBuilder *builder = [AZSSharedAccessSignatureHelper sharedAccessSignatureForBlobWithParameters:parameters resourceType:@"b" signature:signature error:error];
+    return [builder builderAsString];
+}
+
+- (NSString *)createSharedAccessCanonicalName
+{
+    return [NSString stringWithFormat:AZSCSasTemplateBlobCanonicalName, AZSCBlob, self.client.credentials.accountName, self.blobContainer.name, self.blobName];
 }
 
 - (void)acquireLeaseWithLeaseTime:(NSNumber *)leaseTime proposedLeaseId:(NSString *)proposedLeaseId completionHandler:(void (^)(NSError*, NSString *))completionHandler
@@ -470,7 +530,7 @@
     
     [command setPostProcessResponse:^id(NSHTTPURLResponse *urlResponse, AZSRequestResult *requestResult, NSOutputStream *outputStream, AZSOperationContext *operationContext, NSError **error) {
         
-        return [urlResponse.allHeaderFields valueForKey:@"x-ms-lease-id"];
+        return urlResponse.allHeaderFields[AZSCHeaderLeaseId];
     }];
     
     [AZSExecutor ExecuteWithStorageCommand:command requestOptions:modifiedOptions operationContext:operationContext completionHandler:^(NSError *error, NSString *leaseId)
@@ -570,7 +630,7 @@
     }];
     
     [command setPostProcessResponse:^id(NSHTTPURLResponse *urlResponse, AZSRequestResult *requestResult, NSOutputStream *outputStream, AZSOperationContext *operationContext, NSError *__autoreleasing *error) {
-        return [urlResponse.allHeaderFields valueForKey:@"x-ms-lease-id"];
+        return urlResponse.allHeaderFields[AZSCHeaderLeaseId];
     }];
     
     [AZSExecutor ExecuteWithStorageCommand:command requestOptions:modifiedOptions operationContext:operationContext completionHandler:^(NSError *error, NSString *leaseId)
@@ -674,9 +734,9 @@
 
 +(void)updateEtagAndLastModifiedWithResponse:(NSHTTPURLResponse *)response properties:(AZSBlobProperties *)properties updateLength:(BOOL)updateLength
 {
-    NSString *parsedEtag = [response.allHeaderFields valueForKey:@"ETag"];
-    NSDate *parsedLastModified = [[AZSUtil dateFormatterWithRFCFormat] dateFromString:[response.allHeaderFields valueForKey:@"Last-Modified"]];
-    NSString *parsedSequenceNumberString = [response.allHeaderFields valueForKey:@"x-ms-blob-sequence-number"];
+    NSString *parsedEtag = response.allHeaderFields[AZSCXmlETag];
+    NSDate *parsedLastModified = [[AZSUtil dateFormatterWithRFCFormat] dateFromString:response.allHeaderFields[AZSCXmlLastModified]];
+    NSString *parsedSequenceNumberString = response.allHeaderFields[AZSCHeaderBlobSequenceNumber];
 
     if (parsedEtag)
     {
@@ -694,9 +754,9 @@
     
     if (updateLength)
     {
-        NSString *rangeHeaderString = [response.allHeaderFields valueForKey:@"Range"];
-        NSString *contentLengthHeaderString = [response.allHeaderFields valueForKey:@"Content-Length"];
-        NSString *blobContentLengthHeaderString = [response.allHeaderFields valueForKey:@"x-ms-blob-content-length"];
+        NSString *rangeHeaderString = response.allHeaderFields[AZSCXmlRange];
+        NSString *contentLengthHeaderString = response.allHeaderFields[AZSCContentLength];
+        NSString *blobContentLengthHeaderString = response.allHeaderFields[AZSCHeaderBlobContentLength];
         
         if (rangeHeaderString)
         {
@@ -715,27 +775,6 @@
             properties.length = [NSNumber numberWithLongLong:[response expectedContentLength]];
         }
     }
-}
-
-// Note: This should only be called from the constructor
--(void)parseQueryAndVerifyWithUri:(AZSStorageUri *)uri credentials:(AZSStorageCredentials *)credentials
-{
-    NSMutableArray *parseQueryResults = [AZSNavigationUtil parseBlobQueryAndVerifyWithStorageUri:uri];
-    
-    _storageUri = ([[parseQueryResults objectAtIndex:0] isKindOfClass:[NSNull class]] ? nil : [parseQueryResults objectAtIndex:0]);
-    
-    // todo: if (parsedcreds && creds) but they're not equal then throw mult creds
-    
-    // todo: if (parsedSnap && snap) but they're not equal then throw mult snapshots
-    
-    if ([parseQueryResults count] > 2)
-    {
-        _snapshotTime = ([[parseQueryResults objectAtIndex:2] isKindOfClass:[NSNull class]] ? nil : [parseQueryResults objectAtIndex:2]);
-    }
-    
-    _client = [[AZSCloudBlobClient alloc] initWithStorageUri: [AZSNavigationUtil getServiceClientBaseAddressWithStorageUri:self.storageUri usePathStyle:[AZSUtil usePathStyleAddressing:[uri primaryUri]]] credentials:(credentials != nil ? credentials : ([[parseQueryResults objectAtIndex:1] isKindOfClass:[NSNull class]] ? nil : [parseQueryResults objectAtIndex:1]))];
-    
-    _blobName = [AZSNavigationUtil getBlobNameWithBlobAddress:self.storageUri.primaryUri isPathStyle:[AZSUtil usePathStyleAddressing:self.storageUri.primaryUri]];
 }
 
 -(void)downloadToDataWithCompletionHandler:(void (^)(NSError *, NSData *))completionHandler
@@ -800,7 +839,7 @@
     
     if (sourceBlob.snapshotTime)
     {
-        components.query = [AZSRequestFactory appendToQuery:components.query stringToAppend:[NSString stringWithFormat:@"snapshot=%@",sourceBlob.snapshotTime]];
+        components.query = [AZSRequestFactory appendToQuery:components.query stringToAppend:[NSString stringWithFormat:AZSCQueryTemplateSnapshot,sourceBlob.snapshotTime]];
     }
     
     NSURL *transformedURL = [self.client.credentials transformWithUri:[components URL]];
@@ -896,4 +935,3 @@
 }
 
 @end
-

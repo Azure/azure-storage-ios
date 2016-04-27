@@ -23,6 +23,7 @@
     BOOL _storeBlobContentMD5Set;
     BOOL _disableContentMD5ValidationSet;
     BOOL _parallelismFactorSet;
+    BOOL _absorbConditionalErrorsOnRetrySet;
 }
 
 @end
@@ -33,6 +34,7 @@
 @synthesize storeBlobContentMD5 = _storeBlobContentMD5;
 @synthesize disableContentMD5Validation = _disableContentMD5Validation;
 @synthesize parallelismFactor = _parallelismFactor;
+@synthesize absorbConditionalErrorsOnRetry = _absorbConditionalErrorsOnRetry;
 
 -(instancetype)init
 {
@@ -48,6 +50,8 @@
         _disableContentMD5ValidationSet = NO;
         _parallelismFactor = 3;
         _parallelismFactorSet = NO;
+        _absorbConditionalErrorsOnRetry = NO;
+        _absorbConditionalErrorsOnRetrySet = NO;
     }
     
     return self;
@@ -85,7 +89,12 @@
         if (sourceOptions->_parallelismFactorSet)
         {
             self.parallelismFactor = sourceOptions.parallelismFactor;
-        }        
+        }
+        
+        if (sourceOptions->_absorbConditionalErrorsOnRetrySet)
+        {
+            self.absorbConditionalErrorsOnRetry = sourceOptions.absorbConditionalErrorsOnRetry;
+        }
     }
     
     return self;
@@ -148,5 +157,15 @@
     _parallelismFactorSet = YES;
 }
 
+-(BOOL)absorbConditionalErrorsOnRetry
+{
+    return _absorbConditionalErrorsOnRetry;
+}
+
+-(void)setAbsorbConditionalErrorsOnRetry:(BOOL)absorbConditionalErrorsOnRetry
+{
+    _absorbConditionalErrorsOnRetry = absorbConditionalErrorsOnRetry;
+    _absorbConditionalErrorsOnRetrySet = YES;
+}
 
 @end

@@ -17,13 +17,12 @@
 
 #import <Foundation/Foundation.h>
 #import "AZSCloudBlob.h"
-#import "AZSEnums.h"
-#import "AZSCopyState.h"
-#import "AZSBlobProperties.h"
-#import "AZSCloudBlobContainer.h"
-#import "AZSCloudBlobClient.h"
-#import "AZSBlobOutputStream.h"
-#import "AZSMacros.h"
+
+@class AZSCopyState;
+@class AZSBlobProperties;
+@class AZSCloudBlobContainer;
+@class AZSCloudBlobClient;
+@class AZSBlobOutputStream;
 
 AZS_ASSUME_NONNULL_BEGIN
 
@@ -75,34 +74,38 @@ AZS_ASSUME_NONNULL_BEGIN
 /** Initializes a newly allocated AZSCloudBlockBlob object
  
  @param blobAbsoluteUrl The absolute URL to the blob.
+ @param error A pointer to a NSError*, to be set in the event of failure.
  @return The newly allocated instance.
  */
-- (instancetype)initWithUrl:(NSURL *)blobAbsoluteUrl;
+- (instancetype)initWithUrl:(NSURL *)blobAbsoluteUrl error:(NSError **)error;
 
 /** Initializes a newly allocated AZSCloudBlockBlob object
  
  @param blobAbsoluteUrl The absolute URL to the blob.
  @param credentials The AZSStorageCredentials used to authenticate to the blob
- @param snapshotTime The timestamp of the intended snapshot.  If nil, this AZSCloudBlockBlob object refers to the actual blob, not a snapshot.
+ @param snapshotTime The timestamp of the intended snapshot. If nil, this AZSCloudBlockBlob object refers to the actual blob, not a snapshot.
+ @param error A pointer to a NSError*, to be set in the event of failure.
  @return The newly allocated instance.
  */
-- (instancetype)initWithUrl:(NSURL *)blobAbsoluteUrl credentials:(AZSNullable AZSStorageCredentials *)credentials snapshotTime:(AZSNullable NSString *)snapshotTime;
+- (instancetype)initWithUrl:(NSURL *)blobAbsoluteUrl credentials:(AZSNullable AZSStorageCredentials *)credentials snapshotTime:(AZSNullable NSString *)snapshotTime error:(NSError **)error;
 
 /** Initializes a newly allocated AZSCloudBlockBlob object
  
  @param blobAbsoluteUri The absolute URL to the blob.
+ @param error A pointer to a NSError*, to be set in the event of failure.
  @return The newly allocated instance.
  */
-- (instancetype)initWithStorageUri:(AZSStorageUri *)blobAbsoluteUri;
+- (instancetype)initWithStorageUri:(AZSStorageUri *)blobAbsoluteUri error:(NSError **)error;
 
 /** Initializes a newly allocated AZSCloudBlockBlob object
  
  @param blobAbsoluteUri The absolute URL to the blob.
  @param credentials The AZSStorageCredentials used to authenticate to the blob
- @param snapshotTime The timestamp of the intended snapshot.  If nil, this AZSCloudBlockBlob object refers to the actual blob, not a snapshot.
+ @param snapshotTime The timestamp of the intended snapshot. If nil, this AZSCloudBlockBlob object refers to the actual blob, not a snapshot.
+ @param error A pointer to a NSError*, to be set in the event of failure.
  @return The newly allocated instance.
  */
-- (instancetype)initWithStorageUri:(AZSStorageUri *)blobAbsoluteUri credentials:(AZSNullable AZSStorageCredentials *)credentials snapshotTime:(AZSNullable NSString *)snapshotTime AZS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithStorageUri:(AZSStorageUri *)blobAbsoluteUri credentials:(AZSNullable AZSStorageCredentials *)credentials snapshotTime:(AZSNullable NSString *)snapshotTime error:(NSError **)error AZS_DESIGNATED_INITIALIZER;
 
 /** Initializes a newly allocated AZSCloudBlockBlob object
  
@@ -119,7 +122,7 @@ AZS_ASSUME_NONNULL_BEGIN
  @param snapshotTime The timestamp of the intended snapshot.  If nil, this AZSCloudBlockBlob object refers to the actual blob, not a snapshot.
  @return The newly allocated instance.
  */
--(instancetype)initWithContainer:(AZSCloudBlobContainer *)blobContainer name:(NSString *)blobName snapshotTime:(AZSNullable NSDate *)snapshotTime AZS_DESIGNATED_INITIALIZER;
+-(instancetype)initWithContainer:(AZSCloudBlobContainer *)blobContainer name:(NSString *)blobName snapshotTime:(AZSNullable NSString *)snapshotTime AZS_DESIGNATED_INITIALIZER;
 
 /** Uploads a blob from given source data.
  

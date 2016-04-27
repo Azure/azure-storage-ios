@@ -16,7 +16,7 @@
 // -----------------------------------------------------------------------------------------
 
 #import "AZSBlobTestBase.h"
-#import "Azure_Storage_Client_Library.h"
+#import "AZSClient.h"
 
 @implementation AZSBlobTestBase
 
@@ -35,7 +35,7 @@
 
 -(void)waitForCopyToCompleteWithBlob:(AZSCloudBlob *)blobToMonitor completionHandler:(void (^)(NSError *, BOOL))completionHandler
 {
-    [blobToMonitor fetchAttributesWithCompletionHandler:^(NSError *error) {
+    [blobToMonitor downloadAttributesWithCompletionHandler:^(NSError *error) {
         if (error)
         {
             completionHandler(error, YES);

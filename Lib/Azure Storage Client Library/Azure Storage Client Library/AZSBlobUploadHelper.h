@@ -17,6 +17,7 @@
 
 #import <Foundation/Foundation.h>
 #import "AZSMacros.h"
+#import "AZSEnums.h"
 
 AZS_ASSUME_NONNULL_BEGIN
 
@@ -24,18 +25,24 @@ AZS_ASSUME_NONNULL_BEGIN
 @class AZSAccessCondition;
 @class AZSBlobRequestOptions;
 @class AZSOperationContext;
+@class AZSCloudPageBlob;
+@class AZSCloudAppendBlob;
 
 // This class is reserved for internal use.
 @interface AZSBlobUploadHelper : NSObject <NSStreamDelegate>
 
 @property (strong) AZSOperationContext *operationContext;
 @property (strong) NSError *streamingError;
+@property AZSBlobType blobType;
 
 -(instancetype)initToBlockBlob:(AZSCloudBlockBlob *)blockBlob accessCondition:(AZSNullable AZSAccessCondition *)accessCondition requestOptions:(AZSNullable AZSBlobRequestOptions *)requestOptions operationContext:(AZSNullable AZSOperationContext *)operationContext completionHandler:(void (^ __AZSNullable)(NSError* __AZSNullable))completionHandler AZS_DESIGNATED_INITIALIZER;
+-(instancetype)initToPageBlob:(AZSCloudPageBlob *)pageBlob totalBlobSize:(AZSNullable NSNumber *)totalBlobSize initialSequenceNumber:(AZSNullable NSNumber *)initialSequenceNumber accessCondition:(AZSAccessCondition *)accessCondition requestOptions:(AZSBlobRequestOptions *)requestOptions operationContext:(AZSOperationContext *)operationContext completionHandler:(void (^ __AZSNullable)(NSError * __AZSNullable))completionHandler AZS_DESIGNATED_INITIALIZER;
+-(instancetype)initToAppendBlob:(AZSCloudAppendBlob *)appendBlob createNew:(BOOL)createNew accessCondition:(AZSNullable AZSAccessCondition *)accessCondition requestOptions:(AZSNullable AZSBlobRequestOptions *)requestOptions operationContext:(AZSNullable AZSOperationContext *)operationContext completionHandler:(void (^ __AZSNullable)(NSError* __AZSNullable))completionHandler AZS_DESIGNATED_INITIALIZER;
 -(NSInteger)write:(const uint8_t *)buffer maxLength:(NSUInteger)length completionHandler:(void(^)())completionHandler;
+-(void)openWithCompletionHandler:(void(^)(BOOL))completionHandler;
 -(BOOL)closeWithCompletionHandler:(void(^)())completionHandler;
 -(BOOL)hasSpaceAvailable;
--(BOOL)allBlocksUploaded;
+-(BOOL)allDataUploaded;
 -(void)stream:(NSStream *)stream handleEvent:(NSStreamEvent)eventCode;
 
 @end

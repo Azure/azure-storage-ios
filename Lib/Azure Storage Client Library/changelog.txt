@@ -1,0 +1,17 @@
+2015.XX.YY Version 0.2.0
+ * Added support for the Storage Emulator to Account connection strings.
+ * Added support for path-style URIs to the Blob service.
+ * Renamed fetchAttributesWith* methods on AZSCloudBlob to downloadAttributesWith*.
+ * Added ability to store and retrieve shared access policies on blob containers.
+ * Added ability to generate shared access signatures for blobs and blob containers.
+ * Fixed a bug where retrying failed requests was off by default.
+ * Added support for IP Restricted SAS and Protocol Restricted SAS.
+ * Added support for Account level SAS.
+ * Updated service version to 2015-04-05.
+ * Added support for blob directories.
+ * Added support for page and append blob.
+ * Added support for read-from-secondary.
+ * Fixed a bug where the Cocoapod couldn't be used from a Swift library in some versions of XCode.
+
+2015.09.22 Version 0.1.0
+ * Initial Release

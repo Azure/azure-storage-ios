@@ -15,11 +15,21 @@
 // </copyright>
 // -----------------------------------------------------------------------------------------
 
+#import <XCTest/XCTest.h>
 #import "AZSTestBase.h"
+#import "AZSEnums.h"
+
+@class AZSContinuationToken;
 
 @interface AZSTestHelpers : AZSTestBase
 
++(NSString *)uniqueName;
+
++(NSMutableData *)generateSampleDataWithSeed:(unsigned int *)seed length:(unsigned int)length;
++(void)listAllInDirectoryOrContainer:(NSObject *)objectToList useFlatBlobListing:(BOOL)useFlatBlobListing blobArrayToPopulate:(NSMutableArray *)blobArrayToPopulate directoryArrayToPopulate:(NSMutableArray *)directoryArrayToPopulate continuationToken:(AZSContinuationToken *)continuationToken prefix:(NSString *)prefix blobListingDetails:(AZSBlobListingDetails)blobListingDetails maxResults:(NSUInteger)maxResults completionHandler:(void (^)(NSError *))completionHandler;
+
 @end
+
 @interface AZSUIntegerHolder : NSObject
 {
 @public
@@ -27,6 +37,7 @@
 }
 
 -(instancetype)initWithNumber:(unsigned int)number;
+
 @end
 
 
@@ -36,7 +47,6 @@
 @property NSUInteger totalBytes;
 @property NSUInteger errorCount;
 @property NSMutableString *errors;
-
 
 // NSStream methods and properties:
 @property(assign) id<NSStreamDelegate> delegate;
@@ -68,4 +78,3 @@
 -(instancetype)initWithRandomSeed:(unsigned int)seed totalBlobSize:(NSUInteger)totalBlobSize isUpload:(BOOL)isUpload;
 
 @end
-

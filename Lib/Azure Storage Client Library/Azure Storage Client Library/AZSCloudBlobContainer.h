@@ -28,10 +28,16 @@ AZS_ASSUME_NONNULL_BEGIN
 @class AZSAccessCondition;
 @class AZSStorageUri;
 @class AZSCloudBlockBlob;
+@class AZSCloudPageBlob;
+@class AZSCloudAppendBlob;
 @class AZSContinuationToken;
 @class AZSBlobResultSegment;
 @class AZSBlobContainerProperties;
+@class AZSSharedAccessBlobParameters;
+@class AZSSharedAccessHeaders;
+@class AZSSharedAccessPolicy;
 @class AZSStorageCredentials;
+@class AZSCloudBlobDirectory;
 
 // TODO: Figure out if we should combine all these into one generic 'Null response completion handler' or something.
 // TODO: Figure out how to get this typedef to work with Appledocs.
@@ -72,32 +78,36 @@ AZS_ASSUME_NONNULL_BEGIN
 /** Initializes a newly allocated AZSCloudBlobContainer object.
  
  @param containerAbsoluteUrl The absolute URL to this container.
+ @param error A pointer to a NSError*, to be set in the event of failure.
  @returns The newly allocated object.
  */
-- (instancetype)initWithUrl:(NSURL *)containerAbsoluteUrl;
+- (instancetype)initWithUrl:(NSURL *)containerAbsoluteUrl error:(NSError **)error;
 
 /** Initializes a newly allocated AZSCloudBlobContainer object.
  
  @param containerAbsoluteUrl The absolute URL to this container.
  @param credentials The AZSStorageCredentials used to authenticate to the container.
+ @param error A pointer to a NSError*, to be set in the event of failure.
  @returns The newly allocated object.
  */
-- (instancetype)initWithUrl:(NSURL *)containerAbsoluteUrl credentials:(AZSNullable AZSStorageCredentials *)credentials;
+- (instancetype)initWithUrl:(NSURL *)containerAbsoluteUrl credentials:(AZSNullable AZSStorageCredentials *)credentials error:(NSError **)error;
 
 /** Initializes a newly allocated AZSCloudBlobContainer object.
  
  @param containerAbsoluteUri The StorageURI to this container.
+ @param error A pointer to a NSError*, to be set in the event of failure.
  @returns The newly allocated object.
  */
-- (instancetype)initWithStorageUri:(AZSStorageUri *)containerAbsoluteUri;
+- (instancetype)initWithStorageUri:(AZSStorageUri *)containerAbsoluteUri error:(NSError **)error;
 
 /** Initializes a newly allocated AZSCloudBlobContainer object.
  
  @param containerAbsoluteUri The StorageURI to this container.
  @param credentials The AZSStorageCredentials used to authenticate to the container.
+ @param error A pointer to a NSError*, to be set in the event of failure.
  @returns The newly allocated object.
  */
-- (instancetype)initWithStorageUri:(AZSStorageUri *)containerAbsoluteUri credentials:(AZSNullable AZSStorageCredentials *)credentials AZS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithStorageUri:(AZSStorageUri *)containerAbsoluteUri credentials:(AZSNullable AZSStorageCredentials *)credentials error:(NSError **)error AZS_DESIGNATED_INITIALIZER;
 
 /** Creates the container on the service.  Will fail if the container already exists.
  
@@ -180,7 +190,6 @@ AZS_ASSUME_NONNULL_BEGIN
  */
 - (void)createContainerIfNotExistsWithCompletionHandler:(void (^)(NSError* __AZSNullable, BOOL))completionHandler;
 
-
 /** Creates the container on the service.  Will return success if the container already exists.
  
  @param accessType The access type that the container should have.
@@ -220,18 +229,16 @@ AZS_ASSUME_NONNULL_BEGIN
 /** Performs one segmented blob listing operation.
  
  This method lists the blobs in the given container.  It will perform exactly one REST call, which will list blobs
- beginning with the container represented in the AZSContinuationToken.  If no token is provided, it will list 
+ beginning with the blob represented in the AZSContinuationToken.  If no token is provided, it will list
  blobs from the beginning.  Only blobs that begin with the input prefix will be listed.
  
  Any number of blobs can be listed, from zero up to a set maximum.  Even if this method returns zero results, if
- the AZSContinuationToken in the result is not nil, there may be more containers on the service that have not been listed.
- 
- Non-flat listing is currently not supported; this is coming soon.
+ the AZSContinuationToken in the result is not nil, there may be more blobs on the service that have not been listed.
  
  @param token The token representing where the listing operation should start.
- @param prefix The prefix to use for container listing.  Only containers that begin with the input prefix
+ @param prefix The prefix to use for blob listing.  Only blobs that begin with the input prefix
  will be listed.
- @param useFlatBlobListing YES if the blob list should be flat (only blobs).
+ @param useFlatBlobListing YES if the blob list should be flat (list all blobs as if their names were only strings, no directories).  NO if it should list with directories.
  @param blobListingDetails Details about how to list blobs.  See AZSBlobListingDetails for the possible options.
  @param maxResults The maximum number of results to return for this operation.  Use -1 to not set a limit.
  @param completionHandler The block of code to execute with the results of the listing operation.
@@ -246,18 +253,16 @@ AZS_ASSUME_NONNULL_BEGIN
 /** Performs one segmented blob listing operation.
  
  This method lists the blobs in the given container.  It will perform exactly one REST call, which will list blobs
- beginning with the container represented in the AZSContinuationToken.  If no token is provided, it will list
+ beginning with the blob represented in the AZSContinuationToken.  If no token is provided, it will list
  blobs from the beginning.  Only blobs that begin with the input prefix will be listed.
  
  Any number of blobs can be listed, from zero up to a set maximum.  Even if this method returns zero results, if
- the AZSContinuationToken in the result is not nil, there may be more containers on the service that have not been listed.
- 
- Non-flat listing is currently not supported; this is coming soon.
+ the AZSContinuationToken in the result is not nil, there may be more blobs on the service that have not been listed.
  
  @param token The token representing where the listing operation should start.
- @param prefix The prefix to use for container listing.  Only containers that begin with the input prefix
+ @param prefix The prefix to use for blob listing.  Only blobs that begin with the input prefix
  will be listed.
- @param useFlatBlobListing YES if the blob list should be flat (only blobs).
+ @param useFlatBlobListing YES if the blob list should be flat (list all blobs as if their names were only strings, no directories).  NO if it should list with directories.
  @param blobListingDetails Details about how to list blobs.  See AZSBlobListingDetails for the possible options.
  @param maxResults The maximum number of results to return for this operation.  Use -1 to not set a limit.
  @param accessCondition The access condition for the request.
@@ -282,9 +287,77 @@ AZS_ASSUME_NONNULL_BEGIN
  @warning This method does not make a service call.  If properties, metadata, etc have been set on the service
  for this blob, this will not be reflected in the local container object.
  @param blobName The name of the block blob (part of the URL)
- @return The new block blob object.
+ @return The newly allocated block blob object.
  */
 - (AZSCloudBlockBlob *)blockBlobReferenceFromName:(NSString *)blobName;
+
+/** Initialize a local AZSCloudBlockBlob object
+ 
+ This creates an AZSCloudBlockBlob object with the input name.
+ 
+ TODO: Consider renaming this 'blockBlobFromName'.  This is better Objective-C style, but may confuse users into
+ thinking that this method creates a blob on the service, which is does not.
+ 
+ @warning This method does not make a service call.  If properties, metadata, etc have been set on the service
+ for this blob, this will not be reflected in the local container object.
+ @param blobName The name of the block blob (part of the URL)
+ @param snapshotTime The snapshot time for the blob.  Nil means the root blob (not a snapshot).
+ @return The newly allocated block blob object.
+ */
+- (AZSCloudBlockBlob *)blockBlobReferenceFromName:(NSString *)blobName snapshotTime:(NSString *)snapshotTime;
+
+/** Initialize a local AZSCloudPageBlob object
+ 
+ This creates an AZSCloudPageBlob object with the input name.
+ 
+ @warning This method does not make a service call.  If properties, metadata, etc have been set on the service
+ for this blob, this will not be reflected in the local container object.
+ @param blobName The name of the page blob (part of the URL)
+ @return The new page blob object.
+ */
+- (AZSCloudPageBlob *)pageBlobReferenceFromName:(NSString *)blobName;
+
+/** Initialize a local AZSCloudPageBlob object
+ 
+ This creates an AZSCloudPageBlob object with the input name.
+ 
+ @warning This method does not make a service call.  If properties, metadata, etc have been set on the service
+ for this blob, this will not be reflected in the local container object.
+ @param blobName The name of the page blob (part of the URL)
+ @param snapshotTime The snapshot time for the blob.  Nil means the root blob (not a snapshot).
+ @return The new page blob object.
+ */
+- (AZSCloudPageBlob *)pageBlobReferenceFromName:(NSString *)blobName snapshotTime:(NSString *)snapshotTime;
+
+/** Initialize a local AZSCloudAppendBlob object
+ 
+ This creates an AZSCloudAppendBlob object with the input name.
+ 
+ @warning This method does not make a service call.  If properties, metadata, etc have been set on the service
+ for this blob, this will not be reflected in the local container object.
+ @param blobName The name of the append blob (part of the URL)
+ @return The new append blob object.
+ */
+- (AZSCloudAppendBlob *)appendBlobReferenceFromName:(NSString *)blobName;
+
+/** Initialize a local AZSCloudAppendBlob object
+ 
+ This creates an AZSCloudAppendBlob object with the input name.
+ 
+ @warning This method does not make a service call.  If properties, metadata, etc have been set on the service
+ for this blob, this will not be reflected in the local container object.
+ @param blobName The name of the block blob (part of the URL)
+ @param snapshotTime The snapshot time for the blob.  Nil means the root blob (not a snapshot).
+ @return The new block blob object.
+ */
+- (AZSCloudAppendBlob *)appendBlobReferenceFromName:(NSString *)blobName snapshotTime:(NSString *)snapshotTime;
+
+/** Initialize a local AZSCloudBlobDirectory object
+ 
+ @param directoryName The name of the directory
+ @return The newly allocated directory object.
+ */
+- (AZSCloudBlobDirectory *)directoryReferenceFromName:(NSString *)directoryName;
 
 /** Sets the container's user defined metadata.
  
@@ -309,6 +382,32 @@ AZS_ASSUME_NONNULL_BEGIN
  */
 - (void)uploadMetadataWithAccessCondition:(AZSNullable AZSAccessCondition *)accessCondition requestOptions:(AZSNullable AZSBlobRequestOptions *)requestOptions operationContext:(AZSNullable AZSOperationContext *)operationContext completionHandler:(void (^)(NSError* __AZSNullable))completionHandler;
 
+/** Uploads a set of permissions for the container.
+ 
+ @param permissions The permissions to upload.
+ @param completionHandler The block of code to execute when the Upload Permissions call completes.
+ 
+ | Parameter name | Description |
+ |----------------|-------------|
+ |NSError *       | Nil if the operation succeeded without error, error with details about the failure otherwise.|
+ */
+- (void)uploadPermissions:(NSMutableDictionary *)permissions completionHandler:(void (^)(NSError *))completionHandler;
+
+/** Uploads a set of permissions for the container.
+ 
+ @param permissions The permissions to upload.
+ @param publicAccess The public access level for the container.
+ @param accessCondition The access conditions for the container.
+ @param requestOptions Specifies any additional options for the request. Specifying nil will use the default request options from the associated client.
+ @param operationContext Represents the context for the current operation.  Can be used to track requests to the storage service, and to provide additional runtime information about the operation.
+ @param completionHandler The block of code to execute when the Upload Permissions call completes.
+ 
+ | Parameter name | Description |
+ |----------------|-------------|
+ |NSError *       | Nil if the operation succeeded without error, error with details about the failure otherwise.|
+ */
+- (void)uploadPermissions:(NSMutableDictionary * __AZSNullable)permissions publicAccess:(AZSContainerPublicAccessType)publicAccess accessCondition:(AZSAccessCondition * __AZSNullable)accessCondition requestOptions:(AZSBlobRequestOptions * __AZSNullable)requestOptions operationContext:(AZSOperationContext * __AZSNullable)operationContext completionHandler:(void (^)(NSError *))completionHandler;
+
 /** Retrieves the container's attributes.
  
  @param completionHandler The block of code to execute when the Fetch Attributes call completes.
@@ -317,7 +416,7 @@ AZS_ASSUME_NONNULL_BEGIN
  |----------------|-------------|
  |NSError * | Nil if the operation succeeded without error, error with details about the failure otherwise.|
  */
-- (void)fetchAttributesWithCompletionHandler:(void (^)(NSError* __AZSNullable))completionHandler;
+- (void)downloadAttributesWithCompletionHandler:(void (^)(NSError* __AZSNullable))completionHandler;
 
 /** Retrieves the container's attributes.
  
@@ -330,7 +429,30 @@ AZS_ASSUME_NONNULL_BEGIN
  |----------------|-------------|
  |NSError * | Nil if the operation succeeded without error, error with details about the failure otherwise.|
  */
-- (void)fetchAttributesWithAccessCondition:(AZSNullable AZSAccessCondition *)accessCondition requestOptions:(AZSNullable AZSBlobRequestOptions *)requestOptions operationContext:(AZSNullable AZSOperationContext *)operationContext completionHandler:(void (^)(NSError* __AZSNullable))completionHandler;
+- (void)downloadAttributesWithAccessCondition:(AZSNullable AZSAccessCondition *)accessCondition requestOptions:(AZSNullable AZSBlobRequestOptions *)requestOptions operationContext:(AZSNullable AZSOperationContext *)operationContext completionHandler:(void (^)(NSError* __AZSNullable))completionHandler;
+
+/** Retrieves the stored container permissions.
+ 
+ @param completionHandler The block of code to execute when the Download Permissions call completes.
+ 
+ | Parameter name | Description |
+ |----------------|-------------|
+ |NSError * | Nil if the operation succeeded without error, error with details about the failure otherwise.|
+ */
+- (void)downloadPermissionsWithCompletionHandler:(void (^)(NSError* __AZSNullable, NSMutableDictionary *, AZSContainerPublicAccessType))completionHandler;
+
+/** Retrieves the stored container permissions.
+ 
+ @param accessCondition The access condition for the request.
+ @param requestOptions The options to use for the request.
+ @param operationContext The operation context to use for the call.
+ @param completionHandler The block of code to execute when the Download Permissions call completes.
+ 
+ | Parameter name | Description |
+ |----------------|-------------|
+ |NSError * | Nil if the operation succeeded without error, error with details about the failure otherwise.|
+ */
+- (void)downloadPermissionsWithAccessCondition:(AZSAccessCondition * __AZSNullable)accessCondition requestOptions:(AZSBlobRequestOptions * __AZSNullable)requestOptions operationContext:(AZSNullable AZSOperationContext *)operationContext completionHandler:(void (^)(NSError* __AZSNullable, NSMutableDictionary *, AZSContainerPublicAccessType))completionHandler;
 
 /** Acquires a lease on this container.
  
@@ -463,6 +585,15 @@ AZS_ASSUME_NONNULL_BEGIN
  |NSError * | Nil if the operation succeeded without error, error with details about the failure otherwise.|
  */
 - (void)renewLeaseWithAccessCondition:(AZSNullable AZSAccessCondition *)accessCondition requestOptions:(AZSNullable AZSBlobRequestOptions *)requestOptions operationContext:(AZSNullable AZSOperationContext *)operationContext completionHandler:(void (^)(NSError* __AZSNullable))completionHandler;
+
+/** Creates a Shared Access Signature (SAS) token from the given parameters for this Container.
+ Note that logging in this method uses the global logger configured statically on the AZSOperationContext as there is no operation being performed to provide a local operation context.
+ 
+ @param parameters The shared access blob parameters from which to create the SAS token.
+ @param error A pointer to a NSError*, to be set in the event of failure.
+ @returns The newly created SAS token.
+ */
+- (NSString *) createSharedAccessSignatureWithParameters:(AZSSharedAccessBlobParameters *)parameters error:(NSError **)error;
 
 @end
 

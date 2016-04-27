@@ -18,6 +18,7 @@
 #include <asl.h>
 
 #import "AZSTestBase.h"
+#import "AZSConstants.h"
 #import "AZSCloudStorageAccount.h"
 #import "AZSOperationContext.h"
 
@@ -61,7 +62,8 @@
     NSString *connectionString = (NSString *)((NSArray *)(json[@"tenants"]))[[(NSArray *)(json[@"tenants"]) indexOfObjectPassingTest:^(id object, NSUInteger idx, BOOL *stop) {
         return [(NSString *)((NSDictionary *)object)[@"name"] isEqualToString:targetName];
     }]][@"connection_string"];
-    self.account = [AZSCloudStorageAccount accountFromConnectionString:connectionString];
+    
+    self.account = [AZSCloudStorageAccount accountFromConnectionString:connectionString error:&error];
     
     // Put setup code here; it will be run once, before the first test case.
 }
@@ -73,5 +75,18 @@
     asl_close(_logger);
     [super tearDown];
 }
+
+- (void)checkPassageOfError:(NSError *)err expectToPass:(BOOL)expected expectedHttpErrorCode:(int)code message:(NSString *)message
+{
+    int badCode = [err.userInfo[AZSCHttpStatusCode] intValue];
+    if (expected) {
+        XCTAssertNil(err, @"%@ failed.", message);
+    }
+    else {
+        XCTAssertNotNil(err, @"%@ unexpectedly passed.", message);
+        XCTAssertEqual(code, badCode);
+    }
+}
+
 
 @end

@@ -42,6 +42,8 @@
 // This method should never be called. It is only here to comply with subclassing requirements.
 -(instancetype)initWithURL:(NSURL *)url append:(BOOL)shouldAppend AZS_DESIGNATED_INITIALIZER;
 
+// This is the base initializer with common logic.  Should not be called outside of this class (does not initialize the blobUploadHelper.)
+-(instancetype)initWithAccessCondition:(AZSAccessCondition *)accessCondition requestOptions:(AZSBlobRequestOptions *)requestOptions operationContext:(AZSOperationContext *)operationContext AZS_DESIGNATED_INITIALIZER;
 
 @end
 
@@ -140,18 +142,17 @@ void AZSBlobOutputStreamRunLoopSourcePerformRoutine (void *info)
     return nil;
 }
 
--(instancetype)initToBlockBlob:(AZSCloudBlockBlob *)blockBlob accessCondition:(AZSAccessCondition *)accessCondition requestOptions:(AZSBlobRequestOptions *)requestOptions operationContext:(AZSOperationContext *)operationContext
+-(instancetype)initWithAccessCondition:(AZSAccessCondition *)accessCondition requestOptions:(AZSBlobRequestOptions *)requestOptions operationContext:(AZSOperationContext *)operationContext
 {
     // A designated initializer must make a super call to a designated initializer of the super class.
     uint8_t temp;
     self = [super initToBuffer:&temp capacity:0];
     if (self)
     {
-        _blobUploadHelper = [[AZSBlobUploadHelper alloc] initToBlockBlob:blockBlob accessCondition:accessCondition requestOptions:requestOptions operationContext:operationContext completionHandler:nil];
         _isStreamOpen = NO;
         _isStreamClosing = NO;
         _isStreamClosed = NO;
-        CFRunLoopSourceContext    context = {0, (__bridge void *)(self), NULL, NULL, NULL, NULL, NULL,
+        CFRunLoopSourceContext context = {0, (__bridge void *)(self), NULL, NULL, NULL, NULL, NULL,
             &AZSBlobOutputStreamRunLoopSourceScheduleRoutine,
             AZSBlobOutputStreamRunLoopSourceCancelRoutine,
             AZSBlobOutputStreamRunLoopSourcePerformRoutine};
@@ -161,6 +162,36 @@ void AZSBlobOutputStreamRunLoopSourcePerformRoutine (void *info)
         _delegate = self;
         _hasStreamOpenEventFired = NO;
         _hasStreamErrorEventFired = NO;
+    }
+    return self;
+}
+
+-(instancetype)initToBlockBlob:(AZSCloudBlockBlob *)blockBlob accessCondition:(AZSAccessCondition *)accessCondition requestOptions:(AZSBlobRequestOptions *)requestOptions operationContext:(AZSOperationContext *)operationContext
+{
+    self = [self initWithAccessCondition:accessCondition requestOptions:requestOptions operationContext:operationContext];
+    if (self)
+    {
+        _blobUploadHelper = [[AZSBlobUploadHelper alloc] initToBlockBlob:blockBlob accessCondition:accessCondition requestOptions:requestOptions operationContext:operationContext completionHandler:nil];
+    }
+    return self;
+}
+
+-(instancetype)initToPageBlob:(AZSCloudPageBlob *)pageBlob totalBlobSize:(NSNumber *)totalBlobSize initialSequenceNumber:(NSNumber *)initialSequenceNumber accessCondition:(AZSAccessCondition *)accessCondition requestOptions:(AZSBlobRequestOptions *)requestOptions operationContext:(AZSOperationContext *)operationContext
+{
+    self = [self initWithAccessCondition:accessCondition requestOptions:requestOptions operationContext:operationContext];
+    if (self)
+    {
+        _blobUploadHelper = [[AZSBlobUploadHelper alloc] initToPageBlob:pageBlob totalBlobSize:totalBlobSize initialSequenceNumber:initialSequenceNumber accessCondition:accessCondition requestOptions:requestOptions operationContext:operationContext completionHandler:nil];
+    }
+    return self;
+}
+
+-(instancetype)initToAppendBlob:(AZSCloudAppendBlob *)appendBlob createNew:(BOOL)createNew accessCondition:(AZSAccessCondition *)accessCondition requestOptions:(AZSBlobRequestOptions *)requestOptions operationContext:(AZSOperationContext *)operationContext
+{
+    self = [self initWithAccessCondition:accessCondition requestOptions:requestOptions operationContext:operationContext];
+    if (self)
+    {
+        _blobUploadHelper = [[AZSBlobUploadHelper alloc] initToAppendBlob:appendBlob createNew:createNew accessCondition:accessCondition requestOptions:requestOptions operationContext:operationContext completionHandler:nil];
     }
     return self;
 }
@@ -204,8 +235,11 @@ void AZSBlobOutputStreamRunLoopSourcePerformRoutine (void *info)
 -(void)open
 {
     [self.blobUploadHelper.operationContext logAtLevel:AZSLogLevelDebug withMessage:@"Called open."];
-    self.isStreamOpen = YES;
-    [self fireStreamEvent];
+    
+    [self.blobUploadHelper openWithCompletionHandler:^(BOOL success) {
+        self.isStreamOpen = success;
+        [self fireStreamEvent];
+    }];
 }
 
 
@@ -252,6 +286,7 @@ void AZSBlobOutputStreamRunLoopSourcePerformRoutine (void *info)
     
     self.isStreamClosed = YES;
     self.isStreamClosing = NO;
+    [self fireStreamEvent];
 }
 
 // TODO: NSStreamStatusError
@@ -270,7 +305,7 @@ void AZSBlobOutputStreamRunLoopSourcePerformRoutine (void *info)
     {
         return NSStreamStatusAtEnd;
     }
-    if (![self.blobUploadHelper allBlocksUploaded])
+    if (![self.blobUploadHelper allDataUploaded])
     {
         return NSStreamStatusWriting;
     }

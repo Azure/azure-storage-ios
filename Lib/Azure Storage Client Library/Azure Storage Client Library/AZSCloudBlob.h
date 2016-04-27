@@ -30,6 +30,8 @@ AZS_ASSUME_NONNULL_BEGIN
 @class AZSCopyState;
 @class AZSBlobProperties;
 @class AZSStorageCredentials;
+@class AZSSharedAccessBlobParameters;
+@class AZSSharedAccessHeaders;
 
 /** The AZSCloudBlob represents a blob in Azure Storage.
  
@@ -66,10 +68,10 @@ AZS_ASSUME_NONNULL_BEGIN
 // TODO: snapshotqualifieduri, issnapshot, etc.
 
 // Initializers are not commented because callers shouldn't be creating AZSCloudBlob objects directly.
-- (instancetype)initWithUrl:(NSURL *)blobAbsoluteUrl;
-- (instancetype)initWithUrl:(NSURL *)blobAbsoluteUrl credentials:(AZSNullable AZSStorageCredentials *)credentials snapshotTime:(AZSNullable NSString *)snapshotTime;
-- (instancetype)initWithStorageUri:(AZSStorageUri *)blobAbsoluteUri;
-- (instancetype)initWithStorageUri:(AZSStorageUri *)blobAbsoluteUri credentials:(AZSNullable AZSStorageCredentials *)credentials snapshotTime:(AZSNullable NSString *)snapshotTime AZS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithUrl:(NSURL *)blobAbsoluteUrl error:(NSError **)error;
+- (instancetype)initWithUrl:(NSURL *)blobAbsoluteUrl credentials:(AZSNullable AZSStorageCredentials *)credentials snapshotTime:(AZSNullable NSString *)snapshotTime error:(NSError **)error;
+- (instancetype)initWithStorageUri:(AZSStorageUri *)blobAbsoluteUri error:(NSError **)error;
+- (instancetype)initWithStorageUri:(AZSStorageUri *)blobAbsoluteUri credentials:(AZSNullable AZSStorageCredentials *)credentials snapshotTime:(AZSNullable NSString *)snapshotTime error:(NSError **)error AZS_DESIGNATED_INITIALIZER;
 - (instancetype)initWithContainer:(AZSCloudBlobContainer *)blobContainer name:(NSString *)blobName;
 - (instancetype)initWithContainer:(AZSCloudBlobContainer *)blobContainer name:(NSString *)blobName snapshotTime:(AZSNullable NSString *)snapshotTime AZS_DESIGNATED_INITIALIZER;
 
@@ -226,7 +228,7 @@ AZS_ASSUME_NONNULL_BEGIN
  |----------------|-------------|
  |NSError * | Nil if the operation succeeded without error, error with details about the failure otherwise.|
  */
-- (void)fetchAttributesWithCompletionHandler:(void (^)(NSError* __AZSNullable))completionHandler;
+- (void)downloadAttributesWithCompletionHandler:(void (^)(NSError* __AZSNullable))completionHandler;
 
 /** Retrieves the blob's attributes.
  
@@ -239,7 +241,7 @@ AZS_ASSUME_NONNULL_BEGIN
  |----------------|-------------|
  |NSError * | Nil if the operation succeeded without error, error with details about the failure otherwise.|
  */
-- (void)fetchAttributesWithAccessCondition:(AZSNullable AZSAccessCondition *)accessCondition requestOptions:(AZSNullable AZSBlobRequestOptions *)requestOptions operationContext:(AZSNullable AZSOperationContext *)operationContext completionHandler:(void (^)(NSError* __AZSNullable))completionHandler;
+- (void)downloadAttributesWithAccessCondition:(AZSNullable AZSAccessCondition *)accessCondition requestOptions:(AZSNullable AZSBlobRequestOptions *)requestOptions operationContext:(AZSNullable AZSOperationContext *)operationContext completionHandler:(void (^)(NSError* __AZSNullable))completionHandler;
 
 /** Snapshots the blob.
  
@@ -302,6 +304,15 @@ AZS_ASSUME_NONNULL_BEGIN
  |BOOL | YES if the blob object exists on the service, NO else.|
  */
 -(void)existsWithAccessCondition:(AZSNullable AZSAccessCondition *)accessCondition requestOptions:(AZSNullable AZSBlobRequestOptions *)requestOptions operationContext:(AZSNullable AZSOperationContext *)operationContext completionHandler:(void (^)(NSError* __AZSNullable, BOOL))completionHandler;
+
+/** Creates a Shared Access Signature (SAS) token from the given policy for this Blob.
+ Note that logging in this method uses the global logger configured statically on the AZSOperationContext as there is no operation being performed to provide a local operation context.
+
+ @param parameters The shared access blob parameters from which to create the SAS token.
+ @param error A pointer to a NSError*, to be set in the event of failure.
+ @returns The newly created SAS token.
+ */
+-(NSString *) createSharedAccessSignatureWithParameters:(AZSSharedAccessBlobParameters*)parameters error:(NSError **)error;
 
 /** Acquires a lease on this blob.
  

@@ -15,7 +15,10 @@
 // </copyright>
 // -----------------------------------------------------------------------------------------
 
+#import "AZSConstants.h"
+#import "AZSErrors.h"
 #import "AZSNavigationUtil.h"
+#import "AZSOperationContext.h"
 #import "AZSStorageUri.h"
 #import "AZSUtil.h"
 #import "AZSStorageCredentials.h"
@@ -23,9 +26,9 @@
 
 @implementation AZSNavigationUtil
 
-+(NSURL*)getServiceClientBaseAddressWithUri: (NSURL *)addressUri usePathStyle:(BOOL)usePathStyle
++(NSURL*)getServiceClientBaseAddressWithUri: (NSURL *)addressUri usePathStyle:(BOOL)usePathStyle error:(NSError **)error
 {
-    if (!addressUri)
+    if (!addressUri || *error)
     {
         return nil;
     }
@@ -34,33 +37,26 @@
     authorityComponents.host = addressUri.host;
     authorityComponents.scheme = addressUri.scheme;
     authorityComponents.path = addressUri.path;
-    NSURL *authority = authorityComponents.URL;
     
     if (usePathStyle)
     {
-        /*
-         TODO:  (convert)
-         // Path style uri
-         string[] segments = addressUri.Segments;
-         if (segments.Length < 2)
-         {
-         string error = string.Format(CultureInfo.CurrentCulture, SR.PathStyleUriMissingAccountNameInformation);
-         throw new ArgumentException("address", error);
-         }
-         
-         return new Uri(authority, segments[1]);
-         */
-        return nil;
+        NSArray* segments = [addressUri.absoluteString componentsSeparatedByString:@"/"];
+        
+        if (segments.count < 2) {
+            *error = [NSError errorWithDomain:AZSErrorDomain code:AZSEInvalidArgument userInfo:nil];
+            [[AZSUtil operationlessContext] logAtLevel:AZSLogLevelError withMessage:@"URI is missing account information."];
+            return nil;
+        }
+        
+        authorityComponents.path = segments[1];
     }
-    else
-    {
-        return authority;
-    }
+    
+    return authorityComponents.URL;
 }
 
-+(AZSStorageUri*)getServiceClientBaseAddressWithStorageUri: (AZSStorageUri*)addressUri usePathStyle:(BOOL)usePathStyle
++(AZSStorageUri*)getServiceClientBaseAddressWithStorageUri: (AZSStorageUri*)addressUri usePathStyle:(BOOL)usePathStyle error:(NSError **)error
 {
-    return [[AZSStorageUri alloc] initWithPrimaryUri:[AZSNavigationUtil getServiceClientBaseAddressWithUri:addressUri.primaryUri usePathStyle:usePathStyle] secondaryUri:[AZSNavigationUtil getServiceClientBaseAddressWithUri:addressUri.secondaryUri usePathStyle:usePathStyle]];
+    return [[AZSStorageUri alloc] initWithPrimaryUri:[AZSNavigationUtil getServiceClientBaseAddressWithUri:addressUri.primaryUri usePathStyle:usePathStyle error:error] secondaryUri:[AZSNavigationUtil getServiceClientBaseAddressWithUri:addressUri.secondaryUri usePathStyle:usePathStyle error:error]];
 }
 
 +(NSMutableArray*)parseBlobQueryAndVerifyWithStorageUri:(AZSStorageUri*)blobAddress
@@ -83,17 +79,17 @@
         return nil;
     }
     
-    //todo: if relative uri, throw.
+    // TODO: if relative uri, throw.
     
     NSMutableDictionary *queryParameters = [AZSUtil parseQueryWithQueryString:[blobAddress query]];
     
-    NSString *snapshotString = [queryParameters objectForKey:@"snapshot"];
+    NSString *snapshotString = [queryParameters objectForKey:AZSCQuerySnapshot];
     
     AZSStorageCredentials *creds = [AZSNavigationUtil parseSASQueryWithQueryParameters:queryParameters];
     
     if (!creds)
     {
-        // Public access, will be overridden if shared key:
+        // Public access, will be overridden if shared key
         creds = [[AZSStorageCredentials alloc] init];
     }
     
@@ -103,8 +99,7 @@
     urlComponents.path = blobAddress.path;
     NSURL *url = urlComponents.URL;
     
-    // NSMutableArray *result = [[NSMutableArray alloc] initWithObjects:url, creds, snapshotString, nil];
-    NSMutableArray *result = [[NSMutableArray alloc] initWithArray:@[url ? url : [NSNull null], creds ? creds : [NSNull null], snapshotString ? snapshotString : [NSNull null]]];
+    NSMutableArray *result = [[NSMutableArray alloc] initWithArray:@[url ?: [NSNull null], creds ?: [NSNull null], snapshotString ?: [NSNull null]]];
     
     return result;
 }
@@ -118,14 +113,14 @@
     for (NSString *key in queryParameters)
     {
         NSString *lowerKey = [key lowercaseString];
-        if ([lowerKey isEqualToString:@"sig"])
+        if ([lowerKey isEqualToString:AZSCQuerySig])
         {
             sasFound = YES;
         }
-        else if ([lowerKey isEqualToString:@"restype"] ||
-                    [lowerKey isEqualToString:@"comp"] ||
-                    [lowerKey isEqualToString:@"snapshot"] ||
-                    [lowerKey isEqualToString:@"api-version"])
+        else if ([lowerKey isEqualToString:AZSCQueryRestype] ||
+                    [lowerKey isEqualToString:AZSCQueryComp] ||
+                    [lowerKey isEqualToString:AZSCQuerySnapshot] ||
+                    [lowerKey isEqualToString:AZSCQueryApiVersion])
         {
             [removeList addObject:key];
         }
@@ -163,7 +158,7 @@
             return [[uri pathComponents] objectAtIndex:2];
         }
         
-        //todo throw because we're missing account or container info in this uri.
+        // TODO: throw because we're missing account or container info in this uri.
         return nil;
     }
     else
@@ -180,23 +175,23 @@
     int containerIndex = 1;
     if (isPathStyle)
     {
-        containerIndex = 2;
+        containerIndex++;
     }
     
     NSArray *uriParts = [uri pathComponents];
     
     if ([uriParts count] - 1 < containerIndex)
     {
-        //todo throw because no blob here
+        // TODO throw because no blob here
     }
     else if ([uriParts count] - 1 == containerIndex)
     {
-        //this is either a container or a blob implicitly in root container.
+        // this is either a container or a blob implicitly in root container.
         return [uriParts objectAtIndex:containerIndex];
     }
     else
     {
-        NSString *blobName = @"";
+        NSString *blobName = AZSCEmptyString;
         NSMutableArray *mutableParts = [uriParts mutableCopy];
         [mutableParts removeObjectAtIndex:0];
         for (NSString *blobPiece in mutableParts)

@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------------------------
-// <copyright file="Azure_Storage_Client_Library.h" company="Microsoft">
+// <copyright file="AZSClient.h" company="Microsoft">
 //    Copyright 2015 Microsoft Corporation
 //
 //    Licensed under the MIT License;
@@ -33,14 +33,17 @@
 #import "AZSRetryContext.h"
 #import "AZSRetryPolicy.h"
 #import "AZSCloudBlockBlob.h"
+#import "AZSCloudPageBlob.h"
+#import "AZSCloudAppendBlob.h"
 #import "AZSCloudBlobContainer.h"
 #import "AZSBlockListItem.h"
 #import "AZSBlobContainerProperties.h"
 #import "AZSBlobProperties.h"
 #import "AZSCopyState.h"
 #import "AZSBlobOutputStream.h"
+#import "AZSCloudBlobDirectory.h"
 
 // TODO: Import all the user-accessible headers, so that users only need to import this one header file.
-@interface Azure_Storage_Client_Library : NSObject
+@interface AZSClient : NSObject
 
 @end

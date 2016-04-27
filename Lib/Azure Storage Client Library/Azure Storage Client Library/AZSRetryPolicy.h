@@ -65,6 +65,12 @@ AZS_ASSUME_NONNULL_BEGIN
 
 /** Initializes a fresh instance of the linear retry policy.
  
+ @return The newly allocated instance.
+ */
+-(instancetype)init;
+
+/** Initializes a fresh instance of the linear retry policy.
+ 
  @param maxAttempts The maximum number of retries the policy will allow.
  @param waitTimeBetweenRetries The time the retry policy will specify to wait between retries.
  @return The newly allocated instance.
@@ -92,6 +98,12 @@ AZS_ASSUME_NONNULL_BEGIN
  For example, if this is set to 3 seconds, then the first retry will wait roughly 3 seconds.  The second will wait 6, the third 12, the fourth 24, etc.
  */
 @property NSTimeInterval averageBackoffDelta;
+
+/** Initializes a fresh instance of the exponential retry policy.
+ 
+ @return The newly allocated instance.
+ */
+-(instancetype)init;
 
 /** Initializes a fresh instance of the exponential retry policy.
  

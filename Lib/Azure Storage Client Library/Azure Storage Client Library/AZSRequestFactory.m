@@ -17,6 +17,7 @@
 
 #import "AZSRequestFactory.h"
 #import "AZSAccessCondition.h"
+#import "AZSConstants.h"
 #import "AZSUtil.h"
 @implementation AZSRequestFactory
 
@@ -24,9 +25,8 @@
 +(NSMutableURLRequest *) putRequestWithUrlComponents:(NSURLComponents *)urlComponents timeout:(NSTimeInterval)timeout
 {
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[urlComponents URL] cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:timeout];
-    [request setHTTPMethod:@"PUT"];
-    [request setValue:@"iOS-v0.1.1" forHTTPHeaderField:@"User-Agent"];
-    [request setValue:@"2015-02-21" forHTTPHeaderField:@"x-ms-version"];
+    [request setHTTPMethod:AZSCHttpPut];
+    [request setValue:AZSCTargetStorageVersion forHTTPHeaderField:AZSCHeaderVersion];
     
     return request;
 }
@@ -34,9 +34,8 @@
 +(NSMutableURLRequest *) getRequestWithUrlComponents:(NSURLComponents *)urlComponents timeout:(NSTimeInterval)timeout
 {
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[urlComponents URL] cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:timeout];
-    [request setHTTPMethod:@"GET"];
-    [request setValue:@"iOS-v0.1.1" forHTTPHeaderField:@"User-Agent"];
-    [request setValue:@"2015-02-21" forHTTPHeaderField:@"x-ms-version"];
+    [request setHTTPMethod:AZSCHttpGet];
+    [request setValue:AZSCTargetStorageVersion forHTTPHeaderField:AZSCHeaderVersion];
     
     return request;
 }
@@ -44,9 +43,8 @@
 +(NSMutableURLRequest *) headRequestWithUrlComponents:(NSURLComponents *)urlComponents timeout:(NSTimeInterval)timeout
 {
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[urlComponents URL] cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:timeout];
-    [request setHTTPMethod:@"HEAD"];
-    [request setValue:@"iOS-v0.1.1" forHTTPHeaderField:@"User-Agent"];
-    [request setValue:@"2015-02-21" forHTTPHeaderField:@"x-ms-version"];
+    [request setHTTPMethod:AZSCHttpHead];
+    [request setValue:AZSCTargetStorageVersion forHTTPHeaderField:AZSCHeaderVersion];
     
     return request;
 }
@@ -54,9 +52,8 @@
 +(NSMutableURLRequest *) deleteRequestWithUrlComponents:(NSURLComponents *)urlComponents timeout:(NSTimeInterval)timeout
 {
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[urlComponents URL] cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:timeout];
-    [request setHTTPMethod:@"DELETE"];
-    [request setValue:@"iOS-v0.1.1" forHTTPHeaderField:@"User-Agent"];
-    [request setValue:@"2015-02-21" forHTTPHeaderField:@"x-ms-version"];
+    [request setHTTPMethod:AZSCHttpDelete];
+	    [request setValue:AZSCTargetStorageVersion forHTTPHeaderField:AZSCHeaderVersion];
     
     return request;
 }
@@ -68,7 +65,7 @@
     {
         for (NSString* key in metadata)
         {
-            [request setValue:[metadata objectForKey:key] forHTTPHeaderField:[NSString stringWithFormat:@"x-ms-meta-%@", key]];
+            [request setValue:[metadata objectForKey:key] forHTTPHeaderField:[NSString stringWithFormat:@"%@%@", AZSCHeaderMetaPrefix, key]];
         }
     }
 }
@@ -78,10 +75,10 @@
 {
     if (condition)
     {
-        [AZSUtil addOptionalHeaderToRequest:request header:@"If-Match" stringValue:condition.ifMatchETag];
-        [AZSUtil addOptionalHeaderToRequest:request header:@"If-None-Match" stringValue:condition.ifNoneMatchETag];
-        [AZSUtil addOptionalHeaderToRequest:request header:@"If-Modified-Since" stringValue:[AZSUtil convertDateToHttpString:condition.ifModifiedSinceDate]];
-        [AZSUtil addOptionalHeaderToRequest:request header:@"If-Unmodified-Since" stringValue:[AZSUtil convertDateToHttpString:condition.ifNotModifiedSinceDate]];
+        [AZSUtil addOptionalHeaderToRequest:request header:AZSCHeaderValueIfMatch stringValue:condition.ifMatchETag];
+        [AZSUtil addOptionalHeaderToRequest:request header:AZSCHeaderValueIfNoneMatch stringValue:condition.ifNoneMatchETag];
+        [AZSUtil addOptionalHeaderToRequest:request header:AZSCHeaderValueIfModifiedSince stringValue:[AZSUtil convertDateToHttpString:condition.ifModifiedSinceDate]];
+        [AZSUtil addOptionalHeaderToRequest:request header:AZSCHeaderValueIfUnmodifiedSince stringValue:[AZSUtil convertDateToHttpString:condition.ifNotModifiedSinceDate]];
 
         [AZSRequestFactory applyLeaseIdToRequest:request condition:condition];
     }
@@ -91,10 +88,10 @@
 {
     if (condition)
     {
-        [AZSUtil addOptionalHeaderToRequest:request header:@"x-ms-source-if-match" stringValue:condition.ifMatchETag];
-        [AZSUtil addOptionalHeaderToRequest:request header:@"x-ms-source-if-none-match" stringValue:condition.ifNoneMatchETag];
-        [AZSUtil addOptionalHeaderToRequest:request header:@"x-ms-source-if-modified-since" stringValue:[AZSUtil convertDateToHttpString:condition.ifModifiedSinceDate]];
-        [AZSUtil addOptionalHeaderToRequest:request header:@"x-ms-source-if-unmodified-since" stringValue:[AZSUtil convertDateToHttpString:condition.ifNotModifiedSinceDate]];
+        [AZSUtil addOptionalHeaderToRequest:request header:AZSCHeaderSourceIfMatch stringValue:condition.ifMatchETag];
+        [AZSUtil addOptionalHeaderToRequest:request header:AZSCHeaderSourceIfNoneMatch stringValue:condition.ifNoneMatchETag];
+        [AZSUtil addOptionalHeaderToRequest:request header:AZSCHeaderSourceIfModifiedSince stringValue:[AZSUtil convertDateToHttpString:condition.ifModifiedSinceDate]];
+        [AZSUtil addOptionalHeaderToRequest:request header:AZSCHeaderSourceIfUnmodifiedSince stringValue:[AZSUtil convertDateToHttpString:condition.ifNotModifiedSinceDate]];
         
         if (condition.leaseId)
         {
@@ -107,7 +104,7 @@
 {
     if (condition)
     {
-        [AZSUtil addOptionalHeaderToRequest:request header:@"x-ms-lease-id" stringValue:condition.leaseId];
+        [AZSUtil addOptionalHeaderToRequest:request header:AZSCHeaderLeaseId stringValue:condition.leaseId];
     }
 }
 

@@ -15,6 +15,8 @@
 // </copyright>
 // -----------------------------------------------------------------------------------------
 
+#import <CommonCrypto/CommonDigest.h>
+#import "AZSConstants.h"
 #import "AZSCloudBlobContainer.h"
 #import "AZSCloudBlobClient.h"
 #import "AZSStorageCommand.h"
@@ -22,6 +24,7 @@
 #import "AZSBlobRequestFactory.h"
 #import "AZSOperationContext.h"
 #import "AZSEnums.h"
+#import "AZSStorageCredentials.h"
 #import "AZSStorageUri.h"
 #import "AZSBlobRequestOptions.h"
 #import "AZSAccessCondition.h"
@@ -32,10 +35,18 @@
 #import "AZSContinuationToken.h"
 #import "AZSResultSegment.h"
 #import "AZSBlobContainerProperties.h"
+#import "AZSBlobRequestXML.h"
+#import "AZSSharedAccessBlobParameters.h"
+#import "AZSSharedAccessSignatureHelper.h"
 #import "AZSResponseParser.h"
+#import "AZSUriQueryBuilder.h"
 #import "AZSUtil.h"
 #import "AZSNavigationUtil.h"
 #import "AZSErrors.h"
+#import "AZSCloudBlobDirectory.h"
+#import "AZSCloudPageBlob.h"
+#import "AZSCloudAppendBlob.h"
+#import "AZSBlobProperties.h"
 
 @interface AZSCloudBlobContainer()
 
@@ -50,27 +61,43 @@
     return nil;
 }
 
-- (instancetype)initWithUrl:(NSURL *)containerAbsoluteUrl
+- (instancetype)initWithUrl:(NSURL *)containerAbsoluteUrl error:(NSError **)error
 {
-    return [self initWithUrl:containerAbsoluteUrl credentials:nil];
+    return [self initWithUrl:containerAbsoluteUrl credentials:nil error:error];
 }
 
-- (instancetype)initWithUrl:(NSURL *)containerAbsoluteUrl credentials:(AZSStorageCredentials *)credentials
+- (instancetype)initWithUrl:(NSURL *)containerAbsoluteUrl credentials:(AZSStorageCredentials *)credentials error:(NSError **)error
 {
-    return [self initWithStorageUri:[[AZSStorageUri alloc] initWithPrimaryUri:containerAbsoluteUrl] credentials:credentials];
+    return [self initWithStorageUri:[[AZSStorageUri alloc] initWithPrimaryUri:containerAbsoluteUrl] credentials:credentials error:error];
 }
 
-- (instancetype)initWithStorageUri:(AZSStorageUri *)containerAbsoluteUrl
+- (instancetype)initWithStorageUri:(AZSStorageUri *)containerAbsoluteUrl error:(NSError **)error
 {
-    return [self initWithStorageUri:containerAbsoluteUrl credentials:nil];
+    return [self initWithStorageUri:containerAbsoluteUrl credentials:nil error:error];
 }
 
-- (instancetype)initWithStorageUri:(AZSStorageUri *)containerAbsoluteUrl credentials:(AZSStorageCredentials *)credentials
+- (instancetype)initWithStorageUri:(AZSStorageUri *)containerAbsoluteUrl credentials:(AZSStorageCredentials *)credentials error:(NSError **)error
 {
     self = [super init];
     if (self)
     {
-        [self parseQueryAndVerifyWithUri:containerAbsoluteUrl credentials:credentials];
+        NSMutableArray *parseQueryResults = [AZSNavigationUtil parseBlobQueryAndVerifyWithStorageUri:containerAbsoluteUrl];
+        
+        if (([credentials isSAS] || [credentials isSharedKey]) && (![parseQueryResults[1] isKindOfClass:[NSNull class]] && ([parseQueryResults[1] isSAS] || [parseQueryResults[1] isSharedKey]))) {
+            *error = [NSError errorWithDomain:AZSErrorDomain code:AZSEInvalidArgument userInfo:nil];
+            [[AZSUtil operationlessContext] logAtLevel:AZSLogLevelError withMessage:@"Multiple credentials provided."];
+            return nil;
+        }
+        
+        credentials = (credentials ?: ([parseQueryResults[1] isKindOfClass:[NSNull class]] ? nil : parseQueryResults[1]));
+        
+        _storageUri = ([parseQueryResults[0] isKindOfClass:[NSNull class]] ? nil : parseQueryResults[0]);
+        _client = [[AZSCloudBlobClient alloc] initWithStorageUri: [AZSNavigationUtil getServiceClientBaseAddressWithStorageUri:_storageUri usePathStyle:[AZSUtil usePathStyleAddressing:[containerAbsoluteUrl primaryUri]] error:error] credentials:credentials];
+        if (*error) {
+            return nil;
+        }
+        
+        _name = [AZSNavigationUtil getContainerNameWithContainerAddress:_storageUri.primaryUri isPathStyle:[AZSUtil usePathStyleAddressing:_storageUri.primaryUri]];
         _properties = [[AZSBlobContainerProperties alloc] init];
         _metadata = [[NSMutableDictionary alloc] init];
     }
@@ -98,7 +125,6 @@
     return [self createContainerWithAccessType:AZSContainerPublicAccessTypeOff requestOptions:nil operationContext:nil completionHandler:completionHandler];
 }
 
-// TODO: Test container public access type once we have GetContainerAcl implemented.
 - (void)createContainerWithAccessType:(AZSContainerPublicAccessType )accessType requestOptions:(AZSBlobRequestOptions *)requestOptions operationContext:(AZSOperationContext *)operationContext completionHandler:(void (^)(NSError*))completionHandler;
 {
     if (!operationContext)
@@ -173,10 +199,18 @@
     }
     AZSBlobRequestOptions *modifiedOptions = [[AZSBlobRequestOptions copyOptions:requestOptions] applyDefaultsFromOptions:self.client.defaultRequestOptions];
     AZSStorageCommand * command = [[AZSStorageCommand alloc] initWithStorageCredentials:self.client.credentials storageUri:self.storageUri operationContext:operationContext];
+    NSError *locationError;
+    [command setAllowedStorageLocation:AZSAllowedStorageLocationPrimaryOrSecondary withLockLocation:(token ? token.storageLocation : AZSStorageLocationUnspecified) error:&locationError];
+    
+    if (locationError)
+    {
+        completionHandler(locationError, nil);
+        return;
+    }
     
     [command setBuildRequest:^ NSMutableURLRequest * (NSURLComponents *urlComponents, NSTimeInterval timeout, AZSOperationContext *operationContext)
      {
-         return [AZSBlobRequestFactory listBlobsWithPrefix:prefix delimiter:nil blobListingDetails:blobListingDetails maxResults:maxResults continuationToken:token urlComponents:urlComponents timeout:timeout operationContext:operationContext];
+         return [AZSBlobRequestFactory listBlobsWithPrefix:prefix delimiter:((useFlatBlobListing) ? nil : self.client.directoryDelimiter) blobListingDetails:blobListingDetails maxResults:maxResults continuationToken:token urlComponents:urlComponents timeout:timeout operationContext:operationContext];
      }];
     
     [command setAuthenticationHandler:self.client.authenticationHandler];
@@ -193,15 +227,40 @@
             return nil;
         }
 
-        NSMutableArray *results = [NSMutableArray arrayWithCapacity:[listBlobsResponse.blobListItems count]];
+        NSMutableArray *blobResults = [NSMutableArray arrayWithCapacity:0];
+        NSMutableArray *directoryResults = [NSMutableArray arrayWithCapacity:0];
         for (AZSBlobListItem *blobListItem in listBlobsResponse.blobListItems)
         {
-            AZSCloudBlob *temp = [[AZSCloudBlob alloc] initWithContainer:self name:blobListItem.name snapshotTime:blobListItem.snapshotTime];
-            temp.metadata = blobListItem.metadata;
-            temp.properties = blobListItem.properties;
-            temp.blobCopyState = blobListItem.blobCopyState;
+            if (blobListItem.isDirectory)
+            {
+                [directoryResults addObject:[[AZSCloudBlobDirectory alloc] initWithDirectoryName:blobListItem.name container:self]];
+            }
+            else
+            {
+                AZSCloudBlob *blob;
+                switch (blobListItem.properties.blobType)
+                {
+                    case AZSBlobTypeAppendBlob:
+                        blob = [[AZSCloudAppendBlob alloc] initWithContainer:self name:blobListItem.name snapshotTime:blobListItem.snapshotTime];
+                        break;
+                    case AZSBlobTypeBlockBlob:
+                        blob = [[AZSCloudBlockBlob alloc] initWithContainer:self name:blobListItem.name snapshotTime:blobListItem.snapshotTime];
+                        break;
+                    case AZSBlobTypePageBlob:
+                        blob = [[AZSCloudPageBlob alloc] initWithContainer:self name:blobListItem.name snapshotTime:blobListItem.snapshotTime];
+                        break;
+                    case AZSBlobTypeUnspecified:
+                    default:
+                        blob = [[AZSCloudBlob alloc] initWithContainer:self name:blobListItem.name snapshotTime:blobListItem.snapshotTime];
+                        break;
+                }
+                
+                blob.metadata = blobListItem.metadata;
+                blob.properties = blobListItem.properties;
+                blob.blobCopyState = blobListItem.blobCopyState;
             
-            [results addObject:temp];
+                [blobResults addObject:blob];
+            }
         }
         
         AZSContinuationToken *continuationToken = nil;
@@ -209,7 +268,7 @@
         {
             continuationToken = [AZSContinuationToken tokenFromString:listBlobsResponse.nextMarker withLocation:requestResult.targetLocation];
         }
-        return [AZSBlobResultSegment segmentWithBlobs:results directories:nil continuationToken:continuationToken];
+        return [AZSBlobResultSegment segmentWithBlobs:blobResults directories:directoryResults continuationToken:continuationToken];
     }];
     
     [AZSExecutor ExecuteWithStorageCommand:command requestOptions:modifiedOptions operationContext:operationContext completionHandler:completionHandler];
@@ -249,12 +308,45 @@
     return;
 }
 
--(void)fetchAttributesWithCompletionHandler:(void (^)(NSError *))completionHandler
+-(void)uploadPermissions:(NSMutableDictionary *)permissions completionHandler:(void (^)(NSError *))completionHandler
 {
-    return [self fetchAttributesWithAccessCondition:nil requestOptions:nil operationContext:nil completionHandler:completionHandler];
+    [self uploadPermissions:permissions publicAccess:AZSContainerPublicAccessTypeOff accessCondition:nil requestOptions:nil operationContext:nil completionHandler:completionHandler];
 }
 
-- (void)fetchAttributesWithAccessCondition:(AZSAccessCondition *)accessCondition requestOptions:(AZSBlobRequestOptions *)requestOptions operationContext:(AZSOperationContext *)operationContext completionHandler:(void (^)(NSError*))completionHandler
+- (void)uploadPermissions:(NSMutableDictionary *)permissions publicAccess:(AZSContainerPublicAccessType)publicAccess accessCondition:(AZSAccessCondition *)accessCondition requestOptions:(AZSBlobRequestOptions *)requestOptions operationContext:(AZSOperationContext *)operationContext completionHandler:(void (^)(NSError *))completionHandler
+{
+    if (!operationContext) {
+        operationContext = [[AZSOperationContext alloc] init];
+    }
+    
+    AZSBlobRequestOptions *modifiedOptions = [[AZSBlobRequestOptions copyOptions:requestOptions] applyDefaultsFromOptions:self.client.defaultRequestOptions];
+    AZSStorageCommand * command = [[AZSStorageCommand alloc] initWithStorageCredentials:self.client.credentials storageUri:self.storageUri operationContext:operationContext];
+
+    NSError *error = nil;
+    NSData *sourceData = [[AZSBlobRequestXML createStoredPoliciesXMLFromPermissions:permissions operationContext:operationContext error:&error] dataUsingEncoding:NSUTF8StringEncoding];
+    if (error) {
+        completionHandler(error);
+        return;
+    }
+    
+    [command setSource:sourceData];
+    [command setBuildRequest:^ NSMutableURLRequest * (NSURLComponents *urlComponents, NSTimeInterval timeout, AZSOperationContext *operationContext) {
+        return [AZSBlobRequestFactory uploadContainerPermissionsWithLength:sourceData.length urlComponents:urlComponents options:requestOptions accessCondition:accessCondition publicAccess:publicAccess timeout:timeout operationContext:operationContext];
+    }];
+    
+    [command setAuthenticationHandler:self.client.authenticationHandler];
+    
+    [command setPreProcessResponse:^ NSError * (NSHTTPURLResponse *urlResponse, AZSRequestResult *requestResult, AZSOperationContext *operationContext) {
+        [self updateEtagAndLastModifiedWithResponse:urlResponse];
+        return [AZSResponseParser preprocessResponseWithResponse:urlResponse requestResult:requestResult operationContext:operationContext];
+    }];
+    
+    [AZSExecutor ExecuteWithStorageCommand:command requestOptions:modifiedOptions operationContext:operationContext completionHandler:^(NSError *error, id result) {
+        completionHandler(error);
+    }];
+}
+
+- (void)downloadAttributesInternalWithPrimaryOnly:(BOOL)primaryOnly accessCondition:(AZSAccessCondition *)accessCondition requestOptions:(AZSBlobRequestOptions *)requestOptions operationContext:(AZSOperationContext *)operationContext completionHandler:(void (^)(NSError*))completionHandler
 {
     if (!operationContext)
     {
@@ -262,15 +354,16 @@
     }
     AZSBlobRequestOptions *modifiedOptions = [[AZSBlobRequestOptions copyOptions:requestOptions] applyDefaultsFromOptions:self.client.defaultRequestOptions];
     AZSStorageCommand * command = [[AZSStorageCommand alloc] initWithStorageCredentials:self.client.credentials storageUri:self.storageUri operationContext:operationContext];
-    
+    command.allowedStorageLocation = primaryOnly ? AZSAllowedStorageLocationPrimaryOnly : AZSAllowedStorageLocationPrimaryOrSecondary;
     [command setBuildRequest:^ NSMutableURLRequest * (NSURLComponents *urlComponents, NSTimeInterval timeout, AZSOperationContext *operationContext)
      {
-         return [AZSBlobRequestFactory fetchContainerAttributesWithAccessCondition:nil urlComponents:urlComponents timeout:timeout operationContext:operationContext];
+         return [AZSBlobRequestFactory downloadContainerAttributesWithAccessCondition:accessCondition urlComponents:urlComponents timeout:timeout operationContext:operationContext];
      }];
     
     [command setAuthenticationHandler:self.client.authenticationHandler];
     
     [command setPreProcessResponse:^id(NSHTTPURLResponse * urlResponse, AZSRequestResult * requestResult, AZSOperationContext * operationContext) {
+        [self updateEtagAndLastModifiedWithResponse:urlResponse];
         NSError *error = [AZSResponseParser preprocessResponseWithResponse:urlResponse requestResult:requestResult operationContext:operationContext];
         if (error)
         {
@@ -284,13 +377,64 @@
         {
             return error;
         }
-
+        
         return nil;
     }];
     
     [AZSExecutor ExecuteWithStorageCommand:command requestOptions:modifiedOptions operationContext:operationContext completionHandler:^(NSError *error, id result)
      {
          completionHandler(error);
+     }];
+}
+
+-(void)downloadAttributesWithCompletionHandler:(void (^)(NSError *))completionHandler
+{
+    return [self downloadAttributesWithAccessCondition:nil requestOptions:nil operationContext:nil completionHandler:completionHandler];
+}
+
+- (void)downloadAttributesWithAccessCondition:(AZSAccessCondition *)accessCondition requestOptions:(AZSBlobRequestOptions *)requestOptions operationContext:(AZSOperationContext *)operationContext completionHandler:(void (^)(NSError*))completionHandler
+{
+    return [self downloadAttributesInternalWithPrimaryOnly:NO accessCondition:accessCondition requestOptions:requestOptions operationContext:operationContext completionHandler:completionHandler];
+}
+
+- (void)downloadPermissionsWithCompletionHandler:(void (^)(NSError* __AZSNullable, NSMutableDictionary *, AZSContainerPublicAccessType))completionHandler
+{
+    [self downloadPermissionsWithAccessCondition:nil requestOptions:nil operationContext:nil completionHandler:completionHandler];
+}
+
+- (void)downloadPermissionsWithAccessCondition:(AZSNullable AZSAccessCondition *)accessCondition requestOptions:(AZSNullable AZSBlobRequestOptions *)requestOptions operationContext:(AZSNullable AZSOperationContext *)operationContext completionHandler:(void (^)(NSError* __AZSNullable, NSMutableDictionary *, AZSContainerPublicAccessType))completionHandler
+{
+    if (!operationContext) {
+        operationContext = [[AZSOperationContext alloc] init];
+    }
+    AZSBlobRequestOptions *modifiedOptions = [[AZSBlobRequestOptions copyOptions:requestOptions] applyDefaultsFromOptions:self.client.defaultRequestOptions];
+    AZSStorageCommand * command = [[AZSStorageCommand alloc] initWithStorageCredentials:self.client.credentials storageUri:self.storageUri operationContext:operationContext];
+    command.allowedStorageLocation = AZSAllowedStorageLocationPrimaryOrSecondary;
+    [command setBuildRequest:^ NSMutableURLRequest * (NSURLComponents *urlComponents, NSTimeInterval timeout, AZSOperationContext *operationContext) {
+         return [AZSBlobRequestFactory downloadContainerPermissionsWithAccessCondition:accessCondition urlComponents:urlComponents timeout:timeout operationContext:operationContext];
+     }];
+    
+    [command setAuthenticationHandler:self.client.authenticationHandler];
+    
+    [command setPreProcessResponse:^id(NSHTTPURLResponse * urlResponse, AZSRequestResult * requestResult, AZSOperationContext * operationContext) {
+        [self updateEtagAndLastModifiedWithResponse:urlResponse];
+        return [AZSResponseParser preprocessResponseWithResponse:urlResponse requestResult:requestResult operationContext:operationContext];
+    }];
+    
+    __block AZSContainerPublicAccessType publicAccess = AZSContainerPublicAccessTypeOff;
+    [command setPostProcessResponse:^id(NSHTTPURLResponse * urlResponse, AZSRequestResult * requestResult, NSOutputStream *outputStream, AZSOperationContext * operationContext, NSError ** error) {
+        if (*error) {
+            return *error;
+        }
+
+        publicAccess = [AZSDownloadContainerPermissions createContainerPermissionsWithResponse:urlResponse operationContext:operationContext error:error];
+        NSMutableDictionary *policies = [AZSDownloadContainerPermissions parseDownloadContainerPermissionsResponseWithData:[outputStream propertyForKey:NSStreamDataWrittenToMemoryStreamKey] operationContext:operationContext error:error].storedPolicies;
+        
+        return (*error) ?: policies;
+    }];
+    
+    [AZSExecutor ExecuteWithStorageCommand:command requestOptions:modifiedOptions operationContext:operationContext completionHandler:^(NSError *error, id result) {
+         completionHandler(error, result, publicAccess);
      }];
 }
 
@@ -327,7 +471,7 @@
     }];
     
     [command setPostProcessResponse:^id(NSHTTPURLResponse *urlResponse, AZSRequestResult *requestResult, NSOutputStream *outputStream, AZSOperationContext *operationContext, NSError **error) {
-        return [urlResponse.allHeaderFields valueForKey:@"x-ms-lease-id"];
+        return urlResponse.allHeaderFields[AZSCHeaderLeaseId];
     }];
     
     [AZSExecutor ExecuteWithStorageCommand:command requestOptions:modifiedOptions operationContext:operationContext completionHandler:^(NSError *error, NSString *leaseId)
@@ -416,7 +560,7 @@
     }];
     
     [command setPostProcessResponse:^id(NSHTTPURLResponse *urlResponse, AZSRequestResult *requestResult, NSOutputStream *outputStream, AZSOperationContext *operationContext, NSError *__autoreleasing *error) {
-        return [urlResponse.allHeaderFields valueForKey:@"x-ms-lease-id"];
+        return urlResponse.allHeaderFields[AZSCHeaderLeaseId];
     }];
     
     [AZSExecutor ExecuteWithStorageCommand:command requestOptions:modifiedOptions operationContext:operationContext completionHandler:^(NSError *error, NSString *leaseId)
@@ -460,7 +604,7 @@
     }];
     
     [command setPostProcessResponse:^id(NSHTTPURLResponse *urlResponse, AZSRequestResult *requestResult, NSOutputStream *outputStream, AZSOperationContext *operationContext, NSError *__autoreleasing *error) {
-        return [urlResponse.allHeaderFields valueForKey:@"x-ms-lease-id"];
+        return urlResponse.allHeaderFields[AZSCHeaderLeaseId];
     }];
 
     [AZSExecutor ExecuteWithStorageCommand:command requestOptions:modifiedOptions operationContext:operationContext completionHandler:^(NSError *error, id result)
@@ -512,8 +656,8 @@
 
 -(void)updateEtagAndLastModifiedWithResponse:(NSHTTPURLResponse *)response
 {
-    NSString *parsedEtag = [response.allHeaderFields valueForKey:@"ETag"];
-    NSDate *parsedLastModified = [[AZSUtil dateFormatterWithRFCFormat] dateFromString:[response.allHeaderFields valueForKey:@"Last-Modified"]];
+    NSString *parsedEtag = response.allHeaderFields[AZSCXmlETag];
+    NSDate *parsedLastModified = [[AZSUtil dateFormatterWithRFCFormat] dateFromString:response.allHeaderFields[AZSCXmlLastModified]];
     
     if (parsedEtag)
     {
@@ -525,37 +669,48 @@
     }
 }
 
-// Note: this should only be called from the constructor
--(void)parseQueryAndVerifyWithUri:(AZSStorageUri *)uri credentials:(AZSStorageCredentials *)credentials
-{
-    NSMutableArray *parseQueryResults = [AZSNavigationUtil parseBlobQueryAndVerifyWithStorageUri:uri];
-    
-    _storageUri = ([[parseQueryResults objectAtIndex:0] isKindOfClass:[NSNull class]] ? nil : [parseQueryResults objectAtIndex:0]);
-    
-    // todo: if (parsedcreds && creds) != null then throw mult creds
-    
-    _client = [[AZSCloudBlobClient alloc] initWithStorageUri: [AZSNavigationUtil getServiceClientBaseAddressWithStorageUri:self.storageUri usePathStyle:[AZSUtil usePathStyleAddressing:[uri primaryUri]]] credentials:(credentials != nil ? credentials : ([[parseQueryResults objectAtIndex:1] isKindOfClass:[NSNull class]] ? nil : [parseQueryResults objectAtIndex:1]))];
-    
-    _name = [AZSNavigationUtil getContainerNameWithContainerAddress:self.storageUri.primaryUri isPathStyle:[AZSUtil usePathStyleAddressing:self.storageUri.primaryUri]];
-}
-
 - (AZSCloudBlockBlob *)blockBlobReferenceFromName:(NSString *)blobName
 {
-    AZSCloudBlockBlob *blockBlob = [[AZSCloudBlockBlob alloc] initWithContainer:self name:blobName];
+    AZSCloudBlockBlob *blockBlob = [[AZSCloudBlockBlob alloc] initWithContainer:self name:blobName snapshotTime:nil];
     return blockBlob;
 }
 
--(void)existsWithCompletionHandler:(void (^)(NSError *, BOOL))completionHandler
+- (AZSCloudBlockBlob *)blockBlobReferenceFromName:(NSString *)blobName snapshotTime:(NSString *)snapshotTime
 {
-    [self existsWithAccessCondition:nil requestOptions:nil operationContext:nil completionHandler:completionHandler];
+    AZSCloudBlockBlob *blockBlob = [[AZSCloudBlockBlob alloc] initWithContainer:self name:blobName snapshotTime:snapshotTime];
+    return blockBlob;
 }
 
--(void)existsWithAccessCondition:(AZSAccessCondition *)accessCondition requestOptions:(AZSBlobRequestOptions *)requestOptions operationContext:(AZSOperationContext *)operationContext completionHandler:(void (^)(NSError *, BOOL))completionHandler
+- (AZSCloudPageBlob *)pageBlobReferenceFromName:(NSString *)blobName
 {
-    [self fetchAttributesWithAccessCondition:accessCondition requestOptions:requestOptions operationContext:operationContext completionHandler:^(NSError *error) {
+    AZSCloudPageBlob *pageBlob = [[AZSCloudPageBlob alloc] initWithContainer:self name:blobName];
+    return pageBlob;
+}
+
+- (AZSCloudPageBlob *)pageBlobReferenceFromName:(NSString *)blobName snapshotTime:(NSString *)snapshotTime
+{
+    AZSCloudPageBlob *pageBlob = [[AZSCloudPageBlob alloc] initWithContainer:self name:blobName snapshotTime:snapshotTime];
+    return pageBlob;
+}
+
+- (AZSCloudAppendBlob *)appendBlobReferenceFromName:(NSString *)blobName
+{
+    AZSCloudAppendBlob *appendBlob = [[AZSCloudAppendBlob alloc] initWithContainer:self name:blobName];
+    return appendBlob;
+}
+
+- (AZSCloudAppendBlob *)appendBlobReferenceFromName:(NSString *)blobName snapshotTime:(NSString *)snapshotTime
+{
+    AZSCloudAppendBlob *appendBlob = [[AZSCloudAppendBlob alloc] initWithContainer:self name:blobName snapshotTime:snapshotTime];
+    return appendBlob;
+}
+
+-(void) existsInternalWithPrimaryOnly:(BOOL)primaryOnly accessCondition:(AZSAccessCondition *)accessCondition requestOptions:(AZSBlobRequestOptions *)requestOptions operationContext:(AZSOperationContext *)operationContext completionHandler:(void (^)(NSError *, BOOL))completionHandler
+{
+    [self downloadAttributesInternalWithPrimaryOnly:primaryOnly accessCondition:accessCondition requestOptions:requestOptions operationContext:operationContext completionHandler:^(NSError *error) {
         if (error)
         {
-            if ([error.domain isEqualToString:AZSErrorDomain] && (error.code == AZSEServerError) && error.userInfo[@"HTTP Status Code"] && (((NSNumber *)error.userInfo[@"HTTP Status Code"]).intValue == 404))
+            if ([error.domain isEqualToString:AZSErrorDomain] && (error.code == AZSEServerError) && error.userInfo[AZSCHttpStatusCode] && (((NSNumber *)error.userInfo[AZSCHttpStatusCode]).intValue == 404))
             {
                 completionHandler(nil, NO);
             }
@@ -571,6 +726,16 @@
     }];
 }
 
+-(void)existsWithCompletionHandler:(void (^)(NSError *, BOOL))completionHandler
+{
+    [self existsWithAccessCondition:nil requestOptions:nil operationContext:nil completionHandler:completionHandler];
+}
+
+-(void)existsWithAccessCondition:(AZSAccessCondition *)accessCondition requestOptions:(AZSBlobRequestOptions *)requestOptions operationContext:(AZSOperationContext *)operationContext completionHandler:(void (^)(NSError *, BOOL))completionHandler
+{
+    [self existsInternalWithPrimaryOnly:NO accessCondition:accessCondition requestOptions:requestOptions operationContext:operationContext completionHandler:completionHandler];
+}
+
 -(void)createContainerIfNotExistsWithCompletionHandler:(void (^)(NSError *, BOOL))completionHandler
 {
     [self createContainerIfNotExistsWithAccessType:AZSContainerPublicAccessTypeOff requestOptions:nil operationContext:nil completionHandler:completionHandler];
@@ -578,7 +743,7 @@
 
 -(void)createContainerIfNotExistsWithAccessType:(AZSContainerPublicAccessType)accessType requestOptions:(AZSBlobRequestOptions *)requestOptions operationContext:(AZSOperationContext *)operationContext completionHandler:(void (^)(NSError *, BOOL))completionHandler
 {
-    [self existsWithAccessCondition:nil requestOptions:requestOptions operationContext:operationContext completionHandler:^(NSError *error, BOOL exists) {
+    [self existsInternalWithPrimaryOnly:YES accessCondition:nil requestOptions:requestOptions operationContext:operationContext completionHandler:^(NSError *error, BOOL exists) {
         if (error)
         {
             completionHandler(error, NO);
@@ -613,7 +778,7 @@
 
 -(void)deleteContainerIfExistsWithAccessCondition:(AZSAccessCondition *)accessCondition requestOptions:(AZSBlobRequestOptions *)requestOptions operationContext:(AZSOperationContext *)operationContext completionHandler:(void (^)(NSError *, BOOL))completionHandler
 {
-    [self existsWithAccessCondition:accessCondition requestOptions:requestOptions operationContext:operationContext completionHandler:^(NSError *error, BOOL exists) {
+    [self existsInternalWithPrimaryOnly:YES accessCondition:accessCondition requestOptions:requestOptions operationContext:operationContext completionHandler:^(NSError *error, BOOL exists) {
         if (error)
         {
             completionHandler(error, NO);
@@ -639,6 +804,35 @@
             }
         }
     }];
+}
+
+-(NSString *) createSharedAccessSignatureWithParameters:(AZSSharedAccessBlobParameters*)parameters error:(NSError **)error
+{
+    if (![self.client.credentials isSharedKey]) {
+        *error = [NSError errorWithDomain:AZSErrorDomain code:AZSEInvalidArgument userInfo:nil];
+        [[AZSUtil operationlessContext] logAtLevel:AZSLogLevelError withMessage:@"Cannot create SAS without account key."];
+        return nil;
+    }
+    
+    NSString *signature = [AZSSharedAccessSignatureHelper sharedAccessSignatureHashForBlobWithParameters:parameters resourceName:[self createSharedAccessCanonicalName] client:self.client error:error];
+    
+    if (!signature) {
+        // An error occurred.
+        return nil;
+    }
+    
+    const AZSUriQueryBuilder *builder = [AZSSharedAccessSignatureHelper sharedAccessSignatureForBlobWithParameters:parameters resourceType:AZSCSasPermissionsCreate signature:signature error:error];
+    return [builder builderAsString];
+}
+
+- (NSString *)createSharedAccessCanonicalName
+{
+    return [NSString stringWithFormat:AZSCSasTemplateContainerCanonicalName, AZSCBlob, self.client.credentials.accountName, self.name];
+}
+
+- (AZSCloudBlobDirectory *)directoryReferenceFromName:(NSString *)directoryName
+{
+    return [[AZSCloudBlobDirectory alloc] initWithDirectoryName:directoryName container:self];
 }
 
 @end

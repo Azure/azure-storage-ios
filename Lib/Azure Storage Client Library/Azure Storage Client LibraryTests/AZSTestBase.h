@@ -20,5 +20,7 @@
 @class AZSCloudStorageAccount;
 
 @interface AZSTestBase : XCTestCase
+
 @property AZSCloudStorageAccount *account;
+-(void)checkPassageOfError:(NSError *)err expectToPass:(BOOL)expected expectedHttpErrorCode:(int)code message:(NSString *)message;
 @end

@@ -24,19 +24,19 @@ AZS_ASSUME_NONNULL_BEGIN
 /** A collection of properties for the container.*/
 @interface AZSBlobContainerProperties : NSObject
 
-/** The eTag for this container, as far as the library is aware.  Call fetchAttributes to update.*/
+/** The eTag for this container, as far as the library is aware.  Call downloadAttributes to update.*/
 @property (copy, AZSNullable) NSString *eTag;
 
-/** The last modified time for the container, as far as the library is aware.  Call fetchAttributes to update.*/
+/** The last modified time for the container, as far as the library is aware.  Call downloadAttributes to update.*/
 @property (copy, AZSNullable) NSDate *lastModified;
 
-/** The lease status for the container, as far as the library is aware.  Call fetchAttributes to update.*/
+/** The lease status for the container, as far as the library is aware.  Call downloadAttributes to update.*/
 @property AZSLeaseStatus leaseStatus;
 
-/** The lease state for the container, as far as the library is aware.  Call fetchAttributes to update.*/
+/** The lease state for the container, as far as the library is aware.  Call downloadAttributes to update.*/
 @property AZSLeaseState leaseState;
 
-/** The lease duration for the container, as far as the library is aware.  Call fetchAttributes to update.*/
+/** The lease duration for the container, as far as the library is aware.  Call downloadAttributes to update.*/
 @property AZSLeaseDuration leaseDuration;
 
 @end

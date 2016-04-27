@@ -15,14 +15,31 @@
 // </copyright>
 // -----------------------------------------------------------------------------------------
 
+#import <CommonCrypto/CommonHMAC.h>
+#import "AZSConstants.h"
+#import "AZSErrors.h"
+#import "AZSOperationContext.h"
 #import "AZSUtil.h"
-
+#import "AZSStorageCredentials.h"
 
 @implementation AZSUtil
 
-NSInteger pathStylePorts[20] = {10000, 10001, 10002, 10003, 10004, 10100, 10101, 10102, 10103, 10104, 11000, 11001, 11002, 11003, 10004, 11100, 11101, 11102, 11103, 11104};
++(NSDateFormatter *) dateFormatterWithFormat:(NSString *)format
+{
+    static NSDateFormatter *df = nil;
+    if (!df) {
+        df = [[NSDateFormatter alloc] init];
+        [df setLocale:[[NSLocale alloc] initWithLocaleIdentifier:AZSCPosix]];
+        [df setCalendar: [[NSCalendar alloc] initWithCalendarIdentifier:AZSGregorianCalendar]];
+        [df setTimeZone:[NSTimeZone timeZoneWithName:AZSCUtc]];
+    }
+    
+    NSDateFormatter *dateFormat = [df copy];
+    [dateFormat setDateFormat:format];
+    return dateFormat;
+}
 
-+(void) addOptionalHeaderToRequest:(NSMutableURLRequest*)request header:(NSString*)header stringValue:(NSString*)value
++(void) addOptionalHeaderToRequest:(NSMutableURLRequest *)request header:(NSString *)header stringValue:(NSString *)value
 {
     if (value)
     {
@@ -30,7 +47,7 @@ NSInteger pathStylePorts[20] = {10000, 10001, 10002, 10003, 10004, 10100, 10101,
     }
 }
 
-+(void) addOptionalHeaderToRequest:(NSMutableURLRequest*)request header:(NSString*)header intValue:(NSNumber*)value
++(void) addOptionalHeaderToRequest:(NSMutableURLRequest *)request header:(NSString *)header intValue:(NSNumber *)value
 {
     if (value)
     {
@@ -38,11 +55,11 @@ NSInteger pathStylePorts[20] = {10000, 10001, 10002, 10003, 10004, 10100, 10101,
     }
 }
 
-+(NSString*) convertDateToHttpString:(NSDate*)date
++(NSString *) convertDateToHttpString:(NSDate *)date
 {
     if (date)
     {
-        return [NSString stringWithFormat: @"%@", [[AZSUtil dateFormatterWithRFCFormat] stringFromDate:date]];
+        return [[AZSUtil dateFormatterWithRFCFormat] stringFromDate:date];
     }
     else
     {
@@ -50,24 +67,23 @@ NSInteger pathStylePorts[20] = {10000, 10001, 10002, 10003, 10004, 10100, 10101,
     }
 }
 
-+(NSDateFormatter*) dateFormatterWithRFCFormat
++(NSDateFormatter *) dateFormatterWithRFCFormat
 {
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    [dateFormatter setDateFormat:@"EEE, dd MMM yyyy HH':'mm':'ss 'GMT'"];
-    [dateFormatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"]];
-    [dateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
-    
-    return dateFormatter;
+    return [AZSUtil dateFormatterWithFormat:AZSCDateFormatRFC];
 }
 
-+(NSDateFormatter*) dateFormatterWithRoundtripFormat
++(NSDateFormatter *) dateFormatterWithRoundtripFormat
 {
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    [dateFormatter setDateFormat:@"yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fffffff'Z'"];
-    [dateFormatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"]];
-    [dateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
+    return [AZSUtil dateFormatterWithFormat:AZSCDateFormatRoundtrip];
+}
+
++(NSString *) utcTimeOrEmptyWithDate:(NSDate *)date
+{
+    if (!date) {
+        return AZSCEmptyString;
+    }
     
-    return dateFormatter;
+    return [[AZSUtil dateFormatterWithFormat: AZSCDateFormatIso8601] stringFromDate:date];
 }
 
 +(BOOL)streamAvailable:(NSStream *)stream
@@ -77,22 +93,17 @@ NSInteger pathStylePorts[20] = {10000, 10001, 10002, 10003, 10004, 10100, 10101,
 }
 
 // This should be adequate for some parts of the query, but it's not accurate in all cases.
-// In particular, it won't work for all code points other than the ASCII set.
 // Either way, it's better than the built-in NSString percent encoding.
 // It should be fine for the values in a SAS token (including the sig), which is what we're currently using it for.
 +(NSString *) URLEncodedStringWithString:(NSString *)stringToConvert
 {
-    NSMutableString * encodedString = [NSMutableString string];
-    const unsigned char * sourceUTF8 = (const unsigned char *)[stringToConvert cStringUsingEncoding:NSUTF8StringEncoding];
-    unsigned long length = strlen((const char *)sourceUTF8);
-    for (int i = 0; i < length; ++i)
+    NSMutableString *encodedString = [NSMutableString string];
+    const char *sourceUTF8 = [stringToConvert cStringUsingEncoding:NSUTF8StringEncoding];
+    unsigned long length = strlen(sourceUTF8);
+    for (int i = 0; i < length; i++)
     {
-        const unsigned char currentChar = sourceUTF8[i];
-        if (currentChar == ' ')
-        {
-            [encodedString appendString:@"+"];
-        }
-        else if (currentChar == '.' || currentChar == '-' || currentChar == '_' || currentChar == '~' ||
+        const char currentChar = sourceUTF8[i];
+        if (currentChar == '.' || currentChar == '-' || currentChar == '_' || currentChar == '~' ||
                    (currentChar >= 'a' && currentChar <= 'z') ||
                    (currentChar >= 'A' && currentChar <= 'Z') ||
                    (currentChar >= '0' && currentChar <= '9'))
@@ -108,11 +119,11 @@ NSInteger pathStylePorts[20] = {10000, 10001, 10002, 10003, 10004, 10100, 10101,
 }
 
 
-+(NSMutableDictionary*) parseQueryWithQueryString:(NSString*)query
++(NSMutableDictionary *) parseQueryWithQueryString:(NSString *)query
 {
     NSMutableDictionary *result = [[NSMutableDictionary alloc] init];
     
-    if (!query || [query isEqualToString:@""])
+    if (!query || [query isEqualToString:AZSCEmptyString])
     {
         return result;
     }
@@ -137,7 +148,7 @@ NSInteger pathStylePorts[20] = {10000, 10001, 10002, 10003, 10004, 10100, 10101,
         NSRange equalDex = [pair rangeOfString:@"="];
         if (equalDex.length < 1 || equalDex.location == 0)
         {
-            key = @"";
+            key = AZSCEmptyString;
             val = [pair stringByRemovingPercentEncoding];
         }
         else
@@ -162,69 +173,75 @@ NSInteger pathStylePorts[20] = {10000, 10001, 10002, 10003, 10004, 10100, 10101,
 
 +(BOOL) usePathStyleAddressing:(NSURL *)url
 {
-    if (url)
-    {
-        if (![url host])
-            
-        {
+    static NSInteger pathStylePorts[20] = {10000, 10001, 10002, 10003, 10004, 10100, 10101, 10102, 10103, 10104, 11000, 11001, 11002, 11003, 10004, 11100, 11101, 11102, 11103, 11104};
+    
+    // Path-style is something like: https://10.234.234.106:10100/accountname/containername/blobname
+    if (url) {
+        NSString *host = [url host];
+        if (!host) {
             return YES;
         }
         
-        // Path-style is something like:
-        // https://10.234.234.106:10100/accountname/containername/blobname
-        
-        //todo: check "hostnametype != DNS" -- no idea how to replicate this in objC.  (copy from Java code)
-        /* Java code:
-         
-         Utility.java
-         
-         * Returns a value that indicates whether a specified URI is a path-style URI.
-         *
-         * @param baseURI
-         *            A <code>java.net.URI</code> value that represents the URI being checked.
-         * @return <code>true</code> if the specified URI is path-style; otherwise, <code>false</code>.
-        public static boolean determinePathStyleFromUri(final URI baseURI) {
-            String path = baseURI.getPath();
-            if (path != null && path.startsWith("/")) {
-                path = path.substring(1);
-            }
-            
-            // if the path is null or empty, this is not path-style
-            if (Utility.isNullOrEmpty(path)) {
-                return false;
-            }
-            
-            // if this contains a port or has a host which is not DNS, this is path-style
-            return pathStylePorts.contains(baseURI.getPort()) || !isHostDnsName(baseURI);
-        }
-        
-         * Returns a boolean indicating whether the host of the specified URI is DNS.
-         *
-         * @param uri
-         *            The URI whose host to evaluate.
-         * @return <code>true</code> if the host is DNS; otherwise, <code>false</code>.
-        private static boolean isHostDnsName(URI uri) {
-            String host = uri.getHost();
-            for (int i = 0; i < host.length(); i++) {
-                char hostChar = host.charAt(i);
-                if (!Character.isDigit(hostChar) && !(hostChar == '.')) {
-                    return true;
-                }
-            }
-            return false;
-        }
-         */
-        
-        for (int i = 0; i < 20; i++)
-        {
-            if (pathStylePorts[i] == [url.port intValue])
-            {
-                return YES;
+        for (int i = 0; i < 20; i++) {
+            if (pathStylePorts[i] == [url.port intValue]) {
+                return [AZSUtil isPathDnsNameWithHost:host];
             }
         }
     }
     
     return NO;
+}
+
++(BOOL) isPathDnsNameWithHost:(NSString *)host
+{
+    for (int i = 0; i < [host length]; i++) {
+        char hostC = [host characterAtIndex:i];
+        if (hostC != '.' || hostC <= '0' || hostC >= '9') {
+            return NO;
+        }
+    }
+    
+    return YES;
+}
+
++(NSString *) computeHmac256WithString:(NSString*)stringToSign credentials:(AZSStorageCredentials *)credentials
+{
+    const char* stringToSignChar = [stringToSign cStringUsingEncoding:NSUTF8StringEncoding];
+    unsigned char cHMAC[CC_SHA256_DIGEST_LENGTH];
+    CCHmac(kCCHmacAlgSHA256, [credentials.accountKey bytes], [credentials.accountKey length], stringToSignChar, strlen(stringToSignChar), cHMAC);
+    
+    NSData *hmac = [[NSData alloc] initWithBytes:cHMAC length:sizeof(cHMAC)];
+    return [hmac base64EncodedStringWithOptions:0];
+}
+
++(NSError *) createErrorFromError:(NSError *)err domain:(NSString *)domain code:(NSInteger)code userInfo:(NSDictionary*)userInfo
+{
+    if (!err) {
+        return [[NSError alloc] initWithDomain:domain code:code userInfo:userInfo];
+    }
+    
+    [err.userInfo setValue:[AZSUtil createErrorFromError:[err.userInfo objectForKey:@"Internal Error"] domain:domain code:code userInfo:userInfo] forKey:@"Internal Error"];
+    return err;
+}
+
++(AZSOperationContext *) operationlessContext
+{
+    /* Context used for logging when no service call is being made. */
+    static __strong AZSOperationContext *context = nil;
+    static dispatch_once_t allowOnce;
+    
+    dispatch_once(&allowOnce, ^{
+        context = [[AZSOperationContext alloc] init];
+    });
+
+    return context;
+}
+
++(NSString *)calculateMD5FromData:(NSData *)data
+{
+    unsigned char md5Bytes[CC_MD5_DIGEST_LENGTH];
+    CC_MD5(data.bytes, (CC_LONG) data.length, md5Bytes);
+    return [[[NSData alloc] initWithBytes:md5Bytes length:CC_MD5_DIGEST_LENGTH] base64EncodedStringWithOptions:0];
 }
 
 @end

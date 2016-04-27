@@ -15,27 +15,38 @@
 // </copyright>
 // -----------------------------------------------------------------------------------------
 
+#ifdef __IPHONE_8_0
+    #define AZSGregorianCalendar NSCalendarIdentifierGregorian
+#else
+    #define AZSGregorianCalendar NSGregorianCalendar
+#endif
+
 #import <Foundation/Foundation.h>
+@class AZSOperationContext;
+@class AZSStorageCredentials;
 @class AZSStorageUri;
 
 @interface AZSUtil : NSObject
 
-+(void) addOptionalHeaderToRequest:(NSMutableURLRequest*)request header:(NSString*)header stringValue:(NSString*)value;
-+(void) addOptionalHeaderToRequest:(NSMutableURLRequest*)request header:(NSString*)header intValue:(NSNumber*)value;
++(void) addOptionalHeaderToRequest:(NSMutableURLRequest *)request header:(NSString *)header stringValue:(NSString *)value;
++(void) addOptionalHeaderToRequest:(NSMutableURLRequest *)request header:(NSString *)header intValue:(NSNumber *)value;
 
-+(NSDateFormatter*) dateFormatterWithRFCFormat;
-+(NSDateFormatter*) dateFormatterWithRoundtripFormat;
++(NSDateFormatter *) dateFormatterWithRFCFormat;
++(NSDateFormatter *) dateFormatterWithRoundtripFormat;
 
-+(NSString*) convertDateToHttpString:(NSDate*)date;
++(NSString *) convertDateToHttpString:(NSDate *)date;
 +(BOOL)streamAvailable:(NSStream *)stream;
 
-+(NSMutableDictionary*) parseQueryWithQueryString:(NSString*)query;
++(NSMutableDictionary *) parseQueryWithQueryString:(NSString *)query;
 
 +(BOOL) usePathStyleAddressing:(NSURL *)url;
 
 +(NSString *) URLEncodedStringWithString:(NSString *)stringToConvert;
++(NSString *) computeHmac256WithString:(NSString *)stringToSign credentials:(AZSStorageCredentials *)credentials;
++(NSString *) utcTimeOrEmptyWithDate:(NSDate *)date;
+
++(AZSOperationContext *) operationlessContext;
+
++(NSString *)calculateMD5FromData:(NSData *)data;
 
 @end
-
-
-

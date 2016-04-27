@@ -16,6 +16,7 @@
 // -----------------------------------------------------------------------------------------
 
 #import <CommonCrypto/CommonDigest.h>
+#import "AZSConstants.h"
 #import "AZSExecutor.h"
 #import "AZSOperationContext.h"
 #import "AZSRequestOptions.h"
@@ -189,6 +190,7 @@
     switch(eventCode) {
         case NSStreamEventHasSpaceAvailable:
         {
+            [self.operationContext logAtLevel:AZSLogLevelDebug withMessage:@"NSStreamEventHasSpaceAvailable"];
             [self.dataDownloadCondition lock];
             if (self.streamError)
             {
@@ -260,10 +262,12 @@
         }
         case NSStreamEventEndEncountered:
         {
+            [self.operationContext logAtLevel:AZSLogLevelDebug withMessage:@"NSStreamEventEndEncountered"];
             break;
         }
         case NSStreamEventErrorOccurred:
         {
+            [self.operationContext logAtLevel:AZSLogLevelDebug withMessage:@"NSStreamEventErrorOccurred"];
             NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
             userInfo[AZSInnerErrorString] = self.stream.streamError;
             NSError *streamError = [NSError errorWithDomain:AZSErrorDomain code:AZSEOutputStreamError userInfo:userInfo];
@@ -272,15 +276,24 @@
         }
         case NSStreamEventOpenCompleted:
         {
+            [self.operationContext logAtLevel:AZSLogLevelDebug withMessage:@"NSStreamEventOpenCompleted"];
             break;
         }
         case NSStreamEventNone:
         {
+            [self.operationContext logAtLevel:AZSLogLevelDebug withMessage:@"NSStreamEventNone"];
             break;
         }
         case NSStreamEventHasBytesAvailable:
         {
+            [self.operationContext logAtLevel:AZSLogLevelDebug withMessage:@"NSStreamEventHasBytesAvailable"];
             // Should never happen.
+            break;
+        }
+        default:
+        {
+            [self.operationContext logAtLevel:AZSLogLevelDebug withMessage:@"NSStreamEventdefault"];
+            NSLog(@"Default switch occurred.");
             break;
         }
     }
@@ -293,7 +306,6 @@
 @property (strong) AZSOperationContext* operationContext;
 @property (copy) NSDate *startTime;
 @property (strong) NSURLComponents *urlComponents;
-@property AZSStorageLocation currentLocation;
 @property (strong) NSMutableURLRequest *request;
 @property (strong) AZSRequestResult *requestResult;
 @property (strong) NSOutputStream *outputStream;
@@ -304,7 +316,10 @@
 @property (strong) NSRunLoop *runLoopForDownload;
 @property dispatch_semaphore_t semaphoreForRunloopCreation;
 @property (strong) NSError *preProcessError;
+@property (strong) id<AZSRetryPolicy> retryPolicy;
 @property NSUInteger retryCount;
+@property AZSStorageLocation currentStorageLocation;
+@property AZSStorageLocationMode currentStorageLocationMode;
 
 -(instancetype)init AZS_DESIGNATED_INITIALIZER;
 -(instancetype)initWithCommand:(AZSStorageCommand *)storageCommand requestOptions:(AZSRequestOptions *)requestOptions operationContext:(AZSOperationContext *) operationContext completionHandler:(void (^)(NSError *, id))completionHandler AZS_DESIGNATED_INITIALIZER;
@@ -325,6 +340,64 @@
     [executor execute];
 }
 
+-(NSString *)validateLocationMode
+{
+    BOOL isValid = NO;
+    switch (self.currentStorageLocationMode)
+    {
+        case AZSStorageLocationModePrimaryOnly:
+        {
+            isValid = self.storageCommand.storageUri.primaryUri != nil;
+            break;
+        }
+        case AZSStorageLocationModeSecondaryOnly:
+        {
+            isValid = self.storageCommand.storageUri.secondaryUri != nil;
+            break;
+        }
+        default:
+        {
+            isValid = (self.storageCommand.storageUri.primaryUri != nil) && (self.storageCommand.storageUri.secondaryUri != nil);
+            break;
+        }
+    }
+
+    if (!isValid)
+    {
+        return @"No URI specified for input AZSStorageLocationMode.";
+    }
+    
+    switch (self.storageCommand.allowedStorageLocation)
+    {
+        case AZSAllowedStorageLocationPrimaryOnly:
+        {
+            if (self.currentStorageLocationMode == AZSStorageLocationModeSecondaryOnly)
+            {
+                return @"Cannot make this request to secondary.";
+            }
+            self.currentStorageLocationMode = AZSStorageLocationModePrimaryOnly;
+            self.currentStorageLocation = AZSStorageLocationPrimary;
+            break;
+        }
+        case AZSAllowedStorageLocationSecondaryOnly:
+        {
+            if (self.currentStorageLocationMode == AZSStorageLocationModePrimaryOnly)
+            {
+                return @"Cannot make this request to primary.";
+            }
+            self.currentStorageLocationMode = AZSStorageLocationModeSecondaryOnly;
+            self.currentStorageLocation = AZSStorageLocationSecondary;
+            break;
+        }
+        default:
+        {
+            break;
+        }
+    }
+    
+    return nil;
+}
+
 -(void)execute
 {
     if (!self.operationContext.startTime)
@@ -335,15 +408,22 @@
     // do-while (to allow for retries)
     {
         // 0. Begin the request
-        // check location mode
+        NSString *locationModeError = [self validateLocationMode];
+        if (locationModeError)
+        {
+            NSError *storageError = [NSError errorWithDomain:AZSErrorDomain code:AZSEInvalidArgument userInfo:@{NSLocalizedDescriptionKey:locationModeError}];
+            
+            self.completionHandler(storageError, nil);
+            return;
+        }
         
         // 1. Build the request
         // Build request by setting a start time, creating a uri(builder?), calling storageCommand.buildRequest(), and initializing a RequestResult.
         AZSStorageUri *transformedUri = [self.storageCommand.credentials transformWithStorageUri:self.storageCommand.storageUri];
         [self setStartTime:[NSDate date]];  //UTC
-        [self setUrlComponents:[NSURLComponents componentsWithURL: [transformedUri urlWithLocation:self.currentLocation] resolvingAgainstBaseURL:NO]];
+        [self setUrlComponents:[NSURLComponents componentsWithURL: [transformedUri urlWithLocation:self.currentStorageLocation] resolvingAgainstBaseURL:NO]];
         [self setRequest:self.storageCommand.buildRequest(self.urlComponents, self.requestOptions.serverTimeout, self.operationContext)];
-        [self setRequestResult:[[AZSRequestResult alloc] initWithStartTime:self.startTime location:self.currentLocation]];
+        [self setRequestResult:[[AZSRequestResult alloc] initWithStartTime:self.startTime location:self.currentStorageLocation]];
         
         
         // Log that we're starting the request
@@ -353,7 +433,7 @@
         NSString *clientRequestId = self.operationContext.clientRequestId;
         if ([clientRequestId length] != 0)
         {
-            [self.request setValue:clientRequestId forHTTPHeaderField:@"x-ms-client-request-id"];
+            [self.request setValue:clientRequestId forHTTPHeaderField:AZSCHeaderClientRequestId];
         }
         
         // User headers from op context
@@ -364,7 +444,7 @@
 
         // TODO: make this static, so that we're not querying the OS each time
         NSString *operationSystemVersionString = [NSProcessInfo processInfo].operatingSystemVersionString;
-        [self.request setValue:[NSString stringWithFormat:@"Azure-Storage/0.1.2-preview (iOS %@)",operationSystemVersionString] forHTTPHeaderField:@"User-Agent"];
+        [self.request setValue:[NSString stringWithFormat:AZSCHeaderValueUserAgent,operationSystemVersionString] forHTTPHeaderField:AZSCHeaderUserAgent];
         
         // Add the user headers, if they exist.
         if (self.operationContext.userHeaders)
@@ -459,7 +539,6 @@
                 NSDate *loopUntil = [NSDate dateWithTimeIntervalSinceNow:2.0];//[NSDate distantFuture];
                 [self.runLoopForDownload runMode:NSDefaultRunLoopMode beforeDate:loopUntil];
                 [self.operationContext logAtLevel:AZSLogLevelDebug withMessage:@"(Waking up) Current thread name = %@",[NSThread currentThread]];
-                
                 if ([outputStream streamError])
                 {
                     NSError *error = [outputStream streamError];
@@ -490,7 +569,7 @@
         self.operationContext.responseReceived(self.request, self.httpResponse, self.operationContext);
     }
 
-    self.requestResult = [[AZSRequestResult alloc] initWithStartTime:self.startTime location:self.currentLocation response:self.httpResponse error:nil];
+    self.requestResult = [[AZSRequestResult alloc] initWithStartTime:self.startTime location:self.currentStorageLocation response:self.httpResponse error:nil];
     self.preProcessError = self.storageCommand.preProcessResponse(self.httpResponse, self.requestResult, self.operationContext);
     
     if (self.preProcessError != nil)
@@ -630,13 +709,36 @@
     }
 }
 
+-(AZSStorageLocation) getNextLocation
+{
+    switch (self.currentStorageLocationMode)
+    {
+        case AZSStorageLocationModePrimaryOnly:
+        {
+            return AZSStorageLocationPrimary;
+        }
+        case AZSStorageLocationModeSecondaryOnly:
+        {
+            return AZSStorageLocationSecondary;
+        }
+        case AZSStorageLocationModeUnspecified:
+        {
+            return AZSStorageLocationPrimary;
+        }
+        default:
+        {
+            return (self.currentStorageLocation == AZSStorageLocationPrimary ? AZSStorageLocationSecondary : AZSStorageLocationPrimary);
+        }
+    }
+}
+
 -(void)finishRequestWithSession:(NSURLSession *)session error:(NSError *)error retval:(id)retval
 {
     // Required to release memory related to the session, etc:
     [self.operationContext logAtLevel:AZSLogLevelDebug withMessage:@"Finishing session."];
     [session finishTasksAndInvalidate];
     
-    self.requestResult = [[AZSRequestResult alloc] initWithStartTime:self.startTime location:self.currentLocation response:self.httpResponse error:error];
+    self.requestResult = [[AZSRequestResult alloc] initWithStartTime:self.startTime location:self.currentStorageLocation response:self.httpResponse error:error];
     [self.operationContext addRequestResult:self.requestResult];
     self.retryCount++;
     
@@ -658,8 +760,8 @@
     AZSRetryInfo *retryInfo = nil;
     if (retry)
     {
-        AZSRetryContext *retryContext = [[AZSRetryContext alloc] initWithCurrentRetryCount:self.retryCount lastRequestResult:self.requestResult nextLocation:AZSStorageLocationPrimary currentLocationMode:AZSStorageLocationModePrimaryOnly];
-        retryInfo = [[self.operationContext.retryPolicy clone] evaluateRetryContext:retryContext withOperationContext:self.operationContext];
+        AZSRetryContext *retryContext = [[AZSRetryContext alloc] initWithCurrentRetryCount:self.retryCount lastRequestResult:self.requestResult nextLocation:[self getNextLocation] currentLocationMode:self.currentStorageLocationMode];
+        retryInfo = [self.retryPolicy evaluateRetryContext:retryContext withOperationContext:self.operationContext];
         if (!retryInfo.shouldRetry)
         {
             retry = NO;
@@ -668,6 +770,10 @@
     
     if (retry)
     {
+        [self.operationContext logAtLevel:AZSLogLevelInfo withMessage:[NSString stringWithFormat:@"Retrying on HTTP status code %ld.", (long)self.requestResult.response.statusCode]];
+        
+        self.currentStorageLocation = retryInfo.targetLocation;
+        self.currentStorageLocationMode = retryInfo.updatedLocationMode;
         NSDate *retryTime = [NSDate dateWithTimeIntervalSinceNow:retryInfo.retryInterval];
         
         NSDate *loopUntil = [NSDate dateWithTimeIntervalSinceNow:0.1];
@@ -683,7 +789,9 @@
             loopUntil = [NSDate dateWithTimeIntervalSinceNow:0.1];
         }
         
-        [AZSExecutor ExecuteWithStorageCommand:self.storageCommand requestOptions:self.requestOptions operationContext:self.operationContext retryCount:self.retryCount completionHandler:self.completionHandler];
+        [self execute];
+        
+//        [AZSExecutor ExecuteWithStorageCommand:self.storageCommand requestOptions:self.requestOptions operationContext:self.operationContext retryCount:self.retryCount completionHandler:self.completionHandler];
     }
     else
     {
@@ -697,6 +805,23 @@
     return nil;
 }
 
++(AZSStorageLocation) getFirstLocationWithStorageLocationMode:(AZSStorageLocationMode)locationMode
+{
+    switch (locationMode) {
+        case AZSStorageLocationModePrimaryOnly:
+        case AZSStorageLocationModePrimaryThenSecondary:
+        case AZSStorageLocationModeUnspecified:
+        {
+            return AZSStorageLocationPrimary;
+        }
+        case AZSStorageLocationModeSecondaryOnly:
+        case AZSStorageLocationModeSecondaryThenPrimary:
+        {
+            return AZSStorageLocationSecondary;
+        }
+    }
+}
+
 -(instancetype) initWithCommand:(AZSStorageCommand *)storageCommand requestOptions:(AZSRequestOptions *)requestOptions operationContext:(AZSOperationContext *) operationContext completionHandler:(void (^)(NSError *, id))completionHandler
 {
     self = [super init];
@@ -707,6 +832,9 @@
         _operationContext = operationContext;
         _completionHandler = completionHandler;
         _retryCount = 0;
+        _retryPolicy = [operationContext.retryPolicy clone];
+        _currentStorageLocation = [AZSExecutor getFirstLocationWithStorageLocationMode:requestOptions.storageLocationMode];
+        _currentStorageLocationMode = requestOptions.storageLocationMode;
     }
     
     return self;

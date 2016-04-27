@@ -19,10 +19,12 @@
 #include <xlocale.h>
 #import <CommonCrypto/CommonHMAC.h>
 #import "AZSAuthenticationHandler.h"
+#import "AZSConstants.h"
 #import "AZSSharedKeyBlobAuthenticationHandler.h"
 #import "AZSStorageCredentials.h"
 #import "AZSEnums.h"
 #import "AZSOperationContext.h"
+#import "AZSUtil.h"
 
 @interface AZSSharedKeyBlobAuthenticationHandler()
 
@@ -49,31 +51,31 @@
     [self appendWithNewlineToString:stringToSign stringToAppend:request.HTTPMethod];
     
     // Standard headers
-    [self appendWithNewlineToString:stringToSign stringToAppend:[request valueForHTTPHeaderField:@"Content-Encoding"]];
-    [self appendWithNewlineToString:stringToSign stringToAppend:[request valueForHTTPHeaderField:@"Content-Language"]];
+    [self appendWithNewlineToString:stringToSign stringToAppend:[request valueForHTTPHeaderField:AZSCContentEncoding]];
+    [self appendWithNewlineToString:stringToSign stringToAppend:[request valueForHTTPHeaderField:AZSCContentLanguage]];
     
-    NSString *contentLengthValue = [request valueForHTTPHeaderField:@"Content-Length"];
+    NSString *contentLengthValue = [request valueForHTTPHeaderField:AZSCContentLength];
     if ([contentLengthValue isEqualToString:@"0"])
     {
         contentLengthValue = nil;
     }
     [self appendWithNewlineToString:stringToSign stringToAppend:contentLengthValue];
     
-    [self appendWithNewlineToString:stringToSign stringToAppend:[request valueForHTTPHeaderField:@"Content-MD5"]];
-    [self appendWithNewlineToString:stringToSign stringToAppend:[request valueForHTTPHeaderField:@"Content-Type"]];
+    [self appendWithNewlineToString:stringToSign stringToAppend:[request valueForHTTPHeaderField:AZSCContentMd5]];
+    [self appendWithNewlineToString:stringToSign stringToAppend:[request valueForHTTPHeaderField:AZSCContentType]];
     [self appendWithNewlineToString:stringToSign stringToAppend:nil]; // Date header
-    [self appendWithNewlineToString:stringToSign stringToAppend:[request valueForHTTPHeaderField:@"If-Modified-Since"]];
-    [self appendWithNewlineToString:stringToSign stringToAppend:[request valueForHTTPHeaderField:@"If-Match"]];
-    [self appendWithNewlineToString:stringToSign stringToAppend:[request valueForHTTPHeaderField:@"If-None-Match"]];
-    [self appendWithNewlineToString:stringToSign stringToAppend:[request valueForHTTPHeaderField:@"If-Unmodified-Since"]];
-    [self appendWithNewlineToString:stringToSign stringToAppend:[request valueForHTTPHeaderField:@"Range"]];
+    [self appendWithNewlineToString:stringToSign stringToAppend:[request valueForHTTPHeaderField:AZSCHeaderValueIfModifiedSince]];
+    [self appendWithNewlineToString:stringToSign stringToAppend:[request valueForHTTPHeaderField:AZSCHeaderValueIfMatch]];
+    [self appendWithNewlineToString:stringToSign stringToAppend:[request valueForHTTPHeaderField:AZSCHeaderValueIfNoneMatch]];
+    [self appendWithNewlineToString:stringToSign stringToAppend:[request valueForHTTPHeaderField:AZSCHeaderValueIfUnmodifiedSince]];
+    [self appendWithNewlineToString:stringToSign stringToAppend:[request valueForHTTPHeaderField:AZSCXmlRange]];
     
     // x-ms-* headers (Canonicalized headers)
     NSDictionary *allHeaders = [request allHTTPHeaderFields];
     NSMutableDictionary *xmsHeaders = [[NSMutableDictionary alloc] init];
     for (id key in allHeaders)
     {
-        if ([key hasPrefix:@"x-ms-"])
+        if ([key hasPrefix:AZSCHeaderPrefix])
         {
             xmsHeaders[[key lowercaseString]] = allHeaders[key];
         }
@@ -139,7 +141,7 @@
     struct tm * timeptr;
     time_t time = (time_t) [[NSDate date] timeIntervalSince1970];
     timeptr = gmtime(&time);
-    if (!strftime_l(buffer, 30, "%a, %d %b %Y %T GMT", timeptr, NULL))
+    if (!strftime_l(buffer, 30, [AZSCDateFormatColloquial UTF8String], timeptr, NULL))
     {
         // TODO: Add proper error handling to signing.
         NSException* myException = [NSException
@@ -149,17 +151,13 @@
         @throw myException;
     }
     
-    [request setValue:[NSString stringWithUTF8String:buffer] forHTTPHeaderField:@"x-ms-date"];
+    [request setValue:[NSString stringWithUTF8String:buffer] forHTTPHeaderField:AZSCHeaderDate];
     
     NSString *stringToSign = [self getStringToSignWithRequest:request operationContext:operationContext];
     
-    const char* stringToSignChar = [stringToSign cStringUsingEncoding:NSUTF8StringEncoding];
-    unsigned char cHMAC[CC_SHA256_DIGEST_LENGTH];
-    CCHmac(kCCHmacAlgSHA256, [self.storageCredentials.accountKey bytes], [self.storageCredentials.accountKey length], stringToSignChar, strlen(stringToSignChar), cHMAC);
+    NSString *signature = [AZSUtil computeHmac256WithString:stringToSign credentials:self.storageCredentials];
     
-    NSString *signature = [[[NSData alloc] initWithBytes:cHMAC length:sizeof(cHMAC)] base64EncodedStringWithOptions:0];
-    
-    [request setValue:[NSString stringWithFormat:@"SharedKey %@:%@",self.storageCredentials.accountName,signature] forHTTPHeaderField:@"Authorization"];
+    [request setValue:[NSString stringWithFormat:AZSCSharedTemplateAuthorization,self.storageCredentials.accountName,signature] forHTTPHeaderField:AZSCHeaderAuthorization];
 }
 
 -(instancetype)init

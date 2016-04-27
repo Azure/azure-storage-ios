@@ -15,6 +15,7 @@
 // </copyright>
 // -----------------------------------------------------------------------------------------
 
+#import "AZSConstants.h"
 #import "AZSUriQueryBuilder.h"
 #import "AZSUtil.h"
 
@@ -22,12 +23,30 @@
 
 - (instancetype)init
 {
+    self = [self initWithQuery:nil];
+    return self;
+}
+
+- (instancetype)initWithQuery:(NSString*)query
+{
     self = [super init];
     if (self)
     {
         _parameters = [[NSMutableDictionary alloc] init];
+        
+        NSDictionary *dict = [AZSUtil parseQueryWithQueryString:query];
+        for (NSString *key in dict) {
+            [self addWithKey:key value:[dict objectForKey:key]];
+        }
     }
     return self;
+}
+
+-(void) addIfNotNilOrEmptyWithKey:(NSString*)key value:(NSString*)value
+{
+    if(value && [value length] > 0) {
+        [self addWithKey:key value:value];
+    }
 }
 
 -(void) addWithKey:(NSString*)key value:(NSString*)value
@@ -40,7 +59,7 @@
 
 -(NSString*) builderAsString
 {
-    NSString *result = @"";
+    NSString *result = AZSCEmptyString;
     
     BOOL first = YES;
     

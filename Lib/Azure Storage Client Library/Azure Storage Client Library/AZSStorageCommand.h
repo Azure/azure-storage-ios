@@ -17,6 +17,7 @@
 
 #import <Foundation/Foundation.h>
 #import "AZSMacros.h"
+#import "AZSEnums.h"
 @class AZSStorageUri;
 @class AZSOperationContext;
 @class AZSRequestResult;
@@ -31,6 +32,7 @@
 @property (nonatomic, strong, readonly) AZSStorageCredentials *credentials;
 @property (nonatomic, strong) AZSUriQueryBuilder *queryBuilder;
 @property BOOL calculateResponseMD5;
+@property (readonly) AZSAllowedStorageLocation allowedStorageLocation;
 
 @property (copy) NSMutableURLRequest *(^buildRequest)(NSURLComponents *urlComponents, NSTimeInterval timeout, AZSOperationContext *operationContext);
 @property (copy) void(^signRequest)(NSMutableURLRequest *request, AZSOperationContext *operationContext);
@@ -43,5 +45,8 @@
 -(instancetype) initWithStorageCredentials:(AZSStorageCredentials *)credentials storageUri:(AZSStorageUri *)storageUri operationContext:(AZSOperationContext *)operationContext;
 -(instancetype) initWithStorageCredentials:(AZSStorageCredentials *)credentials storageUri:(AZSStorageUri *)storageUri calculateResponseMD5:(BOOL)calculateResponseMD5 operationContext:(AZSOperationContext *)operationContext AZS_DESIGNATED_INITIALIZER;
 -(void) setAuthenticationHandler:(id<AZSAuthenticationHandler>)authenticationHandler;
+-(void) setAllowedStorageLocation:(AZSAllowedStorageLocation)allowedStorageLocation;
+-(void) setAllowedStorageLocation:(AZSAllowedStorageLocation)allowedStorageLocation withLockLocation:(AZSStorageLocation)lockLocation error:(NSError **)error;
+
 
 @end

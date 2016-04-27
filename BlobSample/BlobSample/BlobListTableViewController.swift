@@ -40,31 +40,38 @@ class BlobListTableViewController: UITableViewController {
     // MARK: Initializers
     
     required init?(coder aDecoder: NSCoder) {
-        
         if (usingSAS) {
-            self.container = AZSCloudBlobContainer(url: NSURL(string: containerURL)!)
+            var error: NSError?
+            self.container = AZSCloudBlobContainer(url: NSURL(string: containerURL)!, error: &error)
+            if ((error) != nil) {
+                print("Error in creating blob container object.  Error code = %ld, error domain = %@, error userinfo = %@", error!.code, error!.domain, error!.userInfo);
+            }
         }
         else {
-            let storageAccount = AZSCloudStorageAccount(fromConnectionString: connectionString)
-        
-            let blobClient = storageAccount.getBlobClient()
-            self.container = blobClient.containerReferenceFromName(containerName)
-        
-            let condition = NSCondition()
-            var containerCreated = false
-        
-            self.container.createContainerIfNotExistsWithCompletionHandler { (error : NSError?, created) -> Void in
+//            do {
+                let storageAccount : AZSCloudStorageAccount;
+                try! storageAccount = AZSCloudStorageAccount(fromConnectionString: connectionString)
+                let blobClient = storageAccount.getBlobClient()
+                self.container = blobClient.containerReferenceFromName(containerName)
+                
+                let condition = NSCondition()
+                var containerCreated = false
+                
+                self.container.createContainerIfNotExistsWithCompletionHandler { (error : NSError?, created) -> Void in
+                    condition.lock()
+                    containerCreated = true
+                    condition.signal()
+                    condition.unlock()
+                }
+                
                 condition.lock()
-                containerCreated = true
-                condition.signal()
+                while (!containerCreated) {
+                    condition.wait()
+                }
                 condition.unlock()
-            }
-        
-            condition.lock()
-            while (!containerCreated) {
-                condition.wait()
-            }
-            condition.unlock()
+//            } catch let error as NSError {
+//                print("Error in creating blob container object.  Error code = %ld, error domain = %@, error userinfo = %@", error.code, error.domain, error.userInfo);
+//            }
         }
         
         self.continuationToken = nil

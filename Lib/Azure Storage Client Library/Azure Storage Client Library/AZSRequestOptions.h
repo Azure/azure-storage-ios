@@ -69,6 +69,8 @@ AZS_ASSUME_NONNULL_BEGIN
  */
 @property (strong, AZSNullable) NSRunLoop *runLoopForDownload;
 
+@property AZSStorageLocationMode storageLocationMode;
+
 /** Initializes a new AZSRequestOptions object.
  Once the object is initialized, individual properties can be set.*/
 -(instancetype)init AZS_DESIGNATED_INITIALIZER;

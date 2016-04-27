@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------------------------
-// <copyright file="Azure_Storage_Client_Library.m" company="Microsoft">
+// <copyright file="AZSTestSemaphore.h" company="Microsoft">
 //    Copyright 2015 Microsoft Corporation
 //
 //    Licensed under the MIT License;
@@ -15,8 +15,17 @@
 // </copyright>
 // -----------------------------------------------------------------------------------------
 
-#import "Azure_Storage_Client_Library.h"
+#import <Foundation/Foundation.h>
 
-@implementation Azure_Storage_Client_Library
+@interface AZSTestSemaphore : NSObject
+
+@property NSCondition *condition;
+@property BOOL done;
+
+-(void) signal;
+
+-(void) wait;
+
++(void) barrierOnSemaphores:(NSArray *)semaphores;
 
 @end
