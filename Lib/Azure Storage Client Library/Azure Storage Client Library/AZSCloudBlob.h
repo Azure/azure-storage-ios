@@ -18,6 +18,7 @@
 #import <Foundation/Foundation.h>
 #import "AZSEnums.h"
 #import "AZSMacros.h"
+#import "AZSULLRange.h"
 
 AZS_ASSUME_NONNULL_BEGIN
 
@@ -79,8 +80,6 @@ AZS_ASSUME_NONNULL_BEGIN
  
  This method streams the contents of a blob down from the service.
  
- This method is currently unstable, it does not use accepted patterns for Objective-C streams.  A solution is forthcoming.
- 
  @param targetStream The destination stream.  The stream should already be opened.
  @param completionHandler The block of code to execute when the download call completes.  Note that this will only be called after the entire
  blob has been downloaded.
@@ -94,8 +93,6 @@ AZS_ASSUME_NONNULL_BEGIN
 /** Downloads the contents of the blob to a stream.
  
  This method streams the contents of a blob down from the service.
- 
- This method is currently unstable, it does not use accepted patterns for Objective-C streams.  A solution is forthcoming.
  
  @param targetStream The destination stream.  The stream should already be opened.
  @param accessCondition The access condition for the request.
@@ -114,8 +111,6 @@ AZS_ASSUME_NONNULL_BEGIN
  
  This method streams the contents of a blob down from the service.
  
- This method is currently unstable, it does not use accepted patterns for Objective-C streams.  A solution is forthcoming.
- 
  @param targetStream The destination stream.  The stream should already be opened.
  @param range The range of bytes to download.  If the length is 0, download the entire blob.
  @param accessCondition The access condition for the request.
@@ -129,6 +124,24 @@ AZS_ASSUME_NONNULL_BEGIN
  |NSError * | Nil if the operation succeeded without error, error with details about the failure otherwise.|
  */
 -(void)downloadToStream:(NSOutputStream *)targetStream range:(NSRange)range accessCondition:(AZSNullable AZSAccessCondition *)accessCondition requestOptions:(AZSNullable AZSBlobRequestOptions *)requestOptions operationContext:(AZSNullable AZSOperationContext *)operationContext completionHandler:(void (^)(NSError* __AZSNullable))completionHandler;
+
+/** Downloads the contents of the blob to a stream.
+ 
+ This method streams the contents of a blob down from the service.
+ 
+ @param targetStream The destination stream.  The stream should already be opened.
+ @param range The range of bytes to download.  If the length is 0, download the entire blob.
+ @param accessCondition The access condition for the request.
+ @param requestOptions The options to use for the request.
+ @param operationContext The operation context to use for the call.
+ @param completionHandler The block of code to execute when the download call completes.  Note that this will only be called after the entire
+ blob has been downloaded.
+ 
+ | Parameter name | Description |
+ |----------------|-------------|
+ |NSError * | Nil if the operation succeeded without error, error with details about the failure otherwise.|
+ */
+-(void)downloadToStream:(NSOutputStream *)targetStream AZSULLrange:(AZSULLRange)range accessCondition:(AZSNullable AZSAccessCondition *)accessCondition requestOptions:(AZSNullable AZSBlobRequestOptions *)requestOptions operationContext:(AZSNullable AZSOperationContext *)operationContext completionHandler:(void (^)(NSError* __AZSNullable))completionHandler;
 
 /** Deletes the blob.
  

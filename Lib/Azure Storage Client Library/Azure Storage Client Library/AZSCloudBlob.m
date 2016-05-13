@@ -134,7 +134,12 @@
     [self downloadToStream:targetStream range:NSMakeRange(0, 0) accessCondition:accessCondition requestOptions:requestOptions operationContext:operationContext completionHandler:completionHandler];
 }
 
--(void)downloadToStream:(NSOutputStream *)targetStream range:(NSRange)range accessCondition:(AZSAccessCondition *)accessCondition requestOptions:(AZSBlobRequestOptions *)requestOptions operationContext:(AZSOperationContext *)operationContext completionHandler:(void (^)(NSError*))completionHandler
+-(void)downloadToStream:(NSOutputStream *)targetStream range:(NSRange)range accessCondition:(AZSAccessCondition *)accessCondition requestOptions:(AZSBlobRequestOptions *)requestOptions operationContext:(AZSOperationContext *)operationContext completionHandler:(void (^)(NSError *))completionHandler
+{
+    [self downloadToStream:targetStream AZSULLrange:AZSULLRangeFromNSRange(range) accessCondition:accessCondition requestOptions:requestOptions operationContext:operationContext completionHandler:completionHandler];
+}
+
+-(void)downloadToStream:(NSOutputStream *)targetStream AZSULLrange:(AZSULLRange)range accessCondition:(AZSAccessCondition *)accessCondition requestOptions:(AZSBlobRequestOptions *)requestOptions operationContext:(AZSOperationContext *)operationContext completionHandler:(void (^)(NSError*))completionHandler
 {
     if (!operationContext)
     {
