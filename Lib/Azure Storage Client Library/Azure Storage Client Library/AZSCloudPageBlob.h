@@ -17,6 +17,7 @@
 
 #import <Foundation/Foundation.h>
 #import "AZSCloudBlob.h"
+#import "AZSULLRange.h"
 
 @class AZSBlobOutputStream;
 
@@ -82,6 +83,31 @@ AZS_ASSUME_NONNULL_BEGIN
  |----------------|-------------|
  |NSError * | Nil if the operation succeeded without error, error with details about the failure otherwise.|
 */
+-(void)clearPagesWithAZSULLRange:(AZSULLRange)range completionHandler:(void (^)(NSError * __AZSNullable))completionHandler;
+
+/** Clears a set of bytes from the page blob.
+ 
+ @param range The range of bytes to clear (set to all 0) from the page blob.  Note that this must be 512-byte aligned.
+ Can be up to the full size of the blob.
+ @param accessCondition The access condition for the request.
+ @param requestOptions The options to use for the request.
+ @param operationContext The operation context to use for the call.
+ @param completionHandler The block of code to execute when the clear call completes.
+ | Parameter name | Description |
+ |----------------|-------------|
+ |NSError * | Nil if the operation succeeded without error, error with details about the failure otherwise.|
+ */
+-(void)clearPagesWithAZSULLRange:(AZSULLRange)range accessCondition:(AZSNullable AZSAccessCondition *)accessCondition requestOptions:(AZSNullable AZSBlobRequestOptions *)requestOptions operationContext:(AZSNullable AZSOperationContext *)operationContext completionHandler:(void (^)(NSError * __AZSNullable))completionHandler;
+
+/** Clears a set of bytes from the page blob.
+ 
+ @param range The range of bytes to clear (set to all 0) from the page blob.  Note that this must be 512-byte aligned.
+ Can be up to the full size of the blob.
+ @param completionHandler The block of code to execute when the clear call completes.
+ | Parameter name | Description |
+ |----------------|-------------|
+ |NSError * | Nil if the operation succeeded without error, error with details about the failure otherwise.|
+ */
 -(void)clearPagesWithRange:(NSRange)range completionHandler:(void (^)(NSError * __AZSNullable))completionHandler;
 
 /** Clears a set of bytes from the page blob.
@@ -107,7 +133,7 @@ AZS_ASSUME_NONNULL_BEGIN
  | Parameter name | Description |
  |----------------|-------------|
  |NSError * | Nil if the operation succeeded without error, error with details about the failure otherwise.|
- |NSArray * | The page ranges queried.  Each item in this array is of type NSValue*, which contains an NSRange.|
+ |NSArray * | The page ranges queried.  Each item in this array is of type NSValue*, which contains an AZSULLRange.|
  */
 -(void)downloadPageRangesWithCompletionHandler:(void (^)(NSError * __AZSNullable, NSArray *))completionHandler;
 
@@ -121,7 +147,38 @@ AZS_ASSUME_NONNULL_BEGIN
  | Parameter name | Description |
  |----------------|-------------|
  |NSError * | Nil if the operation succeeded without error, error with details about the failure otherwise.|
- |NSArray * | The page ranges queried.  Each item in this array is of type NSValue*, which contains an NSRange.|
+ |NSArray * | The page ranges queried.  Each item in this array is of type NSValue*, which contains an AZSULLRange.|
+ */
+-(void)downloadPageRangesWithAZSULLRange:(AZSULLRange)range completionHandler:(void (^)(NSError * __AZSNullable, NSArray *))completionHandler;
+
+/** Downloads the non-clear page ranges from the blob.
+ 
+ This method will query the page blob on the service, and download all page ranges in the input range that are non-zero (non-clear).
+ If this method times out, consider breaking up the query into smaller ranges.
+ 
+ @param range The range of the blob to query.
+ @param accessCondition The access condition for the request.
+ @param requestOptions The options to use for the request.
+ @param operationContext The operation context to use for the call.
+ @param completionHandler The block of code to execute when the query page ranges call completes.
+ | Parameter name | Description |
+ |----------------|-------------|
+ |NSError * | Nil if the operation succeeded without error, error with details about the failure otherwise.|
+ |NSArray * | The page ranges queried.  Each item in this array is of type NSValue*, which contains an AZSULLRange.|
+ */
+-(void)downloadPageRangesWithAZSULLRange:(AZSULLRange)range accessCondition:(AZSNullable AZSAccessCondition *)accessCondition requestOptions:(AZSNullable AZSBlobRequestOptions *)requestOptions operationContext:(AZSNullable AZSOperationContext *)operationContext completionHandler:(void (^)(NSError * __AZSNullable, NSArray *))completionHandler;
+
+/** Downloads the non-clear page ranges from the blob.
+ 
+ This method will query the page blob on the service, and download all page ranges in the input range that are non-zero (non-clear).
+ If this method times out, consider breaking up the query into smaller ranges.
+ 
+ @param range The range of the blob to query.
+ @param completionHandler The block of code to execute when the query page ranges call completes.
+ | Parameter name | Description |
+ |----------------|-------------|
+ |NSError * | Nil if the operation succeeded without error, error with details about the failure otherwise.|
+ |NSArray * | The page ranges queried.  Each item in this array is of type NSValue*, which contains an AZSULLRange.|
  */
 -(void)downloadPageRangesWithRange:(NSRange)range completionHandler:(void (^)(NSError * __AZSNullable, NSArray *))completionHandler;
 
@@ -138,7 +195,7 @@ AZS_ASSUME_NONNULL_BEGIN
  | Parameter name | Description |
  |----------------|-------------|
  |NSError * | Nil if the operation succeeded without error, error with details about the failure otherwise.|
- |NSArray * | The page ranges queried.  Each item in this array is of type NSValue*, which contains an NSRange.|
+ |NSArray * | The page ranges queried.  Each item in this array is of type NSValue*, which contains an AZSULLRange.|
  */
 -(void)downloadPageRangesWithRange:(NSRange)range accessCondition:(AZSNullable AZSAccessCondition *)accessCondition requestOptions:(AZSNullable AZSBlobRequestOptions *)requestOptions operationContext:(AZSNullable AZSOperationContext *)operationContext completionHandler:(void (^)(NSError * __AZSNullable, NSArray *))completionHandler;
 

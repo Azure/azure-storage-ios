@@ -191,7 +191,7 @@
     
     [command setBuildRequest:^ NSMutableURLRequest * (NSURLComponents *urlComponents, NSTimeInterval timeout, AZSOperationContext *operationContext)
     {
-        return [AZSBlobRequestFactory putPagesWithPageRange:(NSMakeRange(startOffset.longLongValue, data.length)) clear:NO contentMD5:contentMD5 accessCondition:accessCondition urlComponents:urlComponents timeout:timeout operationContext:operationContext];
+        return [AZSBlobRequestFactory putPagesWithPageRange:(AZSULLMakeRange(startOffset.unsignedLongLongValue, data.length)) clear:NO contentMD5:contentMD5 accessCondition:accessCondition urlComponents:urlComponents timeout:timeout operationContext:operationContext];
     }];
     
     [command setAuthenticationHandler:self.client.authenticationHandler];
@@ -219,10 +219,20 @@
 
 -(void)clearPagesWithRange:(NSRange)range completionHandler:(void (^)(NSError * __AZSNullable))completionHandler
 {
-    [self clearPagesWithRange:range accessCondition:nil requestOptions:nil operationContext:nil completionHandler:completionHandler];
+    [self clearPagesWithAZSULLRange:AZSULLRangeFromNSRange(range) completionHandler:completionHandler];
 }
 
--(void)clearPagesWithRange:(NSRange)range accessCondition:(AZSNullable AZSAccessCondition *)accessCondition requestOptions:(AZSNullable AZSBlobRequestOptions *)requestOptions operationContext:(AZSNullable AZSOperationContext *)operationContext completionHandler:(void (^)(NSError * __AZSNullable))completionHandler
+-(void)clearPagesWithRange:(NSRange)range accessCondition:(AZSAccessCondition *)accessCondition requestOptions:(AZSBlobRequestOptions *)requestOptions operationContext:(AZSOperationContext *)operationContext completionHandler:(void (^)(NSError * __AZSNullable))completionHandler
+{
+    [self clearPagesWithAZSULLRange:AZSULLRangeFromNSRange(range) accessCondition:accessCondition requestOptions:requestOptions operationContext:operationContext completionHandler:completionHandler];
+}
+
+-(void)clearPagesWithAZSULLRange:(AZSULLRange)range completionHandler:(void (^)(NSError * __AZSNullable))completionHandler
+{
+    [self clearPagesWithAZSULLRange:range accessCondition:nil requestOptions:nil operationContext:nil completionHandler:completionHandler];
+}
+
+-(void)clearPagesWithAZSULLRange:(AZSULLRange)range accessCondition:(AZSNullable AZSAccessCondition *)accessCondition requestOptions:(AZSNullable AZSBlobRequestOptions *)requestOptions operationContext:(AZSNullable AZSOperationContext *)operationContext completionHandler:(void (^)(NSError * __AZSNullable))completionHandler
 {
     if (!operationContext)
     {
@@ -264,10 +274,20 @@
 
 -(void)downloadPageRangesWithRange:(NSRange)range completionHandler:(void (^)(NSError * __AZSNullable, NSArray *))completionHandler
 {
-    [self downloadPageRangesWithRange:range accessCondition:nil requestOptions:nil operationContext:nil completionHandler:completionHandler];
+    [self downloadPageRangesWithAZSULLRange:AZSULLRangeFromNSRange(range) completionHandler:completionHandler];
 }
 
--(void)downloadPageRangesWithRange:(NSRange)range accessCondition:(AZSNullable AZSAccessCondition *)accessCondition requestOptions:(AZSNullable AZSBlobRequestOptions *)requestOptions operationContext:(AZSNullable AZSOperationContext *)operationContext completionHandler:(void (^)(NSError * __AZSNullable, NSArray *))completionHandler
+-(void)downloadPageRangesWithRange:(NSRange)range accessCondition:(AZSAccessCondition *)accessCondition requestOptions:(AZSBlobRequestOptions *)requestOptions operationContext:(AZSOperationContext *)operationContext completionHandler:(void (^)(NSError * __AZSNullable, NSArray *))completionHandler
+{
+    [self downloadPageRangesWithAZSULLRange:AZSULLRangeFromNSRange(range) accessCondition:accessCondition requestOptions:requestOptions operationContext:operationContext completionHandler:completionHandler];
+}
+
+-(void)downloadPageRangesWithAZSULLRange:(AZSULLRange)range completionHandler:(void (^)(NSError * __AZSNullable, NSArray *))completionHandler
+{
+    [self downloadPageRangesWithAZSULLRange:range accessCondition:nil requestOptions:nil operationContext:nil completionHandler:completionHandler];
+}
+
+-(void)downloadPageRangesWithAZSULLRange:(AZSULLRange)range accessCondition:(AZSNullable AZSAccessCondition *)accessCondition requestOptions:(AZSNullable AZSBlobRequestOptions *)requestOptions operationContext:(AZSNullable AZSOperationContext *)operationContext completionHandler:(void (^)(NSError * __AZSNullable, NSArray *))completionHandler
 {
     if (!operationContext)
     {

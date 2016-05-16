@@ -56,6 +56,8 @@
 		B02EF9911B14EFD3005F1DE2 /* AZSTestBase.m in Sources */ = {isa = PBXBuildFile; fileRef = B02EF9901B14EFD3005F1DE2 /* AZSTestBase.m */; };
 		B02EF9941B14F10B005F1DE2 /* AZSBlobTestBase.m in Sources */ = {isa = PBXBuildFile; fileRef = B02EF9931B14F10B005F1DE2 /* AZSBlobTestBase.m */; };
 		B0322A5B1B7D91000084FC7B /* AZSErrors.m in Sources */ = {isa = PBXBuildFile; fileRef = B0C0F5E41B44ADAB0080DC49 /* AZSErrors.m */; };
+		B0432F5E1CE3CB8200FF4E5A /* AZSULLRangeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = B0432F5D1CE3CB8200FF4E5A /* AZSULLRangeTests.m */; };
+		B0432F5F1CE699AA00FF4E5A /* AZSULLRange.h in Headers */ = {isa = PBXBuildFile; fileRef = B0432F5C1CE3B05D00FF4E5A /* AZSULLRange.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		B04A084C1B274C7100998078 /* AZSTestHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = B04A084B1B274C7100998078 /* AZSTestHelpers.m */; };
 		B057B3061C4421C0008BF6E5 /* AZSReadFromSecondaryTest.m in Sources */ = {isa = PBXBuildFile; fileRef = B057B3051C4421C0008BF6E5 /* AZSReadFromSecondaryTest.m */; };
 		B058A48E1B4F516900BB0F57 /* AZSRetryInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = B058A48D1B4F516900BB0F57 /* AZSRetryInfo.m */; };
@@ -146,7 +148,7 @@
 			containerPortal = BE4510381A9D252300C3F971 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = BE45103F1A9D252300C3F971;
-			remoteInfo = "AZSClient";
+			remoteInfo = AZSClient;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -201,6 +203,8 @@
 		B02EF9901B14EFD3005F1DE2 /* AZSTestBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AZSTestBase.m; sourceTree = "<group>"; };
 		B02EF9921B14F10B005F1DE2 /* AZSBlobTestBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AZSBlobTestBase.h; sourceTree = "<group>"; };
 		B02EF9931B14F10B005F1DE2 /* AZSBlobTestBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AZSBlobTestBase.m; sourceTree = "<group>"; };
+		B0432F5C1CE3B05D00FF4E5A /* AZSULLRange.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AZSULLRange.h; sourceTree = "<group>"; };
+		B0432F5D1CE3CB8200FF4E5A /* AZSULLRangeTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AZSULLRangeTests.m; sourceTree = "<group>"; };
 		B04A084A1B274C7100998078 /* AZSTestHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AZSTestHelpers.h; sourceTree = "<group>"; };
 		B04A084B1B274C7100998078 /* AZSTestHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AZSTestHelpers.m; sourceTree = "<group>"; };
 		B057B3051C4421C0008BF6E5 /* AZSReadFromSecondaryTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AZSReadFromSecondaryTest.m; sourceTree = "<group>"; };
@@ -467,6 +471,7 @@
 				BE90F9031B4EDF7300CD278B /* AZSUriQueryBuilder.h */,
 				BE90F9041B4EDF7300CD278B /* AZSUriQueryBuilder.m */,
 				BE4510461A9D252300C3F971 /* Supporting Files */,
+				B0432F5C1CE3B05D00FF4E5A /* AZSULLRange.h */,
 			);
 			name = AZSClient;
 			path = "Azure Storage Client Library";
@@ -506,6 +511,7 @@
 				B0DD6B621C2087C5004B3A7D /* AZSCloudPageBlobTests.m */,
 				B01B6C291C24ADEA004D7CFE /* AZSCloudAppendBlobTests.m */,
 				B057B3051C4421C0008BF6E5 /* AZSReadFromSecondaryTest.m */,
+				B0432F5D1CE3CB8200FF4E5A /* AZSULLRangeTests.m */,
 			);
 			name = AZSClientTests;
 			path = "Azure Storage Client LibraryTests";
@@ -577,6 +583,7 @@
 				B082D1961BB0D2DB00A39C18 /* AZSRetryContext.h in Headers */,
 				B082D1971BB0D2DE00A39C18 /* AZSRetryPolicy.h in Headers */,
 				B0AFDF7A1CB704EF00C4B2FC /* AZSClient.h in Headers */,
+				B0432F5F1CE699AA00FF4E5A /* AZSULLRange.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -597,7 +604,7 @@
 			dependencies = (
 			);
 			name = AZSClient;
-			productName = "AZSClient";
+			productName = AZSClient;
 			productReference = BE4510401A9D252300C3F971 /* libAZSClient.a */;
 			productType = "com.apple.product-type.library.static";
 		};
@@ -615,7 +622,7 @@
 				BE4510571A9D252300C3F971 /* PBXTargetDependency */,
 			);
 			name = AZSClientTests;
-			productName = "AZSClientTests";
+			productName = AZSClientTests;
 			productReference = BE4510501A9D252300C3F971 /* AZSClient.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
@@ -772,6 +779,7 @@
 				BE90F9061B4EDF7300CD278B /* AZSUriQueryBuilder.m in Sources */,
 				B057B3061C4421C0008BF6E5 /* AZSReadFromSecondaryTest.m in Sources */,
 				693220441C16439500B07D98 /* AZSTestSemaphore.m in Sources */,
+				B0432F5E1CE3CB8200FF4E5A /* AZSULLRangeTests.m in Sources */,
 				BE7E3E581B18D82100BC96B6 /* AZSCopyState.m in Sources */,
 				B05A0E7A1B1262BD005DCF06 /* AZSCloudBlobContainerTests.m in Sources */,
 				B05A0E801B126592005DCF06 /* AZSCloudBlockBlobTests.m in Sources */,
