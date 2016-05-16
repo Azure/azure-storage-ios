@@ -145,7 +145,7 @@ NSString *const AZSCHeaderValueRenew = @"renew";
 NSString *const AZSCHeaderValueSnapshots = @"snapshots";
 NSString *const AZSCHeaderValueUncommitted = @"uncommitted";
 NSString *const AZSCHeaderValueUncommittedBlobs = @"uncommittedblobs";
-NSString *const AZSCHeaderValueUserAgent = @"Azure-Storage/0.2.0-preview (iOS %@)";
+NSString *const AZSCHeaderValueUserAgent = @"Azure-Storage/0.2.1-preview (iOS %@)";
 NSString *const AZSCHeaderValueUpdate = @"update";
 
 // HTTP Methods
@@ -180,7 +180,7 @@ NSString *const AZSCQueryRestypeContainer = @"restype=container";
 // Query Parameter Templates
 NSString *const AZSCQueryTemplateBlockId = @"blockid=%@";
 NSString *const AZSCQueryTemplateBlockListType = @"blocklisttype=%@";
-NSString *const AZSCQueryTemplateBytes = @"bytes=%lu-%lu";
+NSString *const AZSCQueryTemplateBytes = @"bytes=%llu-%llu";
 NSString *const AZSCQueryTemplateCopyId = @"copyid=%@";
 NSString *const AZSCQueryTemplateDelimiter = @"delimiter=%@";
 NSString *const AZSCQueryTemplateInclude = @"include=%@";

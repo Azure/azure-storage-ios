@@ -236,7 +236,7 @@
 }
 
 
-+(NSMutableURLRequest *) getBlobWithSnapshotTime:(NSString *)snapshotTime range:(NSRange)range getRangeContentMD5:(BOOL)getRangeContentMD5 accessCondition:(AZSAccessCondition *)accessCondition urlComponents:(NSURLComponents *)urlComponents timeout:(NSTimeInterval)timeout operationContext:(AZSOperationContext *)operationContext
++(NSMutableURLRequest *) getBlobWithSnapshotTime:(NSString *)snapshotTime range:(AZSULLRange)range getRangeContentMD5:(BOOL)getRangeContentMD5 accessCondition:(AZSAccessCondition *)accessCondition urlComponents:(NSURLComponents *)urlComponents timeout:(NSTimeInterval)timeout operationContext:(AZSOperationContext *)operationContext
 {
     if (snapshotTime)
     {
@@ -247,7 +247,7 @@
 
     if (range.length > 0)
     {
-        [AZSUtil addOptionalHeaderToRequest:request header:AZSCHeaderRange stringValue:[NSString stringWithFormat:@"%lu-%lu",(unsigned long)range.location, ((unsigned long)range.location + (unsigned long)range.length)]];
+        [AZSUtil addOptionalHeaderToRequest:request header:AZSCHeaderRange stringValue:[NSString stringWithFormat:@"%llu-%llu",range.location, (range.location + range.length)]];
         if (getRangeContentMD5)
         {
             [AZSUtil addOptionalHeaderToRequest:request header:AZSCHeaderRangeGetContent stringValue:AZSCTrue];
@@ -461,7 +461,7 @@
     return request;
 }
 
-+(NSMutableURLRequest *) putPagesWithPageRange:(NSRange)pageRange clear:(BOOL)clear contentMD5:(NSString *)contentMD5 accessCondition:(AZSAccessCondition *)accessCondition urlComponents:(NSURLComponents *)urlComponents timeout:(NSTimeInterval)timeout operationContext:(AZSOperationContext *)operationContext
++(NSMutableURLRequest *) putPagesWithPageRange:(AZSULLRange)pageRange clear:(BOOL)clear contentMD5:(NSString *)contentMD5 accessCondition:(AZSAccessCondition *)accessCondition urlComponents:(NSURLComponents *)urlComponents timeout:(NSTimeInterval)timeout operationContext:(AZSOperationContext *)operationContext
 {
     urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:AZSCQueryCompPage];
     
@@ -469,10 +469,10 @@
     NSMutableURLRequest *request = [AZSRequestFactory putRequestWithUrlComponents:urlComponents timeout:timeout];
     
     [AZSRequestFactory applyLeaseIdToRequest:request condition:accessCondition];
-    unsigned long endByte;
+    uint64_t endByte;
     if (pageRange.length >= 1)
     {
-        endByte = (unsigned long)(pageRange.location + pageRange.length - 1);
+        endByte = (pageRange.location + pageRange.length - 1);
     }
     else
     {
@@ -497,7 +497,7 @@
     return request;
 }
 
-+(NSMutableURLRequest *) getPageRangesWithRange:(NSRange)range snapshotTime:(NSString *)snapshotTime accessCondition:(AZSAccessCondition *)accessCondition urlComponents:(NSURLComponents *)urlComponents timeout:(NSTimeInterval)timeout operationContext:(AZSOperationContext *)operationContext
++(NSMutableURLRequest *) getPageRangesWithRange:(AZSULLRange)range snapshotTime:(NSString *)snapshotTime accessCondition:(AZSAccessCondition *)accessCondition urlComponents:(NSURLComponents *)urlComponents timeout:(NSTimeInterval)timeout operationContext:(AZSOperationContext *)operationContext
 {
     urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:AZSCQueryCompPageList];
     if (snapshotTime)
@@ -509,7 +509,7 @@
     
     if (range.length > 0)
     {
-        [AZSUtil addOptionalHeaderToRequest:request header:AZSCHeaderRange stringValue:[NSString stringWithFormat:AZSCQueryTemplateBytes,(unsigned long)range.location, ((unsigned long)range.location + (unsigned long)range.length)]];
+        [AZSUtil addOptionalHeaderToRequest:request header:AZSCHeaderRange stringValue:[NSString stringWithFormat:AZSCQueryTemplateBytes,range.location, (range.location + range.length)]];
     }
 
     [AZSRequestFactory applyAccessConditionToRequest:request condition:accessCondition];

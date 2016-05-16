@@ -17,6 +17,9 @@
 
 #import <Foundation/Foundation.h>
 
+#ifndef AZSMacros_h
+#define AZSMacros_h
+
 #ifdef __IPHONE_OS_VERSION_MIN_REQUIRED
 
 // This file contains various macros designed to assist with SWIFT compatibility.  Unfortunately, they don't compile on iOS 7.
@@ -54,3 +57,4 @@
 
 #endif //def __IPHONE_OS_VERSION_MIN_REQUIRED
 
+#endif //#ifndef AZSMacros_h
