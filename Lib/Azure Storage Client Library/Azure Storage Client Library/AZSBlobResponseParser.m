@@ -28,6 +28,7 @@
 #import "AZSSharedAccessPolicy.h"
 #import "AZSSharedAccessSignatureHelper.h"
 #import "AZSErrors.h"
+#import "AZSULLRange.h"
 
 @implementation AZSContainerListItem
 
@@ -696,8 +697,8 @@
     parser.shouldProcessNamespaces = NO;
 
     __block NSMutableArray *rangeList = [NSMutableArray arrayWithCapacity:10];
-    __block long long currentLocation = 0;
-    __block long long currentMax = 0;
+    __block uint64_t currentLocation = 0;
+    __block uint64_t currentMax = 0;
     __block NSMutableArray *elementStack = [NSMutableArray arrayWithCapacity:10];
     __block NSMutableString *builder = [[NSMutableString alloc] init];
 
@@ -739,7 +740,7 @@
         }
         else if ([parentNode isEqualToString:AZSCXmlPageList])
         {
-            [rangeList addObject:[NSValue valueWithRange:(NSMakeRange(currentLocation, currentMax - currentLocation + 1))]];
+            [rangeList addObject:[NSValue valueWithAZSULLRange:(AZSULLMakeRange(currentLocation, currentMax - currentLocation + 1))]];
             currentMax = 0;
             currentLocation = 0;
         }

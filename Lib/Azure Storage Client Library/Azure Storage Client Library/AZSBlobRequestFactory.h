@@ -17,6 +17,7 @@
 
 #import <Foundation/Foundation.h>
 #import "AZSEnums.h"
+#import "AZSULLRange.h"
 @class AZSOperationContext;
 @class AZSRequestResult;
 @class AZSAccessCondition;
@@ -39,7 +40,7 @@
 +(NSMutableURLRequest *) uploadContainerPermissionsWithLength:(NSUInteger)length urlComponents:(NSURLComponents *)urlComponents options:(AZSBlobRequestOptions *)options accessCondition:(AZSAccessCondition *)accessCondition publicAccess:(AZSContainerPublicAccessType)publicAccess timeout:(NSTimeInterval)timeout operationContext:(AZSOperationContext *)operationContext;
 
 // All blobs
-+(NSMutableURLRequest *) getBlobWithSnapshotTime:(NSString *)snapshotTime range:(NSRange)range getRangeContentMD5:(BOOL)getRangeContentMD5 accessCondition:(AZSAccessCondition *)accessCondition urlComponents:(NSURLComponents *)urlComponents timeout:(NSTimeInterval)timeout operationContext:(AZSOperationContext *)operationContext;
++(NSMutableURLRequest *) getBlobWithSnapshotTime:(NSString *)snapshotTime range:(AZSULLRange)range getRangeContentMD5:(BOOL)getRangeContentMD5 accessCondition:(AZSAccessCondition *)accessCondition urlComponents:(NSURLComponents *)urlComponents timeout:(NSTimeInterval)timeout operationContext:(AZSOperationContext *)operationContext;
 +(NSMutableURLRequest *) deleteBlobWithSnapshotsOption:(AZSDeleteSnapshotsOption)deleteSnapshotsOption snapshotTime:(NSString *)snapshotTime accessCondition:(AZSAccessCondition *)accessCondition urlComponents:(NSURLComponents *)urlComponents timeout:(NSTimeInterval)timeout operationContext:(AZSOperationContext *)operationContext;
 +(NSMutableURLRequest *) listBlobsWithPrefix:(NSString *)prefix delimiter:(NSString *)delimiter blobListingDetails:(AZSBlobListingDetails)blobListingDetails maxResults:(NSInteger)maxResults continuationToken:(AZSContinuationToken *)continuationToken urlComponents:(NSURLComponents *)urlComponents timeout:(NSTimeInterval)timeout operationContext:(AZSOperationContext *)operationContext;
 +(NSMutableURLRequest *) uploadBlobMetadataWithCloudMetadata:(NSMutableDictionary *)cloudMetadata accessCondition:(AZSAccessCondition *)accessCondition urlComponents:(NSURLComponents *)urlComponents timeout:(NSTimeInterval)timeout operationContext:(AZSOperationContext *) operationContext;
@@ -58,8 +59,8 @@
 
 // Page blobs
 +(NSMutableURLRequest *) createPageBlobWithSize:(NSNumber *)totalBlobSize sequenceNumber:(NSNumber *)sequenceNumber blobProperties:(AZSBlobProperties *)blobProperties cloudMetadata:(NSMutableDictionary *)cloudMetadata accessCondition:(AZSAccessCondition *)accessCondition urlComponents:(NSURLComponents *)urlComponents timeout:(NSTimeInterval)timeout operationContext:(AZSOperationContext *)operationContext;
-+(NSMutableURLRequest *) putPagesWithPageRange:(NSRange)pageRange clear:(BOOL)clear contentMD5:(NSString *)contentMD5 accessCondition:(AZSAccessCondition *)accessCondition urlComponents:(NSURLComponents *)urlComponents timeout:(NSTimeInterval)timeout operationContext:(AZSOperationContext *)operationContext;
-+(NSMutableURLRequest *) getPageRangesWithRange:(NSRange)range snapshotTime:(NSString *)snapshotTime accessCondition:(AZSAccessCondition *)accessCondition urlComponents:(NSURLComponents *)urlComponents timeout:(NSTimeInterval)timeout operationContext:(AZSOperationContext *)operationContext;
++(NSMutableURLRequest *) putPagesWithPageRange:(AZSULLRange)pageRange clear:(BOOL)clear contentMD5:(NSString *)contentMD5 accessCondition:(AZSAccessCondition *)accessCondition urlComponents:(NSURLComponents *)urlComponents timeout:(NSTimeInterval)timeout operationContext:(AZSOperationContext *)operationContext;
++(NSMutableURLRequest *) getPageRangesWithRange:(AZSULLRange)range snapshotTime:(NSString *)snapshotTime accessCondition:(AZSAccessCondition *)accessCondition urlComponents:(NSURLComponents *)urlComponents timeout:(NSTimeInterval)timeout operationContext:(AZSOperationContext *)operationContext;
 +(NSMutableURLRequest *) resizePageBlobWithSize:(NSNumber *)totalBlobSize accessCondition:(AZSAccessCondition *)accessCondition urlComponents:(NSURLComponents *)urlComponents timeout:(NSTimeInterval)timeout operationContext:(AZSOperationContext *)operationContext;
 +(NSMutableURLRequest *) setPageBlobSequenceNumberWithNewSequenceNumber:(NSNumber *)newSequenceNumber isIncrement:(BOOL)isIncrement useMaximum:(BOOL)useMaximum accessCondition:(AZSAccessCondition *)accessCondition urlComponents:(NSURLComponents *)urlComponents timeout:(NSTimeInterval)timeout operationContext:(AZSOperationContext *)operationContext;
 
