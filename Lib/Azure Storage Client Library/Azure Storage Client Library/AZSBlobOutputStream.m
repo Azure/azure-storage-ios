@@ -144,9 +144,8 @@ void AZSBlobOutputStreamRunLoopSourcePerformRoutine (void *info)
 
 -(instancetype)initWithAccessCondition:(AZSAccessCondition *)accessCondition requestOptions:(AZSBlobRequestOptions *)requestOptions operationContext:(AZSOperationContext *)operationContext
 {
-    // A designated initializer must make a super call to a designated initializer of the super class.
-    uint8_t temp;
-    self = [super initToBuffer:&temp capacity:0];
+    // A super call to a designated initializer of the super class leads to a crash in iOS 7 or 8.
+    self = [super init];
     if (self)
     {
         _isStreamOpen = NO;
