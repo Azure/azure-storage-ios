@@ -19,6 +19,8 @@
 #import "AZSConstants.h"
 #import "AZSTestHelpers.h"
 #import "AZSClient.h"
+#import "AZSBlobInputStream.h"
+#import "AZSStreamDownloadBuffer.h"
 
 @import ObjectiveC;
 
@@ -92,6 +94,7 @@
 @end
 
 @interface AZSByteValidationStream()
+
 @property AZSUIntegerHolder *currentSeed;
 @property BOOL isStreamOpen;
 @property BOOL isStreamClosed;
@@ -100,7 +103,6 @@
 @property NSUInteger totalBlobSize;
 @property NSMutableData *currentBuffer;
 @property BOOL isUpload;
-
 
 @end
 
@@ -111,12 +113,18 @@ void RunLoopSourceScheduleRoutine (void *info, CFRunLoopRef rl, CFStringRef mode
 void RunLoopSourcePerformRoutine (void *info)
 {
     AZSByteValidationStream *stream = (__bridge AZSByteValidationStream *)info;
+    
     BOOL streamClosed = NO;
+    BOOL fireStreamErrorEvent = NO;
     @synchronized(stream)
     {
         if (stream.isStreamClosed)
         {
             streamClosed = YES;
+        }
+        else if (stream.streamError)
+        {
+            fireStreamErrorEvent = YES;
         }
         else if (!stream.isStreamOpen)
         {
@@ -129,6 +137,10 @@ void RunLoopSourcePerformRoutine (void *info)
     if (streamClosed)
     {
         [stream.delegate stream:stream handleEvent:NSStreamEventEndEncountered];
+    }
+    else if (fireStreamErrorEvent)
+    {
+        [stream.delegate stream:stream handleEvent:NSStreamEventErrorOccurred];
     }
     else
     {
@@ -158,30 +170,46 @@ void RunLoopSourceCancelRoutine (void *info, CFRunLoopRef rl, CFStringRef mode)
 
 @implementation AZSByteValidationStream
 
--(instancetype)initWithRandomSeed:(unsigned int)seed totalBlobSize:(NSUInteger)totalBlobSize isUpload:(BOOL)isUpload
+-(instancetype)initWithRandomSeed:(unsigned int)seed totalBlobSize:(NSUInteger)totalBlobSize isUpload:(BOOL)isUpload failBlock:(void(^)())failBlock
 {
     self = [super init];
     if (self)
     {
-        self.currentSeed = [[AZSUIntegerHolder alloc] initWithNumber:seed];
-        self.dataCorrupt = NO;
-        self.isStreamOpen = NO;
-        self.isStreamClosed = NO;
-        CFRunLoopSourceContext    context = {0, (__bridge void *)(self), NULL, NULL, NULL, NULL, NULL,
+        _currentSeed = [[AZSUIntegerHolder alloc] initWithNumber:seed];
+        _dataCorrupt = NO;
+        _isStreamOpen = NO;
+        _isStreamClosed = NO;
+        CFRunLoopSourceContext context =
+            {0, (__bridge void *)(self), NULL, NULL, NULL, NULL, NULL,
             &RunLoopSourceScheduleRoutine,
             RunLoopSourceCancelRoutine,
             RunLoopSourcePerformRoutine};
-        self.runLoopSource = CFRunLoopSourceCreate(NULL, 0, &context);
-        self.runLoopsRegistered = [NSMutableArray arrayWithCapacity:1];
-        self.totalBytes = 0;
-        self.errorCount = 0;
-        self.errors = [NSMutableString stringWithString:AZSCEmptyString];
-        self.totalBlobSize = totalBlobSize;
-        self.currentBuffer = [NSMutableData dataWithLength:AZSCKilobyte];
-        self.isUpload = isUpload;
-
+        _runLoopSource = CFRunLoopSourceCreate(NULL, 0, &context);
+        _runLoopsRegistered = [NSMutableArray arrayWithCapacity:1];
+        _bytesRead = 0;
+        _totalBytes = 0;
+        _errorCount = 0;
+        _errors = [NSMutableString stringWithString:AZSCEmptyString];
+        _totalBlobSize = totalBlobSize;
+        _currentBuffer = [NSMutableData dataWithLength:AZSCKilobyte];
+        _isUpload = isUpload;
+        _currentSeed = [[AZSUIntegerHolder alloc] initWithNumber:seed];
+        
+        __block int failCount = 0;
+        _failBlock = ^void(NSString *message) {
+            if (failCount < 5) {
+                _streamFailed = YES;
+                failBlock(message);
+                failCount++;
+            }
+        };
     }
     return self;
+}
+
+-(instancetype) init
+{
+    return (self = nil);
 }
 
 -(void)fireStreamEvent
@@ -265,6 +293,7 @@ void RunLoopSourceCancelRoutine (void *info, CFRunLoopRef rl, CFStringRef mode)
             }
         }
     }
+    
     self.totalBytes += length;
     [self fireStreamEvent];
     return length;
@@ -298,6 +327,108 @@ void RunLoopSourceCancelRoutine (void *info, CFRunLoopRef rl, CFStringRef mode)
     
     [self fireStreamEvent];
     return bytesUploaded;
+}
+
+-(void)stream:(NSStream *)stream handleEvent:(NSStreamEvent)eventCode
+{
+    if (self.dataCorrupt) {
+        self.failBlock(@"Data has been corrupted.");
+    }
+    
+    switch (eventCode) {
+        case NSStreamEventHasBytesAvailable:
+        {
+            uint8_t temp[AZSCKilobyte];
+            uint8_t *buffer = temp;
+            NSUInteger curBytesRead = 0;
+            
+            if (arc4random() % 2){
+                // If unable to access internal buffer directly, make one ourselves.
+                curBytesRead = [(NSInputStream *) stream read:buffer maxLength:AZSCKilobyte];
+                
+                if (curBytesRead > AZSCKilobyte) {
+                    self.failBlock(@"Incorrect number of bytes written to the stream.");
+                    self.streamFailed = YES;
+                }
+            }
+            else {
+                BOOL accessed = [(NSInputStream *) stream getBuffer:&buffer length:&curBytesRead];
+                if (!accessed) {
+                    self.failBlock(@"[stream getBuffer] failed!");
+                    self.streamFailed = YES;
+                }
+            }
+            
+            self.bytesRead += curBytesRead;
+            
+            for (int i = 0; i < curBytesRead; i++) {
+                NSUInteger byteVal = buffer[i];
+                NSUInteger expectedByteVal = rand_r(&(self.currentSeed->number)) % 256;
+                if (expectedByteVal != byteVal)
+                {
+                    self.dataCorrupt = YES;
+                    self.errorCount++;
+                    if (self.errorCount <= 5)
+                    {
+                        [self.errors appendFormat:@"Error discovered in stream validation.  Expected value = %ld, actual value = %ld.\n", (unsigned long)byteVal, (unsigned long)expectedByteVal];
+                    }
+                }
+            }
+            
+            break;
+        }
+            
+        case NSStreamEventHasSpaceAvailable:
+        {
+            uint8_t buf[AZSCKilobyte];
+            int i;
+            for (i = 0; i < AZSCKilobyte && self.bytesWritten < self.totalBlobSize; i++)
+            {
+                NSUInteger byteval = rand_r(&(self.currentSeed->number)) % 256;
+                buf[i] = byteval;
+                self.bytesWritten++;
+            }
+            
+            NSInteger curBytesWritten = [(NSOutputStream *) stream write:(const uint8_t *)buf maxLength:i];
+            if (curBytesWritten != i)
+            {
+                // If fewer bytes are written then the data will be corrupted because the rest of the bytes in buf will be lost.
+                // If more bytes are written then the cap on maximum length was not adhered to.
+                self.failBlock(@"Incorrect number of bytes written to the stream.");
+                self.streamFailed = YES;
+            }
+            
+            break;
+        }
+            
+        case NSStreamEventEndEncountered:
+            if (self.bytesRead && self.bytesRead != self.totalBlobSize) {
+                self.failBlock(@"Incorrect number of bytes read from the stream.");
+            }
+            else if (self.bytesWritten && self.bytesWritten != self.totalBlobSize) {
+                self.failBlock(@"Incorrect number of bytes written to the stream.");
+            }
+            else if (!self.bytesRead && self.bytesWritten) {
+                self.failBlock(@"No bytes written to or read from the stream.");
+            }
+            
+            [stream close];
+            [stream removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+            self.downloadComplete = YES;
+            
+            break;
+   
+        case NSStreamEventErrorOccurred:
+            self.failBlock(@"Error encountered.");
+            [stream close];
+            [stream removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+            self.downloadComplete = YES;
+            
+            break;
+    
+        default:
+            break;
+    }
 }
 
 -(BOOL)getBuffer:(uint8_t **)buffer length:(NSUInteger *)len

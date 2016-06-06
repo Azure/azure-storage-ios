@@ -37,8 +37,8 @@
 @property (copy) NSMutableURLRequest *(^buildRequest)(NSURLComponents *urlComponents, NSTimeInterval timeout, AZSOperationContext *operationContext);
 @property (copy) void(^signRequest)(NSMutableURLRequest *request, AZSOperationContext *operationContext);
 @property (copy) NSError *(^preProcessResponse)(NSHTTPURLResponse *response, AZSRequestResult *requestResult, AZSOperationContext *operationContext);
-@property (copy) id(^postProcessResponse)(NSHTTPURLResponse *response, AZSRequestResult *requestResult, NSOutputStream *outputStream, AZSOperationContext *operationContext, NSError **error);
-@property (copy) void(^processError)(NSOutputStream *outputStream, NSError **errorToPopulate, NSError **error);
+@property (copy) id(^postProcessResponse)(NSHTTPURLResponse *response, AZSRequestResult *requestResult, NSOutputStream *stream, AZSOperationContext *operationContext, NSError **error);
+@property (copy) void(^processError)(NSOutputStream *stream, NSError **errorToPopulate, NSError **error);
 @property (strong, nonatomic) NSData *source;
 @property (strong, nonatomic) NSOutputStream *destinationStream;
 
@@ -47,6 +47,5 @@
 -(void) setAuthenticationHandler:(id<AZSAuthenticationHandler>)authenticationHandler;
 -(void) setAllowedStorageLocation:(AZSAllowedStorageLocation)allowedStorageLocation;
 -(void) setAllowedStorageLocation:(AZSAllowedStorageLocation)allowedStorageLocation withLockLocation:(AZSStorageLocation)lockLocation error:(NSError **)error;
-
 
 @end

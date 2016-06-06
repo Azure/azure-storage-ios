@@ -41,17 +41,23 @@
 @end
 
 
-@interface AZSByteValidationStream : NSStream
+@interface AZSByteValidationStream : NSStream <NSStreamDelegate>
 
 @property BOOL dataCorrupt;
+@property BOOL streamFailed;
+@property BOOL downloadComplete;
 @property NSUInteger totalBytes;
 @property NSUInteger errorCount;
+@property long bytesRead;
+@property long bytesWritten;
 @property NSMutableString *errors;
+@property(strong) void(^failBlock)(NSString *);
 
 // NSStream methods and properties:
 @property(assign) id<NSStreamDelegate> delegate;
 @property(readonly) NSStreamStatus streamStatus;
 @property(readonly, copy) NSError *streamError;
+@property(strong) void(^errorBlock)();
 
 -(void)open;
 
@@ -75,6 +81,7 @@
 -(NSInteger)read:(uint8_t *)buffer maxLength:(NSUInteger)length;
 -(BOOL)getBuffer:(uint8_t **)buffer length:(NSUInteger *)len;
 
--(instancetype)initWithRandomSeed:(unsigned int)seed totalBlobSize:(NSUInteger)totalBlobSize isUpload:(BOOL)isUpload;
+-(instancetype)initWithRandomSeed:(unsigned int)seed totalBlobSize:(NSUInteger)totalBlobSize isUpload:(BOOL)isUpload failBlock:(void(^)())failBlock;
+-(instancetype)init;
 
 @end

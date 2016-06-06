@@ -24,8 +24,11 @@ AZS_ASSUME_NONNULL_BEGIN
 
 @class AZSCloudBlobContainer;
 @class AZSAccessCondition;
+@class AZSBlobInputStream;
 @class AZSBlobRequestOptions;
+@class AZSStreamDownloadBuffer;
 @class AZSOperationContext;
+@class AZSStorageCommand;
 @class AZSStorageUri;
 @class AZSCloudBlobClient;
 @class AZSCopyState;
@@ -55,6 +58,7 @@ AZS_ASSUME_NONNULL_BEGIN
 /** The snapshot time of this snapshot of the blob.  If nil, this AZSCloudBlob object does not represent a snapshot.*/
 @property (copy, AZSNullable) NSString *snapshotTime;
 
+// TODO: Remove?
 //@property (nonatomic, strong) AZSCloudBlobDirectory *parent;
 
 /** The metadata on this blob.*/
@@ -460,6 +464,7 @@ AZS_ASSUME_NONNULL_BEGIN
 - (void)renewLeaseWithAccessCondition:(AZSNullable AZSAccessCondition *)accessCondition requestOptions:(AZSNullable AZSBlobRequestOptions *)requestOptions operationContext:(AZSNullable AZSOperationContext *)operationContext completionHandler:(void (^)(NSError* __AZSNullable))completionHandler;
 
 +(void)updateEtagAndLastModifiedWithResponse:(NSHTTPURLResponse *)response properties:(AZSBlobProperties *)properties updateLength:(BOOL)updateLength;
+-(AZSStorageCommand *)downloadCommandWithRange:(AZSULLRange)range AccessCondition:(AZSAccessCondition *)accessCondition requestOptions:(AZSBlobRequestOptions *)requestOptions operationContext:(AZSOperationContext *)operationContext;
 
 /** Downloads contents of a blob to an NSData object.
  
@@ -654,6 +659,29 @@ AZS_ASSUME_NONNULL_BEGIN
  |NSError * | Nil if the operation succeeded without error, error with details about the failure otherwise.|
  */
 -(void)abortAsyncCopyWithCopyId:(NSString *)copyId accessCondition:(AZSNullable AZSAccessCondition *)accessCondition requestOptions:(AZSNullable AZSBlobRequestOptions *)requestOptions operationContext:(AZSNullable AZSOperationContext *)operationContext completionHandler:(void (^)(NSError * __AZSNullable))completionHandler;
+
+
+/** Creates an input stream that is capable of reading from the blob.
+ 
+ This method returns an instance of AZSBlobInputStream.  The caller can then assign a delegate and schedule the stream in a runloop
+ (similar to any other NSInputStream.)  See AZSBlobInputStream documentation for details.
+ 
+ @returns The created AZSBlobInputStream, capable of reading from this blob.
+ */
+- (AZSBlobInputStream *)createInputStream;
+
+/** Creates an input stream that is capable of reading from the blob.
+ 
+ This method returns an instance of AZSBlobInputStream.  The caller can then assign a delegate and schedule the stream in a runloop
+ (similar to any other NSInputStream.)  See AZSBlobInputStream documentation for details.
+ 
+ @param accessCondition The access condition for the request.
+ @param requestOptions The options to use for the request.
+ @param operationContext The operation context to use for the call.
+ 
+ @returns The created AZSBlobInputStream, capable of reading from this blob.
+ */
+- (AZSBlobInputStream *)createInputStreamWithAccessCondition:(AZSNullable AZSAccessCondition *)accessCondition requestOptions:(AZSNullable AZSBlobRequestOptions *)requestOptions operationContext:(AZSNullable AZSOperationContext *)operationContext;
 
 // TODO: Delete If Exists... somehow we missed that one.
 

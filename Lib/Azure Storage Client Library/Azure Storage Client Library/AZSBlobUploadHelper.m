@@ -171,8 +171,7 @@
 
 -(NSInteger)write:(const uint8_t *)buffer maxLength:(NSUInteger)maxLength completionHandler:(void(^)())completionHandler
 {
-    if (self.streamingError)
-    {
+    if (self.streamingError) {
         return -1;
     }
     
@@ -180,14 +179,13 @@
     NSUInteger maxSizePerBlock = AZSCMaxBlockSize;
     int bytesCopied = 0;
     
-    while (bytesCopied < maxLength)
-    {
+    // TODO: If maxLength > MAX_INT32 this is an infinite loop (because maxLenth is unsigned)
+    while (bytesCopied < maxLength) {
         NSUInteger bytesToAppend = MIN(maxLength - bytesCopied, maxSizePerBlock - [self.dataBuffer length]);
         [self.dataBuffer appendBytes:(buffer + bytesCopied) length:bytesToAppend];
         bytesCopied += bytesToAppend;
         
-        if (maxSizePerBlock == [self.dataBuffer length])
-        {
+        if (maxSizePerBlock == [self.dataBuffer length]) {
             [self uploadBufferWithCompletionHandler:completionHandler];
         }
     }

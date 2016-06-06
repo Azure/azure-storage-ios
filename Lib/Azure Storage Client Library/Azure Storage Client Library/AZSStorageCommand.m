@@ -53,8 +53,8 @@
         
         // Give a default error-processing implementation.
         // TODO: This now couples the execution layer with the protocol layer.  Decide if this is correct or not.
-        self.processError = ^void(NSOutputStream *outputStream, NSError **errorToPopulate, NSError **error) {
-            NSData *rawErrorData = [outputStream propertyForKey:NSStreamDataWrittenToMemoryStreamKey];
+        self.processError = ^void(NSOutputStream *stream, NSError **errorToPopulate, NSError **error) {
+            NSData *rawErrorData = [stream propertyForKey:NSStreamDataWrittenToMemoryStreamKey];
             if (rawErrorData.length > 0)
             {
                 NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithDictionary:(*errorToPopulate).userInfo];
