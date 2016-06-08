@@ -116,7 +116,7 @@ NS_INLINE AZSULLRange AZSULLRangeFromNSRange(NSRange range) {
 }
 
 NS_INLINE NSRange NSRangeFromAZSULLRange(AZSULLRange range) {
-    NSRange r;
+    NSRange r = NSMakeRange(0, 0);
     if ((range.location > NSUIntegerMax) || (range.length > NSUIntegerMax)) {
         return r;
     }

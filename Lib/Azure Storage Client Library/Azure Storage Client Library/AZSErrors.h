@@ -32,5 +32,7 @@ FOUNDATION_EXPORT NSString *const AZSInnerErrorString;
 #define AZSEXMLCreationError 7
 #define AZSEOutputStreamError 8
 #define AZSEOutputStreamFull 9
+#define AZSEInputStreamError 10
+#define AZSEInputStreamEmpty 11
 
 #endif //__AZS_ERRORS_DEFINED__
