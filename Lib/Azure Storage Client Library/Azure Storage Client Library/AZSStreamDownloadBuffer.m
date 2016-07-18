@@ -33,6 +33,7 @@
 @property NSInteger currentDataOffset;
 @property (strong) NSData *currentDataToStream;
 @property (strong, readonly) void(^fireEventBlock)();
+@property (strong, readonly) void(^setHasBytesAvailable)();
 @property (strong, readonly) NSStream *stream;
 
 -(instancetype)init AZS_DESIGNATED_INITIALIZER;
@@ -41,6 +42,9 @@
 @end
 
 @implementation AZSStreamDownloadBuffer
+
+@synthesize streamError = _streamError;
+@synthesize downloadComplete = _downloadComplete;
 
 -(instancetype)init
 {
@@ -72,11 +76,12 @@
     return self;
 }
 
--(instancetype)initWithInputStream:(NSInputStream *)stream maxSizeToBuffer:(NSUInteger)maxSizeToBuffer calculateMD5:(BOOL)calculateMD5 runLoopForDownload:(NSRunLoop *)runLoop operationContext:(AZSOperationContext *)operationContext fireEventBlock:(void (^)())fireEventBlock
+-(instancetype)initWithInputStream:(NSInputStream *)stream maxSizeToBuffer:(NSUInteger)maxSizeToBuffer calculateMD5:(BOOL)calculateMD5 runLoopForDownload:(NSRunLoop *)runLoop operationContext:(AZSOperationContext *)operationContext fireEventBlock:(void (^)())fireEventBlock setHasBytesAvailable:(void (^)())setHasBytesAvailable
 {
     self = [self initWithStream:stream maxSizeToBuffer:maxSizeToBuffer calculateMD5:calculateMD5 runLoopForDownload:runLoop operationContext:operationContext];
     if (self) {
         _fireEventBlock = fireEventBlock;
+        _setHasBytesAvailable = setHasBytesAvailable;
     }
     
     return self;
@@ -90,6 +95,34 @@
     }
     
     return self;
+}
+
+-(BOOL) downloadComplete
+{
+    return _downloadComplete;
+}
+
+-(void) setDownloadComplete:(BOOL)downloadComplete
+{
+    _downloadComplete = downloadComplete;
+    if (self.fireEventBlock)
+    {
+        self.fireEventBlock();
+    }
+}
+
+-(NSError *) streamError
+{
+    return _streamError;
+}
+
+-(void) setStreamError:(NSError *)streamError
+{
+    _streamError = streamError;
+    if (self.fireEventBlock)
+    {
+        self.fireEventBlock();
+    }
 }
 
 -(void)processDataWithProcess:(long(^)(uint8_t *, long))process
@@ -191,6 +224,9 @@
     }
     
     // Tells the input stream there is more data to process.
+    if (self.setHasBytesAvailable) {
+        self.setHasBytesAvailable();
+    }
     if (self.fireEventBlock) {
         self.fireEventBlock();
     }

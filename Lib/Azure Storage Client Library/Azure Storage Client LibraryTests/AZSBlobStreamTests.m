@@ -93,6 +93,17 @@
     }
     
     [blobOutputStream close];
+    
+    loopSuccess = YES;
+    while (loopSuccess && blobOutputStream.streamStatus != NSStreamStatusClosed)
+    {
+        if (useCurrentRunloop) {
+            loopSuccess = [runloop runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:2]];
+        }
+        else {
+            [NSThread sleepForTimeInterval:.25];
+        }
+    }
     [blobOutputStream removeFromRunLoop:runloop forMode:NSDefaultRunLoopMode];
     
     // Download to Input Stream
@@ -354,36 +365,31 @@
         }];
         
         AZSBlobInputStream *readStream = [blob createInputStream];
-        [readStream setDelegate:targetStream];
-        [readStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
-        [readStream open];
         
-        while (!targetStream.streamFailed && (readStream.streamStatus != NSStreamStatusClosed))
-        {
-            BOOL loopSuccess = [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:2]];
-            if (!loopSuccess)
-            {
-                break;
-            }
-        }
+        AZSBlobTestSpinWrapper *wrapper = [[AZSBlobTestSpinWrapper alloc] init];
+        wrapper.stream = readStream;
+        wrapper.delegate = targetStream;
         
-        targetStream = [[AZSByteValidationStream alloc] initWithRandomSeed:randSeed totalBlobSize:blobSize isUpload:NO failBlock:^(NSString *message) {
-            XCTAssertTrue(NO, @"%@", message);
-        }];
-        
-        [blob downloadToStream:((NSOutputStream *)targetStream) accessCondition:nil requestOptions:options operationContext:nil completionHandler:^(NSError * error) {
-            XCTAssertNil(error, @"Error in downloading blob.  Error code = %ld, error domain = %@, error userinfo = %@", (long)error.code, error.domain, error.userInfo);
-            XCTAssert(targetStream.totalBytes == blobSize, @"Downloaded blob is wrong size.  Size = %ld, expected size = %ld", (unsigned long)targetStream.totalBytes, (unsigned long)(blobSize));
-            XCTAssertFalse(targetStream.dataCorrupt, @"Downloaded blob is corrupt.  Error count = %ld, first few errors = sample\nsample%@", (unsigned long)targetStream.errorCount, targetStream.errors);
+        wrapper.completionHandler = ^() {
+            AZSByteValidationStream *newTargetStream = [[AZSByteValidationStream alloc] initWithRandomSeed:randSeed totalBlobSize:blobSize isUpload:NO failBlock:^(NSString *message) {
+                XCTAssertTrue(NO, @"%@", message);
+            }];
             
-            if ((error != nil) || (targetStream.totalBytes != blobSize) || (targetStream.dataCorrupt))
-            {
-                testsFailedInDownload++;
-            }
-            
-            [semaphore signal];
-        }];
-
+            [blob downloadToStream:((NSOutputStream *)newTargetStream) accessCondition:nil requestOptions:options operationContext:nil completionHandler:^(NSError * error) {
+                XCTAssertNil(error, @"Error in downloading blob.  Error code = %ld, error domain = %@, error userinfo = %@", (long)error.code, error.domain, error.userInfo);
+                XCTAssert(newTargetStream.totalBytes == blobSize, @"Downloaded blob is wrong size.  Size = %ld, expected size = %ld", (unsigned long)newTargetStream.totalBytes, (unsigned long)(blobSize));
+                XCTAssertFalse(newTargetStream.dataCorrupt, @"Downloaded blob is corrupt.  Error count = %ld, first few errors = sample\nsample%@", (unsigned long)newTargetStream.errorCount, newTargetStream.errors);
+                
+                if ((error != nil) || (newTargetStream.totalBytes != blobSize) || (newTargetStream.dataCorrupt))
+                {
+                    testsFailedInDownload++;
+                }
+                
+                [semaphore signal];
+            }];
+        };
+        
+        [NSThread detachNewThreadSelector:@selector(scheduleStreamInNewThreaAndRunWithWrapper:) toTarget:self withObject:wrapper];
     });
     
     [semaphore wait];

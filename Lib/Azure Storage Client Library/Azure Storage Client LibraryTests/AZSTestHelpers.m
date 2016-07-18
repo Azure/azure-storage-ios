@@ -198,8 +198,8 @@ void RunLoopSourceCancelRoutine (void *info, CFRunLoopRef rl, CFStringRef mode)
         __block int failCount = 0;
         _failBlock = ^void(NSString *message) {
             if (failCount < 5) {
-                _streamFailed = YES;
                 failBlock(message);
+                _streamFailed = YES;
                 failCount++;
             }
         };
@@ -360,6 +360,7 @@ void RunLoopSourceCancelRoutine (void *info, CFRunLoopRef rl, CFStringRef mode)
             }
             
             self.bytesRead += curBytesRead;
+            self.totalBytes += curBytesRead;
             
             for (int i = 0; i < curBytesRead; i++) {
                 NSUInteger byteVal = buffer[i];

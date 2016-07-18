@@ -96,14 +96,17 @@ void AZSBlobInputStreamRunLoopSourcePerformRoutine (void *info)
         }
     }
  
-    if (fireStreamOpenEvent) {
+    if (fireStreamErrorEvent) {
+        if ([stream.delegate respondsToSelector:@selector(stream:handleEvent:)]) {
+            stream.hasStreamErrorEventFired = YES;
+            [stream.delegate stream:stream handleEvent:NSStreamEventErrorOccurred];
+        }
+    } else if (fireStreamOpenEvent) {
         if ([stream.delegate respondsToSelector:@selector(stream:handleEvent:)]) {
             stream.hasStreamOpenEventFired = YES;
             [stream.delegate stream:stream handleEvent:NSStreamEventOpenCompleted];
         }
-    }
-    
-    if (hasBytesAvailable) {
+    } else if (hasBytesAvailable) {
         if ([stream.delegate respondsToSelector:@selector(stream:handleEvent:)]) {
             @synchronized(stream) {
                 stream.waitingOnCaller = YES;
@@ -114,13 +117,6 @@ void AZSBlobInputStreamRunLoopSourcePerformRoutine (void *info)
     else if (downloadComplete) {
         if ([stream.delegate respondsToSelector:@selector(stream:handleEvent:)]) {
             [stream.delegate stream:stream handleEvent:NSStreamEventEndEncountered];
-        }
-    }
-    
-    if (fireStreamErrorEvent) {
-        if ([stream.delegate respondsToSelector:@selector(stream:handleEvent:)]) {
-            stream.hasStreamErrorEventFired = YES;
-            [stream.delegate stream:stream handleEvent:NSStreamEventErrorOccurred];
         }
     }
 }
@@ -161,8 +157,9 @@ void AZSBlobInputStreamRunLoopSourcePerformRoutine (void *info)
     if (self) {
         _underlyingBlob = blob;
         _downloadBuffer = [[AZSStreamDownloadBuffer alloc] initWithInputStream:self maxSizeToBuffer:requestOptions.maximumDownloadBufferSize calculateMD5:!requestOptions.disableContentMD5Validation runLoopForDownload:nil operationContext:operationContext fireEventBlock:^() {
-            _hasBytesAvailable = YES;
             [self fireStreamEvent];
+        } setHasBytesAvailable:^() {
+            _hasBytesAvailable = YES;
         }];
         
         _isStreamOpen = NO;
@@ -213,7 +210,6 @@ void AZSBlobInputStreamRunLoopSourcePerformRoutine (void *info)
 -(void)fireStreamEvent
 {
     [self.downloadBuffer.operationContext logAtLevel:AZSLogLevelDebug withMessage:@"Fire stream event called."];
-    
     CFRunLoopSourceSignal(self.runLoopSource);
     
     // TODO: confirm this.  I don't know if we have to wake up all runloops here.

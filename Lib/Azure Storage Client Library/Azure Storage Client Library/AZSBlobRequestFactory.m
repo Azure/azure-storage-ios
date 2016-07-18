@@ -213,7 +213,7 @@
     return request;
 }
 
-+(NSMutableURLRequest *) putBlockListWithLength:(NSUInteger)length blobProperties:(AZSBlobProperties *)blobProperties contentMD5:(NSString *)contentMD5 cloudMetadata:(NSMutableDictionary *)cloudMetadata AccessCondition:(AZSAccessCondition *)accessCondition urlComponents:(NSURLComponents *)urlComponents timeout:(NSTimeInterval)timeout operationContext:(AZSOperationContext *)operationContext
++(NSMutableURLRequest *) putBlockListWithLength:(NSUInteger)length blobProperties:(AZSBlobProperties *)blobProperties contentMD5:(NSString *)contentMD5 cloudMetadata:(NSMutableDictionary *)cloudMetadata accessCondition:(AZSAccessCondition *)accessCondition urlComponents:(NSURLComponents *)urlComponents timeout:(NSTimeInterval)timeout operationContext:(AZSOperationContext *)operationContext
 {
     urlComponents.percentEncodedQuery = [AZSRequestFactory appendToQuery:urlComponents.percentEncodedQuery stringToAppend:AZSCQueryCompBlockList];
     // TODO: IOS 8 - update this to use urlComponents.queryItems

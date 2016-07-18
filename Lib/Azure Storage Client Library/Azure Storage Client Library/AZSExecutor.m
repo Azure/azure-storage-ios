@@ -472,6 +472,15 @@
     }
     else
     {
+        if (!self.downloadBuffer.streamError) {
+            self.downloadBuffer.streamError = error;
+        }
+        
+        if (self.originalDownloadBuffer && self.originalDownloadBuffer != self.downloadBuffer)
+        {
+            self.originalDownloadBuffer.streamError = self.downloadBuffer.streamError;
+            self.originalDownloadBuffer.downloadComplete = YES;
+        }
         self.operationContext.endTime = [NSDate date];
         if (self.removeFromRunLoop) {
             [self.outputStream close];

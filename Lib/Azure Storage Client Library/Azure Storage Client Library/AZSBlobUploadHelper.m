@@ -35,7 +35,6 @@
 
 @property (strong) AZSCloudBlob *underlyingBlob;
 @property (strong) NSMutableData *dataBuffer;
-@property dispatch_semaphore_t blockUploadSemaphore;
 @property (strong) NSMutableArray *blockIDs;
 @property NSUInteger chunksTotal;
 @property NSUInteger chunksUploaded;
@@ -49,6 +48,8 @@
 @property BOOL createNew;
 @property NSNumber *totalPageBlobSize;
 @property NSNumber *initialPageBlobSequenceNumber;
+@property (strong) NSCondition *maxUploadsCondition;
+@property BOOL closeCalled;
 
 @end
 
@@ -75,7 +76,7 @@
         _dataBuffer = [NSMutableData dataWithCapacity:AZSCMaxBlockSize];  //TODO: This should be user-settable.
         _blockIDs = [NSMutableArray arrayWithCapacity:10];
         _maxOpenUploads = requestOptions.parallelismFactor;
-        _blockUploadSemaphore = dispatch_semaphore_create(self.maxOpenUploads);
+        _maxUploadsCondition = [[NSCondition alloc] init];
         _streamWaiting = NO;
         _uploadLock = [[NSObject alloc] init];
         _accessCondition = accessCondition ?: [[AZSAccessCondition alloc] init];
@@ -88,6 +89,7 @@
         }
         _streamingError = nil;
         _createNew = NO;
+        _closeCalled = NO;
     }
     return self;
 }
@@ -101,7 +103,7 @@
         _blobType = AZSBlobTypePageBlob;
         _dataBuffer = [NSMutableData dataWithCapacity:AZSCMaxBlockSize];  //TODO: This should be user-settable.
         _maxOpenUploads = requestOptions.parallelismFactor;
-        _blockUploadSemaphore = dispatch_semaphore_create(self.maxOpenUploads);
+        _maxUploadsCondition = [[NSCondition alloc] init];
         _streamWaiting = NO;
         _uploadLock = [[NSObject alloc] init];
         _accessCondition = accessCondition ?: [[AZSAccessCondition alloc] init];
@@ -119,6 +121,7 @@
             _totalPageBlobSize = totalBlobSize;
             _initialPageBlobSequenceNumber = initialSequenceNumber;
         }
+        _closeCalled = NO;
     }
     return self;
 }
@@ -132,7 +135,7 @@
         _blobType = AZSBlobTypeAppendBlob;
         _dataBuffer = [NSMutableData dataWithCapacity:AZSCMaxBlockSize];  //TODO: This should be the user-settable.
         _maxOpenUploads = 1; //TODO: Investigate if this should always be 1, or if we should use the value in requestOptions.parallelismFactor.
-        _blockUploadSemaphore = dispatch_semaphore_create(self.maxOpenUploads);
+        _maxUploadsCondition = [[NSCondition alloc] init];
         _streamWaiting = NO;
         _uploadLock = [[NSObject alloc] init];
         _accessCondition = accessCondition ?: [[AZSAccessCondition alloc] init];
@@ -145,6 +148,7 @@
         }
         _streamingError = nil;
         _createNew = createNew;
+        _closeCalled = NO;
     }
     return self;
 }
@@ -169,19 +173,27 @@
     }
 }
 
--(NSInteger)write:(const uint8_t *)buffer maxLength:(NSUInteger)maxLength completionHandler:(void(^)())completionHandler
+-(NSInteger)write:(const uint8_t *)buffer length:(NSUInteger)length completionHandler:(void(^)())completionHandler
 {
     if (self.streamingError) {
         return -1;
+    }
+    
+    if (!self.hasSpaceAvailable) {
+        return 0;
+    }
+    
+    if (self.closeCalled) {
+        return 0;
     }
     
     // TODO: Make this configurable.
     NSUInteger maxSizePerBlock = AZSCMaxBlockSize;
     int bytesCopied = 0;
     
-    // TODO: If maxLength > MAX_INT32 this is an infinite loop (because maxLenth is unsigned)
-    while (bytesCopied < maxLength) {
-        NSUInteger bytesToAppend = MIN(maxLength - bytesCopied, maxSizePerBlock - [self.dataBuffer length]);
+    // TODO: If length > MAX_INT32 this is an infinite loop (because length is unsigned)
+    while (bytesCopied < length) {
+        NSUInteger bytesToAppend = MIN(length - bytesCopied, maxSizePerBlock - [self.dataBuffer length]);
         [self.dataBuffer appendBytes:(buffer + bytesCopied) length:bytesToAppend];
         bytesCopied += bytesToAppend;
         
@@ -190,18 +202,24 @@
         }
     }
     
-    return maxLength;
+    return length;
 }
 
 // TODO: Consider having this method fail, rather than block, in the cannot-acquire-semaphore case.
 -(BOOL) uploadBufferWithCompletionHandler:(void(^)())completionHandler
 {
     [self.operationContext logAtLevel:AZSLogLevelDebug withMessage:@"Uploading buffer, buffer size = %ld", (unsigned long)[self.dataBuffer length]];
-    dispatch_semaphore_wait(self.blockUploadSemaphore, DISPATCH_TIME_FOREVER);
-    @synchronized(self)
-    {
-        self.chunksTotal++;
+    
+    [self.maxUploadsCondition lock];
+    while (self.chunksTotal - self.chunksUploaded >= self.maxOpenUploads) {
+        [self.maxUploadsCondition unlock];
+        // Spin until there's an available slot to upload.
+        [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
+        [self.maxUploadsCondition lock];
     }
+    
+    self.chunksTotal++;
+    [self.maxUploadsCondition unlock];
     
     NSData *blockData = self.dataBuffer;
     self.dataBuffer = [NSMutableData dataWithCapacity:AZSCMaxBlockSize];
@@ -225,36 +243,37 @@
                  {
                      self.streamingError = error;
                  }
-                 @synchronized(self)
-                 {
-                     self.chunksUploaded++;
-                 }
-                 dispatch_semaphore_signal(self.blockUploadSemaphore);
+                 [self.maxUploadsCondition lock];
+                 self.chunksUploaded++;
+                 [self.maxUploadsCondition unlock];
                  completionHandler();
              }];
             break;
         }
         case AZSBlobTypePageBlob:
         {
-            NSUInteger currentOffset = 0;
-            @synchronized(self) {
-                currentOffset = self.blobOffset;
-                self.blobOffset = self.blobOffset + [blockData length];
+            if ([blockData length] % AZSCPageSize != 0) {
+                self.streamingError = [NSError errorWithDomain:AZSErrorDomain code:AZSEInvalidArgument userInfo:@{NSLocalizedDescriptionKey:@"Page blob uploads must be 512-byte aligned."}];
             }
+            else {
+                NSUInteger currentOffset = 0;
+                @synchronized(self) {
+                    currentOffset = self.blobOffset;
+                    self.blobOffset = self.blobOffset + [blockData length];
+                }
             
-            AZSCloudPageBlob *blob = (AZSCloudPageBlob *)self.underlyingBlob;
-            [blob uploadPagesWithData:blockData startOffset:[NSNumber numberWithUnsignedInteger:currentOffset] contentMD5:nil accessCondition:self.accessCondition requestOptions:self.requestOptions operationContext:self.operationContext completionHandler:^(NSError * _Nullable error) {
-                if (error)
-                {
-                    self.streamingError = error;
-                }
-                @synchronized(self)
-                {
+                AZSCloudPageBlob *blob = (AZSCloudPageBlob *)self.underlyingBlob;
+                [blob uploadPagesWithData:blockData startOffset:[NSNumber numberWithUnsignedInteger:currentOffset] contentMD5:nil accessCondition:self.accessCondition requestOptions:self.requestOptions operationContext:self.operationContext completionHandler:^(NSError * _Nullable error) {
+                    if (error)
+                    {
+                        self.streamingError = error;
+                    }
+                    [self.maxUploadsCondition lock];
                     self.chunksUploaded++;
-                }
-                dispatch_semaphore_signal(self.blockUploadSemaphore);
-                completionHandler();
-            }];
+                    [self.maxUploadsCondition unlock];
+                    completionHandler();
+                }];
+            }
             break;
         }
         case AZSBlobTypeAppendBlob:
@@ -270,7 +289,6 @@
             {
                 // TODO: improve this error
                 self.streamingError = [NSError errorWithDomain:AZSErrorDomain code:AZSEOutputStreamError userInfo:nil];
-                dispatch_semaphore_signal(self.blockUploadSemaphore);
 
                 completionHandler();
             }
@@ -296,11 +314,9 @@
                             self.streamingError = error;
                         }
                     }
-                    @synchronized(self)
-                    {
-                        self.chunksUploaded++;
-                    }
-                    dispatch_semaphore_signal(self.blockUploadSemaphore);
+                    [self.maxUploadsCondition lock];
+                    self.chunksUploaded++;
+                    [self.maxUploadsCondition unlock];
                     completionHandler();
                 }];
             }
@@ -318,40 +334,70 @@
 -(BOOL)allDataUploaded
 {
     BOOL allDataUploaded = NO;
-    @synchronized(self)
-    {
-        allDataUploaded = self.chunksTotal == self.chunksUploaded;
-    }
+    [self.maxUploadsCondition lock];
+    allDataUploaded = self.chunksTotal == self.chunksUploaded;
+    [self.maxUploadsCondition unlock];
     return allDataUploaded;
 }
 
--(BOOL)closeWithCompletionHandler:(void (^)())completionHandler
+-(BOOL)closeWithCompletionHandler:(void (^)())completionHandler uploadBufferCompletionHandler:(void (^)())uploadBufferCompletionHandler
 {
-    // TODO: If there have been no put block calls yet, just call put blob, rather than put block / put block list.
+    self.closeCalled = YES;
     if ((!self.streamingError) && (self.dataBuffer.length > 0))
     {
-        if (![self uploadBufferWithCompletionHandler:completionHandler])
+        [self.maxUploadsCondition lock];
+        NSInteger chunksTotal = self.chunksTotal;
+        [self.maxUploadsCondition unlock];
+        
+        if ((self.blobType == AZSBlobTypeBlockBlob) && (chunksTotal == 0) && (self.dataBuffer.length <= self.requestOptions.singleBlobUploadThreshold))
         {
-            return NO;
+            AZSCloudBlockBlob *blockBlob = (AZSCloudBlockBlob *)self.underlyingBlob;
+            [self.maxUploadsCondition lock];
+            self.chunksTotal = 1;
+            [self.maxUploadsCondition unlock];
+            // uploadFromData calls put blob internally if the data buffer is less than the single blob upload threshold.
+            [blockBlob uploadFromData:self.dataBuffer accessCondition:self.accessCondition requestOptions:self.requestOptions operationContext:self.operationContext completionHandler:^(NSError * _Nullable error) {
+                if (error)
+                {
+                    self.streamingError = error;
+                }
+                [self.maxUploadsCondition lock];
+                self.chunksUploaded = 1;
+                [self.maxUploadsCondition unlock];
+                uploadBufferCompletionHandler();
+                completionHandler(self.streamingError);
+            }];
+            return YES;
         }
+        else
+        {
+            if (![self uploadBufferWithCompletionHandler:uploadBufferCompletionHandler])
+            {
+                return NO;
+            }
+        }
+    }
+    
+    // If there's an error, abort.
+    if (self.streamingError)
+    {
+        completionHandler(self.streamingError);
+        return NO;
     }
     
     BOOL finished = NO;
-    @synchronized(self)
-    {
-        finished = self.chunksTotal == self.chunksUploaded;
-    }
-    
+    [self.maxUploadsCondition lock];
+    finished = self.chunksTotal == self.chunksUploaded;
     while (!finished)
     {
         // Spin until all blocks have been uploaded.
+        [self.maxUploadsCondition unlock];
         [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
-        @synchronized(self)
-        {
-            finished = self.chunksTotal == self.chunksUploaded;
-        }
+        [self.maxUploadsCondition lock];
+        finished = self.chunksTotal == self.chunksUploaded;
     }
-    
+    [self.maxUploadsCondition unlock];
+
     if (self.requestOptions.storeBlobContentMD5)
     {
         unsigned char md5Bytes[CC_MD5_DIGEST_LENGTH];
@@ -362,37 +408,31 @@
     switch (self.blobType) {
         case AZSBlobTypeBlockBlob:
         {
-            dispatch_semaphore_t blockListSemaphore = dispatch_semaphore_create(0);
-            
             AZSCloudBlockBlob *blob = (AZSCloudBlockBlob *)self.underlyingBlob;
             [blob uploadBlockListFromArray:self.blockIDs accessCondition:self.accessCondition requestOptions:self.requestOptions operationContext:self.operationContext completionHandler:^(NSError * error) {
                 if (!self.streamingError && error)
                 {
                     self.streamingError = error;
                 }
-                
-                dispatch_semaphore_signal(blockListSemaphore);
+                completionHandler(self.streamingError);
             }];
-            
-            dispatch_semaphore_wait(blockListSemaphore, DISPATCH_TIME_FOREVER);
             break;
         }
         case AZSBlobTypePageBlob:
         {
             if (self.requestOptions.storeBlobContentMD5)
             {
-                dispatch_semaphore_t setPropertiesSemaphore = dispatch_semaphore_create(0);
-                
                 [self.underlyingBlob uploadPropertiesWithAccessCondition:self.accessCondition requestOptions:self.requestOptions operationContext:self.operationContext completionHandler:^(NSError * _Nullable error) {
                     if (!self.streamingError && error)
                     {
                         self.streamingError = error;
                     }
-                    
-                    dispatch_semaphore_signal(setPropertiesSemaphore);
+                    completionHandler(self.streamingError);
                 }];
-                
-                dispatch_semaphore_wait(setPropertiesSemaphore, DISPATCH_TIME_FOREVER);
+            }
+            else
+            {
+                completionHandler(self.streamingError);
             }
             break;
         }
@@ -400,19 +440,19 @@
         {
             if (self.requestOptions.storeBlobContentMD5)
             {
-                dispatch_semaphore_t setPropertiesSemaphore = dispatch_semaphore_create(0);
-                
                 [self.underlyingBlob uploadPropertiesWithAccessCondition:self.accessCondition requestOptions:self.requestOptions operationContext:self.operationContext completionHandler:^(NSError * _Nullable error) {
                     if (!self.streamingError && error)
                     {
                         self.streamingError = error;
                     }
-                    
-                    dispatch_semaphore_signal(setPropertiesSemaphore);
+                    completionHandler(self.streamingError);
                 }];
-                
-                dispatch_semaphore_wait(setPropertiesSemaphore, DISPATCH_TIME_FOREVER);
-            }            break;
+            }
+            else
+            {
+                completionHandler(self.streamingError);
+            }
+            break;
         }
             
         default:
@@ -434,7 +474,7 @@
             len = [inputStream read:buf maxLength:AZSCKilobyte];
             if (len)
             {
-                [self write:buf maxLength:len completionHandler:^{
+                [self write:buf length:len completionHandler:^{
                     [self writeFromStreamCallbackWithStream:inputStream];
                 }];
             }
@@ -448,6 +488,7 @@
     NSInputStream *inputStream = (NSInputStream *)stream;
     switch (eventCode) {
         case NSStreamEventHasBytesAvailable:
+        {
             // TODO: Stop reading if there was a error in uploading the blob?  Not sure if this is possible.
             @synchronized(self.uploadLock)
             {
@@ -459,7 +500,7 @@
                     len = [inputStream read:buf maxLength:AZSCKilobyte];  // The 0 and -1 case should be handled by the EndEncountered and ErrorOccurred events.
                     if (len > 0)
                     {
-                        [self write:buf maxLength:len completionHandler:^{
+                        [self write:buf length:len completionHandler:^{
                             [self writeFromStreamCallbackWithStream:inputStream];
                         }];
                     }
@@ -470,30 +511,32 @@
                 }
             }
             break;
+        }
         case NSStreamEventEndEncountered:
-            // Note that the below method is syncronous for the time being.
+        {
             [self closeWithCompletionHandler:^{
+                if (self.completionHandler)
+                {
+                    self.completionHandler(self.streamingError);
+                }
+            } uploadBufferCompletionHandler:^{
                 ;
             }];
             
-            if (self.completionHandler)
-            {
-                self.completionHandler(self.streamingError);
-            }
             break;
+        }
         case NSStreamEventErrorOccurred:
         {
             NSError *error = inputStream.streamError;
             [self.operationContext logAtLevel:AZSLogLevelError withMessage:@"Error in stream callback.  Error code = %ld, error domain = %@, error userinfo = %@", (long)error.code, error.domain, error.userInfo];
-            // Note that the below method is syncronous for the time being.
             [self closeWithCompletionHandler:^{
+                if (self.completionHandler)
+                {
+                    self.completionHandler(error);
+                }
+            } uploadBufferCompletionHandler:^{
                 ;
             }];
-            
-            if (self.completionHandler)
-            {
-                self.completionHandler(error);
-            }
             break;
         }
         default:

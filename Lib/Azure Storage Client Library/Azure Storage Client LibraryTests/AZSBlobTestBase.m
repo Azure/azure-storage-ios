@@ -17,6 +17,11 @@
 
 #import "AZSBlobTestBase.h"
 #import "AZSClient.h"
+#import "AZSTestHelpers.h"
+
+@implementation AZSBlobTestSpinWrapper
+
+@end
 
 @implementation AZSBlobTestBase
 
@@ -53,6 +58,30 @@
             }
         }
     }];
+}
+
+-(void)scheduleStreamInNewThreaAndRunWithWrapper:(AZSBlobTestSpinWrapper *)wrapper
+{
+    [wrapper.stream setDelegate:wrapper.delegate];
+    [wrapper.stream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+    [wrapper.stream open];
+    
+    while (!wrapper.delegate.streamFailed && (wrapper.stream.streamStatus != NSStreamStatusClosed))
+    {
+        BOOL loopSuccess = [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:2]];
+        if (!loopSuccess)
+        {
+            break;
+        }
+    }
+    
+    [wrapper.stream close];
+    [wrapper.stream removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+    
+    if (wrapper.completionHandler)
+    {
+        wrapper.completionHandler();
+    }
 }
 
 @end

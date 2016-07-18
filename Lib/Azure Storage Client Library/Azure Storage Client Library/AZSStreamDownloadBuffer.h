@@ -29,7 +29,7 @@
 @property (readonly) uint64_t totalSizeStreamed;
 @property BOOL downloadComplete;
 
--(instancetype)initWithInputStream:(NSInputStream *)stream maxSizeToBuffer:(NSUInteger)maxSizeToBuffer calculateMD5:(BOOL)calculateMD5 runLoopForDownload:(NSRunLoop *)runLoop operationContext:(AZSOperationContext *)operationContext fireEventBlock:(void(^)())fireEventBlock;
+-(instancetype)initWithInputStream:(NSInputStream *)stream maxSizeToBuffer:(NSUInteger)maxSizeToBuffer calculateMD5:(BOOL)calculateMD5 runLoopForDownload:(NSRunLoop *)runLoop operationContext:(AZSOperationContext *)operationContext fireEventBlock:(void(^)())fireEventBlock setHasBytesAvailable:(void (^)())setHasBytesAvailable;
 -(instancetype)initWithOutputStream:(NSOutputStream *)stream maxSizeToBuffer:(NSUInteger)maxSizeToBuffer calculateMD5:(BOOL)calculateMD5 runLoopForDownload:(NSRunLoop *)runLoop operationContext:(AZSOperationContext *)operationContext;
 -(void)stream:(NSStream *)stream handleEvent:(NSStreamEvent)eventCode;
 -(void)processDataWithProcess:(long(^)(uint8_t *, long))process;

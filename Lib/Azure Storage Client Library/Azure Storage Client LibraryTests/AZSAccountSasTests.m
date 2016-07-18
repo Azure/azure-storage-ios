@@ -262,8 +262,12 @@
     [self checkPassageOfError:error expectToPass:YES expectedHttpErrorCode:-1 message:@"Create SAS token"];
     
     AZSCloudBlobClient *client = [self.account getBlobClient];
+    AZSBlobRequestOptions *defaultOptions = [[AZSBlobRequestOptions alloc] init];
+    defaultOptions.singleBlobUploadThreshold = 2;
+    client.defaultRequestOptions = defaultOptions;
     AZSStorageCredentials *credentials = [[AZSStorageCredentials alloc] initWithSASToken:accountSAS accountName:client.credentials.accountName];
     AZSCloudBlobClient *sasClient = [[[AZSCloudStorageAccount alloc] initWithCredentials:credentials useHttps:NO error:&error] getBlobClient];
+    sasClient.defaultRequestOptions = defaultOptions;
     [self checkPassageOfError:error expectToPass:YES expectedHttpErrorCode:-1 message:@"Access account with SAS token"];
     
     AZSCloudBlobContainer *container = [client containerReferenceFromName:[NSString stringWithFormat:@"%@res%lu-perm%lu", [AZSTestHelpers uniqueName], resourceTypes, (unsigned long)permissions]];
@@ -302,7 +306,6 @@
     
     void (^createBlob)(id, void(^)(NSError *)) = ^void(id blob, void(^completionHandler)(NSError *)) {
         // TODO: Add check for create permissions once our library allows creating empty blobs
-        
         [blob uploadFromText:@"test data" completionHandler:^(NSError *err) {
             BOOL shouldPass = !((AZSCloudBlob *) blob).blobContainer.client.credentials.isSAS ||
                     [self isAccessAllowedWithParameters:sp acceptedPermissions:AZSSharedAccessPermissionsWrite

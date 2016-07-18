@@ -24,6 +24,7 @@
     BOOL _disableContentMD5ValidationSet;
     BOOL _parallelismFactorSet;
     BOOL _absorbConditionalErrorsOnRetrySet;
+    BOOL _singleBlobUploadThresholdSet;
 }
 
 @end
@@ -35,6 +36,7 @@
 @synthesize disableContentMD5Validation = _disableContentMD5Validation;
 @synthesize parallelismFactor = _parallelismFactor;
 @synthesize absorbConditionalErrorsOnRetry = _absorbConditionalErrorsOnRetry;
+@synthesize singleBlobUploadThreshold = _singleBlobUploadThreshold;
 
 -(instancetype)init
 {
@@ -52,6 +54,8 @@
         _parallelismFactorSet = NO;
         _absorbConditionalErrorsOnRetry = NO;
         _absorbConditionalErrorsOnRetrySet = NO;
+        _singleBlobUploadThreshold = 4*1024*1024;
+        _singleBlobUploadThresholdSet = NO;
     }
     
     return self;
@@ -94,6 +98,11 @@
         if (sourceOptions->_absorbConditionalErrorsOnRetrySet)
         {
             self.absorbConditionalErrorsOnRetry = sourceOptions.absorbConditionalErrorsOnRetry;
+        }
+        
+        if (sourceOptions->_singleBlobUploadThresholdSet)
+        {
+            self.singleBlobUploadThreshold = sourceOptions.singleBlobUploadThreshold;
         }
     }
     
@@ -166,6 +175,17 @@
 {
     _absorbConditionalErrorsOnRetry = absorbConditionalErrorsOnRetry;
     _absorbConditionalErrorsOnRetrySet = YES;
+}
+
+-(NSUInteger)singleBlobUploadThreshold
+{
+    return _singleBlobUploadThreshold;
+}
+
+-(void)setSingleBlobUploadThreshold:(NSUInteger)singleBlobUploadThreshold
+{
+    _singleBlobUploadThreshold = singleBlobUploadThreshold;
+    _singleBlobUploadThresholdSet = YES;
 }
 
 @end

@@ -18,10 +18,19 @@
 #import "AZSTestBase.h"
 @class AZSCloudBlobClient;
 @class AZSCloudBlob;
+@class AZSByteValidationStream;
+
+@interface AZSBlobTestSpinWrapper : NSObject
+@property NSStream *stream;
+@property AZSByteValidationStream *delegate;
+@property (copy) void (^completionHandler)();
+@end
 
 @interface AZSBlobTestBase : AZSTestBase
 @property AZSCloudBlobClient *blobClient;
 
 -(void)waitForCopyToCompleteWithBlob:(AZSCloudBlob *)blobToMonitor completionHandler:(void (^)(NSError *, BOOL))completionHandler;
+-(void)scheduleStreamInNewThreaAndRunWithWrapper:(AZSBlobTestSpinWrapper *)wrapper;
 
 @end
+

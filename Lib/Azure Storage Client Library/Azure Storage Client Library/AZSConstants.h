@@ -44,6 +44,7 @@ FOUNDATION_EXPORT NSString *const AZSCBlobPageBlob;
 
 FOUNDATION_EXPORT NSInteger const AZSCKilobyte;
 FOUNDATION_EXPORT NSInteger const AZSCMaxBlockSize;
+FOUNDATION_EXPORT NSInteger const AZSCPageSize;
 FOUNDATION_EXPORT NSInteger const AZSCSnapshotIndex;
 
 // Account Settings

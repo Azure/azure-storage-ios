@@ -492,6 +492,18 @@
         AZSBlobUploadHelper *blobUploadHelper = [[AZSBlobUploadHelper alloc] initToPageBlob:inputContainer.targetBlob totalBlobSize:nil initialSequenceNumber:nil accessCondition:inputContainer.accessCondition requestOptions:inputContainer.blobRequestOptions operationContext:inputContainer.operationContext completionHandler:^(NSError * err) {
             error = err;
             blobFinished = YES;
+            [inputContainer.sourceStream close];
+            [inputContainer.sourceStream removeFromRunLoop:runLoopForUpload forMode:NSDefaultRunLoopMode];
+            if (inputContainer.completionHandler)
+            {
+                // We want to do this on the global async queue because the current thread was created to perform the 'upload from
+                // stream' call only, and is not being managed.  This is needed to spin the runloop, but is not ideal for the resulting
+                // user callback.
+                dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void)
+                               {
+                                   inputContainer.completionHandler(error);
+                               });
+            }
         }];
         
         [inputContainer.sourceStream setDelegate:blobUploadHelper];
@@ -508,13 +520,6 @@
                 NSDate *loopUntil = [NSDate dateWithTimeIntervalSinceNow:0.1];
                 runLoopSuccess = [runLoopForUpload runMode:NSDefaultRunLoopMode beforeDate:loopUntil];
             }
-        }
-        
-        [inputContainer.sourceStream close];
-        [inputContainer.sourceStream removeFromRunLoop:runLoopForUpload forMode:NSDefaultRunLoopMode];
-        if (inputContainer.completionHandler)
-        {
-            inputContainer.completionHandler(error);
         }
     }
 }

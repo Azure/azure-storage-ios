@@ -769,6 +769,7 @@
                 opContext.sendingRequest = validateSendingContentMD5;
                 bro.disableContentMD5Validation = NO;
                 bro.storeBlobContentMD5 = NO;
+                bro.singleBlobUploadThreshold = 2;
                 
                 [blockBlob uploadFromData:blockData accessCondition:nil requestOptions:bro operationContext:opContext completionHandler:^(NSError *error) {
                     XCTAssertNil(error, @"Error in uploading blob.  Error code = %ld, error domain = %@, error userinfo = %@", (long)error.code, error.domain, error.userInfo);
@@ -1209,6 +1210,45 @@
             [semaphore signal];
         }];
     }];
+    [semaphore wait];
+}
+
+-(void)testPutBlobvsPutBlockList
+{
+    AZSTestSemaphore *semaphore = [[AZSTestSemaphore alloc] init];
+
+    NSString *blob1Name = [NSString stringWithFormat:@"sampleblob%@", [AZSTestHelpers uniqueName]];
+    AZSCloudBlockBlob *blob1 = [self.blobContainer blockBlobReferenceFromName:blob1Name];
+    
+    NSString *blobText = @"sample blob text";
+    AZSOperationContext *opContext = [[AZSOperationContext alloc] init];
+    [blob1 uploadFromText:blobText accessCondition:nil requestOptions:nil operationContext:opContext completionHandler:^(NSError * _Nullable error) {
+        XCTAssertNil(error, @"Error in uploading blob.  Error code = %ld, error domain = %@, error userinfo = %@", (long)error.code, error.domain, error.userInfo);
+        XCTAssertTrue(opContext.requestResults.count == 1, @"Incorrect number of request results - upload blob should only require one REST request.");
+        [blob1 downloadToTextWithCompletionHandler:^(NSError * _Nullable error, NSString * _Nullable downloadedBlobText) {
+            XCTAssertNil(error, @"Error in downloading blob.  Error code = %ld, error domain = %@, error userinfo = %@", (long)error.code, error.domain, error.userInfo);
+            XCTAssertTrue([downloadedBlobText isEqualToString:blobText], @"Blob text incorrect.");
+            
+            AZSBlobRequestOptions *options = [[AZSBlobRequestOptions alloc] init];
+            options.singleBlobUploadThreshold = 2; // Less than the blob text length
+            NSString *blob2Name = [NSString stringWithFormat:@"sampleblob%@", [AZSTestHelpers uniqueName]];
+            AZSCloudBlockBlob *blob2 = [self.blobContainer blockBlobReferenceFromName:blob2Name];
+            AZSOperationContext *opContext = [[AZSOperationContext alloc] init];
+            
+            [blob2 uploadFromText:blobText accessCondition:nil requestOptions:options operationContext:opContext completionHandler:^(NSError * _Nullable error) {
+                XCTAssertNil(error, @"Error in uploading blob.  Error code = %ld, error domain = %@, error userinfo = %@", (long)error.code, error.domain, error.userInfo);
+                XCTAssertTrue(opContext.requestResults.count == 2, @"Incorrect number of request results - upload blob should only require one REST request.");
+                
+                [blob2 downloadToTextWithCompletionHandler:^(NSError * _Nullable error, NSString * _Nullable downloadedBlobText) {
+                    XCTAssertNil(error, @"Error in downloading blob.  Error code = %ld, error domain = %@, error userinfo = %@", (long)error.code, error.domain, error.userInfo);
+                    XCTAssertTrue([downloadedBlobText isEqualToString:blobText], @"Blob text incorrect.");
+                    [semaphore signal];
+
+                }];
+            }];
+        }];
+    }];
+    
     [semaphore wait];
 }
 

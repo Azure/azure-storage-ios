@@ -50,7 +50,7 @@ AZS_ASSUME_NONNULL_BEGIN
 @property BOOL absorbConditionalErrorsOnRetry;
 
 // TODO: Implement logic to upload a blob as a single Put Blob call if below the below threshold.
-//@property NSInteger *singleBlobUploadThreshold;
+@property NSUInteger singleBlobUploadThreshold;
 
 /** Initializes a new AZSBlobRequestOptions object.
  Once the object is initialized, individual properties can be set.*/
