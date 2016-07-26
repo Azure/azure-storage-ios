@@ -1,0 +1,2941 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+
+	<title>AZSCloudPageBlob Class Reference</title>
+
+	<link rel="stylesheet" href="../css/style.css">
+	<meta name="viewport" content="initial-scale=1, maximum-scale=1.4">
+	<meta name="generator" content="appledoc 2.2.1 (build 1334)">
+</head>
+<body class="appledoc">
+	<header>
+		<div class="container" class="hide-in-xcode">
+			
+			<h1 id="library-title">
+				<a href="../index.html">Azure Storage Client for iOS </a>
+			</h1>
+
+			<p id="developer-home">
+				<a href="../index.html">Microsoft</a>
+			</p>
+			
+		</div>
+	</header>
+
+	<aside>
+		<div class="container">
+			<nav>
+				<ul id="header-buttons" role="toolbar">
+					<li><a href="../index.html">Index</a></li>
+<li><a href="../hierarchy.html">Hierarchy</a></li>
+
+					<li id="on-this-page" role="navigation">
+						<label>
+							On This Page
+
+							<div class="chevron">
+								<div class="chevy chevron-left"></div>
+								<div class="chevy chevron-right"></div>
+							</div>
+
+							<select id="jump-to">
+	<option value="top">Jump To&#133;</option>
+	
+
+	
+	
+	<option value="tasks">Tasks</option>
+	
+	
+
+	
+	
+
+	
+
+	
+	<optgroup label="Instance Methods">
+		
+		<option value="//api/name/clearPagesWithAZSULLRange:accessCondition:requestOptions:operationContext:completionHandler:">- clearPagesWithAZSULLRange:accessCondition:requestOptions:operationContext:completionHandler:</option>
+		
+		<option value="//api/name/clearPagesWithAZSULLRange:completionHandler:">- clearPagesWithAZSULLRange:completionHandler:</option>
+		
+		<option value="//api/name/clearPagesWithRange:accessCondition:requestOptions:operationContext:completionHandler:">- clearPagesWithRange:accessCondition:requestOptions:operationContext:completionHandler:</option>
+		
+		<option value="//api/name/clearPagesWithRange:completionHandler:">- clearPagesWithRange:completionHandler:</option>
+		
+		<option value="//api/name/createIfNotExistsWithSize:completionHandler:">- createIfNotExistsWithSize:completionHandler:</option>
+		
+		<option value="//api/name/createIfNotExistsWithSize:sequenceNumber:accessCondition:requestOptions:operationContext:completionHandler:">- createIfNotExistsWithSize:sequenceNumber:accessCondition:requestOptions:operationContext:completionHandler:</option>
+		
+		<option value="//api/name/createIfNotExistsWithSize:sequenceNumber:completionHandler:">- createIfNotExistsWithSize:sequenceNumber:completionHandler:</option>
+		
+		<option value="//api/name/createOutputStream">- createOutputStream</option>
+		
+		<option value="//api/name/createOutputStreamWithAccessCondition:requestOptions:operationContext:">- createOutputStreamWithAccessCondition:requestOptions:operationContext:</option>
+		
+		<option value="//api/name/createOutputStreamWithSize:">- createOutputStreamWithSize:</option>
+		
+		<option value="//api/name/createOutputStreamWithSize:sequenceNumber:">- createOutputStreamWithSize:sequenceNumber:</option>
+		
+		<option value="//api/name/createOutputStreamWithSize:sequenceNumber:accessCondition:requestOptions:operationContext:">- createOutputStreamWithSize:sequenceNumber:accessCondition:requestOptions:operationContext:</option>
+		
+		<option value="//api/name/createWithSize:completionHandler:">- createWithSize:completionHandler:</option>
+		
+		<option value="//api/name/createWithSize:sequenceNumber:accessCondition:requestOptions:operationContext:completionHandler:">- createWithSize:sequenceNumber:accessCondition:requestOptions:operationContext:completionHandler:</option>
+		
+		<option value="//api/name/createWithSize:sequenceNumber:completionHandler:">- createWithSize:sequenceNumber:completionHandler:</option>
+		
+		<option value="//api/name/downloadPageRangesWithAZSULLRange:accessCondition:requestOptions:operationContext:completionHandler:">- downloadPageRangesWithAZSULLRange:accessCondition:requestOptions:operationContext:completionHandler:</option>
+		
+		<option value="//api/name/downloadPageRangesWithAZSULLRange:completionHandler:">- downloadPageRangesWithAZSULLRange:completionHandler:</option>
+		
+		<option value="//api/name/downloadPageRangesWithCompletionHandler:">- downloadPageRangesWithCompletionHandler:</option>
+		
+		<option value="//api/name/downloadPageRangesWithRange:accessCondition:requestOptions:operationContext:completionHandler:">- downloadPageRangesWithRange:accessCondition:requestOptions:operationContext:completionHandler:</option>
+		
+		<option value="//api/name/downloadPageRangesWithRange:completionHandler:">- downloadPageRangesWithRange:completionHandler:</option>
+		
+		<option value="//api/name/incrementSequenceNumberWithAccessCondition:requestOptions:operationContext:completionHandler:">- incrementSequenceNumberWithAccessCondition:requestOptions:operationContext:completionHandler:</option>
+		
+		<option value="//api/name/incrementSequenceNumberWithCompletionHandler:">- incrementSequenceNumberWithCompletionHandler:</option>
+		
+		<option value="//api/name/initWithContainer:name:">- initWithContainer:name:</option>
+		
+		<option value="//api/name/initWithContainer:name:snapshotTime:">- initWithContainer:name:snapshotTime:</option>
+		
+		<option value="//api/name/initWithStorageUri:credentials:snapshotTime:error:">- initWithStorageUri:credentials:snapshotTime:error:</option>
+		
+		<option value="//api/name/initWithStorageUri:error:">- initWithStorageUri:error:</option>
+		
+		<option value="//api/name/initWithUrl:credentials:snapshotTime:error:">- initWithUrl:credentials:snapshotTime:error:</option>
+		
+		<option value="//api/name/initWithUrl:error:">- initWithUrl:error:</option>
+		
+		<option value="//api/name/resizeWithSize:accessCondition:requestOptions:operationContext:completionHandler:">- resizeWithSize:accessCondition:requestOptions:operationContext:completionHandler:</option>
+		
+		<option value="//api/name/resizeWithSize:completionHandler:">- resizeWithSize:completionHandler:</option>
+		
+		<option value="//api/name/setSequenceNumberWithNumber:useMaximum:accessCondition:requestOptions:operationContext:completionHandler:">- setSequenceNumberWithNumber:useMaximum:accessCondition:requestOptions:operationContext:completionHandler:</option>
+		
+		<option value="//api/name/setSequenceNumberWithNumber:useMaximum:completionHandler:">- setSequenceNumberWithNumber:useMaximum:completionHandler:</option>
+		
+		<option value="//api/name/uploadFromStream:accessCondition:requestOptions:operationContext:completionHandler:">- uploadFromStream:accessCondition:requestOptions:operationContext:completionHandler:</option>
+		
+		<option value="//api/name/uploadFromStream:completionHandler:">- uploadFromStream:completionHandler:</option>
+		
+		<option value="//api/name/uploadFromStream:size:completionHandler:">- uploadFromStream:size:completionHandler:</option>
+		
+		<option value="//api/name/uploadFromStream:size:initialSequenceNumber:accessCondition:requestOptions:operationContext:completionHandler:">- uploadFromStream:size:initialSequenceNumber:accessCondition:requestOptions:operationContext:completionHandler:</option>
+		
+		<option value="//api/name/uploadFromStream:size:initialSequenceNumber:completionHandler:">- uploadFromStream:size:initialSequenceNumber:completionHandler:</option>
+		
+	</optgroup>
+	
+	
+</select>
+						</label>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</aside>
+
+	<article>
+		<div id="overview_contents" class="container">
+			<div id="content">
+				<main role="main">
+					<h1 class="title">AZSCloudPageBlob Class Reference</h1>
+
+					
+					<div class="section section-specification"><table cellspacing="0"><tbody>
+						<tr>
+	<th>Inherits from</th>
+	<td><a href="../Classes/AZSCloudBlob.html">AZSCloudBlob</a> : NSObject</td>
+</tr><tr>
+	<th>Declared in</th>
+	<td>AZSCloudPageBlob.h<br />AZSCloudPageBlob.m</td>
+</tr>
+						</tbody></table></div>
+					
+
+                    
+
+					
+					
+					<div class="section section-tasks">
+						<a title="Tasks" name="tasks"></a>
+						
+
+						
+						
+
+						<div class="task-list">
+							<div class="section-method">
+	<a name="//api/name/initWithUrl:error:" title="initWithUrl:error:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/initWithUrl:error:">&ndash;&nbsp;initWithUrl:error:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Initializes a newly allocated AZSCloudPageBlob object</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (instancetype)initWithUrl:(NSURL *)<em>blobAbsoluteUrl</em> error:(NSError **)<em>error</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>blobAbsoluteUrl</code></th>
+						<td><p>The absolute URL to the blob.</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+			<div class="method-subsection return">
+				<h4 class="method-subtitle parameter-title">Return Value</h4>
+				<p>The newly allocated instance.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudPageBlob.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/initWithUrl:credentials:snapshotTime:error:" title="initWithUrl:credentials:snapshotTime:error:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/initWithUrl:credentials:snapshotTime:error:">&ndash;&nbsp;initWithUrl:credentials:snapshotTime:error:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Initializes a newly allocated AZSCloudPageBlob object</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (instancetype)initWithUrl:(NSURL *)<em>blobAbsoluteUrl</em> credentials:(AZSNullable AZSStorageCredentials *)<em>credentials</em> snapshotTime:(AZSNullable NSString *)<em>snapshotTime</em> error:(NSError **)<em>error</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>blobAbsoluteUrl</code></th>
+						<td><p>The absolute URL to the blob.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>credentials</code></th>
+						<td><p>The <a href="../Classes/AZSStorageCredentials.html">AZSStorageCredentials</a> used to authenticate to the blob</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>snapshotTime</code></th>
+						<td><p>The timestamp of the intended snapshot.  If nil, this AZSCloudPageBlob object refers to the actual blob, not a snapshot.</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+			<div class="method-subsection return">
+				<h4 class="method-subtitle parameter-title">Return Value</h4>
+				<p>The newly allocated instance.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudPageBlob.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/initWithStorageUri:error:" title="initWithStorageUri:error:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/initWithStorageUri:error:">&ndash;&nbsp;initWithStorageUri:error:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Initializes a newly allocated AZSCloudPageBlob object</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (instancetype)initWithStorageUri:(AZSStorageUri *)<em>blobAbsoluteUri</em> error:(NSError **)<em>error</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>blobAbsoluteUri</code></th>
+						<td><p>The absolute URL to the blob.</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+			<div class="method-subsection return">
+				<h4 class="method-subtitle parameter-title">Return Value</h4>
+				<p>The newly allocated instance.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudPageBlob.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/initWithStorageUri:credentials:snapshotTime:error:" title="initWithStorageUri:credentials:snapshotTime:error:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/initWithStorageUri:credentials:snapshotTime:error:">&ndash;&nbsp;initWithStorageUri:credentials:snapshotTime:error:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Initializes a newly allocated AZSCloudPageBlob object</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (instancetype)initWithStorageUri:(AZSStorageUri *)<em>blobAbsoluteUri</em> credentials:(AZSNullable AZSStorageCredentials *)<em>credentials</em> snapshotTime:(AZSNullable NSString *)<em>snapshotTime</em> error:(NSError **)<em>error</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>blobAbsoluteUri</code></th>
+						<td><p>The absolute URL to the blob.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>credentials</code></th>
+						<td><p>The <a href="../Classes/AZSStorageCredentials.html">AZSStorageCredentials</a> used to authenticate to the blob</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>snapshotTime</code></th>
+						<td><p>The timestamp of the intended snapshot.  If nil, this AZSCloudPageBlob object refers to the actual blob, not a snapshot.</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+			<div class="method-subsection return">
+				<h4 class="method-subtitle parameter-title">Return Value</h4>
+				<p>The newly allocated instance.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudPageBlob.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/initWithContainer:name:" title="initWithContainer:name:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/initWithContainer:name:">&ndash;&nbsp;initWithContainer:name:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Initializes a newly allocated AZSCloudPageBlob object</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (instancetype)initWithContainer:(AZSCloudBlobContainer *)<em>blobContainer</em> name:(NSString *)<em>blobName</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>blobContainer</code></th>
+						<td><p>The <a href="../Classes/AZSCloudBlobContainer.html">AZSCloudBlobContainer</a> in which the blob exists or should be created.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>blobName</code></th>
+						<td><p>The name of the blob.</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+			<div class="method-subsection return">
+				<h4 class="method-subtitle parameter-title">Return Value</h4>
+				<p>The newly allocated instance.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudPageBlob.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/initWithContainer:name:snapshotTime:" title="initWithContainer:name:snapshotTime:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/initWithContainer:name:snapshotTime:">&ndash;&nbsp;initWithContainer:name:snapshotTime:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Initializes a newly allocated AZSCloudPageBlob object</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (instancetype)initWithContainer:(AZSCloudBlobContainer *)<em>blobContainer</em> name:(NSString *)<em>blobName</em> snapshotTime:(AZSNullable NSString *)<em>snapshotTime</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>blobContainer</code></th>
+						<td><p>The <a href="../Classes/AZSCloudBlobContainer.html">AZSCloudBlobContainer</a> in which the blob exists or should be created.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>blobName</code></th>
+						<td><p>The name of the blob.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>snapshotTime</code></th>
+						<td><p>The timestamp of the intended snapshot.  If nil, this AZSCloudPageBlob object refers to the actual blob, not a snapshot.</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+			<div class="method-subsection return">
+				<h4 class="method-subtitle parameter-title">Return Value</h4>
+				<p>The newly allocated instance.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudPageBlob.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/clearPagesWithAZSULLRange:completionHandler:" title="clearPagesWithAZSULLRange:completionHandler:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/clearPagesWithAZSULLRange:completionHandler:">&ndash;&nbsp;clearPagesWithAZSULLRange:completionHandler:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Clears a set of bytes from the page blob.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)clearPagesWithAZSULLRange:(AZSULLRange)<em>range</em> completionHandler:(void ( ^ ) ( NSError *__AZSNullable ))<em>completionHandler</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>range</code></th>
+						<td><p>The range of bytes to clear (set to all 0) from the page blob.  Note that this must be 512-byte aligned.
+Can be up to the full size of the blob.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>completionHandler</code></th>
+						<td><p>The block of code to execute when the clear call completes.
+| Parameter name | Description |
+|&mdash;&mdash;&mdash;&mdash;&mdash;-|&mdash;&mdash;&mdash;&mdash;-|
+|NSError * | Nil if the operation succeeded without error, error with details about the failure otherwise.|</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudPageBlob.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/clearPagesWithAZSULLRange:accessCondition:requestOptions:operationContext:completionHandler:" title="clearPagesWithAZSULLRange:accessCondition:requestOptions:operationContext:completionHandler:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/clearPagesWithAZSULLRange:accessCondition:requestOptions:operationContext:completionHandler:">&ndash;&nbsp;clearPagesWithAZSULLRange:accessCondition:requestOptions:operationContext:completionHandler:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Clears a set of bytes from the page blob.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)clearPagesWithAZSULLRange:(AZSULLRange)<em>range</em> accessCondition:(AZSNullable AZSAccessCondition *)<em>accessCondition</em> requestOptions:(AZSNullable AZSBlobRequestOptions *)<em>requestOptions</em> operationContext:(AZSNullable AZSOperationContext *)<em>operationContext</em> completionHandler:(void ( ^ ) ( NSError *__AZSNullable ))<em>completionHandler</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>range</code></th>
+						<td><p>The range of bytes to clear (set to all 0) from the page blob.  Note that this must be 512-byte aligned.
+Can be up to the full size of the blob.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>accessCondition</code></th>
+						<td><p>The access condition for the request.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>requestOptions</code></th>
+						<td><p>The options to use for the request.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>operationContext</code></th>
+						<td><p>The operation context to use for the call.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>completionHandler</code></th>
+						<td><p>The block of code to execute when the clear call completes.
+| Parameter name | Description |
+|&mdash;&mdash;&mdash;&mdash;&mdash;-|&mdash;&mdash;&mdash;&mdash;-|
+|NSError * | Nil if the operation succeeded without error, error with details about the failure otherwise.|</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudPageBlob.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/clearPagesWithRange:completionHandler:" title="clearPagesWithRange:completionHandler:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/clearPagesWithRange:completionHandler:">&ndash;&nbsp;clearPagesWithRange:completionHandler:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Clears a set of bytes from the page blob.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)clearPagesWithRange:(NSRange)<em>range</em> completionHandler:(void ( ^ ) ( NSError *__AZSNullable ))<em>completionHandler</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>range</code></th>
+						<td><p>The range of bytes to clear (set to all 0) from the page blob.  Note that this must be 512-byte aligned.
+Can be up to the full size of the blob.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>completionHandler</code></th>
+						<td><p>The block of code to execute when the clear call completes.
+| Parameter name | Description |
+|&mdash;&mdash;&mdash;&mdash;&mdash;-|&mdash;&mdash;&mdash;&mdash;-|
+|NSError * | Nil if the operation succeeded without error, error with details about the failure otherwise.|</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudPageBlob.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/clearPagesWithRange:accessCondition:requestOptions:operationContext:completionHandler:" title="clearPagesWithRange:accessCondition:requestOptions:operationContext:completionHandler:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/clearPagesWithRange:accessCondition:requestOptions:operationContext:completionHandler:">&ndash;&nbsp;clearPagesWithRange:accessCondition:requestOptions:operationContext:completionHandler:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Clears a set of bytes from the page blob.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)clearPagesWithRange:(NSRange)<em>range</em> accessCondition:(AZSNullable AZSAccessCondition *)<em>accessCondition</em> requestOptions:(AZSNullable AZSBlobRequestOptions *)<em>requestOptions</em> operationContext:(AZSNullable AZSOperationContext *)<em>operationContext</em> completionHandler:(void ( ^ ) ( NSError *__AZSNullable ))<em>completionHandler</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>range</code></th>
+						<td><p>The range of bytes to clear (set to all 0) from the page blob.  Note that this must be 512-byte aligned.
+Can be up to the full size of the blob.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>accessCondition</code></th>
+						<td><p>The access condition for the request.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>requestOptions</code></th>
+						<td><p>The options to use for the request.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>operationContext</code></th>
+						<td><p>The operation context to use for the call.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>completionHandler</code></th>
+						<td><p>The block of code to execute when the clear call completes.
+| Parameter name | Description |
+|&mdash;&mdash;&mdash;&mdash;&mdash;-|&mdash;&mdash;&mdash;&mdash;-|
+|NSError * | Nil if the operation succeeded without error, error with details about the failure otherwise.|</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudPageBlob.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/downloadPageRangesWithCompletionHandler:" title="downloadPageRangesWithCompletionHandler:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/downloadPageRangesWithCompletionHandler:">&ndash;&nbsp;downloadPageRangesWithCompletionHandler:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Downloads the non-clear page ranges from the blob.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)downloadPageRangesWithCompletionHandler:(void ( ^ ) ( NSError *__AZSNullable , NSArray *))<em>completionHandler</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>completionHandler</code></th>
+						<td><p>The block of code to execute when the query page ranges call completes.
+| Parameter name | Description |
+|&mdash;&mdash;&mdash;&mdash;&mdash;-|&mdash;&mdash;&mdash;&mdash;-|
+|NSError * | Nil if the operation succeeded without error, error with details about the failure otherwise.|
+|NSArray * | The page ranges queried.  Each item in this array is of type NSValue*, which contains an AZSULLRange.|</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>This method will query the page blob on the service, and download all page ranges that are non-zero (non-clear).
+If this method times out, consider breaking up the query into smaller ranges.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudPageBlob.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/downloadPageRangesWithAZSULLRange:completionHandler:" title="downloadPageRangesWithAZSULLRange:completionHandler:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/downloadPageRangesWithAZSULLRange:completionHandler:">&ndash;&nbsp;downloadPageRangesWithAZSULLRange:completionHandler:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Downloads the non-clear page ranges from the blob.</p>
+
+<p>This method will query the page blob on the service, and download all page ranges in the input range that are non-zero (non-clear).
+If this method times out, consider breaking up the query into smaller ranges.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)downloadPageRangesWithAZSULLRange:(AZSULLRange)<em>range</em> completionHandler:(void ( ^ ) ( NSError *__AZSNullable , NSArray *))<em>completionHandler</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>range</code></th>
+						<td><p>The range of the blob to query.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>completionHandler</code></th>
+						<td><p>The block of code to execute when the query page ranges call completes.
+| Parameter name | Description |
+|&mdash;&mdash;&mdash;&mdash;&mdash;-|&mdash;&mdash;&mdash;&mdash;-|
+|NSError * | Nil if the operation succeeded without error, error with details about the failure otherwise.|
+|NSArray * | The page ranges queried.  Each item in this array is of type NSValue*, which contains an AZSULLRange.|</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudPageBlob.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/downloadPageRangesWithAZSULLRange:accessCondition:requestOptions:operationContext:completionHandler:" title="downloadPageRangesWithAZSULLRange:accessCondition:requestOptions:operationContext:completionHandler:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/downloadPageRangesWithAZSULLRange:accessCondition:requestOptions:operationContext:completionHandler:">&ndash;&nbsp;downloadPageRangesWithAZSULLRange:accessCondition:requestOptions:operationContext:completionHandler:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Downloads the non-clear page ranges from the blob.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)downloadPageRangesWithAZSULLRange:(AZSULLRange)<em>range</em> accessCondition:(AZSNullable AZSAccessCondition *)<em>accessCondition</em> requestOptions:(AZSNullable AZSBlobRequestOptions *)<em>requestOptions</em> operationContext:(AZSNullable AZSOperationContext *)<em>operationContext</em> completionHandler:(void ( ^ ) ( NSError *__AZSNullable , NSArray *))<em>completionHandler</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>range</code></th>
+						<td><p>The range of the blob to query.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>accessCondition</code></th>
+						<td><p>The access condition for the request.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>requestOptions</code></th>
+						<td><p>The options to use for the request.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>operationContext</code></th>
+						<td><p>The operation context to use for the call.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>completionHandler</code></th>
+						<td><p>The block of code to execute when the query page ranges call completes.
+| Parameter name | Description |
+|&mdash;&mdash;&mdash;&mdash;&mdash;-|&mdash;&mdash;&mdash;&mdash;-|
+|NSError * | Nil if the operation succeeded without error, error with details about the failure otherwise.|
+|NSArray * | The page ranges queried.  Each item in this array is of type NSValue*, which contains an AZSULLRange.|</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>This method will query the page blob on the service, and download all page ranges in the input range that are non-zero (non-clear).
+If this method times out, consider breaking up the query into smaller ranges.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudPageBlob.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/downloadPageRangesWithRange:completionHandler:" title="downloadPageRangesWithRange:completionHandler:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/downloadPageRangesWithRange:completionHandler:">&ndash;&nbsp;downloadPageRangesWithRange:completionHandler:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Downloads the non-clear page ranges from the blob.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)downloadPageRangesWithRange:(NSRange)<em>range</em> completionHandler:(void ( ^ ) ( NSError *__AZSNullable , NSArray *))<em>completionHandler</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>range</code></th>
+						<td><p>The range of the blob to query.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>completionHandler</code></th>
+						<td><p>The block of code to execute when the query page ranges call completes.
+| Parameter name | Description |
+|&mdash;&mdash;&mdash;&mdash;&mdash;-|&mdash;&mdash;&mdash;&mdash;-|
+|NSError * | Nil if the operation succeeded without error, error with details about the failure otherwise.|
+|NSArray * | The page ranges queried.  Each item in this array is of type NSValue*, which contains an AZSULLRange.|</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>This method will query the page blob on the service, and download all page ranges in the input range that are non-zero (non-clear).
+If this method times out, consider breaking up the query into smaller ranges.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudPageBlob.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/downloadPageRangesWithRange:accessCondition:requestOptions:operationContext:completionHandler:" title="downloadPageRangesWithRange:accessCondition:requestOptions:operationContext:completionHandler:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/downloadPageRangesWithRange:accessCondition:requestOptions:operationContext:completionHandler:">&ndash;&nbsp;downloadPageRangesWithRange:accessCondition:requestOptions:operationContext:completionHandler:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Downloads the non-clear page ranges from the blob.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)downloadPageRangesWithRange:(NSRange)<em>range</em> accessCondition:(AZSNullable AZSAccessCondition *)<em>accessCondition</em> requestOptions:(AZSNullable AZSBlobRequestOptions *)<em>requestOptions</em> operationContext:(AZSNullable AZSOperationContext *)<em>operationContext</em> completionHandler:(void ( ^ ) ( NSError *__AZSNullable , NSArray *))<em>completionHandler</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>range</code></th>
+						<td><p>The range of the blob to query.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>accessCondition</code></th>
+						<td><p>The access condition for the request.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>requestOptions</code></th>
+						<td><p>The options to use for the request.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>operationContext</code></th>
+						<td><p>The operation context to use for the call.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>completionHandler</code></th>
+						<td><p>The block of code to execute when the query page ranges call completes.
+| Parameter name | Description |
+|&mdash;&mdash;&mdash;&mdash;&mdash;-|&mdash;&mdash;&mdash;&mdash;-|
+|NSError * | Nil if the operation succeeded without error, error with details about the failure otherwise.|
+|NSArray * | The page ranges queried.  Each item in this array is of type NSValue*, which contains an AZSULLRange.|</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>This method will query the page blob on the service, and download all page ranges in the input range that are non-zero (non-clear).
+If this method times out, consider breaking up the query into smaller ranges.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudPageBlob.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/createWithSize:completionHandler:" title="createWithSize:completionHandler:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/createWithSize:completionHandler:">&ndash;&nbsp;createWithSize:completionHandler:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Creates the page blob on the service.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)createWithSize:(NSNumber *)<em>totalBlobSize</em> completionHandler:(void ( ^ ) ( NSError *__AZSNullable ))<em>completionHandler</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>totalBlobSize</code></th>
+						<td><p>The total size of the blob.  This must be known at creation time for page blobs.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>completionHandler</code></th>
+						<td><p>The block of code to execute when the create call completes.
+| Parameter name | Description |
+|&mdash;&mdash;&mdash;&mdash;&mdash;-|&mdash;&mdash;&mdash;&mdash;-|
+|NSError * | Nil if the operation succeeded without error, error with details about the failure otherwise.|</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Unlike block blobs, page and append blobs must be explicitly created on the service before data can be written.
+This method does the creation.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudPageBlob.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/createWithSize:sequenceNumber:completionHandler:" title="createWithSize:sequenceNumber:completionHandler:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/createWithSize:sequenceNumber:completionHandler:">&ndash;&nbsp;createWithSize:sequenceNumber:completionHandler:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Creates the page blob on the service.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)createWithSize:(NSNumber *)<em>totalBlobSize</em> sequenceNumber:(AZSNullable NSNumber *)<em>sequenceNumber</em> completionHandler:(void ( ^ ) ( NSError *__AZSNullable ))<em>completionHandler</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>totalBlobSize</code></th>
+						<td><p>The total size of the blob.  This must be known at creation time for page blobs.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>sequenceNumber</code></th>
+						<td><p>The intiial sequence number for the blob.  If nil, a default value will be used.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>completionHandler</code></th>
+						<td><p>The block of code to execute when the create call completes.
+| Parameter name | Description |
+|&mdash;&mdash;&mdash;&mdash;&mdash;-|&mdash;&mdash;&mdash;&mdash;-|
+|NSError * | Nil if the operation succeeded without error, error with details about the failure otherwise.|</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Unlike block blobs, page and append blobs must be explicitly created on the service before data can be written.
+This method does the creation.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudPageBlob.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/createWithSize:sequenceNumber:accessCondition:requestOptions:operationContext:completionHandler:" title="createWithSize:sequenceNumber:accessCondition:requestOptions:operationContext:completionHandler:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/createWithSize:sequenceNumber:accessCondition:requestOptions:operationContext:completionHandler:">&ndash;&nbsp;createWithSize:sequenceNumber:accessCondition:requestOptions:operationContext:completionHandler:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Creates the page blob on the service.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)createWithSize:(NSNumber *)<em>totalBlobSize</em> sequenceNumber:(AZSNullable NSNumber *)<em>sequenceNumber</em> accessCondition:(AZSNullable AZSAccessCondition *)<em>accessCondition</em> requestOptions:(AZSNullable AZSBlobRequestOptions *)<em>requestOptions</em> operationContext:(AZSNullable AZSOperationContext *)<em>operationContext</em> completionHandler:(void ( ^ ) ( NSError *__AZSNullable ))<em>completionHandler</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>totalBlobSize</code></th>
+						<td><p>The total size of the blob.  This must be known at creation time for page blobs.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>sequenceNumber</code></th>
+						<td><p>The intiial sequence number for the blob.  If nil, a default value will be used.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>accessCondition</code></th>
+						<td><p>The access condition for the request.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>requestOptions</code></th>
+						<td><p>The options to use for the request.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>operationContext</code></th>
+						<td><p>The operation context to use for the call.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>completionHandler</code></th>
+						<td><p>The block of code to execute when the create call completes.
+| Parameter name | Description |
+|&mdash;&mdash;&mdash;&mdash;&mdash;-|&mdash;&mdash;&mdash;&mdash;-|
+|NSError * | Nil if the operation succeeded without error, error with details about the failure otherwise.|</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Unlike block blobs, page and append blobs must be explicitly created on the service before data can be written.
+This method does the creation.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudPageBlob.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/createIfNotExistsWithSize:completionHandler:" title="createIfNotExistsWithSize:completionHandler:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/createIfNotExistsWithSize:completionHandler:">&ndash;&nbsp;createIfNotExistsWithSize:completionHandler:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Creates the page blob on the service if it does not already exist.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)createIfNotExistsWithSize:(NSNumber *)<em>totalBlobSize</em> completionHandler:(void ( ^ ) ( NSError *__AZSNullable , BOOL ))<em>completionHandler</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>totalBlobSize</code></th>
+						<td><p>The total size of the blob.  This must be known at creation time for page blobs.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>completionHandler</code></th>
+						<td><p>The block of code to execute when the create call completes.
+| Parameter name | Description |
+|&mdash;&mdash;&mdash;&mdash;&mdash;-|&mdash;&mdash;&mdash;&mdash;-|
+|NSError * | Nil if the operation succeeded without error, error with details about the failure otherwise.|
+|BOOL | YES if the blob was successfully created with this call.  NO if the blob already existed.|</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Unlike block blobs, page and append blobs must be explicitly created on the service before data can be written.
+This method does the creation.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudPageBlob.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/createIfNotExistsWithSize:sequenceNumber:completionHandler:" title="createIfNotExistsWithSize:sequenceNumber:completionHandler:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/createIfNotExistsWithSize:sequenceNumber:completionHandler:">&ndash;&nbsp;createIfNotExistsWithSize:sequenceNumber:completionHandler:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Creates the page blob on the service if it does not already exist.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)createIfNotExistsWithSize:(NSNumber *)<em>totalBlobSize</em> sequenceNumber:(AZSNullable NSNumber *)<em>sequenceNumber</em> completionHandler:(void ( ^ ) ( NSError *__AZSNullable , BOOL ))<em>completionHandler</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>totalBlobSize</code></th>
+						<td><p>The total size of the blob.  This must be known at creation time for page blobs.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>sequenceNumber</code></th>
+						<td><p>The intiial sequence number for the blob.  If nil, a default value will be used.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>completionHandler</code></th>
+						<td><p>The block of code to execute when the create call completes.
+| Parameter name | Description |
+|&mdash;&mdash;&mdash;&mdash;&mdash;-|&mdash;&mdash;&mdash;&mdash;-|
+|NSError * | Nil if the operation succeeded without error, error with details about the failure otherwise.|
+|BOOL | YES if the blob was successfully created with this call.  NO if the blob already existed.|</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Unlike block blobs, page and append blobs must be explicitly created on the service before data can be written.
+This method does the creation.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudPageBlob.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/createIfNotExistsWithSize:sequenceNumber:accessCondition:requestOptions:operationContext:completionHandler:" title="createIfNotExistsWithSize:sequenceNumber:accessCondition:requestOptions:operationContext:completionHandler:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/createIfNotExistsWithSize:sequenceNumber:accessCondition:requestOptions:operationContext:completionHandler:">&ndash;&nbsp;createIfNotExistsWithSize:sequenceNumber:accessCondition:requestOptions:operationContext:completionHandler:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Creates the page blob on the service if it does not already exist.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)createIfNotExistsWithSize:(NSNumber *)<em>totalBlobSize</em> sequenceNumber:(AZSNullable NSNumber *)<em>sequenceNumber</em> accessCondition:(AZSNullable AZSAccessCondition *)<em>accessCondition</em> requestOptions:(AZSNullable AZSBlobRequestOptions *)<em>requestOptions</em> operationContext:(AZSNullable AZSOperationContext *)<em>operationContext</em> completionHandler:(void ( ^ ) ( NSError *__AZSNullable , BOOL ))<em>completionHandler</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>totalBlobSize</code></th>
+						<td><p>The total size of the blob.  This must be known at creation time for page blobs.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>sequenceNumber</code></th>
+						<td><p>The intiial sequence number for the blob.  If nil, a default value will be used.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>accessCondition</code></th>
+						<td><p>The access condition for the request.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>requestOptions</code></th>
+						<td><p>The options to use for the request.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>operationContext</code></th>
+						<td><p>The operation context to use for the call.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>completionHandler</code></th>
+						<td><p>The block of code to execute when the create call completes.
+| Parameter name | Description |
+|&mdash;&mdash;&mdash;&mdash;&mdash;-|&mdash;&mdash;&mdash;&mdash;-|
+|NSError * | Nil if the operation succeeded without error, error with details about the failure otherwise.|
+|BOOL | YES if the blob was successfully created with this call.  NO if the blob already existed.|</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Unlike block blobs, page and append blobs must be explicitly created on the service before data can be written.
+This method does the creation.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudPageBlob.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/resizeWithSize:completionHandler:" title="resizeWithSize:completionHandler:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/resizeWithSize:completionHandler:">&ndash;&nbsp;resizeWithSize:completionHandler:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Sets the total blob size.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)resizeWithSize:(NSNumber *)<em>totalBlobSize</em> completionHandler:(void ( ^ ) ( NSError *__AZSNullable ))<em>completionHandler</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>totalBlobSize</code></th>
+						<td><p>The new blob size.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>completionHandler</code></th>
+						<td><p>The block of code to execute when the resize call completes.
+| Parameter name | Description |
+|&mdash;&mdash;&mdash;&mdash;&mdash;-|&mdash;&mdash;&mdash;&mdash;-|
+|NSError * | Nil if the operation succeeded without error, error with details about the failure otherwise.|</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>If the new size is less than the old size, the blob will be truncated.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudPageBlob.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/resizeWithSize:accessCondition:requestOptions:operationContext:completionHandler:" title="resizeWithSize:accessCondition:requestOptions:operationContext:completionHandler:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/resizeWithSize:accessCondition:requestOptions:operationContext:completionHandler:">&ndash;&nbsp;resizeWithSize:accessCondition:requestOptions:operationContext:completionHandler:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Sets the total blob size.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)resizeWithSize:(NSNumber *)<em>totalBlobSize</em> accessCondition:(AZSNullable AZSAccessCondition *)<em>accessCondition</em> requestOptions:(AZSNullable AZSBlobRequestOptions *)<em>requestOptions</em> operationContext:(AZSNullable AZSOperationContext *)<em>operationContext</em> completionHandler:(void ( ^ ) ( NSError *__AZSNullable ))<em>completionHandler</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>totalBlobSize</code></th>
+						<td><p>The new blob size.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>accessCondition</code></th>
+						<td><p>The access condition for the request.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>requestOptions</code></th>
+						<td><p>The options to use for the request.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>operationContext</code></th>
+						<td><p>The operation context to use for the call.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>completionHandler</code></th>
+						<td><p>The block of code to execute when the resize call completes.
+| Parameter name | Description |
+|&mdash;&mdash;&mdash;&mdash;&mdash;-|&mdash;&mdash;&mdash;&mdash;-|
+|NSError * | Nil if the operation succeeded without error, error with details about the failure otherwise.|</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>If the new size is less than the old size, the blob will be truncated.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudPageBlob.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/incrementSequenceNumberWithCompletionHandler:" title="incrementSequenceNumberWithCompletionHandler:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/incrementSequenceNumberWithCompletionHandler:">&ndash;&nbsp;incrementSequenceNumberWithCompletionHandler:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Increments the sequence number of the page blob on the service.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)incrementSequenceNumberWithCompletionHandler:(void ( ^ ) ( NSError *__AZSNullable ))<em>completionHandler</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>completionHandler</code></th>
+						<td><p>The block of code to execute when the increment call completes.
+| Parameter name | Description |
+|&mdash;&mdash;&mdash;&mdash;&mdash;-|&mdash;&mdash;&mdash;&mdash;-|
+|NSError * | Nil if the operation succeeded without error, error with details about the failure otherwise.|</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudPageBlob.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/incrementSequenceNumberWithAccessCondition:requestOptions:operationContext:completionHandler:" title="incrementSequenceNumberWithAccessCondition:requestOptions:operationContext:completionHandler:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/incrementSequenceNumberWithAccessCondition:requestOptions:operationContext:completionHandler:">&ndash;&nbsp;incrementSequenceNumberWithAccessCondition:requestOptions:operationContext:completionHandler:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Increments the sequence number of the page blob on the service.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)incrementSequenceNumberWithAccessCondition:(AZSNullable AZSAccessCondition *)<em>accessCondition</em> requestOptions:(AZSNullable AZSBlobRequestOptions *)<em>requestOptions</em> operationContext:(AZSNullable AZSOperationContext *)<em>operationContext</em> completionHandler:(void ( ^ ) ( NSError *__AZSNullable ))<em>completionHandler</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>accessCondition</code></th>
+						<td><p>The access condition for the request.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>requestOptions</code></th>
+						<td><p>The options to use for the request.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>operationContext</code></th>
+						<td><p>The operation context to use for the call.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>completionHandler</code></th>
+						<td><p>The block of code to execute when the increment call completes.
+| Parameter name | Description |
+|&mdash;&mdash;&mdash;&mdash;&mdash;-|&mdash;&mdash;&mdash;&mdash;-|
+|NSError * | Nil if the operation succeeded without error, error with details about the failure otherwise.|</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudPageBlob.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/setSequenceNumberWithNumber:useMaximum:completionHandler:" title="setSequenceNumberWithNumber:useMaximum:completionHandler:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/setSequenceNumberWithNumber:useMaximum:completionHandler:">&ndash;&nbsp;setSequenceNumberWithNumber:useMaximum:completionHandler:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Sets the sequence number of the page blob on the service.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)setSequenceNumberWithNumber:(NSNumber *)<em>newSequenceNumber</em> useMaximum:(BOOL)<em>useMaximum</em> completionHandler:(void ( ^ ) ( NSError *__AZSNullable ))<em>completionHandler</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>newSequenceNumber</code></th>
+						<td><p>The sequence number to set the blob to.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>useMaximum</code></th>
+						<td><p>If YES, this method will set the sequence number to the larger of its existing value, and the input value.  If NO, the blob will get the new value, regardless of existing value.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>completionHandler</code></th>
+						<td><p>The block of code to execute when the set sequence number call completes.
+| Parameter name | Description |
+|&mdash;&mdash;&mdash;&mdash;&mdash;-|&mdash;&mdash;&mdash;&mdash;-|
+|NSError * | Nil if the operation succeeded without error, error with details about the failure otherwise.|</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>operationContext</code></th>
+						<td><p>The operation context to use for the call.</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudPageBlob.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/setSequenceNumberWithNumber:useMaximum:accessCondition:requestOptions:operationContext:completionHandler:" title="setSequenceNumberWithNumber:useMaximum:accessCondition:requestOptions:operationContext:completionHandler:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/setSequenceNumberWithNumber:useMaximum:accessCondition:requestOptions:operationContext:completionHandler:">&ndash;&nbsp;setSequenceNumberWithNumber:useMaximum:accessCondition:requestOptions:operationContext:completionHandler:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Sets the sequence number of the page blob on the service.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)setSequenceNumberWithNumber:(NSNumber *)<em>newSequenceNumber</em> useMaximum:(BOOL)<em>useMaximum</em> accessCondition:(AZSNullable AZSAccessCondition *)<em>accessCondition</em> requestOptions:(AZSNullable AZSBlobRequestOptions *)<em>requestOptions</em> operationContext:(AZSNullable AZSOperationContext *)<em>operationContext</em> completionHandler:(void ( ^ ) ( NSError *__AZSNullable ))<em>completionHandler</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>newSequenceNumber</code></th>
+						<td><p>The sequence number to set the blob to.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>useMaximum</code></th>
+						<td><p>If YES, this method will set the sequence number to the larger of its existing value, and the input value.  If NO, the blob will get the new value, regardless of existing value.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>operationContext</code></th>
+						<td><p>The operation context to use for the call.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>completionHandler</code></th>
+						<td><p>The block of code to execute when the set sequence number call completes.
+| Parameter name | Description |
+|&mdash;&mdash;&mdash;&mdash;&mdash;-|&mdash;&mdash;&mdash;&mdash;-|
+|NSError * | Nil if the operation succeeded without error, error with details about the failure otherwise.|</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudPageBlob.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/createOutputStream" title="createOutputStream"></a>
+	<h3 class="method-title"><code><a href="#//api/name/createOutputStream">&ndash;&nbsp;createOutputStream</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Creates an output stream that is capable of writing to an existing page blob.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (AZSBlobOutputStream *)createOutputStream</code></div>
+
+		    
+			
+
+			
+			<div class="method-subsection return">
+				<h4 class="method-subtitle parameter-title">Return Value</h4>
+				<p>The created <a href="../Classes/AZSBlobOutputStream.html">AZSBlobOutputStream</a>, capable of writing to this blob.</p>
+			</div>
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>This method returns an instance of <a href="../Classes/AZSBlobOutputStream.html">AZSBlobOutputStream</a>.  The caller can then assign a delegate and schedule the stream in a runloop
+(similar to any other NSOutputStream.)  See <a href="../Classes/AZSBlobOutputStream.html">AZSBlobOutputStream</a> documentation for details.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudPageBlob.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/createOutputStreamWithAccessCondition:requestOptions:operationContext:" title="createOutputStreamWithAccessCondition:requestOptions:operationContext:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/createOutputStreamWithAccessCondition:requestOptions:operationContext:">&ndash;&nbsp;createOutputStreamWithAccessCondition:requestOptions:operationContext:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Creates an output stream that is capable of writing to an existing page blob.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (AZSBlobOutputStream *)createOutputStreamWithAccessCondition:(AZSNullable AZSAccessCondition *)<em>accessCondition</em> requestOptions:(AZSNullable AZSBlobRequestOptions *)<em>requestOptions</em> operationContext:(AZSNullable AZSOperationContext *)<em>operationContext</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>accessCondition</code></th>
+						<td><p>The access condition for the request.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>requestOptions</code></th>
+						<td><p>The options to use for the request.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>operationContext</code></th>
+						<td><p>The operation context to use for the call.</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+			<div class="method-subsection return">
+				<h4 class="method-subtitle parameter-title">Return Value</h4>
+				<p>The created <a href="../Classes/AZSBlobOutputStream.html">AZSBlobOutputStream</a>, capable of writing to this blob.</p>
+			</div>
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>This method returns an instance of <a href="../Classes/AZSBlobOutputStream.html">AZSBlobOutputStream</a>.  The caller can then assign a delegate and schedule the stream in a runloop
+(similar to any other NSOutputStream.)  See <a href="../Classes/AZSBlobOutputStream.html">AZSBlobOutputStream</a> documentation for details.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudPageBlob.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/createOutputStreamWithSize:" title="createOutputStreamWithSize:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/createOutputStreamWithSize:">&ndash;&nbsp;createOutputStreamWithSize:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Creates an output stream that is capable of writing to a new page blob.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (AZSBlobOutputStream *)createOutputStreamWithSize:(NSNumber *)<em>totalBlobSize</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>totalBlobSize</code></th>
+						<td><p>The total blob size</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>accessCondition</code></th>
+						<td><p>The access condition for the request.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>requestOptions</code></th>
+						<td><p>The options to use for the request.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>operationContext</code></th>
+						<td><p>The operation context to use for the call.</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+			<div class="method-subsection return">
+				<h4 class="method-subtitle parameter-title">Return Value</h4>
+				<p>The created <a href="../Classes/AZSBlobOutputStream.html">AZSBlobOutputStream</a>, capable of writing to this blob.</p>
+			</div>
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>This method returns an instance of <a href="../Classes/AZSBlobOutputStream.html">AZSBlobOutputStream</a>.  The caller can then assign a delegate and schedule the stream in a runloop
+(similar to any other NSOutputStream.)  See <a href="../Classes/AZSBlobOutputStream.html">AZSBlobOutputStream</a> documentation for details.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudPageBlob.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/createOutputStreamWithSize:sequenceNumber:" title="createOutputStreamWithSize:sequenceNumber:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/createOutputStreamWithSize:sequenceNumber:">&ndash;&nbsp;createOutputStreamWithSize:sequenceNumber:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Creates an output stream that is capable of writing to a new page blob.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (AZSBlobOutputStream *)createOutputStreamWithSize:(NSNumber *)<em>totalBlobSize</em> sequenceNumber:(AZSNullable NSNumber *)<em>sequenceNumber</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>totalBlobSize</code></th>
+						<td><p>The total blob size</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>requestOptions</code></th>
+						<td><p>The options to use for the request.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>accessCondition</code></th>
+						<td><p>The access condition for the request.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>operationContext</code></th>
+						<td><p>The operation context to use for the call.</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+			<div class="method-subsection return">
+				<h4 class="method-subtitle parameter-title">Return Value</h4>
+				<p>The created <a href="../Classes/AZSBlobOutputStream.html">AZSBlobOutputStream</a>, capable of writing to this blob.</p>
+			</div>
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>This method returns an instance of <a href="../Classes/AZSBlobOutputStream.html">AZSBlobOutputStream</a>.  The caller can then assign a delegate and schedule the stream in a runloop
+(similar to any other NSOutputStream.)  See <a href="../Classes/AZSBlobOutputStream.html">AZSBlobOutputStream</a> documentation for details.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudPageBlob.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/createOutputStreamWithSize:sequenceNumber:accessCondition:requestOptions:operationContext:" title="createOutputStreamWithSize:sequenceNumber:accessCondition:requestOptions:operationContext:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/createOutputStreamWithSize:sequenceNumber:accessCondition:requestOptions:operationContext:">&ndash;&nbsp;createOutputStreamWithSize:sequenceNumber:accessCondition:requestOptions:operationContext:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Creates an output stream that is capable of writing to a new page blob.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (AZSBlobOutputStream *)createOutputStreamWithSize:(NSNumber *)<em>totalBlobSize</em> sequenceNumber:(AZSNullable NSNumber *)<em>sequenceNumber</em> accessCondition:(AZSNullable AZSAccessCondition *)<em>accessCondition</em> requestOptions:(AZSNullable AZSBlobRequestOptions *)<em>requestOptions</em> operationContext:(AZSNullable AZSOperationContext *)<em>operationContext</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>totalBlobSize</code></th>
+						<td><p>The total blob size</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>accessCondition</code></th>
+						<td><p>The access condition for the request.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>requestOptions</code></th>
+						<td><p>The options to use for the request.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>operationContext</code></th>
+						<td><p>The operation context to use for the call.</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+			<div class="method-subsection return">
+				<h4 class="method-subtitle parameter-title">Return Value</h4>
+				<p>The created <a href="../Classes/AZSBlobOutputStream.html">AZSBlobOutputStream</a>, capable of writing to this blob.</p>
+			</div>
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>This method returns an instance of <a href="../Classes/AZSBlobOutputStream.html">AZSBlobOutputStream</a>.  The caller can then assign a delegate and schedule the stream in a runloop
+(similar to any other NSOutputStream.)  See <a href="../Classes/AZSBlobOutputStream.html">AZSBlobOutputStream</a> documentation for details.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudPageBlob.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/uploadFromStream:completionHandler:" title="uploadFromStream:completionHandler:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/uploadFromStream:completionHandler:">&ndash;&nbsp;uploadFromStream:completionHandler:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Uploades to an existing page blob from given source stream.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)uploadFromStream:(NSInputStream *)<em>sourceStream</em> completionHandler:(void ( ^ ) ( NSError *__AZSNullable ))<em>completionHandler</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>sourceStream</code></th>
+						<td><p>The stream containing the data that the blob should contain.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>completionHandler</code></th>
+						<td><p>The block of code to execute when the upload call completes.</p>
+
+<table>
+<thead>
+<tr>
+<th> Parameter name </th>
+<th> Description </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>NSError * </td>
+<td> Nil if the operation succeeded without error, error with details about the failure otherwise.</td>
+</tr>
+</tbody>
+</table>
+</td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>This operation will schedule the input sourceStream on a runloop (created in a new thread), and read in all data as long as it is able.  This will
+chunk the data into blocks, and upload each of those blocks to the service.  Finally, when the stream is finished, it will upload a block list
+consisting of all read data.</p>
+
+<p>No more than one block&rsquo;s worth of data will be uploaded at a time.  Block size is configurable in the <a href="../Classes/AZSBlobRequestOptions.html">AZSBlobRequestOptions</a> (see – <a href="#//api/name/uploadFromStream:accessCondition:requestOptions:operationContext:completionHandler:">uploadFromStream:accessCondition:requestOptions:operationContext:completionHandler:</a>).  Maximum
+number of outstanding downloads is also configurable in the <a href="../Classes/AZSBlobRequestOptions.html">AZSBlobRequestOptions</a>.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudPageBlob.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/uploadFromStream:accessCondition:requestOptions:operationContext:completionHandler:" title="uploadFromStream:accessCondition:requestOptions:operationContext:completionHandler:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/uploadFromStream:accessCondition:requestOptions:operationContext:completionHandler:">&ndash;&nbsp;uploadFromStream:accessCondition:requestOptions:operationContext:completionHandler:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Uploades to an existing page blob from given source stream.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)uploadFromStream:(NSInputStream *)<em>sourceStream</em> accessCondition:(AZSNullable AZSAccessCondition *)<em>accessCondition</em> requestOptions:(AZSNullable AZSBlobRequestOptions *)<em>requestOptions</em> operationContext:(AZSNullable AZSOperationContext *)<em>operationContext</em> completionHandler:(void ( ^ ) ( NSError *__AZSNullable ))<em>completionHandler</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>sourceStream</code></th>
+						<td><p>The stream containing the data that the blob should contain.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>accessCondition</code></th>
+						<td><p>The access condition for the request.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>requestOptions</code></th>
+						<td><p>The options to use for the request.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>operationContext</code></th>
+						<td><p>The operation context to use for the call.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>completionHandler</code></th>
+						<td><p>The block of code to execute when the upload call completes.</p>
+
+<table>
+<thead>
+<tr>
+<th> Parameter name </th>
+<th> Description </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>NSError * </td>
+<td> Nil if the operation succeeded without error, error with details about the failure otherwise.</td>
+</tr>
+</tbody>
+</table>
+</td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>This operation will schedule the input sourceStream on a runloop (created in a new thread), and read in all data as long as it is able.  This will
+chunk the data into blocks, and upload each of those blocks to the service.  Finally, when the stream is finished, it will upload a block list
+consisting of all read data.</p>
+
+<p>No more than one block&rsquo;s worth of data will be uploaded at a time.  Block size is configurable in the <a href="../Classes/AZSBlobRequestOptions.html">AZSBlobRequestOptions</a>.  Maximum
+number of outstanding downloads is also configurable in the <a href="../Classes/AZSBlobRequestOptions.html">AZSBlobRequestOptions</a>.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudPageBlob.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/uploadFromStream:size:completionHandler:" title="uploadFromStream:size:completionHandler:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/uploadFromStream:size:completionHandler:">&ndash;&nbsp;uploadFromStream:size:completionHandler:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Uploades to a new page blob from given source stream.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)uploadFromStream:(NSInputStream *)<em>sourceStream</em> size:(NSNumber *)<em>totalBlobSize</em> completionHandler:(void ( ^ ) ( NSError *__AZSNullable ))<em>completionHandler</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>sourceStream</code></th>
+						<td><p>The stream containing the data that the blob should contain.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>completionHandler</code></th>
+						<td><p>The block of code to execute when the upload call completes.</p>
+
+<table>
+<thead>
+<tr>
+<th> Parameter name </th>
+<th> Description </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>NSError * </td>
+<td> Nil if the operation succeeded without error, error with details about the failure otherwise.</td>
+</tr>
+</tbody>
+</table>
+</td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>requestOptions</code></th>
+						<td><p>The options to use for the request.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>operationContext</code></th>
+						<td><p>The operation context to use for the call.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>accessCondition</code></th>
+						<td><p>The access condition for the request.</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>This operation will schedule the input sourceStream on a runloop (created in a new thread), and read in all data as long as it is able.  This will
+chunk the data into blocks, and upload each of those blocks to the service.  Finally, when the stream is finished, it will upload a block list
+consisting of all read data.</p>
+
+<p>No more than one block&rsquo;s worth of data will be uploaded at a time.  Block size is configurable in the <a href="../Classes/AZSBlobRequestOptions.html">AZSBlobRequestOptions</a>.  Maximum
+number of outstanding downloads is also configurable in the <a href="../Classes/AZSBlobRequestOptions.html">AZSBlobRequestOptions</a>.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudPageBlob.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/uploadFromStream:size:initialSequenceNumber:completionHandler:" title="uploadFromStream:size:initialSequenceNumber:completionHandler:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/uploadFromStream:size:initialSequenceNumber:completionHandler:">&ndash;&nbsp;uploadFromStream:size:initialSequenceNumber:completionHandler:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Uploades to a new page blob from given source stream.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)uploadFromStream:(NSInputStream *)<em>sourceStream</em> size:(NSNumber *)<em>totalBlobSize</em> initialSequenceNumber:(AZSNullable NSNumber *)<em>initialSequenceNumber</em> completionHandler:(void ( ^ ) ( NSError *__AZSNullable ))<em>completionHandler</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>sourceStream</code></th>
+						<td><p>The stream containing the data that the blob should contain.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>completionHandler</code></th>
+						<td><p>The block of code to execute when the upload call completes.</p>
+
+<table>
+<thead>
+<tr>
+<th> Parameter name </th>
+<th> Description </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>NSError * </td>
+<td> Nil if the operation succeeded without error, error with details about the failure otherwise.</td>
+</tr>
+</tbody>
+</table>
+</td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>requestOptions</code></th>
+						<td><p>The options to use for the request.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>operationContext</code></th>
+						<td><p>The operation context to use for the call.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>accessCondition</code></th>
+						<td><p>The access condition for the request.</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>This operation will schedule the input sourceStream on a runloop (created in a new thread), and read in all data as long as it is able.  This will
+chunk the data into blocks, and upload each of those blocks to the service.  Finally, when the stream is finished, it will upload a block list
+consisting of all read data.</p>
+
+<p>No more than one block&rsquo;s worth of data will be uploaded at a time.  Block size is configurable in the <a href="../Classes/AZSBlobRequestOptions.html">AZSBlobRequestOptions</a>.  Maximum
+number of outstanding downloads is also configurable in the <a href="../Classes/AZSBlobRequestOptions.html">AZSBlobRequestOptions</a>.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudPageBlob.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/uploadFromStream:size:initialSequenceNumber:accessCondition:requestOptions:operationContext:completionHandler:" title="uploadFromStream:size:initialSequenceNumber:accessCondition:requestOptions:operationContext:completionHandler:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/uploadFromStream:size:initialSequenceNumber:accessCondition:requestOptions:operationContext:completionHandler:">&ndash;&nbsp;uploadFromStream:size:initialSequenceNumber:accessCondition:requestOptions:operationContext:completionHandler:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Uploades to a new page blob from given source stream.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)uploadFromStream:(NSInputStream *)<em>sourceStream</em> size:(NSNumber *)<em>totalBlobSize</em> initialSequenceNumber:(AZSNullable NSNumber *)<em>initialSequenceNumber</em> accessCondition:(AZSNullable AZSAccessCondition *)<em>accessCondition</em> requestOptions:(AZSNullable AZSBlobRequestOptions *)<em>requestOptions</em> operationContext:(AZSNullable AZSOperationContext *)<em>operationContext</em> completionHandler:(void ( ^ ) ( NSError *__AZSNullable ))<em>completionHandler</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>sourceStream</code></th>
+						<td><p>The stream containing the data that the blob should contain.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>accessCondition</code></th>
+						<td><p>The access condition for the request.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>requestOptions</code></th>
+						<td><p>The options to use for the request.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>operationContext</code></th>
+						<td><p>The operation context to use for the call.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>completionHandler</code></th>
+						<td><p>The block of code to execute when the upload call completes.</p>
+
+<table>
+<thead>
+<tr>
+<th> Parameter name </th>
+<th> Description </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>NSError * </td>
+<td> Nil if the operation succeeded without error, error with details about the failure otherwise.</td>
+</tr>
+</tbody>
+</table>
+</td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>This operation will schedule the input sourceStream on a runloop (created in a new thread), and read in all data as long as it is able.  This will
+chunk the data into blocks, and upload each of those blocks to the service.  Finally, when the stream is finished, it will upload a block list
+consisting of all read data.</p>
+
+<p>No more than one block&rsquo;s worth of data will be uploaded at a time.  Block size is configurable in the <a href="../Classes/AZSBlobRequestOptions.html">AZSBlobRequestOptions</a>.  Maximum
+number of outstanding downloads is also configurable in the <a href="../Classes/AZSBlobRequestOptions.html">AZSBlobRequestOptions</a>.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudPageBlob.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div>
+						</div>
+						
+					</div>
+					
+					
+
+                    
+                    
+          
+				</main>
+
+				<footer>
+					<div class="footer-copyright">
+						
+						<p class="copyright">Copyright &copy; 2016 Microsoft. All rights reserved. Updated: 2016-07-26</p>
+						
+						
+						<p class="generator">Generated by <a href="http://appledoc.gentlebytes.com">appledoc 2.2.1 (build 1334)</a>.</p>
+						
+					</div>
+				</footer>
+			</div>
+		</div>
+	</article>
+
+	<script src="../js/script.js"></script>
+</body>
+</html>

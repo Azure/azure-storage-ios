@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 
-	<title>AZSRetryInfo Class Reference</title>
+	<title>AZSSharedAccessPolicy Class Reference</title>
 
 	<link rel="stylesheet" href="../css/style.css">
 	<meta name="viewport" content="initial-scale=1, maximum-scale=1.4">
@@ -56,9 +56,11 @@
 	
 	<optgroup label="Properties">
 		
-		<option value="//api/name/retryInterval">retryInterval</option>
+		<option value="//api/name/permissions">permissions</option>
 		
-		<option value="//api/name/shouldRetry">shouldRetry</option>
+		<option value="//api/name/sharedAccessExpiryTime">sharedAccessExpiryTime</option>
+		
+		<option value="//api/name/sharedAccessStartTime">sharedAccessStartTime</option>
 		
 	</optgroup>
 	
@@ -68,9 +70,7 @@
 	
 	<optgroup label="Instance Methods">
 		
-		<option value="//api/name/initDontRetry">- initDontRetry</option>
-		
-		<option value="//api/name/initWithShouldRetry:targetLocation:updatedLocationMode:retryInterval:">- initWithShouldRetry:targetLocation:updatedLocationMode:retryInterval:</option>
+		<option value="//api/name/initWithIdentifier:">- initWithIdentifier:</option>
 		
 	</optgroup>
 	
@@ -87,7 +87,7 @@
 		<div id="overview_contents" class="container">
 			<div id="content">
 				<main role="main">
-					<h1 class="title">AZSRetryInfo Class Reference</h1>
+					<h1 class="title">AZSSharedAccessPolicy Class Reference</h1>
 
 					
 					<div class="section section-specification"><table cellspacing="0"><tbody>
@@ -96,7 +96,7 @@
 	<td>NSObject</td>
 </tr><tr>
 	<th>Declared in</th>
-	<td>AZSRetryInfo.h<br />AZSRetryInfo.m</td>
+	<td>AZSSharedAccessPolicy.h<br />AZSSharedAccessPolicy.m</td>
 </tr>
 						</tbody></table></div>
 					
@@ -106,8 +106,7 @@
 					<div class="section section-overview">
 						<a title="Overview" name="overview"></a>
 						<h2 class="subtitle subtitle-overview">Overview</h2>
-						<p>An AZSRetryInfo object represents retry information that the library will use to determine if and how to retry.
-It is the output of a RetryPolicy&rsquo;s evaluate method.</p>
+						<p>A shared access policy.  Specifies the start time, expiry time, and <a href="#//api/name/permissions">permissions</a> for the SAS.</p>
 					</div>
 					
 					
@@ -123,8 +122,8 @@ It is the output of a RetryPolicy&rsquo;s evaluate method.</p>
 
 						<div class="task-list">
 							<div class="section-method">
-	<a name="//api/name/shouldRetry" title="shouldRetry"></a>
-	<h3 class="method-title"><code><a href="#//api/name/shouldRetry">&nbsp;&nbsp;shouldRetry</a></code>
+	<a name="//api/name/permissions" title="permissions"></a>
+	<h3 class="method-title"><code><a href="#//api/name/permissions">&nbsp;&nbsp;permissions</a></code>
 </h3>
 
 	<div class="method-info">
@@ -134,12 +133,12 @@ It is the output of a RetryPolicy&rsquo;s evaluate method.</p>
 			
 			
 			<div class="method-subsection brief-description">
-				<p>If YES, then the request should be retried.  Otherwise, the request should not be retried.</p>
+				<p>The permissions for a SAS associated with this policy.</p>
 			</div>
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>@property BOOL shouldRetry</code></div>
+			<div class="method-subsection method-declaration"><code>@property AZSSharedAccessPermissions permissions</code></div>
 
 		    
 			
@@ -157,15 +156,15 @@ It is the output of a RetryPolicy&rsquo;s evaluate method.</p>
 			
 			<div class="method-subsection declared-in-section">
 				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">AZSRetryInfo.h</code></p>
+				<p><code class="declared-in-ref">AZSSharedAccessPolicy.h</code></p>
 			</div>
 			
 			
 		</div>
 	</div>
 </div><div class="section-method">
-	<a name="//api/name/retryInterval" title="retryInterval"></a>
-	<h3 class="method-title"><code><a href="#//api/name/retryInterval">&nbsp;&nbsp;retryInterval</a></code>
+	<a name="//api/name/sharedAccessExpiryTime" title="sharedAccessExpiryTime"></a>
+	<h3 class="method-title"><code><a href="#//api/name/sharedAccessExpiryTime">&nbsp;&nbsp;sharedAccessExpiryTime</a></code>
 </h3>
 
 	<div class="method-info">
@@ -175,13 +174,12 @@ It is the output of a RetryPolicy&rsquo;s evaluate method.</p>
 			
 			
 			<div class="method-subsection brief-description">
-				<p>The NSTimeInterval to wait before retrying the operation.
-Only has meaning if <a href="#//api/name/shouldRetry">shouldRetry</a> is YES.</p>
+				<p>The expiry time for a SAS associated with this policy.</p>
 			</div>
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>@property NSTimeInterval retryInterval</code></div>
+			<div class="method-subsection method-declaration"><code>@property (strong, AZSNullable) NSDate *sharedAccessExpiryTime</code></div>
 
 		    
 			
@@ -199,15 +197,15 @@ Only has meaning if <a href="#//api/name/shouldRetry">shouldRetry</a> is YES.</p
 			
 			<div class="method-subsection declared-in-section">
 				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">AZSRetryInfo.h</code></p>
+				<p><code class="declared-in-ref">AZSSharedAccessPolicy.h</code></p>
 			</div>
 			
 			
 		</div>
 	</div>
 </div><div class="section-method">
-	<a name="//api/name/initWithShouldRetry:targetLocation:updatedLocationMode:retryInterval:" title="initWithShouldRetry:targetLocation:updatedLocationMode:retryInterval:"></a>
-	<h3 class="method-title"><code><a href="#//api/name/initWithShouldRetry:targetLocation:updatedLocationMode:retryInterval:">&ndash;&nbsp;initWithShouldRetry:targetLocation:updatedLocationMode:retryInterval:</a></code>
+	<a name="//api/name/sharedAccessStartTime" title="sharedAccessStartTime"></a>
+	<h3 class="method-title"><code><a href="#//api/name/sharedAccessStartTime">&nbsp;&nbsp;sharedAccessStartTime</a></code>
 </h3>
 
 	<div class="method-info">
@@ -217,12 +215,53 @@ Only has meaning if <a href="#//api/name/shouldRetry">shouldRetry</a> is YES.</p
 			
 			
 			<div class="method-subsection brief-description">
-				<p>Initializes a fresh AZSRetryInfo instance.</p>
+				<p>The start time for a SAS associated with this policy.</p>
 			</div>
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>- (instancetype)initWithShouldRetry:(BOOL)<em>shouldRetry</em> targetLocation:(AZSStorageLocation)<em>targetLocation</em> updatedLocationMode:(AZSStorageLocationMode)<em>updatedLocationMode</em> retryInterval:(NSTimeInterval)<em>retryInterval</em></code></div>
+			<div class="method-subsection method-declaration"><code>@property (strong, AZSNullable) NSDate *sharedAccessStartTime</code></div>
+
+		    
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSSharedAccessPolicy.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/initWithIdentifier:" title="initWithIdentifier:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/initWithIdentifier:">&ndash;&nbsp;initWithIdentifier:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Initializes a newly allocated AZSSharedAccessPolicy using the <a href="#//api/name/permissions">permissions</a> provided</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (instancetype)initWithIdentifier:(NSString *__AZSNullable)<em>identifier</em></code></div>
 
 		    
 			
@@ -231,24 +270,8 @@ Only has meaning if <a href="#//api/name/shouldRetry">shouldRetry</a> is YES.</p
 				<table class="argument-def parameter-def">
 				
 					<tr>
-						<th scope="row" class="argument-name"><code>shouldRetry</code></th>
-						<td><p>If the request should be retried.</p></td>
-					</tr>
-				
-					<tr>
-						<th scope="row" class="argument-name"><code>targetLocation</code></th>
-						<td><p>The location for the next request.</p></td>
-					</tr>
-				
-					<tr>
-						<th scope="row" class="argument-name"><code>updatedLocationMode</code></th>
-						<td><p>The location mode to use for the next request.</p></td>
-					</tr>
-				
-					<tr>
-						<th scope="row" class="argument-name"><code>retryInterval</code></th>
-						<td><p>The NSTimeInterval to wait before retrying the operation.
-Only has meaning if <a href="#//api/name/shouldRetry">shouldRetry</a> is YES.</p></td>
+						<th scope="row" class="argument-name"><code>identifier</code></th>
+						<td><p>The identifier to use when storing this policy on the service.</p></td>
 					</tr>
 				
 				</table>
@@ -256,46 +279,10 @@ Only has meaning if <a href="#//api/name/shouldRetry">shouldRetry</a> is YES.</p
 			
 
 			
-
-			
-
-			
-
-			
-
-			
-
-			
-			<div class="method-subsection declared-in-section">
-				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">AZSRetryInfo.h</code></p>
+			<div class="method-subsection return">
+				<h4 class="method-subtitle parameter-title">Return Value</h4>
+				<p>The newly initialized policy.</p>
 			</div>
-			
-			
-		</div>
-	</div>
-</div><div class="section-method">
-	<a name="//api/name/initDontRetry" title="initDontRetry"></a>
-	<h3 class="method-title"><code><a href="#//api/name/initDontRetry">&ndash;&nbsp;initDontRetry</a></code>
-</h3>
-
-	<div class="method-info">
-		<div class="pointy-thing"></div>
-
-		<div class="method-info-container">
-			
-			
-			<div class="method-subsection brief-description">
-				<p>Initializes the RetryInfo with a default, don&rsquo;t-retry instance.</p>
-			</div>
-			
-		    
-
-			<div class="method-subsection method-declaration"><code>- (instancetype)initDontRetry</code></div>
-
-		    
-			
-
 			
 
 			
@@ -309,7 +296,7 @@ Only has meaning if <a href="#//api/name/shouldRetry">shouldRetry</a> is YES.</p
 			
 			<div class="method-subsection declared-in-section">
 				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">AZSRetryInfo.h</code></p>
+				<p><code class="declared-in-ref">AZSSharedAccessPolicy.h</code></p>
 			</div>
 			
 			

@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 
-	<title>AZSLeaseDuration Constants Reference</title>
+	<title>AZSSharedAccessResourceTypes Constants Reference</title>
 
 	<link rel="stylesheet" href="../css/style.css">
 	<meta name="viewport" content="initial-scale=1, maximum-scale=1.4">
@@ -59,7 +59,7 @@
 		<div id="overview_contents" class="container">
 			<div id="content">
 				<main role="main">
-					<h1 class="title">AZSLeaseDuration Constants Reference</h1>
+					<h1 class="title">AZSSharedAccessResourceTypes Constants Reference</h1>
 
 					
 					<div class="section section-specification"><table cellspacing="0"><tbody>
@@ -75,11 +75,11 @@
 					
 
                     
-                    <h3 class="subsubtitle method-title">AZSLeaseDuration</h3>
+                    <h3 class="subsubtitle method-title">AZSSharedAccessResourceTypes</h3>
                     
 					
 					<div class="section section-overview">
-                        <p>The lease duration of a resource</p>
+                        <p>Specifies the set of possible resource types for a shared access policy. *</p>
 					</div>
 					
 					
@@ -87,13 +87,17 @@
                         <!-- display enum values -->
                         
                         <h4 class="method-subtitle">Definition</h4>
-                        <code>typedef NS_ENUM(NSInteger, AZSLeaseDuration ) {<br>
+                        <code>typedef NS_OPTIONS(NSUInteger, AZSSharedAccessResourceTypes ) {<br>
                             
-                            &nbsp;&nbsp; <a href="">AZSLeaseDurationUnspecified</a>,<br>
+                            &nbsp;&nbsp; <a href="">AZSSharedAccessResourceTypesNone</a> = 0 x0,<br>
                             
-                            &nbsp;&nbsp; <a href="">AZSLeaseDurationFixed</a>,<br>
+                            &nbsp;&nbsp; <a href="">AZSSharedAccessResourceTypesService</a> = 0 x1 &lt; &lt; 0,<br>
                             
-                            &nbsp;&nbsp; <a href="">AZSLeaseDurationInfinite</a>,<br>
+                            &nbsp;&nbsp; <a href="">AZSSharedAccessResourceTypesContainer</a> = 0 x1 &lt; &lt; 1,<br>
+                            
+                            &nbsp;&nbsp; <a href="">AZSSharedAccessResourceTypesObject</a> = 0 x1 &lt; &lt; 2,<br>
+                            
+                            &nbsp;&nbsp; <a href="">AZSSharedAccessResourceTypesAll</a> = AZSSharedAccessResourceTypesService | AZSSharedAccessResourceTypesContainer | AZSSharedAccessResourceTypesObject,<br>
                             
                             };</code>
                     
@@ -103,11 +107,11 @@
                         <h4 class="method-subtitle">Constants</h4>
                         <dl class="termdef">
                             
-                            <dt><a name="" title="AZSLeaseDurationUnspecified"></a><code>AZSLeaseDurationUnspecified</code></dt>
+                            <dt><a name="" title="AZSSharedAccessResourceTypesNone"></a><code>AZSSharedAccessResourceTypesNone</code></dt>
 <dd>
 
 
-<p>The lease duration is not specified.</p>
+<p>Specifies no access granted. *</p>
 
 
 
@@ -120,11 +124,11 @@
 	
 </dd>
                             
-                            <dt><a name="" title="AZSLeaseDurationFixed"></a><code>AZSLeaseDurationFixed</code></dt>
+                            <dt><a name="" title="AZSSharedAccessResourceTypesService"></a><code>AZSSharedAccessResourceTypesService</code></dt>
 <dd>
 
 
-<p>The lease duration is finite.</p>
+<p>Specifies Service level access granted. *</p>
 
 
 
@@ -137,11 +141,45 @@
 	
 </dd>
                             
-                            <dt><a name="" title="AZSLeaseDurationInfinite"></a><code>AZSLeaseDurationInfinite</code></dt>
+                            <dt><a name="" title="AZSSharedAccessResourceTypesContainer"></a><code>AZSSharedAccessResourceTypesContainer</code></dt>
 <dd>
 
 
-<p>The lease duration is infinite.</p>
+<p>Specifies Container level access granted. *</p>
+
+
+
+
+
+    
+	<p>
+		Declared In <code class="declared-in-ref">AZSEnums.h</code>.
+	</p>
+	
+</dd>
+                            
+                            <dt><a name="" title="AZSSharedAccessResourceTypesObject"></a><code>AZSSharedAccessResourceTypesObject</code></dt>
+<dd>
+
+
+<p>Specifies Object level access granted. *</p>
+
+
+
+
+
+    
+	<p>
+		Declared In <code class="declared-in-ref">AZSEnums.h</code>.
+	</p>
+	
+</dd>
+                            
+                            <dt><a name="" title="AZSSharedAccessResourceTypesAll"></a><code>AZSSharedAccessResourceTypesAll</code></dt>
+<dd>
+
+
+<p>Specifies All access granted. *</p>
 
 
 

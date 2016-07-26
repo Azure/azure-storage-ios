@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 
-	<title>AZSCloudClient Class Reference</title>
+	<title>AZSRetryPolicyForTestAlwaysRetry Class Reference</title>
 
 	<link rel="stylesheet" href="../css/style.css">
 	<meta name="viewport" content="initial-scale=1, maximum-scale=1.4">
@@ -54,17 +54,17 @@
 
 	
 	
-	<optgroup label="Properties">
+
+	
+
+	
+	<optgroup label="Instance Methods">
 		
-		<option value="//api/name/credentials">credentials</option>
+		<option value="//api/name/clone">- clone</option>
 		
-		<option value="//api/name/storageUri">storageUri</option>
+		<option value="//api/name/evaluateRetryContext:withOperationContext:">- evaluateRetryContext:withOperationContext:</option>
 		
 	</optgroup>
-	
-
-	
-
 	
 	
 </select>
@@ -79,7 +79,7 @@
 		<div id="overview_contents" class="container">
 			<div id="content">
 				<main role="main">
-					<h1 class="title">AZSCloudClient Class Reference</h1>
+					<h1 class="title">AZSRetryPolicyForTestAlwaysRetry Class Reference</h1>
 
 					
 					<div class="section section-specification"><table cellspacing="0"><tbody>
@@ -87,8 +87,11 @@
 	<th>Inherits from</th>
 	<td>NSObject</td>
 </tr><tr>
+	<th>Conforms to</th>
+	<td><a href="../Protocols/AZSRetryPolicy.html">AZSRetryPolicy</a></td>
+</tr><tr>
 	<th>Declared in</th>
-	<td>AZSCloudClient.h<br />AZSCloudClient.m</td>
+	<td>AZSReadFromSecondaryTest.m</td>
 </tr>
 						</tbody></table></div>
 					
@@ -98,14 +101,7 @@
 					<div class="section section-overview">
 						<a title="Overview" name="overview"></a>
 						<h2 class="subtitle subtitle-overview">Overview</h2>
-						<p>AZSCloudClient is the base class for all service clients.</p>
-
-<p>This class should not be instanciated directly, subclasses should be used instead:</p>
-
-<ul>
-<li><a href="../Classes/AZSCloudBlobClient.html">AZSCloudBlobClient</a></li>
-</ul>
-
+						<p>A retry policy, used for testing only.  Reserved for internal use.</p>
 					</div>
 					
 					
@@ -121,8 +117,8 @@
 
 						<div class="task-list">
 							<div class="section-method">
-	<a name="//api/name/storageUri" title="storageUri"></a>
-	<h3 class="method-title"><code><a href="#//api/name/storageUri">&nbsp;&nbsp;storageUri</a></code>
+	<a name="//api/name/evaluateRetryContext:withOperationContext:" title="evaluateRetryContext:withOperationContext:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/evaluateRetryContext:withOperationContext:">&ndash;&nbsp;evaluateRetryContext:withOperationContext:</a></code>
 </h3>
 
 	<div class="method-info">
@@ -132,16 +128,39 @@
 			
 			
 			<div class="method-subsection brief-description">
-				<p>The <a href="../Classes/AZSStorageUri.html">AZSStorageUri</a> for this service.</p>
+				<p>The method that evaluates the RetryContext to determine if the request should be retried or not.</p>
 			</div>
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>@property (strong) AZSStorageUri *storageUri</code></div>
+			<div class="method-subsection method-declaration"><code>- (AZSRetryInfo *)evaluateRetryContext:(AZSRetryContext *)<em>retryContext</em> withOperationContext:(AZSOperationContext *)<em>operationContext</em></code></div>
 
 		    
 			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>retryContext</code></th>
+						<td><p>The <a href="../Classes/AZSRetryContext.html">AZSRetryContext</a> containing information about the most recent request.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>operationContext</code></th>
+						<td><p>The <a href="../Classes/AZSOperationContext.html">AZSOperationContext</a> for the entire operation thus far.</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
 
+			
+			<div class="method-subsection return">
+				<h4 class="method-subtitle parameter-title">Return Value</h4>
+				<p>An <a href="../Classes/AZSRetryInfo.html">AZSRetryInfo</a> object that contains whether or not the request should be retried, and if so, how long to wait until the
+next trial.</p>
+			</div>
 			
 
 			
@@ -155,15 +174,15 @@
 			
 			<div class="method-subsection declared-in-section">
 				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">AZSCloudClient.h</code></p>
+				<p><code class="declared-in-ref">AZSRetryPolicy.h</code></p>
 			</div>
 			
 			
 		</div>
 	</div>
 </div><div class="section-method">
-	<a name="//api/name/credentials" title="credentials"></a>
-	<h3 class="method-title"><code><a href="#//api/name/credentials">&nbsp;&nbsp;credentials</a></code>
+	<a name="//api/name/clone" title="clone"></a>
+	<h3 class="method-title"><code><a href="#//api/name/clone">&ndash;&nbsp;clone</a></code>
 </h3>
 
 	<div class="method-info">
@@ -173,16 +192,21 @@
 			
 			
 			<div class="method-subsection brief-description">
-				<p>The <a href="../Classes/AZSStorageCredentials.html">AZSStorageCredentials</a> that this client will use to authenticate requests.</p>
+				<p>Clone this retry policy.  Required internally in the library.  Must return a fresh instance with the same parameters.</p>
 			</div>
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>@property (strong, readonly, nonatomic) AZSStorageCredentials *credentials</code></div>
+			<div class="method-subsection method-declaration"><code>- (id&lt;AZSRetryPolicy&gt;)clone</code></div>
 
 		    
 			
 
+			
+			<div class="method-subsection return">
+				<h4 class="method-subtitle parameter-title">Return Value</h4>
+				<p>The cloned retry policy.</p>
+			</div>
 			
 
 			
@@ -196,7 +220,7 @@
 			
 			<div class="method-subsection declared-in-section">
 				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">AZSCloudClient.h</code></p>
+				<p><code class="declared-in-ref">AZSRetryPolicy.h</code></p>
 			</div>
 			
 			

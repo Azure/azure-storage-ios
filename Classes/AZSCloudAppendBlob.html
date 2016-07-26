@@ -1,0 +1,1306 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+
+	<title>AZSCloudAppendBlob Class Reference</title>
+
+	<link rel="stylesheet" href="../css/style.css">
+	<meta name="viewport" content="initial-scale=1, maximum-scale=1.4">
+	<meta name="generator" content="appledoc 2.2.1 (build 1334)">
+</head>
+<body class="appledoc">
+	<header>
+		<div class="container" class="hide-in-xcode">
+			
+			<h1 id="library-title">
+				<a href="../index.html">Azure Storage Client for iOS </a>
+			</h1>
+
+			<p id="developer-home">
+				<a href="../index.html">Microsoft</a>
+			</p>
+			
+		</div>
+	</header>
+
+	<aside>
+		<div class="container">
+			<nav>
+				<ul id="header-buttons" role="toolbar">
+					<li><a href="../index.html">Index</a></li>
+<li><a href="../hierarchy.html">Hierarchy</a></li>
+
+					<li id="on-this-page" role="navigation">
+						<label>
+							On This Page
+
+							<div class="chevron">
+								<div class="chevy chevron-left"></div>
+								<div class="chevy chevron-right"></div>
+							</div>
+
+							<select id="jump-to">
+	<option value="top">Jump To&#133;</option>
+	
+
+	
+	
+	<option value="tasks">Tasks</option>
+	
+	
+
+	
+	
+
+	
+
+	
+	<optgroup label="Instance Methods">
+		
+		<option value="//api/name/appendBlockWithData:contentMD5:accessCondition:requestOptions:operationContext:completionHandler:">- appendBlockWithData:contentMD5:accessCondition:requestOptions:operationContext:completionHandler:</option>
+		
+		<option value="//api/name/appendBlockWithData:contentMD5:completionHandler:">- appendBlockWithData:contentMD5:completionHandler:</option>
+		
+		<option value="//api/name/createIfNotExistsWithAccessCondition:requestOptions:operationContext:completionHandler:">- createIfNotExistsWithAccessCondition:requestOptions:operationContext:completionHandler:</option>
+		
+		<option value="//api/name/createIfNotExistsWithCompletionHandler:">- createIfNotExistsWithCompletionHandler:</option>
+		
+		<option value="//api/name/createOutputStreamWithCreateNew:">- createOutputStreamWithCreateNew:</option>
+		
+		<option value="//api/name/createOutputStreamWithCreateNew:accessCondition:requestOptions:operationContext:">- createOutputStreamWithCreateNew:accessCondition:requestOptions:operationContext:</option>
+		
+		<option value="//api/name/createWithAccessCondition:requestOptions:operationContext:completionHandler:">- createWithAccessCondition:requestOptions:operationContext:completionHandler:</option>
+		
+		<option value="//api/name/createWithCompletionHandler:">- createWithCompletionHandler:</option>
+		
+		<option value="//api/name/initWithContainer:name:">- initWithContainer:name:</option>
+		
+		<option value="//api/name/initWithContainer:name:snapshotTime:">- initWithContainer:name:snapshotTime:</option>
+		
+		<option value="//api/name/initWithStorageUri:credentials:snapshotTime:error:">- initWithStorageUri:credentials:snapshotTime:error:</option>
+		
+		<option value="//api/name/initWithStorageUri:error:">- initWithStorageUri:error:</option>
+		
+		<option value="//api/name/initWithUrl:credentials:snapshotTime:error:">- initWithUrl:credentials:snapshotTime:error:</option>
+		
+		<option value="//api/name/initWithUrl:error:">- initWithUrl:error:</option>
+		
+		<option value="//api/name/uploadFromStream:createNew:accessCondition:requestOptions:operationContext:completionHandler:">- uploadFromStream:createNew:accessCondition:requestOptions:operationContext:completionHandler:</option>
+		
+		<option value="//api/name/uploadFromStream:createNew:completionHandler:">- uploadFromStream:createNew:completionHandler:</option>
+		
+	</optgroup>
+	
+	
+</select>
+						</label>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</aside>
+
+	<article>
+		<div id="overview_contents" class="container">
+			<div id="content">
+				<main role="main">
+					<h1 class="title">AZSCloudAppendBlob Class Reference</h1>
+
+					
+					<div class="section section-specification"><table cellspacing="0"><tbody>
+						<tr>
+	<th>Inherits from</th>
+	<td><a href="../Classes/AZSCloudBlob.html">AZSCloudBlob</a> : NSObject</td>
+</tr><tr>
+	<th>Declared in</th>
+	<td>AZSCloudAppendBlob.h<br />AZSCloudAppendBlob.m</td>
+</tr>
+						</tbody></table></div>
+					
+
+                    
+
+					
+					
+					<div class="section section-tasks">
+						<a title="Tasks" name="tasks"></a>
+						
+
+						
+						
+
+						<div class="task-list">
+							<div class="section-method">
+	<a name="//api/name/initWithUrl:error:" title="initWithUrl:error:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/initWithUrl:error:">&ndash;&nbsp;initWithUrl:error:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Initializes a newly allocated AZSCloudAppendBlob object</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (instancetype)initWithUrl:(NSURL *)<em>blobAbsoluteUrl</em> error:(NSError **)<em>error</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>blobAbsoluteUrl</code></th>
+						<td><p>The absolute URL to the blob.</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+			<div class="method-subsection return">
+				<h4 class="method-subtitle parameter-title">Return Value</h4>
+				<p>The newly allocated instance.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudAppendBlob.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/initWithUrl:credentials:snapshotTime:error:" title="initWithUrl:credentials:snapshotTime:error:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/initWithUrl:credentials:snapshotTime:error:">&ndash;&nbsp;initWithUrl:credentials:snapshotTime:error:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Initializes a newly allocated AZSCloudAppendBlob object</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (instancetype)initWithUrl:(NSURL *)<em>blobAbsoluteUrl</em> credentials:(AZSNullable AZSStorageCredentials *)<em>credentials</em> snapshotTime:(AZSNullable NSString *)<em>snapshotTime</em> error:(NSError **)<em>error</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>blobAbsoluteUrl</code></th>
+						<td><p>The absolute URL to the blob.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>credentials</code></th>
+						<td><p>The <a href="../Classes/AZSStorageCredentials.html">AZSStorageCredentials</a> used to authenticate to the blob</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>snapshotTime</code></th>
+						<td><p>The timestamp of the intended snapshot.  If nil, this AZSCloudAppendBlob object refers to the actual blob, not a snapshot.</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+			<div class="method-subsection return">
+				<h4 class="method-subtitle parameter-title">Return Value</h4>
+				<p>The newly allocated instance.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudAppendBlob.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/initWithStorageUri:error:" title="initWithStorageUri:error:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/initWithStorageUri:error:">&ndash;&nbsp;initWithStorageUri:error:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Initializes a newly allocated AZSCloudAppendBlob object</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (instancetype)initWithStorageUri:(AZSStorageUri *)<em>blobAbsoluteUri</em> error:(NSError **)<em>error</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>blobAbsoluteUri</code></th>
+						<td><p>An <a href="../Classes/AZSStorageUri.html">AZSStorageUri</a> representing the absolute URL to the blob.</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+			<div class="method-subsection return">
+				<h4 class="method-subtitle parameter-title">Return Value</h4>
+				<p>The newly allocated instance.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudAppendBlob.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/initWithStorageUri:credentials:snapshotTime:error:" title="initWithStorageUri:credentials:snapshotTime:error:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/initWithStorageUri:credentials:snapshotTime:error:">&ndash;&nbsp;initWithStorageUri:credentials:snapshotTime:error:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Initializes a newly allocated AZSCloudAppendBlob object</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (instancetype)initWithStorageUri:(AZSStorageUri *)<em>blobAbsoluteUri</em> credentials:(AZSNullable AZSStorageCredentials *)<em>credentials</em> snapshotTime:(AZSNullable NSString *)<em>snapshotTime</em> error:(NSError **)<em>error</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>blobAbsoluteUri</code></th>
+						<td><p>An <a href="../Classes/AZSStorageUri.html">AZSStorageUri</a> representing the absolute URL to the blob.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>credentials</code></th>
+						<td><p>The <a href="../Classes/AZSStorageCredentials.html">AZSStorageCredentials</a> used to authenticate to the blob</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>snapshotTime</code></th>
+						<td><p>The timestamp of the intended snapshot.  If nil, this AZSCloudAppendBlob object refers to the actual blob, not a snapshot.</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+			<div class="method-subsection return">
+				<h4 class="method-subtitle parameter-title">Return Value</h4>
+				<p>The newly allocated instance.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudAppendBlob.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/initWithContainer:name:" title="initWithContainer:name:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/initWithContainer:name:">&ndash;&nbsp;initWithContainer:name:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Initializes a newly allocated AZSCloudAppendBlob object</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (instancetype)initWithContainer:(AZSCloudBlobContainer *)<em>blobContainer</em> name:(NSString *)<em>blobName</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>blobContainer</code></th>
+						<td><p>The <a href="../Classes/AZSCloudBlobContainer.html">AZSCloudBlobContainer</a> in which the blob exists or should be created.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>blobName</code></th>
+						<td><p>The name of the blob.</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+			<div class="method-subsection return">
+				<h4 class="method-subtitle parameter-title">Return Value</h4>
+				<p>The newly allocated instance.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudAppendBlob.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/initWithContainer:name:snapshotTime:" title="initWithContainer:name:snapshotTime:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/initWithContainer:name:snapshotTime:">&ndash;&nbsp;initWithContainer:name:snapshotTime:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Initializes a newly allocated AZSCloudAppendBlob object</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (instancetype)initWithContainer:(AZSCloudBlobContainer *)<em>blobContainer</em> name:(NSString *)<em>blobName</em> snapshotTime:(AZSNullable NSString *)<em>snapshotTime</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>blobContainer</code></th>
+						<td><p>The <a href="../Classes/AZSCloudBlobContainer.html">AZSCloudBlobContainer</a> in which the blob exists or should be created.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>blobName</code></th>
+						<td><p>The name of the blob.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>snapshotTime</code></th>
+						<td><p>The timestamp of the intended snapshot.  If nil, this AZSCloudAppendBlob object refers to the actual blob, not a snapshot.</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+			<div class="method-subsection return">
+				<h4 class="method-subtitle parameter-title">Return Value</h4>
+				<p>The newly allocated instance.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudAppendBlob.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/createWithCompletionHandler:" title="createWithCompletionHandler:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/createWithCompletionHandler:">&ndash;&nbsp;createWithCompletionHandler:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Creates the append blob on the service.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)createWithCompletionHandler:(void ( ^ ) ( NSError *__AZSNullable ))<em>completionHandler</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>completionHandler</code></th>
+						<td><p>The block of code to execute when the delete call completes.
+| Parameter name | Description |
+|&mdash;&mdash;&mdash;&mdash;&mdash;-|&mdash;&mdash;&mdash;&mdash;-|
+|NSError * | Nil if the operation succeeded without error, error with details about the failure otherwise.|</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Unlike block blobs, append blobs must be explicitly created on the service before data can be written.
+This method does the creation.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudAppendBlob.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/createWithAccessCondition:requestOptions:operationContext:completionHandler:" title="createWithAccessCondition:requestOptions:operationContext:completionHandler:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/createWithAccessCondition:requestOptions:operationContext:completionHandler:">&ndash;&nbsp;createWithAccessCondition:requestOptions:operationContext:completionHandler:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Creates the append blob on the service.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)createWithAccessCondition:(AZSNullable AZSAccessCondition *)<em>accessCondition</em> requestOptions:(AZSNullable AZSBlobRequestOptions *)<em>requestOptions</em> operationContext:(AZSNullable AZSOperationContext *)<em>operationContext</em> completionHandler:(void ( ^ ) ( NSError *__AZSNullable ))<em>completionHandler</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>accessCondition</code></th>
+						<td><p>The access condition for the request.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>requestOptions</code></th>
+						<td><p>The options to use for the request.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>operationContext</code></th>
+						<td><p>The operation context to use for the call.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>completionHandler</code></th>
+						<td><p>The block of code to execute when the delete call completes.
+| Parameter name | Description |
+|&mdash;&mdash;&mdash;&mdash;&mdash;-|&mdash;&mdash;&mdash;&mdash;-|
+|NSError * | Nil if the operation succeeded without error, error with details about the failure otherwise.|</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Unlike block blobs, append blobs must be explicitly created on the service before data can be written.
+This method does the creation.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudAppendBlob.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/createIfNotExistsWithCompletionHandler:" title="createIfNotExistsWithCompletionHandler:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/createIfNotExistsWithCompletionHandler:">&ndash;&nbsp;createIfNotExistsWithCompletionHandler:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Creates the append blob on the service if it does not already exist.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)createIfNotExistsWithCompletionHandler:(void ( ^ ) ( NSError *__AZSNullable , BOOL ))<em>completionHandler</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>completionHandler</code></th>
+						<td><p>The block of code to execute when the delete call completes.
+| Parameter name | Description |
+|&mdash;&mdash;&mdash;&mdash;&mdash;-|&mdash;&mdash;&mdash;&mdash;-|
+|NSError * | Nil if the operation succeeded without error, error with details about the failure otherwise.|
+|BOOL | YES if the blob was successfully created with this call.  NO if the blob already existed.|</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Unlike block blobs, append blobs must be explicitly created on the service before data can be written.
+This method does the creation.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudAppendBlob.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/createIfNotExistsWithAccessCondition:requestOptions:operationContext:completionHandler:" title="createIfNotExistsWithAccessCondition:requestOptions:operationContext:completionHandler:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/createIfNotExistsWithAccessCondition:requestOptions:operationContext:completionHandler:">&ndash;&nbsp;createIfNotExistsWithAccessCondition:requestOptions:operationContext:completionHandler:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Creates the append blob on the service if it does not already exist.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)createIfNotExistsWithAccessCondition:(AZSNullable AZSAccessCondition *)<em>accessCondition</em> requestOptions:(AZSNullable AZSBlobRequestOptions *)<em>requestOptions</em> operationContext:(AZSNullable AZSOperationContext *)<em>operationContext</em> completionHandler:(void ( ^ ) ( NSError *__AZSNullable , BOOL ))<em>completionHandler</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>accessCondition</code></th>
+						<td><p>The access condition for the request.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>requestOptions</code></th>
+						<td><p>The options to use for the request.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>operationContext</code></th>
+						<td><p>The operation context to use for the call.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>completionHandler</code></th>
+						<td><p>The block of code to execute when the delete call completes.
+| Parameter name | Description |
+|&mdash;&mdash;&mdash;&mdash;&mdash;-|&mdash;&mdash;&mdash;&mdash;-|
+|NSError * | Nil if the operation succeeded without error, error with details about the failure otherwise.|
+|BOOL | YES if the blob was successfully created with this call.  NO if the blob already existed.|</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Unlike block blobs, append blobs must be explicitly created on the service before data can be written.
+This method does the creation.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudAppendBlob.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/appendBlockWithData:contentMD5:completionHandler:" title="appendBlockWithData:contentMD5:completionHandler:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/appendBlockWithData:contentMD5:completionHandler:">&ndash;&nbsp;appendBlockWithData:contentMD5:completionHandler:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Appends a block of data to the append blob.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)appendBlockWithData:(NSData *)<em>blockData</em> contentMD5:(AZSNullable NSString *)<em>contentMD5</em> completionHandler:(void ( ^ ) ( NSError *__AZSNullable , NSNumber *appendOffset ))<em>completionHandler</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>blockData</code></th>
+						<td><p>The data to append.  Must be less than 4 MB.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>contentMD5</code></th>
+						<td><p>Optional.  The content-MD5 to use for transactional integrety for the appendBlock request.
+If contentMD5 is nil, and requestOptions.useTransactionalMD5 is set to YES, the library will calculate the MD5 of the block for you.
+This value is not stored on the service.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>completionHandler</code></th>
+						<td><p>The block of code to execute when the append call completes.
+| Parameter name | Description |
+|&mdash;&mdash;&mdash;&mdash;&mdash;-|&mdash;&mdash;&mdash;&mdash;-|
+|NSError * | Nil if the operation succeeded without error, error with details about the failure otherwise.|
+|NSNumber * | The append offset for this append operation - the offset where this block was committed|</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudAppendBlob.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/appendBlockWithData:contentMD5:accessCondition:requestOptions:operationContext:completionHandler:" title="appendBlockWithData:contentMD5:accessCondition:requestOptions:operationContext:completionHandler:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/appendBlockWithData:contentMD5:accessCondition:requestOptions:operationContext:completionHandler:">&ndash;&nbsp;appendBlockWithData:contentMD5:accessCondition:requestOptions:operationContext:completionHandler:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Appends a block of data to the append blob.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)appendBlockWithData:(NSData *)<em>blockData</em> contentMD5:(AZSNullable NSString *)<em>contentMD5</em> accessCondition:(AZSNullable AZSAccessCondition *)<em>accessCondition</em> requestOptions:(AZSNullable AZSBlobRequestOptions *)<em>requestOptions</em> operationContext:(AZSNullable AZSOperationContext *)<em>operationContext</em> completionHandler:(void ( ^ ) ( NSError *__AZSNullable , NSNumber *appendOffset ))<em>completionHandler</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>blockData</code></th>
+						<td><p>The data to append.  Must be less than 4 MB.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>contentMD5</code></th>
+						<td><p>Optional.  The content-MD5 to use for transactional integrety for the appendBlock request.
+If contentMD5 is nil, and requestOptions.useTransactionalMD5 is set to YES, the library will calculate the MD5 of the block for you.
+This value is not stored on the service.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>accessCondition</code></th>
+						<td><p>The access condition for the request.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>requestOptions</code></th>
+						<td><p>The options to use for the request.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>operationContext</code></th>
+						<td><p>The operation context to use for the call.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>completionHandler</code></th>
+						<td><p>The block of code to execute when the append call completes.
+| Parameter name | Description |
+|&mdash;&mdash;&mdash;&mdash;&mdash;-|&mdash;&mdash;&mdash;&mdash;-|
+|NSError * | Nil if the operation succeeded without error, error with details about the failure otherwise.|
+|NSNumber * | The append offset for this append operation - the offset where this block was committed|</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudAppendBlob.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/createOutputStreamWithCreateNew:" title="createOutputStreamWithCreateNew:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/createOutputStreamWithCreateNew:">&ndash;&nbsp;createOutputStreamWithCreateNew:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Creates an output stream that is capable of writing to the blob.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (AZSBlobOutputStream *)createOutputStreamWithCreateNew:(BOOL)<em>createNew</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>createNew</code></th>
+						<td><p>YES if the blob should be created from scratch (will overwrite a pre-existing blob), NO if the blob already exists and the
+stream data should be appended to the end.</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+			<div class="method-subsection return">
+				<h4 class="method-subtitle parameter-title">Return Value</h4>
+				<p>The created <a href="../Classes/AZSBlobOutputStream.html">AZSBlobOutputStream</a>, capable of writing to this blob.</p>
+			</div>
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>This method returns an instance of <a href="../Classes/AZSBlobOutputStream.html">AZSBlobOutputStream</a>.  The caller can then assign a delegate and schedule the stream in a runloop
+(similar to any other NSOutputStream.)  See <a href="../Classes/AZSBlobOutputStream.html">AZSBlobOutputStream</a> documentation for details.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudAppendBlob.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/createOutputStreamWithCreateNew:accessCondition:requestOptions:operationContext:" title="createOutputStreamWithCreateNew:accessCondition:requestOptions:operationContext:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/createOutputStreamWithCreateNew:accessCondition:requestOptions:operationContext:">&ndash;&nbsp;createOutputStreamWithCreateNew:accessCondition:requestOptions:operationContext:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Creates an output stream that is capable of writing to the blob.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (AZSBlobOutputStream *)createOutputStreamWithCreateNew:(BOOL)<em>createNew</em> accessCondition:(AZSNullable AZSAccessCondition *)<em>accessCondition</em> requestOptions:(AZSNullable AZSBlobRequestOptions *)<em>requestOptions</em> operationContext:(AZSNullable AZSOperationContext *)<em>operationContext</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>createNew</code></th>
+						<td><p>YES if the blob should be created from scratch (will overwrite a pre-existing blob), NO if the blob already exists and the
+stream data should be appended to the end.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>accessCondition</code></th>
+						<td><p>The access condition for the request.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>requestOptions</code></th>
+						<td><p>The options to use for the request.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>operationContext</code></th>
+						<td><p>The operation context to use for the call.</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+			<div class="method-subsection return">
+				<h4 class="method-subtitle parameter-title">Return Value</h4>
+				<p>The created <a href="../Classes/AZSBlobOutputStream.html">AZSBlobOutputStream</a>, capable of writing to this blob.</p>
+			</div>
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>This method returns an instance of <a href="../Classes/AZSBlobOutputStream.html">AZSBlobOutputStream</a>.  The caller can then assign a delegate and schedule the stream in a runloop
+(similar to any other NSOutputStream.)  See <a href="../Classes/AZSBlobOutputStream.html">AZSBlobOutputStream</a> documentation for details.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudAppendBlob.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/uploadFromStream:createNew:completionHandler:" title="uploadFromStream:createNew:completionHandler:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/uploadFromStream:createNew:completionHandler:">&ndash;&nbsp;uploadFromStream:createNew:completionHandler:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Uploades a blob from given source stream.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)uploadFromStream:(NSInputStream *)<em>sourceStream</em> createNew:(BOOL)<em>createNew</em> completionHandler:(void ( ^ ) ( NSError *__AZSNullable ))<em>completionHandler</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>sourceStream</code></th>
+						<td><p>The stream containing the data that the blob should contain.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>completionHandler</code></th>
+						<td><p>The block of code to execute when the upload call completes.</p>
+
+<table>
+<thead>
+<tr>
+<th> Parameter name </th>
+<th> Description </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>NSError * </td>
+<td> Nil if the operation succeeded without error, error with details about the failure otherwise.</td>
+</tr>
+</tbody>
+</table>
+</td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>This operation will schedule the input sourceStream on a runloop (created in a new thread), and read in all data as long as it is able.  This will
+chunk the data into blocks, and upload each of those blocks to the service.  Finally, when the stream is finished, it will upload a block list
+consisting of all read data.</p>
+
+<p>No more than one block&rsquo;s worth of data will be uploaded at a time.  Block size is configurable in the <a href="../Classes/AZSBlobRequestOptions.html">AZSBlobRequestOptions</a> (see – uploadFromStream:accessCondition:requestOptions:operationContext:completionHandler:).  Maximum
+number of outstanding downloads is also configurable in the <a href="../Classes/AZSBlobRequestOptions.html">AZSBlobRequestOptions</a>.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudAppendBlob.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/uploadFromStream:createNew:accessCondition:requestOptions:operationContext:completionHandler:" title="uploadFromStream:createNew:accessCondition:requestOptions:operationContext:completionHandler:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/uploadFromStream:createNew:accessCondition:requestOptions:operationContext:completionHandler:">&ndash;&nbsp;uploadFromStream:createNew:accessCondition:requestOptions:operationContext:completionHandler:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Uploades a blob from given source stream.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)uploadFromStream:(NSInputStream *)<em>sourceStream</em> createNew:(BOOL)<em>createNew</em> accessCondition:(AZSNullable AZSAccessCondition *)<em>accessCondition</em> requestOptions:(AZSNullable AZSBlobRequestOptions *)<em>requestOptions</em> operationContext:(AZSNullable AZSOperationContext *)<em>operationContext</em> completionHandler:(void ( ^ ) ( NSError *__AZSNullable ))<em>completionHandler</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>sourceStream</code></th>
+						<td><p>The stream containing the data that the blob should contain.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>accessCondition</code></th>
+						<td><p>The access condition for the request.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>requestOptions</code></th>
+						<td><p>The options to use for the request.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>operationContext</code></th>
+						<td><p>The operation context to use for the call.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>completionHandler</code></th>
+						<td><p>The block of code to execute when the upload call completes.</p>
+
+<table>
+<thead>
+<tr>
+<th> Parameter name </th>
+<th> Description </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>NSError * </td>
+<td> Nil if the operation succeeded without error, error with details about the failure otherwise.</td>
+</tr>
+</tbody>
+</table>
+</td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>This operation will schedule the input sourceStream on a runloop (created in a new thread), and read in all data as long as it is able.  This will
+chunk the data into blocks, and upload each of those blocks to the service.  Finally, when the stream is finished, it will upload a block list
+consisting of all read data.</p>
+
+<p>No more than one block&rsquo;s worth of data will be uploaded at a time.  Block size is configurable in the <a href="../Classes/AZSBlobRequestOptions.html">AZSBlobRequestOptions</a>.  Maximum
+number of outstanding downloads is also configurable in the <a href="../Classes/AZSBlobRequestOptions.html">AZSBlobRequestOptions</a>.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudAppendBlob.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div>
+						</div>
+						
+					</div>
+					
+					
+
+                    
+                    
+          
+				</main>
+
+				<footer>
+					<div class="footer-copyright">
+						
+						<p class="copyright">Copyright &copy; 2016 Microsoft. All rights reserved. Updated: 2016-07-26</p>
+						
+						
+						<p class="generator">Generated by <a href="http://appledoc.gentlebytes.com">appledoc 2.2.1 (build 1334)</a>.</p>
+						
+					</div>
+				</footer>
+			</div>
+		</div>
+	</article>
+
+	<script src="../js/script.js"></script>
+</body>
+</html>

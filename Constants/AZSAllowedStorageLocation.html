@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 
-	<title>AZSLeaseDuration Constants Reference</title>
+	<title>AZSAllowedStorageLocation Constants Reference</title>
 
 	<link rel="stylesheet" href="../css/style.css">
 	<meta name="viewport" content="initial-scale=1, maximum-scale=1.4">
@@ -59,7 +59,7 @@
 		<div id="overview_contents" class="container">
 			<div id="content">
 				<main role="main">
-					<h1 class="title">AZSLeaseDuration Constants Reference</h1>
+					<h1 class="title">AZSAllowedStorageLocation Constants Reference</h1>
 
 					
 					<div class="section section-specification"><table cellspacing="0"><tbody>
@@ -75,11 +75,11 @@
 					
 
                     
-                    <h3 class="subsubtitle method-title">AZSLeaseDuration</h3>
+                    <h3 class="subsubtitle method-title">AZSAllowedStorageLocation</h3>
                     
 					
 					<div class="section section-overview">
-                        <p>The lease duration of a resource</p>
+                        <p>Which storage locations are permitted for a given operation.</p>
 					</div>
 					
 					
@@ -87,13 +87,13 @@
                         <!-- display enum values -->
                         
                         <h4 class="method-subtitle">Definition</h4>
-                        <code>typedef NS_ENUM(NSInteger, AZSLeaseDuration ) {<br>
+                        <code>typedef NS_ENUM(NSInteger, AZSAllowedStorageLocation ) {<br>
                             
-                            &nbsp;&nbsp; <a href="">AZSLeaseDurationUnspecified</a>,<br>
+                            &nbsp;&nbsp; <a href="">AZSAllowedStorageLocationPrimaryOnly</a>,<br>
                             
-                            &nbsp;&nbsp; <a href="">AZSLeaseDurationFixed</a>,<br>
+                            &nbsp;&nbsp; <a href="">AZSAllowedStorageLocationSecondaryOnly</a>,<br>
                             
-                            &nbsp;&nbsp; <a href="">AZSLeaseDurationInfinite</a>,<br>
+                            &nbsp;&nbsp; <a href="">AZSAllowedStorageLocationPrimaryOrSecondary</a>,<br>
                             
                             };</code>
                     
@@ -103,11 +103,11 @@
                         <h4 class="method-subtitle">Constants</h4>
                         <dl class="termdef">
                             
-                            <dt><a name="" title="AZSLeaseDurationUnspecified"></a><code>AZSLeaseDurationUnspecified</code></dt>
+                            <dt><a name="" title="AZSAllowedStorageLocationPrimaryOnly"></a><code>AZSAllowedStorageLocationPrimaryOnly</code></dt>
 <dd>
 
 
-<p>The lease duration is not specified.</p>
+<p>Which storage locations are permitted for a given operation.</p>
 
 
 
@@ -120,11 +120,11 @@
 	
 </dd>
                             
-                            <dt><a name="" title="AZSLeaseDurationFixed"></a><code>AZSLeaseDurationFixed</code></dt>
+                            <dt><a name="" title="AZSAllowedStorageLocationSecondaryOnly"></a><code>AZSAllowedStorageLocationSecondaryOnly</code></dt>
 <dd>
 
 
-<p>The lease duration is finite.</p>
+<p>Which storage locations are permitted for a given operation.</p>
 
 
 
@@ -137,11 +137,11 @@
 	
 </dd>
                             
-                            <dt><a name="" title="AZSLeaseDurationInfinite"></a><code>AZSLeaseDurationInfinite</code></dt>
+                            <dt><a name="" title="AZSAllowedStorageLocationPrimaryOrSecondary"></a><code>AZSAllowedStorageLocationPrimaryOrSecondary</code></dt>
 <dd>
 
 
-<p>The lease duration is infinite.</p>
+<p>Which storage locations are permitted for a given operation.</p>
 
 
 

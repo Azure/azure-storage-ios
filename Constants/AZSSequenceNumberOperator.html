@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 
-	<title>AZSLeaseDuration Constants Reference</title>
+	<title>AZSSequenceNumberOperator Constants Reference</title>
 
 	<link rel="stylesheet" href="../css/style.css">
 	<meta name="viewport" content="initial-scale=1, maximum-scale=1.4">
@@ -59,7 +59,7 @@
 		<div id="overview_contents" class="container">
 			<div id="content">
 				<main role="main">
-					<h1 class="title">AZSLeaseDuration Constants Reference</h1>
+					<h1 class="title">AZSSequenceNumberOperator Constants Reference</h1>
 
 					
 					<div class="section section-specification"><table cellspacing="0"><tbody>
@@ -75,11 +75,11 @@
 					
 
                     
-                    <h3 class="subsubtitle method-title">AZSLeaseDuration</h3>
+                    <h3 class="subsubtitle method-title">AZSSequenceNumberOperator</h3>
                     
 					
 					<div class="section section-overview">
-                        <p>The lease duration of a resource</p>
+                        <p>Specifies the sequence number operator to use in a sequence number access condition.</p>
 					</div>
 					
 					
@@ -87,13 +87,15 @@
                         <!-- display enum values -->
                         
                         <h4 class="method-subtitle">Definition</h4>
-                        <code>typedef NS_ENUM(NSInteger, AZSLeaseDuration ) {<br>
+                        <code>typedef NS_ENUM(NSInteger, AZSSequenceNumberOperator ) {<br>
                             
-                            &nbsp;&nbsp; <a href="">AZSLeaseDurationUnspecified</a>,<br>
+                            &nbsp;&nbsp; <a href="">AZSSequenceNumberOperatorNone</a>,<br>
                             
-                            &nbsp;&nbsp; <a href="">AZSLeaseDurationFixed</a>,<br>
+                            &nbsp;&nbsp; <a href="">AZSSequenceNumberOperatorLessThanOrEqualTo</a>,<br>
                             
-                            &nbsp;&nbsp; <a href="">AZSLeaseDurationInfinite</a>,<br>
+                            &nbsp;&nbsp; <a href="">AZSSequenceNumberOperatorLessThan</a>,<br>
+                            
+                            &nbsp;&nbsp; <a href="">AZSSequenceNumberOperatorEqualTo</a>,<br>
                             
                             };</code>
                     
@@ -103,11 +105,11 @@
                         <h4 class="method-subtitle">Constants</h4>
                         <dl class="termdef">
                             
-                            <dt><a name="" title="AZSLeaseDurationUnspecified"></a><code>AZSLeaseDurationUnspecified</code></dt>
+                            <dt><a name="" title="AZSSequenceNumberOperatorNone"></a><code>AZSSequenceNumberOperatorNone</code></dt>
 <dd>
 
 
-<p>The lease duration is not specified.</p>
+<p>Specifies no sequence number operator.</p>
 
 
 
@@ -120,11 +122,11 @@
 	
 </dd>
                             
-                            <dt><a name="" title="AZSLeaseDurationFixed"></a><code>AZSLeaseDurationFixed</code></dt>
+                            <dt><a name="" title="AZSSequenceNumberOperatorLessThanOrEqualTo"></a><code>AZSSequenceNumberOperatorLessThanOrEqualTo</code></dt>
 <dd>
 
 
-<p>The lease duration is finite.</p>
+<p>Specifies that the request should only complete if the sequence number on the blob is less than or equal to the sequence number in the access condition.</p>
 
 
 
@@ -137,11 +139,28 @@
 	
 </dd>
                             
-                            <dt><a name="" title="AZSLeaseDurationInfinite"></a><code>AZSLeaseDurationInfinite</code></dt>
+                            <dt><a name="" title="AZSSequenceNumberOperatorLessThan"></a><code>AZSSequenceNumberOperatorLessThan</code></dt>
 <dd>
 
 
-<p>The lease duration is infinite.</p>
+<p>Specifies that the request should only complete if the sequence number on the blob is less than the sequence number in the access condition.</p>
+
+
+
+
+
+    
+	<p>
+		Declared In <code class="declared-in-ref">AZSEnums.h</code>.
+	</p>
+	
+</dd>
+                            
+                            <dt><a name="" title="AZSSequenceNumberOperatorEqualTo"></a><code>AZSSequenceNumberOperatorEqualTo</code></dt>
+<dd>
+
+
+<p>Specifies that the request should only complete if the sequence number on the blob is equal to the sequence number in the access condition.</p>
 
 
 

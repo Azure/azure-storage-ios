@@ -72,13 +72,13 @@
 		
 		<option value="//api/name/initWithContainer:name:snapshotTime:">- initWithContainer:name:snapshotTime:</option>
 		
-		<option value="//api/name/initWithStorageUri:">- initWithStorageUri:</option>
+		<option value="//api/name/initWithStorageUri:credentials:snapshotTime:error:">- initWithStorageUri:credentials:snapshotTime:error:</option>
 		
-		<option value="//api/name/initWithStorageUri:credentials:snapshotTime:">- initWithStorageUri:credentials:snapshotTime:</option>
+		<option value="//api/name/initWithStorageUri:error:">- initWithStorageUri:error:</option>
 		
-		<option value="//api/name/initWithUrl:">- initWithUrl:</option>
+		<option value="//api/name/initWithUrl:credentials:snapshotTime:error:">- initWithUrl:credentials:snapshotTime:error:</option>
 		
-		<option value="//api/name/initWithUrl:credentials:snapshotTime:">- initWithUrl:credentials:snapshotTime:</option>
+		<option value="//api/name/initWithUrl:error:">- initWithUrl:error:</option>
 		
 		<option value="//api/name/uploadBlockFromData:blockID:completionHandler:">- uploadBlockFromData:blockID:completionHandler:</option>
 		
@@ -343,8 +343,8 @@ number of outstanding downloads is also configurable in the <a href="../Classes/
 		</div>
 	</div>
 </div><div class="section-method">
-	<a name="//api/name/initWithUrl:" title="initWithUrl:"></a>
-	<h3 class="method-title"><code><a href="#//api/name/initWithUrl:">&ndash;&nbsp;initWithUrl:</a></code>
+	<a name="//api/name/initWithUrl:error:" title="initWithUrl:error:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/initWithUrl:error:">&ndash;&nbsp;initWithUrl:error:</a></code>
 </h3>
 
 	<div class="method-info">
@@ -359,7 +359,7 @@ number of outstanding downloads is also configurable in the <a href="../Classes/
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>- (instancetype)initWithUrl:(NSURL *)<em>blobAbsoluteUrl</em></code></div>
+			<div class="method-subsection method-declaration"><code>- (instancetype)initWithUrl:(NSURL *)<em>blobAbsoluteUrl</em> error:(NSError **)<em>error</em></code></div>
 
 		    
 			
@@ -370,6 +370,11 @@ number of outstanding downloads is also configurable in the <a href="../Classes/
 					<tr>
 						<th scope="row" class="argument-name"><code>blobAbsoluteUrl</code></th>
 						<td><p>The absolute URL to the blob.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>error</code></th>
+						<td><p>A pointer to a NSError*, to be set in the event of failure.</p></td>
 					</tr>
 				
 				</table>
@@ -401,8 +406,8 @@ number of outstanding downloads is also configurable in the <a href="../Classes/
 		</div>
 	</div>
 </div><div class="section-method">
-	<a name="//api/name/initWithUrl:credentials:snapshotTime:" title="initWithUrl:credentials:snapshotTime:"></a>
-	<h3 class="method-title"><code><a href="#//api/name/initWithUrl:credentials:snapshotTime:">&ndash;&nbsp;initWithUrl:credentials:snapshotTime:</a></code>
+	<a name="//api/name/initWithUrl:credentials:snapshotTime:error:" title="initWithUrl:credentials:snapshotTime:error:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/initWithUrl:credentials:snapshotTime:error:">&ndash;&nbsp;initWithUrl:credentials:snapshotTime:error:</a></code>
 </h3>
 
 	<div class="method-info">
@@ -417,7 +422,7 @@ number of outstanding downloads is also configurable in the <a href="../Classes/
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>- (instancetype)initWithUrl:(NSURL *)<em>blobAbsoluteUrl</em> credentials:(AZSNullable AZSStorageCredentials *)<em>credentials</em> snapshotTime:(AZSNullable NSString *)<em>snapshotTime</em></code></div>
+			<div class="method-subsection method-declaration"><code>- (instancetype)initWithUrl:(NSURL *)<em>blobAbsoluteUrl</em> credentials:(AZSNullable AZSStorageCredentials *)<em>credentials</em> snapshotTime:(AZSNullable NSString *)<em>snapshotTime</em> error:(NSError **)<em>error</em></code></div>
 
 		    
 			
@@ -437,7 +442,12 @@ number of outstanding downloads is also configurable in the <a href="../Classes/
 				
 					<tr>
 						<th scope="row" class="argument-name"><code>snapshotTime</code></th>
-						<td><p>The timestamp of the intended snapshot.  If nil, this AZSCloudBlockBlob object refers to the actual blob, not a snapshot.</p></td>
+						<td><p>The timestamp of the intended snapshot. If nil, this AZSCloudBlockBlob object refers to the actual blob, not a snapshot.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>error</code></th>
+						<td><p>A pointer to a NSError*, to be set in the event of failure.</p></td>
 					</tr>
 				
 				</table>
@@ -469,8 +479,8 @@ number of outstanding downloads is also configurable in the <a href="../Classes/
 		</div>
 	</div>
 </div><div class="section-method">
-	<a name="//api/name/initWithStorageUri:" title="initWithStorageUri:"></a>
-	<h3 class="method-title"><code><a href="#//api/name/initWithStorageUri:">&ndash;&nbsp;initWithStorageUri:</a></code>
+	<a name="//api/name/initWithStorageUri:error:" title="initWithStorageUri:error:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/initWithStorageUri:error:">&ndash;&nbsp;initWithStorageUri:error:</a></code>
 </h3>
 
 	<div class="method-info">
@@ -485,7 +495,7 @@ number of outstanding downloads is also configurable in the <a href="../Classes/
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>- (instancetype)initWithStorageUri:(AZSStorageUri *)<em>blobAbsoluteUri</em></code></div>
+			<div class="method-subsection method-declaration"><code>- (instancetype)initWithStorageUri:(AZSStorageUri *)<em>blobAbsoluteUri</em> error:(NSError **)<em>error</em></code></div>
 
 		    
 			
@@ -498,6 +508,11 @@ number of outstanding downloads is also configurable in the <a href="../Classes/
 						<td><p>The absolute URL to the blob.</p></td>
 					</tr>
 				
+					<tr>
+						<th scope="row" class="argument-name"><code>error</code></th>
+						<td><p>A pointer to a NSError*, to be set in the event of failure.</p></td>
+					</tr>
+				
 				</table>
 			</div>
 			
@@ -527,8 +542,8 @@ number of outstanding downloads is also configurable in the <a href="../Classes/
 		</div>
 	</div>
 </div><div class="section-method">
-	<a name="//api/name/initWithStorageUri:credentials:snapshotTime:" title="initWithStorageUri:credentials:snapshotTime:"></a>
-	<h3 class="method-title"><code><a href="#//api/name/initWithStorageUri:credentials:snapshotTime:">&ndash;&nbsp;initWithStorageUri:credentials:snapshotTime:</a></code>
+	<a name="//api/name/initWithStorageUri:credentials:snapshotTime:error:" title="initWithStorageUri:credentials:snapshotTime:error:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/initWithStorageUri:credentials:snapshotTime:error:">&ndash;&nbsp;initWithStorageUri:credentials:snapshotTime:error:</a></code>
 </h3>
 
 	<div class="method-info">
@@ -543,7 +558,7 @@ number of outstanding downloads is also configurable in the <a href="../Classes/
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>- (instancetype)initWithStorageUri:(AZSStorageUri *)<em>blobAbsoluteUri</em> credentials:(AZSNullable AZSStorageCredentials *)<em>credentials</em> snapshotTime:(AZSNullable NSString *)<em>snapshotTime</em></code></div>
+			<div class="method-subsection method-declaration"><code>- (instancetype)initWithStorageUri:(AZSStorageUri *)<em>blobAbsoluteUri</em> credentials:(AZSNullable AZSStorageCredentials *)<em>credentials</em> snapshotTime:(AZSNullable NSString *)<em>snapshotTime</em> error:(NSError **)<em>error</em></code></div>
 
 		    
 			
@@ -563,7 +578,12 @@ number of outstanding downloads is also configurable in the <a href="../Classes/
 				
 					<tr>
 						<th scope="row" class="argument-name"><code>snapshotTime</code></th>
-						<td><p>The timestamp of the intended snapshot.  If nil, this AZSCloudBlockBlob object refers to the actual blob, not a snapshot.</p></td>
+						<td><p>The timestamp of the intended snapshot. If nil, this AZSCloudBlockBlob object refers to the actual blob, not a snapshot.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>error</code></th>
+						<td><p>A pointer to a NSError*, to be set in the event of failure.</p></td>
 					</tr>
 				
 				</table>
@@ -674,7 +694,7 @@ number of outstanding downloads is also configurable in the <a href="../Classes/
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>- (instancetype)initWithContainer:(AZSCloudBlobContainer *)<em>blobContainer</em> name:(NSString *)<em>blobName</em> snapshotTime:(AZSNullable NSDate *)<em>snapshotTime</em></code></div>
+			<div class="method-subsection method-declaration"><code>- (instancetype)initWithContainer:(AZSCloudBlobContainer *)<em>blobContainer</em> name:(NSString *)<em>blobName</em> snapshotTime:(AZSNullable NSString *)<em>snapshotTime</em></code></div>
 
 		    
 			
@@ -2128,7 +2148,7 @@ already in the blob on the service, unless protected with an appropriate <a href
 				<footer>
 					<div class="footer-copyright">
 						
-						<p class="copyright">Copyright &copy; 2015 Microsoft. All rights reserved. Updated: 2015-12-15</p>
+						<p class="copyright">Copyright &copy; 2016 Microsoft. All rights reserved. Updated: 2016-07-26</p>
 						
 						
 						<p class="generator">Generated by <a href="http://appledoc.gentlebytes.com">appledoc 2.2.1 (build 1334)</a>.</p>

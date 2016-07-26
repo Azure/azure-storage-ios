@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 
-	<title>AZSStorageUri Class Reference</title>
+	<title>AZSIPRange Class Reference</title>
 
 	<link rel="stylesheet" href="../css/style.css">
 	<meta name="viewport" content="initial-scale=1, maximum-scale=1.4">
@@ -56,29 +56,27 @@
 	
 	<optgroup label="Properties">
 		
-		<option value="//api/name/primaryUri">primaryUri</option>
+		<option value="//api/name/ipMaximum">ipMaximum</option>
 		
-		<option value="//api/name/secondaryUri">secondaryUri</option>
+		<option value="//api/name/ipMinimum">ipMinimum</option>
+		
+		<option value="//api/name/rangeString">rangeString</option>
 		
 	</optgroup>
 	
 
-	
-	<optgroup label="Class Methods">
-		
-		<option value="//api/name/appendToStorageUri:pathToAppend:">+ appendToStorageUri:pathToAppend:</option>
-		
-	</optgroup>
 	
 
 	
 	<optgroup label="Instance Methods">
 		
-		<option value="//api/name/initWithPrimaryUri:">- initWithPrimaryUri:</option>
+		<option value="//api/name/initWithMinIP:maxIP:">- initWithMinIP:maxIP:</option>
 		
-		<option value="//api/name/initWithPrimaryUri:secondaryUri:">- initWithPrimaryUri:secondaryUri:</option>
+		<option value="//api/name/initWithMinIPString:maxIPString:error:">- initWithMinIPString:maxIPString:error:</option>
 		
-		<option value="//api/name/urlWithLocation:">- urlWithLocation:</option>
+		<option value="//api/name/initWithSingleIP:">- initWithSingleIP:</option>
+		
+		<option value="//api/name/initWithSingleIPString:error:">- initWithSingleIPString:error:</option>
 		
 	</optgroup>
 	
@@ -95,7 +93,7 @@
 		<div id="overview_contents" class="container">
 			<div id="content">
 				<main role="main">
-					<h1 class="title">AZSStorageUri Class Reference</h1>
+					<h1 class="title">AZSIPRange Class Reference</h1>
 
 					
 					<div class="section section-specification"><table cellspacing="0"><tbody>
@@ -104,7 +102,7 @@
 	<td>NSObject</td>
 </tr><tr>
 	<th>Declared in</th>
-	<td>AZSStorageUri.h<br />AZSStorageUri.m</td>
+	<td>AZSIPRange.h<br />AZSIPRange.m</td>
 </tr>
 						</tbody></table></div>
 					
@@ -114,11 +112,7 @@
 					<div class="section section-overview">
 						<a title="Overview" name="overview"></a>
 						<h2 class="subtitle subtitle-overview">Overview</h2>
-						<p>AZSStorageUri is a wrapper around two NSURL objects used to connect to Storage.</p>
-
-<p>An AZSStorageUri is designed to contain two URLs.  The first is used to connect to the Primary
-endpoint of the Storage Service, used for all requests.  The second, the Secondary URL, is
-used for read request against RA-GRS accounts if configured properly (functionality forthcoming).</p>
+						<p>A range of IPv4 addresses. Contains a minumum IP, maximum IP, and a string representing the range.</p>
 					</div>
 					
 					
@@ -134,8 +128,8 @@ used for read request against RA-GRS accounts if configured properly (functional
 
 						<div class="task-list">
 							<div class="section-method">
-	<a name="//api/name/primaryUri" title="primaryUri"></a>
-	<h3 class="method-title"><code><a href="#//api/name/primaryUri">&nbsp;&nbsp;primaryUri</a></code>
+	<a name="//api/name/ipMinimum" title="ipMinimum"></a>
+	<h3 class="method-title"><code><a href="#//api/name/ipMinimum">&nbsp;&nbsp;ipMinimum</a></code>
 </h3>
 
 	<div class="method-info">
@@ -145,12 +139,12 @@ used for read request against RA-GRS accounts if configured properly (functional
 			
 			
 			<div class="method-subsection brief-description">
-				<p>The primary URL of the Storage Service for this account.</p>
+				<p>The minimum IP address for this range, inclusive.</p>
 			</div>
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>@property (copy) NSURL *primaryUri</code></div>
+			<div class="method-subsection method-declaration"><code>@property (readonly) struct in_addr ipMinimum</code></div>
 
 		    
 			
@@ -168,15 +162,15 @@ used for read request against RA-GRS accounts if configured properly (functional
 			
 			<div class="method-subsection declared-in-section">
 				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">AZSStorageUri.h</code></p>
+				<p><code class="declared-in-ref">AZSIPRange.h</code></p>
 			</div>
 			
 			
 		</div>
 	</div>
 </div><div class="section-method">
-	<a name="//api/name/secondaryUri" title="secondaryUri"></a>
-	<h3 class="method-title"><code><a href="#//api/name/secondaryUri">&nbsp;&nbsp;secondaryUri</a></code>
+	<a name="//api/name/ipMaximum" title="ipMaximum"></a>
+	<h3 class="method-title"><code><a href="#//api/name/ipMaximum">&nbsp;&nbsp;ipMaximum</a></code>
 </h3>
 
 	<div class="method-info">
@@ -186,12 +180,12 @@ used for read request against RA-GRS accounts if configured properly (functional
 			
 			
 			<div class="method-subsection brief-description">
-				<p>The secondary URL of the Storage Service for this account.</p>
+				<p>The maximum IP address for this range, inclusive.</p>
 			</div>
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>@property (copy, AZSNullable) NSURL *secondaryUri</code></div>
+			<div class="method-subsection method-declaration"><code>@property (readonly) struct in_addr ipMaximum</code></div>
 
 		    
 			
@@ -209,15 +203,15 @@ used for read request against RA-GRS accounts if configured properly (functional
 			
 			<div class="method-subsection declared-in-section">
 				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">AZSStorageUri.h</code></p>
+				<p><code class="declared-in-ref">AZSIPRange.h</code></p>
 			</div>
 			
 			
 		</div>
 	</div>
 </div><div class="section-method">
-	<a name="//api/name/appendToStorageUri:pathToAppend:" title="appendToStorageUri:pathToAppend:"></a>
-	<h3 class="method-title"><code><a href="#//api/name/appendToStorageUri:pathToAppend:">+&nbsp;appendToStorageUri:pathToAppend:</a></code>
+	<a name="//api/name/rangeString" title="rangeString"></a>
+	<h3 class="method-title"><code><a href="#//api/name/rangeString">&nbsp;&nbsp;rangeString</a></code>
 </h3>
 
 	<div class="method-info">
@@ -227,12 +221,53 @@ used for read request against RA-GRS accounts if configured properly (functional
 			
 			
 			<div class="method-subsection brief-description">
-				<p>Appends a given path to a Storage URI</p>
+				<p>The single IP address of range of IP addresses, represented as a string.</p>
 			</div>
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>+ (AZSStorageUri *)appendToStorageUri:(AZSStorageUri *)<em>storageUri</em> pathToAppend:(NSString *)<em>pathToAppend</em></code></div>
+			<div class="method-subsection method-declaration"><code>@property (strong, readonly) NSString *rangeString</code></div>
+
+		    
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSIPRange.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/initWithSingleIPString:error:" title="initWithSingleIPString:error:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/initWithSingleIPString:error:">&ndash;&nbsp;initWithSingleIPString:error:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Creates an IP range using the specified single IP address represented by the given string. The address must be IPv4.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (instancetype)initWithSingleIPString:(NSString *)<em>ipString</em> error:(NSError *__autoreleasing *)<em>error</em></code></div>
 
 		    
 			
@@ -241,13 +276,13 @@ used for read request against RA-GRS accounts if configured properly (functional
 				<table class="argument-def parameter-def">
 				
 					<tr>
-						<th scope="row" class="argument-name"><code>storageUri</code></th>
-						<td><p>The AZSStorageUri to use as a base</p></td>
+						<th scope="row" class="argument-name"><code>error</code></th>
+						<td><p>A pointer to a NSError*, to be set in the event of failure.</p></td>
 					</tr>
 				
 					<tr>
-						<th scope="row" class="argument-name"><code>pathToAppend</code></th>
-						<td><p>The path to append to the URLs</p></td>
+						<th scope="row" class="argument-name"><code>ip</code></th>
+						<td><p>The single IP address.</p></td>
 					</tr>
 				
 				</table>
@@ -257,19 +292,12 @@ used for read request against RA-GRS accounts if configured properly (functional
 			
 			<div class="method-subsection return">
 				<h4 class="method-subtitle parameter-title">Return Value</h4>
-				<p>A new StorageUri with the paths appended.</p>
+				<p>The newly initialized IPRange or nil if the given string is invalid.</p>
 			</div>
 			
 
 			
 
-			
-			<div class="method-subsection discussion-section">
-				<h4 class="method-subtitle">Discussion</h4>
-				<p>This method creates a new AZSStorageUri with the given path appended to each URL.  This is used,
-for example, to append a container and blob name to the root Storage Account URI.  Both the
-primary and secondary URLs will be appended to.</p>
-			</div>
 			
 
 			
@@ -279,15 +307,15 @@ primary and secondary URLs will be appended to.</p>
 			
 			<div class="method-subsection declared-in-section">
 				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">AZSStorageUri.h</code></p>
+				<p><code class="declared-in-ref">AZSIPRange.h</code></p>
 			</div>
 			
 			
 		</div>
 	</div>
 </div><div class="section-method">
-	<a name="//api/name/initWithPrimaryUri:" title="initWithPrimaryUri:"></a>
-	<h3 class="method-title"><code><a href="#//api/name/initWithPrimaryUri:">&ndash;&nbsp;initWithPrimaryUri:</a></code>
+	<a name="//api/name/initWithMinIPString:maxIPString:error:" title="initWithMinIPString:maxIPString:error:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/initWithMinIPString:maxIPString:error:">&ndash;&nbsp;initWithMinIPString:maxIPString:error:</a></code>
 </h3>
 
 	<div class="method-info">
@@ -297,12 +325,12 @@ primary and secondary URLs will be appended to.</p>
 			
 			
 			<div class="method-subsection brief-description">
-				<p>Initializes a fresh AZSStorageUri instance.</p>
+				<p>Creates an IP range encompassing the specified minimum and maximum IP addresses represented by the given strings. The addresses must be IPv4.</p>
 			</div>
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>- (instancetype)initWithPrimaryUri:(NSURL *)<em>primaryUri</em></code></div>
+			<div class="method-subsection method-declaration"><code>- (instancetype)initWithMinIPString:(NSString *)<em>minimumString</em> maxIPString:(NSString *)<em>maximumString</em> error:(NSError *__autoreleasing *)<em>error</em></code></div>
 
 		    
 			
@@ -311,8 +339,18 @@ primary and secondary URLs will be appended to.</p>
 				<table class="argument-def parameter-def">
 				
 					<tr>
-						<th scope="row" class="argument-name"><code>primaryUri</code></th>
-						<td><p>The URL of the Primary endpoint for the target storage account.</p></td>
+						<th scope="row" class="argument-name"><code>error</code></th>
+						<td><p>A pointer to a NSError*, to be set in the event of failure.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>minimum</code></th>
+						<td><p>The minimum IP address.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>maximum</code></th>
+						<td><p>The maximum IP address.</p></td>
 					</tr>
 				
 				</table>
@@ -322,7 +360,7 @@ primary and secondary URLs will be appended to.</p>
 			
 			<div class="method-subsection return">
 				<h4 class="method-subtitle parameter-title">Return Value</h4>
-				<p>The freshly allocated instance.</p>
+				<p>The newly initialized IPRange or nil if the given string is invalid.</p>
 			</div>
 			
 
@@ -337,15 +375,15 @@ primary and secondary URLs will be appended to.</p>
 			
 			<div class="method-subsection declared-in-section">
 				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">AZSStorageUri.h</code></p>
+				<p><code class="declared-in-ref">AZSIPRange.h</code></p>
 			</div>
 			
 			
 		</div>
 	</div>
 </div><div class="section-method">
-	<a name="//api/name/initWithPrimaryUri:secondaryUri:" title="initWithPrimaryUri:secondaryUri:"></a>
-	<h3 class="method-title"><code><a href="#//api/name/initWithPrimaryUri:secondaryUri:">&ndash;&nbsp;initWithPrimaryUri:secondaryUri:</a></code>
+	<a name="//api/name/initWithSingleIP:" title="initWithSingleIP:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/initWithSingleIP:">&ndash;&nbsp;initWithSingleIP:</a></code>
 </h3>
 
 	<div class="method-info">
@@ -355,12 +393,12 @@ primary and secondary URLs will be appended to.</p>
 			
 			
 			<div class="method-subsection brief-description">
-				<p>Initializes a fresh AZSStorageUri instance.</p>
+				<p>Creates an IP range using the specified single IP address.  The address must be IPv4.</p>
 			</div>
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>- (instancetype)initWithPrimaryUri:(NSURL *)<em>primaryUri</em> secondaryUri:(AZSNullable NSURL *)<em>secondaryUri</em></code></div>
+			<div class="method-subsection method-declaration"><code>- (instancetype)initWithSingleIP:(struct in_addr)<em>ip</em></code></div>
 
 		    
 			
@@ -369,13 +407,8 @@ primary and secondary URLs will be appended to.</p>
 				<table class="argument-def parameter-def">
 				
 					<tr>
-						<th scope="row" class="argument-name"><code>primaryUri</code></th>
-						<td><p>The URL of the Primary endpoint for the target storage account.</p></td>
-					</tr>
-				
-					<tr>
-						<th scope="row" class="argument-name"><code>secondaryUri</code></th>
-						<td><p>The URL of the Secondary endpoint for the target storage account.</p></td>
+						<th scope="row" class="argument-name"><code>ip</code></th>
+						<td><p>The single IP address.</p></td>
 					</tr>
 				
 				</table>
@@ -385,7 +418,7 @@ primary and secondary URLs will be appended to.</p>
 			
 			<div class="method-subsection return">
 				<h4 class="method-subtitle parameter-title">Return Value</h4>
-				<p>The freshly allocated instance.</p>
+				<p>The newly initialized IPRange.</p>
 			</div>
 			
 
@@ -400,15 +433,15 @@ primary and secondary URLs will be appended to.</p>
 			
 			<div class="method-subsection declared-in-section">
 				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">AZSStorageUri.h</code></p>
+				<p><code class="declared-in-ref">AZSIPRange.h</code></p>
 			</div>
 			
 			
 		</div>
 	</div>
 </div><div class="section-method">
-	<a name="//api/name/urlWithLocation:" title="urlWithLocation:"></a>
-	<h3 class="method-title"><code><a href="#//api/name/urlWithLocation:">&ndash;&nbsp;urlWithLocation:</a></code>
+	<a name="//api/name/initWithMinIP:maxIP:" title="initWithMinIP:maxIP:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/initWithMinIP:maxIP:">&ndash;&nbsp;initWithMinIP:maxIP:</a></code>
 </h3>
 
 	<div class="method-info">
@@ -418,12 +451,12 @@ primary and secondary URLs will be appended to.</p>
 			
 			
 			<div class="method-subsection brief-description">
-				<p>Returns the NSURL associated with the given location.</p>
+				<p>Creates an IP range encompassing the specified minimum and maximum IP addresses.  The addresses must be IPv4.</p>
 			</div>
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>- (AZSNullable NSURL *)urlWithLocation:(AZSStorageLocation)<em>storageLocation</em></code></div>
+			<div class="method-subsection method-declaration"><code>- (instancetype)initWithMinIP:(struct in_addr)<em>minimum</em> maxIP:(struct in_addr)<em>maximum</em></code></div>
 
 		    
 			
@@ -432,8 +465,13 @@ primary and secondary URLs will be appended to.</p>
 				<table class="argument-def parameter-def">
 				
 					<tr>
-						<th scope="row" class="argument-name"><code>storageLocation</code></th>
-						<td><p>The StorageLocation to return the URL from.</p></td>
+						<th scope="row" class="argument-name"><code>minimum</code></th>
+						<td><p>The minimum IP address.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>maximum</code></th>
+						<td><p>The maximum IP address.</p></td>
 					</tr>
 				
 				</table>
@@ -443,7 +481,7 @@ primary and secondary URLs will be appended to.</p>
 			
 			<div class="method-subsection return">
 				<h4 class="method-subtitle parameter-title">Return Value</h4>
-				<p>The Primary URL or the Secondary URL, depending on the input.</p>
+				<p>The newly initialized IPRange.</p>
 			</div>
 			
 
@@ -458,7 +496,7 @@ primary and secondary URLs will be appended to.</p>
 			
 			<div class="method-subsection declared-in-section">
 				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">AZSStorageUri.h</code></p>
+				<p><code class="declared-in-ref">AZSIPRange.h</code></p>
 			</div>
 			
 			

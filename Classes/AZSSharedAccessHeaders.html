@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 
-	<title>AZSRetryInfo Class Reference</title>
+	<title>AZSSharedAccessHeaders Class Reference</title>
 
 	<link rel="stylesheet" href="../css/style.css">
 	<meta name="viewport" content="initial-scale=1, maximum-scale=1.4">
@@ -56,23 +56,21 @@
 	
 	<optgroup label="Properties">
 		
-		<option value="//api/name/retryInterval">retryInterval</option>
+		<option value="//api/name/cacheControl">cacheControl</option>
 		
-		<option value="//api/name/shouldRetry">shouldRetry</option>
+		<option value="//api/name/contentDisposition">contentDisposition</option>
+		
+		<option value="//api/name/contentEncoding">contentEncoding</option>
+		
+		<option value="//api/name/contentLanguage">contentLanguage</option>
+		
+		<option value="//api/name/contentType">contentType</option>
 		
 	</optgroup>
 	
 
 	
 
-	
-	<optgroup label="Instance Methods">
-		
-		<option value="//api/name/initDontRetry">- initDontRetry</option>
-		
-		<option value="//api/name/initWithShouldRetry:targetLocation:updatedLocationMode:retryInterval:">- initWithShouldRetry:targetLocation:updatedLocationMode:retryInterval:</option>
-		
-	</optgroup>
 	
 	
 </select>
@@ -87,7 +85,7 @@
 		<div id="overview_contents" class="container">
 			<div id="content">
 				<main role="main">
-					<h1 class="title">AZSRetryInfo Class Reference</h1>
+					<h1 class="title">AZSSharedAccessHeaders Class Reference</h1>
 
 					
 					<div class="section section-specification"><table cellspacing="0"><tbody>
@@ -96,7 +94,7 @@
 	<td>NSObject</td>
 </tr><tr>
 	<th>Declared in</th>
-	<td>AZSRetryInfo.h<br />AZSRetryInfo.m</td>
+	<td>AZSSharedAccessHeaders.h<br />AZSSharedAccessHeaders.m</td>
 </tr>
 						</tbody></table></div>
 					
@@ -106,8 +104,7 @@
 					<div class="section section-overview">
 						<a title="Overview" name="overview"></a>
 						<h2 class="subtitle subtitle-overview">Overview</h2>
-						<p>An AZSRetryInfo object represents retry information that the library will use to determine if and how to retry.
-It is the output of a RetryPolicy&rsquo;s evaluate method.</p>
+						<p>The optional headers that can be returned using SAS.</p>
 					</div>
 					
 					
@@ -123,8 +120,8 @@ It is the output of a RetryPolicy&rsquo;s evaluate method.</p>
 
 						<div class="task-list">
 							<div class="section-method">
-	<a name="//api/name/shouldRetry" title="shouldRetry"></a>
-	<h3 class="method-title"><code><a href="#//api/name/shouldRetry">&nbsp;&nbsp;shouldRetry</a></code>
+	<a name="//api/name/cacheControl" title="cacheControl"></a>
+	<h3 class="method-title"><code><a href="#//api/name/cacheControl">&nbsp;&nbsp;cacheControl</a></code>
 </h3>
 
 	<div class="method-info">
@@ -134,12 +131,12 @@ It is the output of a RetryPolicy&rsquo;s evaluate method.</p>
 			
 			
 			<div class="method-subsection brief-description">
-				<p>If YES, then the request should be retried.  Otherwise, the request should not be retried.</p>
+				<p>The cache-control header returned.</p>
 			</div>
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>@property BOOL shouldRetry</code></div>
+			<div class="method-subsection method-declaration"><code>@property (strong, AZSNullable) NSString *cacheControl</code></div>
 
 		    
 			
@@ -157,15 +154,15 @@ It is the output of a RetryPolicy&rsquo;s evaluate method.</p>
 			
 			<div class="method-subsection declared-in-section">
 				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">AZSRetryInfo.h</code></p>
+				<p><code class="declared-in-ref">AZSSharedAccessHeaders.h</code></p>
 			</div>
 			
 			
 		</div>
 	</div>
 </div><div class="section-method">
-	<a name="//api/name/retryInterval" title="retryInterval"></a>
-	<h3 class="method-title"><code><a href="#//api/name/retryInterval">&nbsp;&nbsp;retryInterval</a></code>
+	<a name="//api/name/contentDisposition" title="contentDisposition"></a>
+	<h3 class="method-title"><code><a href="#//api/name/contentDisposition">&nbsp;&nbsp;contentDisposition</a></code>
 </h3>
 
 	<div class="method-info">
@@ -175,13 +172,12 @@ It is the output of a RetryPolicy&rsquo;s evaluate method.</p>
 			
 			
 			<div class="method-subsection brief-description">
-				<p>The NSTimeInterval to wait before retrying the operation.
-Only has meaning if <a href="#//api/name/shouldRetry">shouldRetry</a> is YES.</p>
+				<p>The content-disposition header returned.</p>
 			</div>
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>@property NSTimeInterval retryInterval</code></div>
+			<div class="method-subsection method-declaration"><code>@property (strong, AZSNullable) NSString *contentDisposition</code></div>
 
 		    
 			
@@ -199,15 +195,15 @@ Only has meaning if <a href="#//api/name/shouldRetry">shouldRetry</a> is YES.</p
 			
 			<div class="method-subsection declared-in-section">
 				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">AZSRetryInfo.h</code></p>
+				<p><code class="declared-in-ref">AZSSharedAccessHeaders.h</code></p>
 			</div>
 			
 			
 		</div>
 	</div>
 </div><div class="section-method">
-	<a name="//api/name/initWithShouldRetry:targetLocation:updatedLocationMode:retryInterval:" title="initWithShouldRetry:targetLocation:updatedLocationMode:retryInterval:"></a>
-	<h3 class="method-title"><code><a href="#//api/name/initWithShouldRetry:targetLocation:updatedLocationMode:retryInterval:">&ndash;&nbsp;initWithShouldRetry:targetLocation:updatedLocationMode:retryInterval:</a></code>
+	<a name="//api/name/contentEncoding" title="contentEncoding"></a>
+	<h3 class="method-title"><code><a href="#//api/name/contentEncoding">&nbsp;&nbsp;contentEncoding</a></code>
 </h3>
 
 	<div class="method-info">
@@ -217,42 +213,14 @@ Only has meaning if <a href="#//api/name/shouldRetry">shouldRetry</a> is YES.</p
 			
 			
 			<div class="method-subsection brief-description">
-				<p>Initializes a fresh AZSRetryInfo instance.</p>
+				<p>The content-encoding header returned.</p>
 			</div>
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>- (instancetype)initWithShouldRetry:(BOOL)<em>shouldRetry</em> targetLocation:(AZSStorageLocation)<em>targetLocation</em> updatedLocationMode:(AZSStorageLocationMode)<em>updatedLocationMode</em> retryInterval:(NSTimeInterval)<em>retryInterval</em></code></div>
+			<div class="method-subsection method-declaration"><code>@property (strong, AZSNullable) NSString *contentEncoding</code></div>
 
 		    
-			
-			<div class="method-subsection arguments-section parameters">
-				<h4 class="method-subtitle parameter-title">Parameters</h4>
-				<table class="argument-def parameter-def">
-				
-					<tr>
-						<th scope="row" class="argument-name"><code>shouldRetry</code></th>
-						<td><p>If the request should be retried.</p></td>
-					</tr>
-				
-					<tr>
-						<th scope="row" class="argument-name"><code>targetLocation</code></th>
-						<td><p>The location for the next request.</p></td>
-					</tr>
-				
-					<tr>
-						<th scope="row" class="argument-name"><code>updatedLocationMode</code></th>
-						<td><p>The location mode to use for the next request.</p></td>
-					</tr>
-				
-					<tr>
-						<th scope="row" class="argument-name"><code>retryInterval</code></th>
-						<td><p>The NSTimeInterval to wait before retrying the operation.
-Only has meaning if <a href="#//api/name/shouldRetry">shouldRetry</a> is YES.</p></td>
-					</tr>
-				
-				</table>
-			</div>
 			
 
 			
@@ -268,15 +236,15 @@ Only has meaning if <a href="#//api/name/shouldRetry">shouldRetry</a> is YES.</p
 			
 			<div class="method-subsection declared-in-section">
 				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">AZSRetryInfo.h</code></p>
+				<p><code class="declared-in-ref">AZSSharedAccessHeaders.h</code></p>
 			</div>
 			
 			
 		</div>
 	</div>
 </div><div class="section-method">
-	<a name="//api/name/initDontRetry" title="initDontRetry"></a>
-	<h3 class="method-title"><code><a href="#//api/name/initDontRetry">&ndash;&nbsp;initDontRetry</a></code>
+	<a name="//api/name/contentLanguage" title="contentLanguage"></a>
+	<h3 class="method-title"><code><a href="#//api/name/contentLanguage">&nbsp;&nbsp;contentLanguage</a></code>
 </h3>
 
 	<div class="method-info">
@@ -286,12 +254,12 @@ Only has meaning if <a href="#//api/name/shouldRetry">shouldRetry</a> is YES.</p
 			
 			
 			<div class="method-subsection brief-description">
-				<p>Initializes the RetryInfo with a default, don&rsquo;t-retry instance.</p>
+				<p>The content-language header returned.</p>
 			</div>
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>- (instancetype)initDontRetry</code></div>
+			<div class="method-subsection method-declaration"><code>@property (strong, AZSNullable) NSString *contentLanguage</code></div>
 
 		    
 			
@@ -309,7 +277,48 @@ Only has meaning if <a href="#//api/name/shouldRetry">shouldRetry</a> is YES.</p
 			
 			<div class="method-subsection declared-in-section">
 				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">AZSRetryInfo.h</code></p>
+				<p><code class="declared-in-ref">AZSSharedAccessHeaders.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/contentType" title="contentType"></a>
+	<h3 class="method-title"><code><a href="#//api/name/contentType">&nbsp;&nbsp;contentType</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>The content-type header returned.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (strong, AZSNullable) NSString *contentType</code></div>
+
+		    
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSSharedAccessHeaders.h</code></p>
 			</div>
 			
 			

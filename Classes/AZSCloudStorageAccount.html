@@ -58,7 +58,7 @@
 	
 	<optgroup label="Class Methods">
 		
-		<option value="//api/name/accountFromConnectionString:">+ accountFromConnectionString:</option>
+		<option value="//api/name/accountFromConnectionString:error:">+ accountFromConnectionString:error:</option>
 		
 	</optgroup>
 	
@@ -66,9 +66,15 @@
 	
 	<optgroup label="Instance Methods">
 		
+		<option value="//api/name/createSharedAccessSignatureWithParameters:error:">- createSharedAccessSignatureWithParameters:error:</option>
+		
 		<option value="//api/name/getBlobClient">- getBlobClient</option>
 		
-		<option value="//api/name/initWithCredentials:useHttps:">- initWithCredentials:useHttps:</option>
+		<option value="//api/name/initWithCredentials:blobEndpoint:tableEndpoint:queueEndpoint:fileEndpoint:error:">- initWithCredentials:blobEndpoint:tableEndpoint:queueEndpoint:fileEndpoint:error:</option>
+		
+		<option value="//api/name/initWithCredentials:useHttps:endpointSuffix:error:">- initWithCredentials:useHttps:endpointSuffix:error:</option>
+		
+		<option value="//api/name/initWithCredentials:useHttps:error:">- initWithCredentials:useHttps:error:</option>
 		
 	</optgroup>
 	
@@ -122,8 +128,8 @@
 
 						<div class="task-list">
 							<div class="section-method">
-	<a name="//api/name/accountFromConnectionString:" title="accountFromConnectionString:"></a>
-	<h3 class="method-title"><code><a href="#//api/name/accountFromConnectionString:">+&nbsp;accountFromConnectionString:</a></code>
+	<a name="//api/name/accountFromConnectionString:error:" title="accountFromConnectionString:error:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/accountFromConnectionString:error:">+&nbsp;accountFromConnectionString:error:</a></code>
 </h3>
 
 	<div class="method-info">
@@ -138,7 +144,7 @@
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>+ (AZSCloudStorageAccount *)accountFromConnectionString:(NSString *)<em>connectionString</em></code></div>
+			<div class="method-subsection method-declaration"><code>+ (AZSCloudStorageAccount *)accountFromConnectionString:(NSString *)<em>connectionString</em> error:(NSError **)<em>error</em></code></div>
 
 		    
 			
@@ -151,6 +157,11 @@
 						<td><p>The connection string to parse.</p></td>
 					</tr>
 				
+					<tr>
+						<th scope="row" class="argument-name"><code>error</code></th>
+						<td><p>A pointer to a NSError, to be set in case of failure.</p></td>
+					</tr>
+				
 				</table>
 			</div>
 			
@@ -158,7 +169,7 @@
 			
 			<div class="method-subsection return">
 				<h4 class="method-subtitle parameter-title">Return Value</h4>
-				<p>The newly created AZSCloudStorageAccount object.</p>
+				<p>The newly created AZSCloudStorageAccount object, or nil in case of failure.</p>
 			</div>
 			
 
@@ -190,8 +201,8 @@ as well as the <a href="../Classes/AZSStorageCredentials.html">AZSStorageCredent
 		</div>
 	</div>
 </div><div class="section-method">
-	<a name="//api/name/initWithCredentials:useHttps:" title="initWithCredentials:useHttps:"></a>
-	<h3 class="method-title"><code><a href="#//api/name/initWithCredentials:useHttps:">&ndash;&nbsp;initWithCredentials:useHttps:</a></code>
+	<a name="//api/name/initWithCredentials:blobEndpoint:tableEndpoint:queueEndpoint:fileEndpoint:error:" title="initWithCredentials:blobEndpoint:tableEndpoint:queueEndpoint:fileEndpoint:error:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/initWithCredentials:blobEndpoint:tableEndpoint:queueEndpoint:fileEndpoint:error:">&ndash;&nbsp;initWithCredentials:blobEndpoint:tableEndpoint:queueEndpoint:fileEndpoint:error:</a></code>
 </h3>
 
 	<div class="method-info">
@@ -201,12 +212,12 @@ as well as the <a href="../Classes/AZSStorageCredentials.html">AZSStorageCredent
 			
 			
 			<div class="method-subsection brief-description">
-				<p>Initialize a fresh <a href="../Classes/AZSStorageCredentials.html">AZSStorageCredentials</a> object</p>
+				<p>Initialize a fresh AZSCloudStorageAccount object</p>
 			</div>
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>- (instancetype)initWithCredentials:(AZSStorageCredentials *)<em>storageCredentials</em> useHttps:(BOOL)<em>useHttps</em></code></div>
+			<div class="method-subsection method-declaration"><code>- (instancetype)initWithCredentials:(AZSStorageCredentials *)<em>storageCredentials</em> blobEndpoint:(AZSStorageUri *)<em>blobEndpoint</em> tableEndpoint:(AZSStorageUri *)<em>tableEndpoint</em> queueEndpoint:(AZSStorageUri *)<em>queueEndpoint</em> fileEndpoint:(AZSStorageUri *)<em>fileEndpoint</em> error:(NSError **)<em>error</em></code></div>
 
 		    
 			
@@ -216,12 +227,32 @@ as well as the <a href="../Classes/AZSStorageCredentials.html">AZSStorageCredent
 				
 					<tr>
 						<th scope="row" class="argument-name"><code>storageCredentials</code></th>
-						<td><p>The <a href="../Classes/AZSStorageCredentials.html">AZSStorageCredentials</a> object contianing connection information</p></td>
+						<td><p>The <a href="../Classes/AZSStorageCredentials.html">AZSStorageCredentials</a> object containing connection information.</p></td>
 					</tr>
 				
 					<tr>
-						<th scope="row" class="argument-name"><code>useHttps</code></th>
-						<td><p>Whether requests should use HTTPS or HTTP</p></td>
+						<th scope="row" class="argument-name"><code>blobEndpoint</code></th>
+						<td><p>An explicit blob endpoint to use in place of the one the account generates automatically.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>tableEndpoint</code></th>
+						<td><p>An explicit table endpoint to use in place of the one the account generates automatically.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>queueEndpoint</code></th>
+						<td><p>An explicit queue endpoint to use in place of the one the account generates automatically.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>fileEndpoint</code></th>
+						<td><p>An explicit file endpoint to use in place of the one the account generates automatically.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>error</code></th>
+						<td><p>A pointer to a NSError, to be set in case of failure.</p></td>
 					</tr>
 				
 				</table>
@@ -231,7 +262,148 @@ as well as the <a href="../Classes/AZSStorageCredentials.html">AZSStorageCredent
 			
 			<div class="method-subsection return">
 				<h4 class="method-subtitle parameter-title">Return Value</h4>
-				<p>The freshly allocated AZSCloudStorageAccount.</p>
+				<p>The freshly allocated AZSCloudStorageAccount, or nil in case of failure.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudStorageAccount.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/initWithCredentials:useHttps:error:" title="initWithCredentials:useHttps:error:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/initWithCredentials:useHttps:error:">&ndash;&nbsp;initWithCredentials:useHttps:error:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Initialize a fresh AZSCloudStorageAccount object</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (instancetype)initWithCredentials:(AZSStorageCredentials *)<em>storageCredentials</em> useHttps:(BOOL)<em>useHttps</em> error:(NSError **)<em>error</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>storageCredentials</code></th>
+						<td><p>The <a href="../Classes/AZSStorageCredentials.html">AZSStorageCredentials</a> object containing connection information.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>useHttps</code></th>
+						<td><p>Whether requests should use HTTPS or HTTP.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>error</code></th>
+						<td><p>A pointer to a NSError, to be set in case of failure.</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+			<div class="method-subsection return">
+				<h4 class="method-subtitle parameter-title">Return Value</h4>
+				<p>The freshly allocated AZSCloudStorageAccount, or nil in case of failure.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudStorageAccount.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/initWithCredentials:useHttps:endpointSuffix:error:" title="initWithCredentials:useHttps:endpointSuffix:error:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/initWithCredentials:useHttps:endpointSuffix:error:">&ndash;&nbsp;initWithCredentials:useHttps:endpointSuffix:error:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Initialize a fresh AZSCloudStorageAccount object</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (instancetype)initWithCredentials:(AZSStorageCredentials *)<em>storageCredentials</em> useHttps:(BOOL)<em>useHttps</em> endpointSuffix:(NSString *)<em>endpointSuffix</em> error:(NSError **)<em>error</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>storageCredentials</code></th>
+						<td><p>The <a href="../Classes/AZSStorageCredentials.html">AZSStorageCredentials</a> object containing connection information.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>useHttps</code></th>
+						<td><p>Whether requests should use HTTPS or HTTP.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>endpointSuffix</code></th>
+						<td><p>An explicit endpoint to use in place of the one the account generates automatically.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>error</code></th>
+						<td><p>A pointer to a NSError, to be set in case of failure.</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+			<div class="method-subsection return">
+				<h4 class="method-subtitle parameter-title">Return Value</h4>
+				<p>The freshly allocated AZSCloudStorageAccount, or nil in case of failure.</p>
 			</div>
 			
 
@@ -298,6 +470,70 @@ as well as the <a href="../Classes/AZSStorageCredentials.html">AZSStorageCredent
 			
 		</div>
 	</div>
+</div><div class="section-method">
+	<a name="//api/name/createSharedAccessSignatureWithParameters:error:" title="createSharedAccessSignatureWithParameters:error:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/createSharedAccessSignatureWithParameters:error:">&ndash;&nbsp;createSharedAccessSignatureWithParameters:error:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Creates a Shared Access Signature (SAS) token from the given parameters for this Account.
+Note that logging in this method uses the global logger configured statically on the <a href="../Classes/AZSOperationContext.html">AZSOperationContext</a> as there is no operation being performed to provide a local operation context.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (NSString *)createSharedAccessSignatureWithParameters:(AZSSharedAccessAccountParameters *)<em>parameters</em> error:(NSError **)<em>error</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>parameters</code></th>
+						<td><p>The shared access account parameters from which to create the SAS token.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>error</code></th>
+						<td><p>A pointer to a NSError*, to be set in the event of failure.</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+			<div class="method-subsection return">
+				<h4 class="method-subtitle parameter-title">Return Value</h4>
+				<p>The newly created SAS token.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudStorageAccount.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
 </div>
 						</div>
 						
@@ -313,7 +549,7 @@ as well as the <a href="../Classes/AZSStorageCredentials.html">AZSStorageCredent
 				<footer>
 					<div class="footer-copyright">
 						
-						<p class="copyright">Copyright &copy; 2015 Microsoft. All rights reserved. Updated: 2015-12-15</p>
+						<p class="copyright">Copyright &copy; 2016 Microsoft. All rights reserved. Updated: 2016-07-26</p>
 						
 						
 						<p class="generator">Generated by <a href="http://appledoc.gentlebytes.com">appledoc 2.2.1 (build 1334)</a>.</p>

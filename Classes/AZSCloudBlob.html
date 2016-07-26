@@ -96,11 +96,17 @@
 		
 		<option value="//api/name/changeLeaseWithProposedLeaseId:accessCondition:requestOptions:operationContext:completionHandler:">- changeLeaseWithProposedLeaseId:accessCondition:requestOptions:operationContext:completionHandler:</option>
 		
+		<option value="//api/name/createSharedAccessSignatureWithParameters:error:">- createSharedAccessSignatureWithParameters:error:</option>
+		
 		<option value="//api/name/deleteWithCompletionHandler:">- deleteWithCompletionHandler:</option>
 		
 		<option value="//api/name/deleteWithSnapshotsOption:accessCondition:requestOptions:operationContext:completionHandler:">- deleteWithSnapshotsOption:accessCondition:requestOptions:operationContext:completionHandler:</option>
 		
 		<option value="//api/name/deleteWithSnapshotsOption:completionHandler:">- deleteWithSnapshotsOption:completionHandler:</option>
+		
+		<option value="//api/name/downloadAttributesWithAccessCondition:requestOptions:operationContext:completionHandler:">- downloadAttributesWithAccessCondition:requestOptions:operationContext:completionHandler:</option>
+		
+		<option value="//api/name/downloadAttributesWithCompletionHandler:">- downloadAttributesWithCompletionHandler:</option>
 		
 		<option value="//api/name/downloadToDataWithAccessCondition:requestOptions:operationContext:completionHandler:">- downloadToDataWithAccessCondition:requestOptions:operationContext:completionHandler:</option>
 		
@@ -113,6 +119,8 @@
 		<option value="//api/name/downloadToFileWithURL:append:accessCondition:requestOptions:operationContext:completionHandler:">- downloadToFileWithURL:append:accessCondition:requestOptions:operationContext:completionHandler:</option>
 		
 		<option value="//api/name/downloadToFileWithURL:append:completionHandler:">- downloadToFileWithURL:append:completionHandler:</option>
+		
+		<option value="//api/name/downloadToStream:AZSULLrange:accessCondition:requestOptions:operationContext:completionHandler:">- downloadToStream:AZSULLrange:accessCondition:requestOptions:operationContext:completionHandler:</option>
 		
 		<option value="//api/name/downloadToStream:accessCondition:requestOptions:operationContext:completionHandler:">- downloadToStream:accessCondition:requestOptions:operationContext:completionHandler:</option>
 		
@@ -127,10 +135,6 @@
 		<option value="//api/name/existsWithAccessCondition:requestOptions:operationContext:completionHandler:">- existsWithAccessCondition:requestOptions:operationContext:completionHandler:</option>
 		
 		<option value="//api/name/existsWithCompletionHandler:">- existsWithCompletionHandler:</option>
-		
-		<option value="//api/name/fetchAttributesWithAccessCondition:requestOptions:operationContext:completionHandler:">- fetchAttributesWithAccessCondition:requestOptions:operationContext:completionHandler:</option>
-		
-		<option value="//api/name/fetchAttributesWithCompletionHandler:">- fetchAttributesWithCompletionHandler:</option>
 		
 		<option value="//api/name/releaseLeaseWithAccessCondition:completionHandler:">- releaseLeaseWithAccessCondition:completionHandler:</option>
 		
@@ -603,8 +607,6 @@ blob has been downloaded.</p>
 			<div class="method-subsection discussion-section">
 				<h4 class="method-subtitle">Discussion</h4>
 				<p>This method streams the contents of a blob down from the service.</p>
-
-<p>This method is currently unstable, it does not use accepted patterns for Objective-C streams.  A solution is forthcoming.</p>
 			</div>
 			
 
@@ -700,8 +702,6 @@ blob has been downloaded.</p>
 			<div class="method-subsection discussion-section">
 				<h4 class="method-subtitle">Discussion</h4>
 				<p>This method streams the contents of a blob down from the service.</p>
-
-<p>This method is currently unstable, it does not use accepted patterns for Objective-C streams.  A solution is forthcoming.</p>
 			</div>
 			
 
@@ -802,8 +802,106 @@ blob has been downloaded.</p>
 			<div class="method-subsection discussion-section">
 				<h4 class="method-subtitle">Discussion</h4>
 				<p>This method streams the contents of a blob down from the service.</p>
+			</div>
+			
 
-<p>This method is currently unstable, it does not use accepted patterns for Objective-C streams.  A solution is forthcoming.</p>
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudBlob.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/downloadToStream:AZSULLrange:accessCondition:requestOptions:operationContext:completionHandler:" title="downloadToStream:AZSULLrange:accessCondition:requestOptions:operationContext:completionHandler:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/downloadToStream:AZSULLrange:accessCondition:requestOptions:operationContext:completionHandler:">&ndash;&nbsp;downloadToStream:AZSULLrange:accessCondition:requestOptions:operationContext:completionHandler:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Downloads the contents of the blob to a stream.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)downloadToStream:(NSOutputStream *)<em>targetStream</em> AZSULLrange:(AZSULLRange)<em>range</em> accessCondition:(AZSNullable AZSAccessCondition *)<em>accessCondition</em> requestOptions:(AZSNullable AZSBlobRequestOptions *)<em>requestOptions</em> operationContext:(AZSNullable AZSOperationContext *)<em>operationContext</em> completionHandler:(void ( ^ ) ( NSError *__AZSNullable ))<em>completionHandler</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>targetStream</code></th>
+						<td><p>The destination stream.  The stream should already be opened.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>range</code></th>
+						<td><p>The range of bytes to download.  If the length is 0, download the entire blob.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>accessCondition</code></th>
+						<td><p>The access condition for the request.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>requestOptions</code></th>
+						<td><p>The options to use for the request.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>operationContext</code></th>
+						<td><p>The operation context to use for the call.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>completionHandler</code></th>
+						<td><p>The block of code to execute when the download call completes.  Note that this will only be called after the entire
+blob has been downloaded.</p>
+
+<table>
+<thead>
+<tr>
+<th> Parameter name </th>
+<th> Description </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>NSError * </td>
+<td> Nil if the operation succeeded without error, error with details about the failure otherwise.</td>
+</tr>
+</tbody>
+</table>
+</td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>This method streams the contents of a blob down from the service.</p>
 			</div>
 			
 
@@ -1374,8 +1472,8 @@ blob has been downloaded.</p>
 		</div>
 	</div>
 </div><div class="section-method">
-	<a name="//api/name/fetchAttributesWithCompletionHandler:" title="fetchAttributesWithCompletionHandler:"></a>
-	<h3 class="method-title"><code><a href="#//api/name/fetchAttributesWithCompletionHandler:">&ndash;&nbsp;fetchAttributesWithCompletionHandler:</a></code>
+	<a name="//api/name/downloadAttributesWithCompletionHandler:" title="downloadAttributesWithCompletionHandler:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/downloadAttributesWithCompletionHandler:">&ndash;&nbsp;downloadAttributesWithCompletionHandler:</a></code>
 </h3>
 
 	<div class="method-info">
@@ -1390,7 +1488,7 @@ blob has been downloaded.</p>
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>- (void)fetchAttributesWithCompletionHandler:(void ( ^ ) ( NSError *__AZSNullable ))<em>completionHandler</em></code></div>
+			<div class="method-subsection method-declaration"><code>- (void)downloadAttributesWithCompletionHandler:(void ( ^ ) ( NSError *__AZSNullable ))<em>completionHandler</em></code></div>
 
 		    
 			
@@ -1443,8 +1541,8 @@ blob has been downloaded.</p>
 		</div>
 	</div>
 </div><div class="section-method">
-	<a name="//api/name/fetchAttributesWithAccessCondition:requestOptions:operationContext:completionHandler:" title="fetchAttributesWithAccessCondition:requestOptions:operationContext:completionHandler:"></a>
-	<h3 class="method-title"><code><a href="#//api/name/fetchAttributesWithAccessCondition:requestOptions:operationContext:completionHandler:">&ndash;&nbsp;fetchAttributesWithAccessCondition:requestOptions:operationContext:completionHandler:</a></code>
+	<a name="//api/name/downloadAttributesWithAccessCondition:requestOptions:operationContext:completionHandler:" title="downloadAttributesWithAccessCondition:requestOptions:operationContext:completionHandler:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/downloadAttributesWithAccessCondition:requestOptions:operationContext:completionHandler:">&ndash;&nbsp;downloadAttributesWithAccessCondition:requestOptions:operationContext:completionHandler:</a></code>
 </h3>
 
 	<div class="method-info">
@@ -1459,7 +1557,7 @@ blob has been downloaded.</p>
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>- (void)fetchAttributesWithAccessCondition:(AZSNullable AZSAccessCondition *)<em>accessCondition</em> requestOptions:(AZSNullable AZSBlobRequestOptions *)<em>requestOptions</em> operationContext:(AZSNullable AZSOperationContext *)<em>operationContext</em> completionHandler:(void ( ^ ) ( NSError *__AZSNullable ))<em>completionHandler</em></code></div>
+			<div class="method-subsection method-declaration"><code>- (void)downloadAttributesWithAccessCondition:(AZSNullable AZSAccessCondition *)<em>accessCondition</em> requestOptions:(AZSNullable AZSBlobRequestOptions *)<em>requestOptions</em> operationContext:(AZSNullable AZSOperationContext *)<em>operationContext</em> completionHandler:(void ( ^ ) ( NSError *__AZSNullable ))<em>completionHandler</em></code></div>
 
 		    
 			
@@ -1863,6 +1961,70 @@ blob has been downloaded.</p>
 				<h4 class="method-subtitle">Discussion</h4>
 				<p>This method queries the service to determine if the blob exists.</p>
 			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudBlob.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/createSharedAccessSignatureWithParameters:error:" title="createSharedAccessSignatureWithParameters:error:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/createSharedAccessSignatureWithParameters:error:">&ndash;&nbsp;createSharedAccessSignatureWithParameters:error:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Creates a Shared Access Signature (SAS) token from the given policy for this Blob.
+Note that logging in this method uses the global logger configured statically on the <a href="../Classes/AZSOperationContext.html">AZSOperationContext</a> as there is no operation being performed to provide a local operation context.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (NSString *)createSharedAccessSignatureWithParameters:(AZSSharedAccessBlobParameters *)<em>parameters</em> error:(NSError **)<em>error</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>parameters</code></th>
+						<td><p>The shared access blob parameters from which to create the SAS token.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>error</code></th>
+						<td><p>A pointer to a NSError*, to be set in the event of failure.</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+			<div class="method-subsection return">
+				<h4 class="method-subtitle parameter-title">Return Value</h4>
+				<p>The newly created SAS token.</p>
+			</div>
+			
+
+			
+
 			
 
 			
@@ -3940,7 +4102,7 @@ blob has been downloaded.</p>
 				<footer>
 					<div class="footer-copyright">
 						
-						<p class="copyright">Copyright &copy; 2015 Microsoft. All rights reserved. Updated: 2015-12-15</p>
+						<p class="copyright">Copyright &copy; 2016 Microsoft. All rights reserved. Updated: 2016-07-26</p>
 						
 						
 						<p class="generator">Generated by <a href="http://appledoc.gentlebytes.com">appledoc 2.2.1 (build 1334)</a>.</p>
