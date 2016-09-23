@@ -104,7 +104,7 @@ static NSCondition *_globalLogCondition;
     {
         return;
     }
-    
+    /*
     va_list args;
     va_start(args, stringToLog);
     NSString *finalLogString;
@@ -181,6 +181,8 @@ static NSCondition *_globalLogCondition;
     }
     
     va_end(args);  // Free the memory used for args.
+     
+     */
 }
 
 -(NSArray *)requestResults
