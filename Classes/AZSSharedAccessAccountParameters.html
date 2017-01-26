@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 
-	<title>AZSBlobRequestOptions Class Reference</title>
+	<title>AZSSharedAccessAccountParameters Class Reference</title>
 
 	<link rel="stylesheet" href="../css/style.css">
 	<meta name="viewport" content="initial-scale=1, maximum-scale=1.4">
@@ -56,15 +56,19 @@
 	
 	<optgroup label="Properties">
 		
-		<option value="//api/name/absorbConditionalErrorsOnRetry">absorbConditionalErrorsOnRetry</option>
+		<option value="//api/name/ipAddressOrRange">ipAddressOrRange</option>
 		
-		<option value="//api/name/disableContentMD5Validation">disableContentMD5Validation</option>
+		<option value="//api/name/permissions">permissions</option>
 		
-		<option value="//api/name/parallelismFactor">parallelismFactor</option>
+		<option value="//api/name/protocols">protocols</option>
 		
-		<option value="//api/name/storeBlobContentMD5">storeBlobContentMD5</option>
+		<option value="//api/name/resourceTypes">resourceTypes</option>
 		
-		<option value="//api/name/useTransactionalMD5">useTransactionalMD5</option>
+		<option value="//api/name/services">services</option>
+		
+		<option value="//api/name/sharedAccessExpiryTime">sharedAccessExpiryTime</option>
+		
+		<option value="//api/name/sharedAccessStartTime">sharedAccessStartTime</option>
 		
 	</optgroup>
 	
@@ -91,16 +95,16 @@
 		<div id="overview_contents" class="container">
 			<div id="content">
 				<main role="main">
-					<h1 class="title">AZSBlobRequestOptions Class Reference</h1>
+					<h1 class="title">AZSSharedAccessAccountParameters Class Reference</h1>
 
 					
 					<div class="section section-specification"><table cellspacing="0"><tbody>
 						<tr>
 	<th>Inherits from</th>
-	<td><a href="../Classes/AZSRequestOptions.html">AZSRequestOptions</a> : NSObject</td>
+	<td>NSObject</td>
 </tr><tr>
 	<th>Declared in</th>
-	<td>AZSBlobRequestOptions.h<br />AZSBlobRequestOptions.m</td>
+	<td>AZSSharedAccessAccountParameters.h<br />AZSSharedAccessAccountParameters.m</td>
 </tr>
 						</tbody></table></div>
 					
@@ -110,11 +114,7 @@
 					<div class="section section-overview">
 						<a title="Overview" name="overview"></a>
 						<h2 class="subtitle subtitle-overview">Overview</h2>
-						<p>AZSBlobRequestOptions contains options used for requests to the blob service.</p>
-
-<p>AZSBlobRequestOptions is used for configuring the behavior of blob requests.
-Defaults will be used if any options that are not set, or if a AZSBlobRequestOptions object
-is not provided.</p>
+						<p>Shared access parameters for a storage account. Specifies the <a href="#//api/name/permissions">permissions</a> and other restrictions bestowed on the SAS.</p>
 					</div>
 					
 					
@@ -130,8 +130,8 @@ is not provided.</p>
 
 						<div class="task-list">
 							<div class="section-method">
-	<a name="//api/name/useTransactionalMD5" title="useTransactionalMD5"></a>
-	<h3 class="method-title"><code><a href="#//api/name/useTransactionalMD5">&nbsp;&nbsp;useTransactionalMD5</a></code>
+	<a name="//api/name/permissions" title="permissions"></a>
+	<h3 class="method-title"><code><a href="#//api/name/permissions">&nbsp;&nbsp;permissions</a></code>
 </h3>
 
 	<div class="method-info">
@@ -141,14 +141,12 @@ is not provided.</p>
 			
 			
 			<div class="method-subsection brief-description">
-				<p>If YES, all operations that support it will calculate the MD5 of the message bodies on both the client
-and the service, to validate that there were no errors in transmission.  This has nothing to do with the content-MD5
-header stored on a blob.</p>
+				<p>The permissions to be included in the SAS token.</p>
 			</div>
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>@property BOOL useTransactionalMD5</code></div>
+			<div class="method-subsection method-declaration"><code>@property AZSSharedAccessPermissions permissions</code></div>
 
 		    
 			
@@ -166,15 +164,15 @@ header stored on a blob.</p>
 			
 			<div class="method-subsection declared-in-section">
 				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">AZSBlobRequestOptions.h</code></p>
+				<p><code class="declared-in-ref">AZSSharedAccessAccountParameters.h</code></p>
 			</div>
 			
 			
 		</div>
 	</div>
 </div><div class="section-method">
-	<a name="//api/name/storeBlobContentMD5" title="storeBlobContentMD5"></a>
-	<h3 class="method-title"><code><a href="#//api/name/storeBlobContentMD5">&nbsp;&nbsp;storeBlobContentMD5</a></code>
+	<a name="//api/name/services" title="services"></a>
+	<h3 class="method-title"><code><a href="#//api/name/services">&nbsp;&nbsp;services</a></code>
 </h3>
 
 	<div class="method-info">
@@ -184,13 +182,12 @@ header stored on a blob.</p>
 			
 			
 			<div class="method-subsection brief-description">
-				<p>If YES, when uploading a blob, the content-MD5 header will be stored along with the blob.  If one is not supplied,
-the library will calculate one where possible.</p>
+				<p>The services to be included in the SAS token.</p>
 			</div>
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>@property BOOL storeBlobContentMD5</code></div>
+			<div class="method-subsection method-declaration"><code>@property AZSSharedAccessServices services</code></div>
 
 		    
 			
@@ -208,15 +205,15 @@ the library will calculate one where possible.</p>
 			
 			<div class="method-subsection declared-in-section">
 				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">AZSBlobRequestOptions.h</code></p>
+				<p><code class="declared-in-ref">AZSSharedAccessAccountParameters.h</code></p>
 			</div>
 			
 			
 		</div>
 	</div>
 </div><div class="section-method">
-	<a name="//api/name/disableContentMD5Validation" title="disableContentMD5Validation"></a>
-	<h3 class="method-title"><code><a href="#//api/name/disableContentMD5Validation">&nbsp;&nbsp;disableContentMD5Validation</a></code>
+	<a name="//api/name/resourceTypes" title="resourceTypes"></a>
+	<h3 class="method-title"><code><a href="#//api/name/resourceTypes">&nbsp;&nbsp;resourceTypes</a></code>
 </h3>
 
 	<div class="method-info">
@@ -226,12 +223,12 @@ the library will calculate one where possible.</p>
 			
 			
 			<div class="method-subsection brief-description">
-				<p>If YES, the library will not calculate and validate the MD5 when downloading a blob.</p>
+				<p>The resource types to be included in the SAS token.</p>
 			</div>
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>@property BOOL disableContentMD5Validation</code></div>
+			<div class="method-subsection method-declaration"><code>@property AZSSharedAccessResourceTypes resourceTypes</code></div>
 
 		    
 			
@@ -249,15 +246,15 @@ the library will calculate one where possible.</p>
 			
 			<div class="method-subsection declared-in-section">
 				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">AZSBlobRequestOptions.h</code></p>
+				<p><code class="declared-in-ref">AZSSharedAccessAccountParameters.h</code></p>
 			</div>
 			
 			
 		</div>
 	</div>
 </div><div class="section-method">
-	<a name="//api/name/parallelismFactor" title="parallelismFactor"></a>
-	<h3 class="method-title"><code><a href="#//api/name/parallelismFactor">&nbsp;&nbsp;parallelismFactor</a></code>
+	<a name="//api/name/ipAddressOrRange" title="ipAddressOrRange"></a>
+	<h3 class="method-title"><code><a href="#//api/name/ipAddressOrRange">&nbsp;&nbsp;ipAddressOrRange</a></code>
 </h3>
 
 	<div class="method-info">
@@ -267,12 +264,12 @@ the library will calculate one where possible.</p>
 			
 			
 			<div class="method-subsection brief-description">
-				<p>The number of simultaneous outstanding block uploads to permit when uploading a blob as a series of blocks.</p>
+				<p>A single IP address or range of IP addresses from which the object may be accessed.</p>
 			</div>
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>@property NSInteger parallelismFactor</code></div>
+			<div class="method-subsection method-declaration"><code>@property (strong, AZSNullable) AZSIPRange *ipAddressOrRange</code></div>
 
 		    
 			
@@ -290,15 +287,15 @@ the library will calculate one where possible.</p>
 			
 			<div class="method-subsection declared-in-section">
 				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">AZSBlobRequestOptions.h</code></p>
+				<p><code class="declared-in-ref">AZSSharedAccessAccountParameters.h</code></p>
 			</div>
 			
 			
 		</div>
 	</div>
 </div><div class="section-method">
-	<a name="//api/name/absorbConditionalErrorsOnRetry" title="absorbConditionalErrorsOnRetry"></a>
-	<h3 class="method-title"><code><a href="#//api/name/absorbConditionalErrorsOnRetry">&nbsp;&nbsp;absorbConditionalErrorsOnRetry</a></code>
+	<a name="//api/name/protocols" title="protocols"></a>
+	<h3 class="method-title"><code><a href="#//api/name/protocols">&nbsp;&nbsp;protocols</a></code>
 </h3>
 
 	<div class="method-info">
@@ -308,12 +305,12 @@ the library will calculate one where possible.</p>
 			
 			
 			<div class="method-subsection brief-description">
-				<p>If YES, when uploading an append blob in a streaming fashion, conditional errors should be ignored.</p>
+				<p>The protocols with which the object may be accessed.</p>
 			</div>
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>@property BOOL absorbConditionalErrorsOnRetry</code></div>
+			<div class="method-subsection method-declaration"><code>@property AZSSharedAccessProtocols protocols</code></div>
 
 		    
 			
@@ -322,13 +319,6 @@ the library will calculate one where possible.</p>
 
 			
 
-			
-			<div class="method-subsection discussion-section">
-				<h4 class="method-subtitle">Discussion</h4>
-				<p>When uploading append blobs in a streaming fashion, an append-offset conditional header is used to avoid duplicate blocks.
-If this is set to YES, errors from the append-offset header will be ignored when the error is coming from a block already being written to the service.
-Only set this to YES if there is no possiblity of multiple writers writing to the blob simultaneously.  Otherwise, data corruption can occur.</p>
-			</div>
 			
 
 			
@@ -338,7 +328,89 @@ Only set this to YES if there is no possiblity of multiple writers writing to th
 			
 			<div class="method-subsection declared-in-section">
 				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">AZSBlobRequestOptions.h</code></p>
+				<p><code class="declared-in-ref">AZSSharedAccessAccountParameters.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/sharedAccessExpiryTime" title="sharedAccessExpiryTime"></a>
+	<h3 class="method-title"><code><a href="#//api/name/sharedAccessExpiryTime">&nbsp;&nbsp;sharedAccessExpiryTime</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>The expiry time to be included in the SAS token.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (strong, AZSNullable) NSDate *sharedAccessExpiryTime</code></div>
+
+		    
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSSharedAccessAccountParameters.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/sharedAccessStartTime" title="sharedAccessStartTime"></a>
+	<h3 class="method-title"><code><a href="#//api/name/sharedAccessStartTime">&nbsp;&nbsp;sharedAccessStartTime</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>The start time to be included in the SAS token.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (strong, AZSNullable) NSDate *sharedAccessStartTime</code></div>
+
+		    
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSSharedAccessAccountParameters.h</code></p>
 			</div>
 			
 			
@@ -356,8 +428,7 @@ Only set this to YES if there is no possiblity of multiple writers writing to th
 			
 			
 			<div class="method-subsection brief-description">
-				<p>Initializes a new AZSBlobRequestOptions object.
-Once the object is initialized, individual properties can be set.</p>
+				<p>Initializes a newly allocated AZSSharedAccessAccountParameters.</p>
 			</div>
 			
 		    
@@ -367,6 +438,11 @@ Once the object is initialized, individual properties can be set.</p>
 		    
 			
 
+			
+			<div class="method-subsection return">
+				<h4 class="method-subtitle parameter-title">Return Value</h4>
+				<p>The newly initialized parameters.</p>
+			</div>
 			
 
 			
@@ -380,7 +456,7 @@ Once the object is initialized, individual properties can be set.</p>
 			
 			<div class="method-subsection declared-in-section">
 				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">AZSBlobRequestOptions.h</code></p>
+				<p><code class="declared-in-ref">AZSSharedAccessAccountParameters.h</code></p>
 			</div>
 			
 			

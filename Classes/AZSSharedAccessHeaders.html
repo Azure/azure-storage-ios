@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 
-	<title>AZSBlobContainerProperties Class Reference</title>
+	<title>AZSSharedAccessHeaders Class Reference</title>
 
 	<link rel="stylesheet" href="../css/style.css">
 	<meta name="viewport" content="initial-scale=1, maximum-scale=1.4">
@@ -56,15 +56,15 @@
 	
 	<optgroup label="Properties">
 		
-		<option value="//api/name/eTag">eTag</option>
+		<option value="//api/name/cacheControl">cacheControl</option>
 		
-		<option value="//api/name/lastModified">lastModified</option>
+		<option value="//api/name/contentDisposition">contentDisposition</option>
 		
-		<option value="//api/name/leaseDuration">leaseDuration</option>
+		<option value="//api/name/contentEncoding">contentEncoding</option>
 		
-		<option value="//api/name/leaseState">leaseState</option>
+		<option value="//api/name/contentLanguage">contentLanguage</option>
 		
-		<option value="//api/name/leaseStatus">leaseStatus</option>
+		<option value="//api/name/contentType">contentType</option>
 		
 	</optgroup>
 	
@@ -85,7 +85,7 @@
 		<div id="overview_contents" class="container">
 			<div id="content">
 				<main role="main">
-					<h1 class="title">AZSBlobContainerProperties Class Reference</h1>
+					<h1 class="title">AZSSharedAccessHeaders Class Reference</h1>
 
 					
 					<div class="section section-specification"><table cellspacing="0"><tbody>
@@ -94,7 +94,7 @@
 	<td>NSObject</td>
 </tr><tr>
 	<th>Declared in</th>
-	<td>AZSBlobContainerProperties.h<br />AZSBlobContainerProperties.m</td>
+	<td>AZSSharedAccessHeaders.h<br />AZSSharedAccessHeaders.m</td>
 </tr>
 						</tbody></table></div>
 					
@@ -104,7 +104,7 @@
 					<div class="section section-overview">
 						<a title="Overview" name="overview"></a>
 						<h2 class="subtitle subtitle-overview">Overview</h2>
-						<p>A collection of properties for the container.</p>
+						<p>The optional headers that can be returned using SAS.</p>
 					</div>
 					
 					
@@ -120,8 +120,8 @@
 
 						<div class="task-list">
 							<div class="section-method">
-	<a name="//api/name/eTag" title="eTag"></a>
-	<h3 class="method-title"><code><a href="#//api/name/eTag">&nbsp;&nbsp;eTag</a></code>
+	<a name="//api/name/cacheControl" title="cacheControl"></a>
+	<h3 class="method-title"><code><a href="#//api/name/cacheControl">&nbsp;&nbsp;cacheControl</a></code>
 </h3>
 
 	<div class="method-info">
@@ -131,12 +131,12 @@
 			
 			
 			<div class="method-subsection brief-description">
-				<p>The eTag for this container, as far as the library is aware.  Call downloadAttributes to update.</p>
+				<p>The cache-control header returned.</p>
 			</div>
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>@property (copy, AZSNullable) NSString *eTag</code></div>
+			<div class="method-subsection method-declaration"><code>@property (strong, AZSNullable) NSString *cacheControl</code></div>
 
 		    
 			
@@ -154,15 +154,15 @@
 			
 			<div class="method-subsection declared-in-section">
 				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">AZSBlobContainerProperties.h</code></p>
+				<p><code class="declared-in-ref">AZSSharedAccessHeaders.h</code></p>
 			</div>
 			
 			
 		</div>
 	</div>
 </div><div class="section-method">
-	<a name="//api/name/lastModified" title="lastModified"></a>
-	<h3 class="method-title"><code><a href="#//api/name/lastModified">&nbsp;&nbsp;lastModified</a></code>
+	<a name="//api/name/contentDisposition" title="contentDisposition"></a>
+	<h3 class="method-title"><code><a href="#//api/name/contentDisposition">&nbsp;&nbsp;contentDisposition</a></code>
 </h3>
 
 	<div class="method-info">
@@ -172,12 +172,12 @@
 			
 			
 			<div class="method-subsection brief-description">
-				<p>The last modified time for the container, as far as the library is aware.  Call downloadAttributes to update.</p>
+				<p>The content-disposition header returned.</p>
 			</div>
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>@property (copy, AZSNullable) NSDate *lastModified</code></div>
+			<div class="method-subsection method-declaration"><code>@property (strong, AZSNullable) NSString *contentDisposition</code></div>
 
 		    
 			
@@ -195,15 +195,15 @@
 			
 			<div class="method-subsection declared-in-section">
 				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">AZSBlobContainerProperties.h</code></p>
+				<p><code class="declared-in-ref">AZSSharedAccessHeaders.h</code></p>
 			</div>
 			
 			
 		</div>
 	</div>
 </div><div class="section-method">
-	<a name="//api/name/leaseStatus" title="leaseStatus"></a>
-	<h3 class="method-title"><code><a href="#//api/name/leaseStatus">&nbsp;&nbsp;leaseStatus</a></code>
+	<a name="//api/name/contentEncoding" title="contentEncoding"></a>
+	<h3 class="method-title"><code><a href="#//api/name/contentEncoding">&nbsp;&nbsp;contentEncoding</a></code>
 </h3>
 
 	<div class="method-info">
@@ -213,12 +213,12 @@
 			
 			
 			<div class="method-subsection brief-description">
-				<p>The lease status for the container, as far as the library is aware.  Call downloadAttributes to update.</p>
+				<p>The content-encoding header returned.</p>
 			</div>
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>@property AZSLeaseStatus leaseStatus</code></div>
+			<div class="method-subsection method-declaration"><code>@property (strong, AZSNullable) NSString *contentEncoding</code></div>
 
 		    
 			
@@ -236,15 +236,15 @@
 			
 			<div class="method-subsection declared-in-section">
 				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">AZSBlobContainerProperties.h</code></p>
+				<p><code class="declared-in-ref">AZSSharedAccessHeaders.h</code></p>
 			</div>
 			
 			
 		</div>
 	</div>
 </div><div class="section-method">
-	<a name="//api/name/leaseState" title="leaseState"></a>
-	<h3 class="method-title"><code><a href="#//api/name/leaseState">&nbsp;&nbsp;leaseState</a></code>
+	<a name="//api/name/contentLanguage" title="contentLanguage"></a>
+	<h3 class="method-title"><code><a href="#//api/name/contentLanguage">&nbsp;&nbsp;contentLanguage</a></code>
 </h3>
 
 	<div class="method-info">
@@ -254,12 +254,12 @@
 			
 			
 			<div class="method-subsection brief-description">
-				<p>The lease state for the container, as far as the library is aware.  Call downloadAttributes to update.</p>
+				<p>The content-language header returned.</p>
 			</div>
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>@property AZSLeaseState leaseState</code></div>
+			<div class="method-subsection method-declaration"><code>@property (strong, AZSNullable) NSString *contentLanguage</code></div>
 
 		    
 			
@@ -277,15 +277,15 @@
 			
 			<div class="method-subsection declared-in-section">
 				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">AZSBlobContainerProperties.h</code></p>
+				<p><code class="declared-in-ref">AZSSharedAccessHeaders.h</code></p>
 			</div>
 			
 			
 		</div>
 	</div>
 </div><div class="section-method">
-	<a name="//api/name/leaseDuration" title="leaseDuration"></a>
-	<h3 class="method-title"><code><a href="#//api/name/leaseDuration">&nbsp;&nbsp;leaseDuration</a></code>
+	<a name="//api/name/contentType" title="contentType"></a>
+	<h3 class="method-title"><code><a href="#//api/name/contentType">&nbsp;&nbsp;contentType</a></code>
 </h3>
 
 	<div class="method-info">
@@ -295,12 +295,12 @@
 			
 			
 			<div class="method-subsection brief-description">
-				<p>The lease duration for the container, as far as the library is aware.  Call downloadAttributes to update.</p>
+				<p>The content-type header returned.</p>
 			</div>
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>@property AZSLeaseDuration leaseDuration</code></div>
+			<div class="method-subsection method-declaration"><code>@property (strong, AZSNullable) NSString *contentType</code></div>
 
 		    
 			
@@ -318,7 +318,7 @@
 			
 			<div class="method-subsection declared-in-section">
 				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">AZSBlobContainerProperties.h</code></p>
+				<p><code class="declared-in-ref">AZSSharedAccessHeaders.h</code></p>
 			</div>
 			
 			

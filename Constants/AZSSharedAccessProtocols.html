@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 
-	<title>AZSBlobListingDetails Constants Reference</title>
+	<title>AZSSharedAccessProtocols Constants Reference</title>
 
 	<link rel="stylesheet" href="../css/style.css">
 	<meta name="viewport" content="initial-scale=1, maximum-scale=1.4">
@@ -59,7 +59,7 @@
 		<div id="overview_contents" class="container">
 			<div id="content">
 				<main role="main">
-					<h1 class="title">AZSBlobListingDetails Constants Reference</h1>
+					<h1 class="title">AZSSharedAccessProtocols Constants Reference</h1>
 
 					
 					<div class="section section-specification"><table cellspacing="0"><tbody>
@@ -75,11 +75,11 @@
 					
 
                     
-                    <h3 class="subsubtitle method-title">AZSBlobListingDetails</h3>
+                    <h3 class="subsubtitle method-title">AZSSharedAccessProtocols</h3>
                     
 					
 					<div class="section section-overview">
-                        <p>The different possible Blob Listing Details.</p>
+                        <p>Represents the protocols with which a SAS may be used.</p>
 					</div>
 					
 					
@@ -87,19 +87,13 @@
                         <!-- display enum values -->
                         
                         <h4 class="method-subtitle">Definition</h4>
-                        <code>typedef NS_OPTIONS(NSUInteger, AZSBlobListingDetails ) {<br>
+                        <code>typedef NS_ENUM(NSInteger, AZSSharedAccessProtocols ) {<br>
                             
-                            &nbsp;&nbsp; <a href="">AZSBlobListingDetailsNone</a> = 0 x0,<br>
+                            &nbsp;&nbsp; <a href="">AZSSharedAccessProtocolAll</a>,<br>
                             
-                            &nbsp;&nbsp; <a href="">AZSBlobListingDetailsSnapshots</a> = 0 x1 &lt; &lt; 0,<br>
+                            &nbsp;&nbsp; <a href="">AZSSharedAccessProtocolHttpsHttp</a>,<br>
                             
-                            &nbsp;&nbsp; <a href="">AZSBlobListingDetailsMetadata</a> = 0 x1 &lt; &lt; 1,<br>
-                            
-                            &nbsp;&nbsp; <a href="">AZSBlobListingDetailsUncommittedBlobs</a> = 0 x1 &lt; &lt; 2,<br>
-                            
-                            &nbsp;&nbsp; <a href="">AZSBlobListingDetailsCopy</a> = 0 x1 &lt; &lt; 3,<br>
-                            
-                            &nbsp;&nbsp; <a href="">AZSBlobListingDetailsAll</a> = AZSBlobListingDetailsSnapshots | AZSBlobListingDetailsMetadata | AZSBlobListingDetailsUncommittedBlobs | AZSBlobListingDetailsCopy,<br>
+                            &nbsp;&nbsp; <a href="">AZSSharedAccessProtocolHttpsOnly</a>,<br>
                             
                             };</code>
                     
@@ -109,11 +103,11 @@
                         <h4 class="method-subtitle">Constants</h4>
                         <dl class="termdef">
                             
-                            <dt><a name="" title="AZSBlobListingDetailsNone"></a><code>AZSBlobListingDetailsNone</code></dt>
+                            <dt><a name="" title="AZSSharedAccessProtocolAll"></a><code>AZSSharedAccessProtocolAll</code></dt>
 <dd>
 
 
-<p>List only committed blobs, and do not return blob metadata.</p>
+<p>Specifies permission granted to use SAS with any protocol.</p>
 
 
 
@@ -126,11 +120,11 @@
 	
 </dd>
                             
-                            <dt><a name="" title="AZSBlobListingDetailsSnapshots"></a><code>AZSBlobListingDetailsSnapshots</code></dt>
+                            <dt><a name="" title="AZSSharedAccessProtocolHttpsHttp"></a><code>AZSSharedAccessProtocolHttpsHttp</code></dt>
 <dd>
 
 
-<p>List committed blobs and blob snapshots.</p>
+<p>Specifies permission granted to use SAS through HTTPS or HTTP.</p>
 
 
 
@@ -143,62 +137,11 @@
 	
 </dd>
                             
-                            <dt><a name="" title="AZSBlobListingDetailsMetadata"></a><code>AZSBlobListingDetailsMetadata</code></dt>
+                            <dt><a name="" title="AZSSharedAccessProtocolHttpsOnly"></a><code>AZSSharedAccessProtocolHttpsOnly</code></dt>
 <dd>
 
 
-<p>Retrieve blob metadata for each blob returned in the listing.</p>
-
-
-
-
-
-    
-	<p>
-		Declared In <code class="declared-in-ref">AZSEnums.h</code>.
-	</p>
-	
-</dd>
-                            
-                            <dt><a name="" title="AZSBlobListingDetailsUncommittedBlobs"></a><code>AZSBlobListingDetailsUncommittedBlobs</code></dt>
-<dd>
-
-
-<p>List committed and uncommittee blobs.</p>
-
-
-
-
-
-    
-	<p>
-		Declared In <code class="declared-in-ref">AZSEnums.h</code>.
-	</p>
-	
-</dd>
-                            
-                            <dt><a name="" title="AZSBlobListingDetailsCopy"></a><code>AZSBlobListingDetailsCopy</code></dt>
-<dd>
-
-
-<p>Include copy propertied in the listing.</p>
-
-
-
-
-
-    
-	<p>
-		Declared In <code class="declared-in-ref">AZSEnums.h</code>.
-	</p>
-	
-</dd>
-                            
-                            <dt><a name="" title="AZSBlobListingDetailsAll"></a><code>AZSBlobListingDetailsAll</code></dt>
-<dd>
-
-
-<p>List all available committed blobs, uncommitted blobs, and snapshots, and return all metadata and copy status for those blobs.</p>
+<p>Specifies permission granted to use SAS only through HTTPS.</p>
 
 
 

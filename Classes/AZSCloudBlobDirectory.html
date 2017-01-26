@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+
+	<title>AZSCloudBlobDirectory Class Reference</title>
+
+	<link rel="stylesheet" href="../css/style.css">
+	<meta name="viewport" content="initial-scale=1, maximum-scale=1.4">
+	<meta name="generator" content="appledoc 2.2.1 (build 1334)">
+</head>
+<body class="appledoc">
+	<header>
+		<div class="container" class="hide-in-xcode">
+			
+			<h1 id="library-title">
+				<a href="../index.html">Azure Storage Client Library for iOS 0.2.2 </a>
+			</h1>
+
+			<p id="developer-home">
+				<a href="../index.html">Microsoft</a>
+			</p>
+			
+		</div>
+	</header>
+
+	<aside>
+		<div class="container">
+			<nav>
+				<ul id="header-buttons" role="toolbar">
+					<li><a href="../index.html">Index</a></li>
+<li><a href="../hierarchy.html">Hierarchy</a></li>
+
+					<li id="on-this-page" role="navigation">
+						<label>
+							On This Page
+
+							<div class="chevron">
+								<div class="chevy chevron-left"></div>
+								<div class="chevy chevron-right"></div>
+							</div>
+
+							<select id="jump-to">
+	<option value="top">Jump To&#133;</option>
+	
+
+	
+	
+	<option value="tasks">Tasks</option>
+	
+	
+
+	
+	
+	<optgroup label="Properties">
+		
+		<option value="//api/name/blobContainer">blobContainer</option>
+		
+		<option value="//api/name/client">client</option>
+		
+		<option value="//api/name/name">name</option>
+		
+		<option value="//api/name/storageUri">storageUri</option>
+		
+	</optgroup>
+	
+
+	
+
+	
+	<optgroup label="Instance Methods">
+		
+		<option value="//api/name/appendBlobReferenceFromName:">- appendBlobReferenceFromName:</option>
+		
+		<option value="//api/name/appendBlobReferenceFromName:snapshotTime:">- appendBlobReferenceFromName:snapshotTime:</option>
+		
+		<option value="//api/name/blockBlobReferenceFromName:">- blockBlobReferenceFromName:</option>
+		
+		<option value="//api/name/blockBlobReferenceFromName:snapshotTime:">- blockBlobReferenceFromName:snapshotTime:</option>
+		
+		<option value="//api/name/initWithDirectoryName:container:">- initWithDirectoryName:container:</option>
+		
+		<option value="//api/name/listBlobsSegmentedWithContinuationToken:useFlatBlobListing:blobListingDetails:maxResults:accessCondition:requestOptions:operationContext:completionHandler:">- listBlobsSegmentedWithContinuationToken:useFlatBlobListing:blobListingDetails:maxResults:accessCondition:requestOptions:operationContext:completionHandler:</option>
+		
+		<option value="//api/name/listBlobsSegmentedWithContinuationToken:useFlatBlobListing:blobListingDetails:maxResults:completionHandler:">- listBlobsSegmentedWithContinuationToken:useFlatBlobListing:blobListingDetails:maxResults:completionHandler:</option>
+		
+		<option value="//api/name/pageBlobReferenceFromName:">- pageBlobReferenceFromName:</option>
+		
+		<option value="//api/name/pageBlobReferenceFromName:snapshotTime:">- pageBlobReferenceFromName:snapshotTime:</option>
+		
+		<option value="//api/name/parentReference">- parentReference</option>
+		
+		<option value="//api/name/subdirectoryReferenceFromName:">- subdirectoryReferenceFromName:</option>
+		
+	</optgroup>
+	
+	
+</select>
+						</label>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</aside>
+
+	<article>
+		<div id="overview_contents" class="container">
+			<div id="content">
+				<main role="main">
+					<h1 class="title">AZSCloudBlobDirectory Class Reference</h1>
+
+					
+					<div class="section section-specification"><table cellspacing="0"><tbody>
+						<tr>
+	<th>Inherits from</th>
+	<td>NSObject</td>
+</tr><tr>
+	<th>Declared in</th>
+	<td>AZSCloudBlobDirectory.h<br />AZSCloudBlobDirectory.m</td>
+</tr>
+						</tbody></table></div>
+					
+
+                    
+
+					
+					
+					<div class="section section-tasks">
+						<a title="Tasks" name="tasks"></a>
+						
+
+						
+						
+
+						<div class="task-list">
+							<div class="section-method">
+	<a name="//api/name/blobContainer" title="blobContainer"></a>
+	<h3 class="method-title"><code><a href="#//api/name/blobContainer">&nbsp;&nbsp;blobContainer</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>The container in which this blob directory exists.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (strong, readonly) AZSCloudBlobContainer *blobContainer</code></div>
+
+		    
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudBlobDirectory.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/storageUri" title="storageUri"></a>
+	<h3 class="method-title"><code><a href="#//api/name/storageUri">&nbsp;&nbsp;storageUri</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>The full StorageURI to this blob directory.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (strong, readonly) AZSStorageUri *storageUri</code></div>
+
+		    
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudBlobDirectory.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/client" title="client"></a>
+	<h3 class="method-title"><code><a href="#//api/name/client">&nbsp;&nbsp;client</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>The blob client representing the blob service for this blob directory.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (strong, readonly) AZSCloudBlobClient *client</code></div>
+
+		    
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudBlobDirectory.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/name" title="name"></a>
+	<h3 class="method-title"><code><a href="#//api/name/name">&nbsp;&nbsp;name</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>The name of this directory.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (strong, readonly) NSString *name</code></div>
+
+		    
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudBlobDirectory.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/initWithDirectoryName:container:" title="initWithDirectoryName:container:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/initWithDirectoryName:container:">&ndash;&nbsp;initWithDirectoryName:container:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Initializes a newly allocated AZSCloudBlockDirectory object</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (instancetype)initWithDirectoryName:(NSString *)<em>directoryName</em> container:(AZSCloudBlobContainer *)<em>container</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>directoryName</code></th>
+						<td><p>The name of the directory.  This should be the path to the directory,
+relative to the container name.  For example:</p>
+
+<p>If the full URI to the directory is
+<a href="https://myaccount.blob.core.windows.net/mycontainer/dir1/dir2/dir3">https://myaccount.blob.core.windows.net/mycontainer/dir1/dir2/dir3</a>
+then this parameter should be:
+dir1/dir2/dir3.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>container</code></th>
+						<td><p>The <a href="../Classes/AZSCloudBlobContainer.html">AZSCloudBlobContainer</a> in which the container exists.</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+			<div class="method-subsection return">
+				<h4 class="method-subtitle parameter-title">Return Value</h4>
+				<p>The newly allocated instance.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudBlobDirectory.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/blockBlobReferenceFromName:" title="blockBlobReferenceFromName:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/blockBlobReferenceFromName:">&ndash;&nbsp;blockBlobReferenceFromName:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Initialize a local <a href="../Classes/AZSCloudBlockBlob.html">AZSCloudBlockBlob</a> object</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (AZSCloudBlockBlob *)blockBlobReferenceFromName:(NSString *)<em>blobName</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>blobName</code></th>
+						<td><p>The <a href="#//api/name/name">name</a> of the block blob (part of the URL)</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+			<div class="method-subsection return">
+				<h4 class="method-subtitle parameter-title">Return Value</h4>
+				<p>The block blob object.</p>
+			</div>
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>This creates an <a href="../Classes/AZSCloudBlockBlob.html">AZSCloudBlockBlob</a> object with the input <a href="#//api/name/name">name</a>.</p>
+
+<p>TODO: Consider renaming this &lsquo;blockBlobFromName&rsquo;.  This is better Objective-C style, but may confuse users into
+thinking that this method creates a blob on the service, which is does not.</p><div class="warning"><p><strong>Warning:</strong> This method does not make a service call.  If properties, metadata, etc have been set on the service
+for this blob, this will not be reflected in the local container object.</p></div>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudBlobDirectory.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/blockBlobReferenceFromName:snapshotTime:" title="blockBlobReferenceFromName:snapshotTime:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/blockBlobReferenceFromName:snapshotTime:">&ndash;&nbsp;blockBlobReferenceFromName:snapshotTime:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Initialize a local <a href="../Classes/AZSCloudBlockBlob.html">AZSCloudBlockBlob</a> object</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (AZSCloudBlockBlob *)blockBlobReferenceFromName:(NSString *)<em>blobName</em> snapshotTime:(AZSNullable NSString *)<em>snapshotTime</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>blobName</code></th>
+						<td><p>The <a href="#//api/name/name">name</a> of the block blob (part of the URL)</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>snapshotTime</code></th>
+						<td><p>The snapshot time for the blob.  Nil means the root blob (not a snapshot).</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+			<div class="method-subsection return">
+				<h4 class="method-subtitle parameter-title">Return Value</h4>
+				<p>The block blob object.</p>
+			</div>
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>This creates an <a href="../Classes/AZSCloudBlockBlob.html">AZSCloudBlockBlob</a> object with the input <a href="#//api/name/name">name</a>.</p>
+
+<p>TODO: Consider renaming this &lsquo;blockBlobFromName&rsquo;.  This is better Objective-C style, but may confuse users into
+thinking that this method creates a blob on the service, which is does not.</p><div class="warning"><p><strong>Warning:</strong> This method does not make a service call.  If properties, metadata, etc have been set on the service
+for this blob, this will not be reflected in the local container object.</p></div>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudBlobDirectory.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/pageBlobReferenceFromName:" title="pageBlobReferenceFromName:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/pageBlobReferenceFromName:">&ndash;&nbsp;pageBlobReferenceFromName:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Initialize a local <a href="../Classes/AZSCloudPageBlob.html">AZSCloudPageBlob</a> object</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (AZSCloudPageBlob *)pageBlobReferenceFromName:(NSString *)<em>blobName</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>blobName</code></th>
+						<td><p>The <a href="#//api/name/name">name</a> of the page blob (part of the URL)</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+			<div class="method-subsection return">
+				<h4 class="method-subtitle parameter-title">Return Value</h4>
+				<p>The new page blob object.</p>
+			</div>
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>This creates an <a href="../Classes/AZSCloudPageBlob.html">AZSCloudPageBlob</a> object with the input <a href="#//api/name/name">name</a>.</p><div class="warning"><p><strong>Warning:</strong> This method does not make a service call.  If properties, metadata, etc have been set on the service
+for this blob, this will not be reflected in the local container object.</p></div>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudBlobDirectory.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/pageBlobReferenceFromName:snapshotTime:" title="pageBlobReferenceFromName:snapshotTime:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/pageBlobReferenceFromName:snapshotTime:">&ndash;&nbsp;pageBlobReferenceFromName:snapshotTime:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Initialize a local <a href="../Classes/AZSCloudPageBlob.html">AZSCloudPageBlob</a> object</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (AZSCloudPageBlob *)pageBlobReferenceFromName:(NSString *)<em>blobName</em> snapshotTime:(AZSNullable NSString *)<em>snapshotTime</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>blobName</code></th>
+						<td><p>The <a href="#//api/name/name">name</a> of the page blob (part of the URL)</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>snapshotTime</code></th>
+						<td><p>The snapshot time for the blob.  Nil means the root blob (not a snapshot).</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+			<div class="method-subsection return">
+				<h4 class="method-subtitle parameter-title">Return Value</h4>
+				<p>The new page blob object.</p>
+			</div>
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>This creates an <a href="../Classes/AZSCloudPageBlob.html">AZSCloudPageBlob</a> object with the input <a href="#//api/name/name">name</a>.</p><div class="warning"><p><strong>Warning:</strong> This method does not make a service call.  If properties, metadata, etc have been set on the service
+for this blob, this will not be reflected in the local container object.</p></div>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudBlobDirectory.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/appendBlobReferenceFromName:" title="appendBlobReferenceFromName:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/appendBlobReferenceFromName:">&ndash;&nbsp;appendBlobReferenceFromName:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Initialize a local <a href="../Classes/AZSCloudAppendBlob.html">AZSCloudAppendBlob</a> object</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (AZSCloudAppendBlob *)appendBlobReferenceFromName:(NSString *)<em>blobName</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>blobName</code></th>
+						<td><p>The <a href="#//api/name/name">name</a> of the append blob (part of the URL)</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+			<div class="method-subsection return">
+				<h4 class="method-subtitle parameter-title">Return Value</h4>
+				<p>The new append blob object.</p>
+			</div>
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>This creates an <a href="../Classes/AZSCloudAppendBlob.html">AZSCloudAppendBlob</a> object with the input <a href="#//api/name/name">name</a>.</p><div class="warning"><p><strong>Warning:</strong> This method does not make a service call.  If properties, metadata, etc have been set on the service
+for this blob, this will not be reflected in the local container object.</p></div>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudBlobDirectory.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/appendBlobReferenceFromName:snapshotTime:" title="appendBlobReferenceFromName:snapshotTime:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/appendBlobReferenceFromName:snapshotTime:">&ndash;&nbsp;appendBlobReferenceFromName:snapshotTime:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Initialize a local <a href="../Classes/AZSCloudAppendBlob.html">AZSCloudAppendBlob</a> object</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (AZSCloudAppendBlob *)appendBlobReferenceFromName:(NSString *)<em>blobName</em> snapshotTime:(AZSNullable NSString *)<em>snapshotTime</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>blobName</code></th>
+						<td><p>The <a href="#//api/name/name">name</a> of the block blob (part of the URL)</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>snapshotTime</code></th>
+						<td><p>The snapshot time for the blob.  Nil means the root blob (not a snapshot).</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+			<div class="method-subsection return">
+				<h4 class="method-subtitle parameter-title">Return Value</h4>
+				<p>The new block blob object.</p>
+			</div>
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>This creates an <a href="../Classes/AZSCloudAppendBlob.html">AZSCloudAppendBlob</a> object with the input <a href="#//api/name/name">name</a>.</p><div class="warning"><p><strong>Warning:</strong> This method does not make a service call.  If properties, metadata, etc have been set on the service
+for this blob, this will not be reflected in the local container object.</p></div>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudBlobDirectory.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/parentReference" title="parentReference"></a>
+	<h3 class="method-title"><code><a href="#//api/name/parentReference">&ndash;&nbsp;parentReference</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Initialize a AZSCloudBlobDiretory object that represents the &lsquo;parent&rsquo; directory of the current object.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (AZSCloudBlobDirectory *)parentReference</code></div>
+
+		    
+			
+
+			
+			<div class="method-subsection return">
+				<h4 class="method-subtitle parameter-title">Return Value</h4>
+				<p>The newly allocated parent directory object.</p>
+			</div>
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>For example, if the current directory has the name:</p>
+
+<p>&ldquo;sample/a/b/c&rdquo;</p>
+
+<p>this method will return a new CloudBlobDirectory object with the name:</p>
+
+<p>&ldquo;sample/a/b&rdquo;.</p>
+
+<p>The delimiter used is the one set in self.<a href="#//api/name/client">client</a>.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudBlobDirectory.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/subdirectoryReferenceFromName:" title="subdirectoryReferenceFromName:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/subdirectoryReferenceFromName:">&ndash;&nbsp;subdirectoryReferenceFromName:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Initialize a AZSCloudBlobDiretory object that represents the &lsquo;child&rsquo; directory of the current object.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (AZSCloudBlobDirectory *)subdirectoryReferenceFromName:(NSString *)<em>subdirectoryName</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>subdirectoryName</code></th>
+						<td><p>The <a href="#//api/name/name">name</a> of the subdirectory.</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+			<div class="method-subsection return">
+				<h4 class="method-subtitle parameter-title">Return Value</h4>
+				<p>The newly allocated subdirectory object.</p>
+			</div>
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>For example, if the current directory has the name:</p>
+
+<p>&ldquo;sample/a/b/c&rdquo;</p>
+
+<p>and this method is called with input &ldquo;next&rdquo;, it will return a new CloudBlobDirectory object with the name:</p>
+
+<p>&ldquo;sample/a/b/c/next&rdquo;.</p>
+
+<p>The delimiter used is the one set in self.<a href="#//api/name/client">client</a>.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudBlobDirectory.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/listBlobsSegmentedWithContinuationToken:useFlatBlobListing:blobListingDetails:maxResults:completionHandler:" title="listBlobsSegmentedWithContinuationToken:useFlatBlobListing:blobListingDetails:maxResults:completionHandler:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/listBlobsSegmentedWithContinuationToken:useFlatBlobListing:blobListingDetails:maxResults:completionHandler:">&ndash;&nbsp;listBlobsSegmentedWithContinuationToken:useFlatBlobListing:blobListingDetails:maxResults:completionHandler:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Performs one segmented blob listing operation.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)listBlobsSegmentedWithContinuationToken:(AZSNullable AZSContinuationToken *)<em>token</em> useFlatBlobListing:(BOOL)<em>useFlatBlobListing</em> blobListingDetails:(AZSBlobListingDetails)<em>blobListingDetails</em> maxResults:(NSInteger)<em>maxResults</em> completionHandler:(void ( ^ ) ( NSError *__AZSNullable , AZSBlobResultSegment *__AZSNullable ))<em>completionHandler</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>token</code></th>
+						<td><p>The token representing where the listing operation should start.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>useFlatBlobListing</code></th>
+						<td><p>YES if the blob list should be flat (list all blobs as if their names were only strings, no directories).  NO if it should list with directories.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>blobListingDetails</code></th>
+						<td><p>Details about how to list blobs.  See <a href="../Constants/AZSBlobListingDetails.html">AZSBlobListingDetails</a> for the possible options.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>maxResults</code></th>
+						<td><p>The maximum number of results to return for this operation.  Use -1 to not set a limit.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>completionHandler</code></th>
+						<td><p>The block of code to execute with the results of the listing operation.</p>
+
+<table>
+<thead>
+<tr>
+<th> Parameter <a href="#//api/name/name">name</a> </th>
+<th> Description </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>NSError * </td>
+<td> Nil if the operation succeeded without error, error with details about the failure otherwise.</td>
+</tr>
+<tr>
+<td><a href="../Classes/AZSBlobResultSegment.html">AZSBlobResultSegment</a> * </td>
+<td> The blob result segment containing the result of the listing operation.</td>
+</tr>
+</tbody>
+</table>
+</td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>This method lists the blobs in the given directory.  It will perform exactly one REST call, which will list blobs
+beginning with the directory represented in the <a href="../Classes/AZSContinuationToken.html">AZSContinuationToken</a>.  If no token is provided, it will list
+blobs from the beginning.  Only blobs that begin with the input prefix will be listed.</p>
+
+<p>Any number of blobs can be listed, from zero up to a set maximum.  Even if this method returns zero results, if
+the <a href="../Classes/AZSContinuationToken.html">AZSContinuationToken</a> in the result is not nil, there may be more blobs on the service that have not been listed.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudBlobDirectory.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/listBlobsSegmentedWithContinuationToken:useFlatBlobListing:blobListingDetails:maxResults:accessCondition:requestOptions:operationContext:completionHandler:" title="listBlobsSegmentedWithContinuationToken:useFlatBlobListing:blobListingDetails:maxResults:accessCondition:requestOptions:operationContext:completionHandler:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/listBlobsSegmentedWithContinuationToken:useFlatBlobListing:blobListingDetails:maxResults:accessCondition:requestOptions:operationContext:completionHandler:">&ndash;&nbsp;listBlobsSegmentedWithContinuationToken:useFlatBlobListing:blobListingDetails:maxResults:accessCondition:requestOptions:operationContext:completionHandler:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Performs one segmented blob listing operation.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)listBlobsSegmentedWithContinuationToken:(AZSNullable AZSContinuationToken *)<em>token</em> useFlatBlobListing:(BOOL)<em>useFlatBlobListing</em> blobListingDetails:(AZSBlobListingDetails)<em>blobListingDetails</em> maxResults:(NSInteger)<em>maxResults</em> accessCondition:(AZSNullable AZSAccessCondition *)<em>accessCondition</em> requestOptions:(AZSNullable AZSBlobRequestOptions *)<em>requestOptions</em> operationContext:(AZSNullable AZSOperationContext *)<em>operationContext</em> completionHandler:(void ( ^ ) ( NSError *__AZSNullable , AZSBlobResultSegment *__AZSNullable ))<em>completionHandler</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>token</code></th>
+						<td><p>The token representing where the listing operation should start.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>useFlatBlobListing</code></th>
+						<td><p>YES if the blob list should be flat (list all blobs as if their names were only strings, no directories).  NO if it should list with directories.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>blobListingDetails</code></th>
+						<td><p>Details about how to list blobs.  See <a href="../Constants/AZSBlobListingDetails.html">AZSBlobListingDetails</a> for the possible options.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>maxResults</code></th>
+						<td><p>The maximum number of results to return for this operation.  Use -1 to not set a limit.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>accessCondition</code></th>
+						<td><p>The access condition for the request.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>requestOptions</code></th>
+						<td><p>The options to use for the request.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>operationContext</code></th>
+						<td><p>The operation context to use for the call.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>completionHandler</code></th>
+						<td><p>The block of code to execute with the results of the listing operation.</p>
+
+<table>
+<thead>
+<tr>
+<th> Parameter <a href="#//api/name/name">name</a> </th>
+<th> Description </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>NSError * </td>
+<td> Nil if the operation succeeded without error, error with details about the failure otherwise.</td>
+</tr>
+<tr>
+<td><a href="../Classes/AZSBlobResultSegment.html">AZSBlobResultSegment</a> * </td>
+<td> The blob result segment containing the result of the listing operation.</td>
+</tr>
+</tbody>
+</table>
+</td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>This method lists the blobs in the given directory.  It will perform exactly one REST call, which will list blobs
+beginning with the directory represented in the <a href="../Classes/AZSContinuationToken.html">AZSContinuationToken</a>.  If no token is provided, it will list
+blobs from the beginning.  Only blobs that begin with the input prefix will be listed.</p>
+
+<p>Any number of blobs can be listed, from zero up to a set maximum.  Even if this method returns zero results, if
+the <a href="../Classes/AZSContinuationToken.html">AZSContinuationToken</a> in the result is not nil, there may be more blobs on the service that have not been listed.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudBlobDirectory.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div>
+						</div>
+						
+					</div>
+					
+					
+
+                    
+                    
+          
+				</main>
+
+				<footer>
+					<div class="footer-copyright">
+						
+						<p class="copyright">Copyright &copy; 2016 Microsoft. All rights reserved. Updated: 2016-07-28</p>
+						
+						
+						<p class="generator">Generated by <a href="http://appledoc.gentlebytes.com">appledoc 2.2.1 (build 1334)</a>.</p>
+						
+					</div>
+				</footer>
+			</div>
+		</div>
+	</article>
+
+	<script src="../js/script.js"></script>
+</body>
+</html>

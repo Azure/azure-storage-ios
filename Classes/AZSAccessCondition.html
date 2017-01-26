@@ -14,7 +14,7 @@
 		<div class="container" class="hide-in-xcode">
 			
 			<h1 id="library-title">
-				<a href="../index.html">Azure Storage Client for iOS </a>
+				<a href="../index.html">Azure Storage Client Library for iOS 0.2.2 </a>
 			</h1>
 
 			<p id="developer-home">
@@ -56,6 +56,8 @@
 	
 	<optgroup label="Properties">
 		
+		<option value="//api/name/appendPosition">appendPosition</option>
+		
 		<option value="//api/name/ifMatchETag">ifMatchETag</option>
 		
 		<option value="//api/name/ifModifiedSinceDate">ifModifiedSinceDate</option>
@@ -66,6 +68,12 @@
 		
 		<option value="//api/name/leaseId">leaseId</option>
 		
+		<option value="//api/name/maxSize">maxSize</option>
+		
+		<option value="//api/name/sequenceNumber">sequenceNumber</option>
+		
+		<option value="//api/name/sequenceNumberOperator">sequenceNumberOperator</option>
+		
 	</optgroup>
 	
 
@@ -74,13 +82,23 @@
 	
 	<optgroup label="Instance Methods">
 		
+		<option value="//api/name/initWithIfAppendPositionEqualTo:">- initWithIfAppendPositionEqualTo:</option>
+		
 		<option value="//api/name/initWithIfMatchCondition:">- initWithIfMatchCondition:</option>
+		
+		<option value="//api/name/initWithIfMaxSizeLessThanOrEqualTo:">- initWithIfMaxSizeLessThanOrEqualTo:</option>
 		
 		<option value="//api/name/initWithIfModifiedSinceCondition:">- initWithIfModifiedSinceCondition:</option>
 		
 		<option value="//api/name/initWithIfNoneMatchCondition:">- initWithIfNoneMatchCondition:</option>
 		
 		<option value="//api/name/initWithIfNotModifiedSinceCondition:">- initWithIfNotModifiedSinceCondition:</option>
+		
+		<option value="//api/name/initWithIfSequenceNumberEqualTo:">- initWithIfSequenceNumberEqualTo:</option>
+		
+		<option value="//api/name/initWithIfSequenceNumberLessThan:">- initWithIfSequenceNumberLessThan:</option>
+		
+		<option value="//api/name/initWithIfSequenceNumberLessThanOrEqualTo:">- initWithIfSequenceNumberLessThanOrEqualTo:</option>
 		
 		<option value="//api/name/initWithLeaseId:">- initWithLeaseId:</option>
 		
@@ -348,6 +366,170 @@ Use &ldquo;*&rdquo; to match any ETag, as long as the object already exists on t
 		</div>
 	</div>
 </div><div class="section-method">
+	<a name="//api/name/sequenceNumber" title="sequenceNumber"></a>
+	<h3 class="method-title"><code><a href="#//api/name/sequenceNumber">&nbsp;&nbsp;sequenceNumber</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>The sequence number to compare using the <a href="#//api/name/sequenceNumberOperator">sequenceNumberOperator</a>.  The request will fail if the comparison fails.  Page blobs only.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (copy, readonly, AZSNullable) NSNumber *sequenceNumber</code></div>
+
+		    
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSAccessCondition.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/sequenceNumberOperator" title="sequenceNumberOperator"></a>
+	<h3 class="method-title"><code><a href="#//api/name/sequenceNumberOperator">&nbsp;&nbsp;sequenceNumberOperator</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>The operator to use to compare the sequence number here and the one on the service.  Page blobs only.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property AZSSequenceNumberOperator sequenceNumberOperator</code></div>
+
+		    
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSAccessCondition.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/maxSize" title="maxSize"></a>
+	<h3 class="method-title"><code><a href="#//api/name/maxSize">&nbsp;&nbsp;maxSize</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>The request will fail if the append blob will be greater than this after the append operation.  Append block API only.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (copy, AZSNullable) NSNumber *maxSize</code></div>
+
+		    
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSAccessCondition.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/appendPosition" title="appendPosition"></a>
+	<h3 class="method-title"><code><a href="#//api/name/appendPosition">&nbsp;&nbsp;appendPosition</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>The request will fail if the append position before appending the current block is not equal to this.  Append block API only.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (copy, AZSNullable) NSNumber *appendPosition</code></div>
+
+		    
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSAccessCondition.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
 	<a name="//api/name/initWithIfMatchCondition:" title="initWithIfMatchCondition:"></a>
 	<h3 class="method-title"><code><a href="#//api/name/initWithIfMatchCondition:">&ndash;&nbsp;initWithIfMatchCondition:</a></code>
 </h3>
@@ -560,6 +742,211 @@ Use &ldquo;*&rdquo; to match any ETag, as long as the object already exists on t
 		</div>
 	</div>
 </div><div class="section-method">
+	<a name="//api/name/initWithIfSequenceNumberLessThanOrEqualTo:" title="initWithIfSequenceNumberLessThanOrEqualTo:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/initWithIfSequenceNumberLessThanOrEqualTo:">&ndash;&nbsp;initWithIfSequenceNumberLessThanOrEqualTo:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Initialize a new AZSAccessCondition object with a &lsquo;If-Sequence-Number-Less-Than-Or-Equal-To&rsquo; condition.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (instancetype)initWithIfSequenceNumberLessThanOrEqualTo:(NSNumber *)<em>sequenceNumber</em></code></div>
+
+		    
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSAccessCondition.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/initWithIfSequenceNumberLessThan:" title="initWithIfSequenceNumberLessThan:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/initWithIfSequenceNumberLessThan:">&ndash;&nbsp;initWithIfSequenceNumberLessThan:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Initialize a new AZSAccessCondition object with a &lsquo;If-Sequence-Number-Less-Than&rsquo; condition.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (instancetype)initWithIfSequenceNumberLessThan:(NSNumber *)<em>sequenceNumber</em></code></div>
+
+		    
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSAccessCondition.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/initWithIfSequenceNumberEqualTo:" title="initWithIfSequenceNumberEqualTo:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/initWithIfSequenceNumberEqualTo:">&ndash;&nbsp;initWithIfSequenceNumberEqualTo:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Initialize a new AZSAccessCondition object with a &lsquo;If-Sequence-Number-Equal-To&rsquo; condition.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (instancetype)initWithIfSequenceNumberEqualTo:(NSNumber *)<em>sequenceNumber</em></code></div>
+
+		    
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSAccessCondition.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/initWithIfMaxSizeLessThanOrEqualTo:" title="initWithIfMaxSizeLessThanOrEqualTo:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/initWithIfMaxSizeLessThanOrEqualTo:">&ndash;&nbsp;initWithIfMaxSizeLessThanOrEqualTo:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Initialize a new AZSAccessCondition object with a &lsquo;If-Max-Size-Less-Than-Or-Equal-To&rsquo; condition.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (instancetype)initWithIfMaxSizeLessThanOrEqualTo:(NSNumber *)<em>maxSize</em></code></div>
+
+		    
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSAccessCondition.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/initWithIfAppendPositionEqualTo:" title="initWithIfAppendPositionEqualTo:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/initWithIfAppendPositionEqualTo:">&ndash;&nbsp;initWithIfAppendPositionEqualTo:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Initialize a new AZSAccessCondition object with a &lsquo;If-Append-Position-Equal-To&rsquo; condition.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (instancetype)initWithIfAppendPositionEqualTo:(NSNumber *)<em>appendPosition</em></code></div>
+
+		    
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSAccessCondition.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
 	<a name="//api/name/initWithLeaseId:" title="initWithLeaseId:"></a>
 	<h3 class="method-title"><code><a href="#//api/name/initWithLeaseId:">&ndash;&nbsp;initWithLeaseId:</a></code>
 </h3>
@@ -629,7 +1016,7 @@ one of the other initializers, and then specify the lease ID afterwards.</p>
 				<footer>
 					<div class="footer-copyright">
 						
-						<p class="copyright">Copyright &copy; 2015 Microsoft. All rights reserved. Updated: 2015-12-15</p>
+						<p class="copyright">Copyright &copy; 2016 Microsoft. All rights reserved. Updated: 2016-07-28</p>
 						
 						
 						<p class="generator">Generated by <a href="http://appledoc.gentlebytes.com">appledoc 2.2.1 (build 1334)</a>.</p>

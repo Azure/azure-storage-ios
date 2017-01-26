@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 
-	<title>AZSBlobListingDetails Constants Reference</title>
+	<title>AZSSharedAccessServices Constants Reference</title>
 
 	<link rel="stylesheet" href="../css/style.css">
 	<meta name="viewport" content="initial-scale=1, maximum-scale=1.4">
@@ -59,7 +59,7 @@
 		<div id="overview_contents" class="container">
 			<div id="content">
 				<main role="main">
-					<h1 class="title">AZSBlobListingDetails Constants Reference</h1>
+					<h1 class="title">AZSSharedAccessServices Constants Reference</h1>
 
 					
 					<div class="section section-specification"><table cellspacing="0"><tbody>
@@ -75,11 +75,11 @@
 					
 
                     
-                    <h3 class="subsubtitle method-title">AZSBlobListingDetails</h3>
+                    <h3 class="subsubtitle method-title">AZSSharedAccessServices</h3>
                     
 					
 					<div class="section section-overview">
-                        <p>The different possible Blob Listing Details.</p>
+                        <p>Specifies the set of possible services for a shared access policy. *</p>
 					</div>
 					
 					
@@ -87,19 +87,19 @@
                         <!-- display enum values -->
                         
                         <h4 class="method-subtitle">Definition</h4>
-                        <code>typedef NS_OPTIONS(NSUInteger, AZSBlobListingDetails ) {<br>
+                        <code>typedef NS_OPTIONS(NSUInteger, AZSSharedAccessServices ) {<br>
                             
-                            &nbsp;&nbsp; <a href="">AZSBlobListingDetailsNone</a> = 0 x0,<br>
+                            &nbsp;&nbsp; <a href="">AZSSharedAccessServicesNone</a> = 0 x0,<br>
                             
-                            &nbsp;&nbsp; <a href="">AZSBlobListingDetailsSnapshots</a> = 0 x1 &lt; &lt; 0,<br>
+                            &nbsp;&nbsp; <a href="">AZSSharedAccessServicesBlob</a> = 0 x1 &lt; &lt; 0,<br>
                             
-                            &nbsp;&nbsp; <a href="">AZSBlobListingDetailsMetadata</a> = 0 x1 &lt; &lt; 1,<br>
+                            &nbsp;&nbsp; <a href="">AZSSharedAccessServicesFile</a> = 0 x1 &lt; &lt; 1,<br>
                             
-                            &nbsp;&nbsp; <a href="">AZSBlobListingDetailsUncommittedBlobs</a> = 0 x1 &lt; &lt; 2,<br>
+                            &nbsp;&nbsp; <a href="">AZSSharedAccessServicesQueue</a> = 0 x1 &lt; &lt; 2,<br>
                             
-                            &nbsp;&nbsp; <a href="">AZSBlobListingDetailsCopy</a> = 0 x1 &lt; &lt; 3,<br>
+                            &nbsp;&nbsp; <a href="">AZSSharedAccessServicesTable</a> = 0 x1 &lt; &lt; 3,<br>
                             
-                            &nbsp;&nbsp; <a href="">AZSBlobListingDetailsAll</a> = AZSBlobListingDetailsSnapshots | AZSBlobListingDetailsMetadata | AZSBlobListingDetailsUncommittedBlobs | AZSBlobListingDetailsCopy,<br>
+                            &nbsp;&nbsp; <a href="">AZSSharedAccessServicesAll</a> = AZSSharedAccessServicesBlob | AZSSharedAccessServicesFile | AZSSharedAccessServicesQueue | AZSSharedAccessServicesTable,<br>
                             
                             };</code>
                     
@@ -109,11 +109,11 @@
                         <h4 class="method-subtitle">Constants</h4>
                         <dl class="termdef">
                             
-                            <dt><a name="" title="AZSBlobListingDetailsNone"></a><code>AZSBlobListingDetailsNone</code></dt>
+                            <dt><a name="" title="AZSSharedAccessServicesNone"></a><code>AZSSharedAccessServicesNone</code></dt>
 <dd>
 
 
-<p>List only committed blobs, and do not return blob metadata.</p>
+<p>Specifies no access granted. *</p>
 
 
 
@@ -126,11 +126,11 @@
 	
 </dd>
                             
-                            <dt><a name="" title="AZSBlobListingDetailsSnapshots"></a><code>AZSBlobListingDetailsSnapshots</code></dt>
+                            <dt><a name="" title="AZSSharedAccessServicesBlob"></a><code>AZSSharedAccessServicesBlob</code></dt>
 <dd>
 
 
-<p>List committed blobs and blob snapshots.</p>
+<p>Specifies Blob access granted. *</p>
 
 
 
@@ -143,11 +143,11 @@
 	
 </dd>
                             
-                            <dt><a name="" title="AZSBlobListingDetailsMetadata"></a><code>AZSBlobListingDetailsMetadata</code></dt>
+                            <dt><a name="" title="AZSSharedAccessServicesFile"></a><code>AZSSharedAccessServicesFile</code></dt>
 <dd>
 
 
-<p>Retrieve blob metadata for each blob returned in the listing.</p>
+<p>Specifies File access granted. *</p>
 
 
 
@@ -160,11 +160,11 @@
 	
 </dd>
                             
-                            <dt><a name="" title="AZSBlobListingDetailsUncommittedBlobs"></a><code>AZSBlobListingDetailsUncommittedBlobs</code></dt>
+                            <dt><a name="" title="AZSSharedAccessServicesQueue"></a><code>AZSSharedAccessServicesQueue</code></dt>
 <dd>
 
 
-<p>List committed and uncommittee blobs.</p>
+<p>Specifies Queue access granted. *</p>
 
 
 
@@ -177,11 +177,11 @@
 	
 </dd>
                             
-                            <dt><a name="" title="AZSBlobListingDetailsCopy"></a><code>AZSBlobListingDetailsCopy</code></dt>
+                            <dt><a name="" title="AZSSharedAccessServicesTable"></a><code>AZSSharedAccessServicesTable</code></dt>
 <dd>
 
 
-<p>Include copy propertied in the listing.</p>
+<p>Specifies Table access granted. *</p>
 
 
 
@@ -194,11 +194,11 @@
 	
 </dd>
                             
-                            <dt><a name="" title="AZSBlobListingDetailsAll"></a><code>AZSBlobListingDetailsAll</code></dt>
+                            <dt><a name="" title="AZSSharedAccessServicesAll"></a><code>AZSSharedAccessServicesAll</code></dt>
 <dd>
 
 
-<p>List all available committed blobs, uncommitted blobs, and snapshots, and return all metadata and copy status for those blobs.</p>
+<p>Specifies All access granted. *</p>
 
 
 
