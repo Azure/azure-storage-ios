@@ -18,13 +18,9 @@
 #import <XCTest/XCTest.h>
 @class AZSStorageCredentials;
 @class AZSCloudStorageAccount;
-@class AZSTestSemaphore;
 
 @interface AZSTestBase : XCTestCase
 
 @property AZSCloudStorageAccount *account;
-
 -(void)checkPassageOfError:(NSError *)err expectToPass:(BOOL)expected expectedHttpErrorCode:(int)code message:(NSString *)message;
--(NSRunLoop *)runloopWithSemaphore:(AZSTestSemaphore *)semaphore;
-
 @end
