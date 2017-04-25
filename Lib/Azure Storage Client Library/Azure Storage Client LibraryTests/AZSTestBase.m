@@ -17,10 +17,7 @@
 
 #include <asl.h>
 
-#import "AZSErrors.h"
 #import "AZSTestBase.h"
-#import "AZSTestSemaphore.h"
-#import "AZSUtil.h"
 #import "AZSConstants.h"
 #import "AZSCloudStorageAccount.h"
 #import "AZSOperationContext.h"
@@ -91,32 +88,5 @@
     }
 }
 
--(NSRunLoop *)runloopWithSemaphore:(AZSTestSemaphore *)semaphore
-{
-    __block volatile NSRunLoop *runloop = nil;
-    AZSTestSemaphore *runloopSemaphore = [[AZSTestSemaphore alloc] init];
-    
-    [NSThread detachNewThreadSelector:@selector(executeBlock:) toTarget:self withObject:^() {
-        runloop = [NSRunLoop currentRunLoop];
-        [runloopSemaphore signal];
-        
-        while (!semaphore.done) {
-            BOOL loopSuccess = [runloop runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:2]];
-            if (!loopSuccess) {
-                [[AZSUtil operationlessContext] logAtLevel:AZSLogLevelInfo withMessage:@"Runloop did not run."];
-                [NSThread sleepForTimeInterval:.25];
-            }
-        }
-    }];
-    
-    [runloopSemaphore wait];
-    
-    return (NSRunLoop *) runloop;
-}
-
--(void)executeBlock:(void(^)())block
-{
-    block();
-}
 
 @end

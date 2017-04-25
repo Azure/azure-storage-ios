@@ -38,7 +38,6 @@
 #import "AZSSharedAccessSignatureHelper.h"
 #import "AZSStorageCredentials.h"
 #import "AZSBlobResponseParser.h"
-#import "AZSBlobInputStream.h"
 
 @interface AZSCloudBlob()
 
@@ -146,17 +145,77 @@
     {
         operationContext = [[AZSOperationContext alloc] init];
     }
-    
     AZSBlobRequestOptions *modifiedOptions = [[AZSBlobRequestOptions copyOptions:requestOptions] applyDefaultsFromOptions:self.client.defaultRequestOptions];
-    AZSStorageCommand *command = [self downloadCommandWithRange:range AccessCondition:accessCondition requestOptions:modifiedOptions operationContext:operationContext];
+    AZSStorageCommand * command = [[AZSStorageCommand alloc] initWithStorageCredentials:self.client.credentials storageUri:self.storageUri calculateResponseMD5:!(modifiedOptions.disableContentMD5Validation) operationContext:operationContext];
+    command.allowedStorageLocation = AZSAllowedStorageLocationPrimaryOrSecondary;
+    [command setBuildRequest:^ NSMutableURLRequest * (NSURLComponents *urlComponents, NSTimeInterval timeout, AZSOperationContext *operationContext)
+     {
+         return [AZSBlobRequestFactory getBlobWithSnapshotTime:self.snapshotTime range:range getRangeContentMD5:modifiedOptions.useTransactionalMD5 accessCondition:accessCondition urlComponents:urlComponents timeout:timeout operationContext:operationContext];
+     }];
+    
+    [command setAuthenticationHandler:self.client.authenticationHandler];
+    
+    __block NSString *desiredContentMD5 = nil;
+        
+    [command setPreProcessResponse:^id(NSHTTPURLResponse * urlResponse, AZSRequestResult * requestResult, AZSOperationContext * operationContext) {
+        NSError *error = [AZSResponseParser preprocessResponseWithResponse:urlResponse requestResult:requestResult operationContext:operationContext];
+        if (error)
+        {
+            return error;
+        }
+        
+        AZSBlobProperties *parsedProperties = [AZSBlobResponseParser getBlobPropertiesWithResponse:urlResponse operationContext:operationContext error:&error];
+        if (error)
+        {
+            return error;
+        }
+
+        if (parsedProperties.blobType != AZSBlobTypeUnspecified && parsedProperties.blobType != self.properties.blobType)
+        {
+            return error = [NSError errorWithDomain:AZSErrorDomain code:AZSEInvalidArgument userInfo:@{NSLocalizedDescriptionKey:@"Blob type on the local object does not match blob type on the service."}];
+        }
+        
+        if (modifiedOptions.useTransactionalMD5 && !modifiedOptions.disableContentMD5Validation && !parsedProperties.contentMD5)
+        {
+            NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
+            NSError *storageError = [NSError errorWithDomain:AZSErrorDomain code:AZSEMD5Mismatch userInfo:userInfo];
+            return storageError;
+        }
+        
+        desiredContentMD5 = parsedProperties.contentMD5;
+        
+        if (range.length > 0)
+        {
+            // If it's a range get, don't update the contentMD5 on the blob's properties.
+            parsedProperties.contentMD5 = self.properties.contentMD5;
+        }
+        
+        self.properties = parsedProperties;
+        self.blobCopyState = [AZSBlobResponseParser getCopyStateWithResponse:urlResponse];
+        self.metadata = [AZSBlobResponseParser getMetadataWithResponse:urlResponse];
+        
+        return nil;
+    }];
+    
     [command setDestinationStream:targetStream];
     
-    [AZSExecutor ExecuteWithStorageCommand:command requestOptions:modifiedOptions operationContext:operationContext downloadBuffer:nil completionHandler:^(NSError *error, id result)
+    [command setPostProcessResponse:^id(NSHTTPURLResponse *response, AZSRequestResult *requestResult, NSOutputStream *outputStream, AZSOperationContext *operationContext, NSError **error) {
+        if (desiredContentMD5 && !modifiedOptions.disableContentMD5Validation)
+        {
+            if ([desiredContentMD5 compare:requestResult.calculatedResponseMD5 options:NSLiteralSearch] != NSOrderedSame)
+            {
+                *error = [NSError errorWithDomain:AZSErrorDomain code:AZSEMD5Mismatch userInfo:nil];
+            }
+        }
+        return nil;
+    }];
+    
+    [AZSExecutor ExecuteWithStorageCommand:command requestOptions:modifiedOptions operationContext:operationContext completionHandler:^(NSError *error, id result)
      {
          completionHandler(error);
      }];
-    
     return;
+
 }
 
 -(void)deleteWithCompletionHandler:(void (^)(NSError*))completionHandler
@@ -723,73 +782,6 @@
     }
 }
 
--(AZSStorageCommand *)downloadCommandWithRange:(AZSULLRange)range AccessCondition:(AZSAccessCondition *)accessCondition requestOptions:(AZSBlobRequestOptions *)requestOptions operationContext:(AZSOperationContext *)operationContext
-{
-    AZSStorageCommand *command = [[AZSStorageCommand alloc] initWithStorageCredentials:self.client.credentials storageUri:self.storageUri calculateResponseMD5:!(requestOptions.disableContentMD5Validation) operationContext:operationContext];
-    command.allowedStorageLocation = AZSAllowedStorageLocationPrimaryOrSecondary;
-    [command setBuildRequest:^ NSMutableURLRequest * (NSURLComponents *urlComponents, NSTimeInterval timeout, AZSOperationContext *operationContext)
-     {
-         return [AZSBlobRequestFactory getBlobWithSnapshotTime:self.snapshotTime range:range getRangeContentMD5:requestOptions.useTransactionalMD5 accessCondition:accessCondition urlComponents:urlComponents timeout:timeout operationContext:operationContext];
-     }];
-    
-    [command setAuthenticationHandler:self.client.authenticationHandler];
-    
-    __block NSString *desiredContentMD5 = nil;
-    
-    [command setPreProcessResponse:^id(NSHTTPURLResponse * urlResponse, AZSRequestResult * requestResult, AZSOperationContext * operationContext) {
-        NSError *error = [AZSResponseParser preprocessResponseWithResponse:urlResponse requestResult:requestResult operationContext:operationContext];
-        if (error)
-        {
-            return error;
-        }
-        
-        AZSBlobProperties *parsedProperties = [AZSBlobResponseParser getBlobPropertiesWithResponse:urlResponse operationContext:operationContext error:&error];
-        if (error)
-        {
-            return error;
-        }
-        
-        if (parsedProperties.blobType != AZSBlobTypeUnspecified && parsedProperties.blobType != self.properties.blobType)
-        {
-            return error = [NSError errorWithDomain:AZSErrorDomain code:AZSEInvalidArgument userInfo:@{NSLocalizedDescriptionKey:@"Blob type on the local object does not match blob type on the service."}];
-        }
-        
-        if (requestOptions.useTransactionalMD5 && !requestOptions.disableContentMD5Validation && !parsedProperties.contentMD5)
-        {
-            NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
-            NSError *storageError = [NSError errorWithDomain:AZSErrorDomain code:AZSEMD5Mismatch userInfo:userInfo];
-            return storageError;
-        }
-        
-        desiredContentMD5 = parsedProperties.contentMD5;
-        
-        if (range.length > 0)
-        {
-            // If it's a range get, don't update the contentMD5 on the blob's properties.
-            parsedProperties.contentMD5 = self.properties.contentMD5;
-        }
-        
-        self.properties = parsedProperties;
-        self.blobCopyState = [AZSBlobResponseParser getCopyStateWithResponse:urlResponse];
-        self.metadata = [AZSBlobResponseParser getMetadataWithResponse:urlResponse];
-        
-        return nil;
-    }];
-    
-    [command setPostProcessResponse:^id(NSHTTPURLResponse *response, AZSRequestResult *requestResult, NSOutputStream *outputStream, AZSOperationContext *operationContext, NSError **error) {
-        if (desiredContentMD5 && !requestOptions.disableContentMD5Validation)
-        {
-            if ([desiredContentMD5 compare:requestResult.calculatedResponseMD5 options:NSLiteralSearch] != NSOrderedSame)
-            {
-                *error = [NSError errorWithDomain:AZSErrorDomain code:AZSEMD5Mismatch userInfo:nil];
-            }
-        }
-        return nil;
-    }];
-    
-    return command;
-}
-
 -(void)downloadToDataWithCompletionHandler:(void (^)(NSError *, NSData *))completionHandler
 {
     [self downloadToDataWithAccessCondition:nil requestOptions:nil operationContext:nil completionHandler:completionHandler];
@@ -945,23 +937,6 @@
     }];
     
     return;
-}
-
-- (AZSBlobInputStream *)createInputStream
-{
-    return [self createInputStreamWithAccessCondition:nil requestOptions:nil operationContext:nil];
-}
-
-- (AZSBlobInputStream *)createInputStreamWithAccessCondition:(AZSNullable AZSAccessCondition *)accessCondition requestOptions:(AZSNullable AZSBlobRequestOptions *)requestOptions operationContext:(AZSNullable AZSOperationContext *)operationContext
-{
-    if (!operationContext)
-    {
-        operationContext = [[AZSOperationContext alloc] init];
-    }
-    
-    // TODO: Check access conditions properly (download attributes if necessary.).  Also for UploadFromStream.
-    AZSBlobRequestOptions *modifiedOptions = [[AZSBlobRequestOptions copyOptions:requestOptions] applyDefaultsFromOptions:self.client.defaultRequestOptions];
-    return [[AZSBlobInputStream alloc] initWithBlob:self  accessCondition:(AZSAccessCondition *)accessCondition requestOptions:modifiedOptions operationContext:operationContext];
 }
 
 @end
