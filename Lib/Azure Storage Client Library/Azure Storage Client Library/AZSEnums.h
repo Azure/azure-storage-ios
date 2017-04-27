@@ -263,31 +263,31 @@ typedef NS_OPTIONS(NSUInteger, AZSCorsHttpMethod)
     AZSCorsHttpMethodNone           = 0x0,
 
     /** Specifies GET operations granted. **/
-    AZSCorsHttpMethodGet            = 0x0,
+    AZSCorsHttpMethodGet            = 0x1 << 0,
 
     /** Specifies HEAD operations granted. **/
-    AZSCorsHttpMethodHead           = 0x1 << 0,
+    AZSCorsHttpMethodHead           = 0x1 << 1,
 
     /** Specifies POST operations granted. **/
-    AZSCorsHttpMethodPost           = 0x1 << 1,
+    AZSCorsHttpMethodPost           = 0x1 << 2,
 
     /** Specifies PUT operations granted. **/
-    AZSCorsHttpMethodPut            = 0x1 << 2,
+    AZSCorsHttpMethodPut            = 0x1 << 3,
 
     /** Specifies DELETE operations granted. **/
-    AZSCorsHttpMethodDelete         = 0x1 << 3,
+    AZSCorsHttpMethodDelete         = 0x1 << 4,
 
     /** Specifies TRACE operations granted. **/
-    AZSCorsHttpMethodTrace          = 0x1 << 4,
+    AZSCorsHttpMethodTrace          = 0x1 << 5,
 
     /** Specifies OPTIONS operations granted. **/
-    AZSCorsHttpMethodOptions        = 0x1 << 5,
+    AZSCorsHttpMethodOptions        = 0x1 << 6,
 
     /** Specifies CONNECT operations granted. **/
-    AZSCorsHttpMethodConnect        = 0x1 << 6,
+    AZSCorsHttpMethodConnect        = 0x1 << 7,
 
     /** Specifies MERGE operations granted. **/
-    AZSCorsHttpMethodMerge          = 0x1 << 7,
+    AZSCorsHttpMethodMerge          = 0x1 << 8,
 };
 
 /** Represents the lease action being performed. */
