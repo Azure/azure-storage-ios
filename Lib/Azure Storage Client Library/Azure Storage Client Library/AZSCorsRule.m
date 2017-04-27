@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------------------------
-// <copyright file="AZSBlobRequestXML.h" company="Microsoft">
+// <copyright file="AZSCorsRule.m" company="Microsoft">
 //    Copyright 2015 Microsoft Corporation
 //
 //    Licensed under the MIT License;
@@ -16,17 +16,23 @@
 // -----------------------------------------------------------------------------------------
 
 #import <Foundation/Foundation.h>
+#import "AZSCorsRule.h"
 
-@class AZSOperationContext;
-@class AZSSharedAccessPolicy;
-@class AZSServiceProperties;
+@implementation AZSCorsRule
 
-@interface AZSBlobRequestXML : NSObject
+-(instancetype) init
+{
+    self = [super init];
+    if (self)
+    {
+        _allowedOrigins = [[NSMutableArray alloc] init];
+        _exposedHeaders = [[NSMutableArray alloc] init];
+        _allowedHeaders = [[NSMutableArray alloc] init];
+        _maxAgeInSeconds = 0;
+        _allowedHttpMethods = 0x0;
+    }
 
-+(NSString *) createBlockListXMLFromArray:(NSArray *)blockList operationContext:(AZSOperationContext *)operationContext error:(NSError **)error;
-
-+(NSString *) createStoredPoliciesXMLFromPermissions:(NSMutableDictionary *)permissions operationContext:(AZSOperationContext *)operationContext error:(NSError **)error;
-
-+(NSString *) createServicePropertiesXML:(AZSServiceProperties *)serviceProperties operationContext:(AZSOperationContext *)operationContext error:(NSError **)error;
+    return self;
+}
 
 @end

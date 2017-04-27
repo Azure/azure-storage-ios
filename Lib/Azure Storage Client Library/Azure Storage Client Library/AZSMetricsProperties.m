@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------------------------
-// <copyright file="AZSBlobRequestXML.h" company="Microsoft">
+// <copyright file="AZSMetricsProperties.m" company="Microsoft">
 //    Copyright 2015 Microsoft Corporation
 //
 //    Licensed under the MIT License;
@@ -15,18 +15,22 @@
 // </copyright>
 // -----------------------------------------------------------------------------------------
 
-#import <Foundation/Foundation.h>
+#import "AZSMetricsProperties.h"
+#import "AZSEnums.h"
 
-@class AZSOperationContext;
-@class AZSSharedAccessPolicy;
-@class AZSServiceProperties;
+@implementation AZSMetricsProperties
 
-@interface AZSBlobRequestXML : NSObject
+-(instancetype) init
+{
+    self = [super init];
+    if (self)
+    {
+        _version = @"1.0";
+        _metricsLevel = AZSMetricsLevelDisabled;
+    }
 
-+(NSString *) createBlockListXMLFromArray:(NSArray *)blockList operationContext:(AZSOperationContext *)operationContext error:(NSError **)error;
-
-+(NSString *) createStoredPoliciesXMLFromPermissions:(NSMutableDictionary *)permissions operationContext:(AZSOperationContext *)operationContext error:(NSError **)error;
-
-+(NSString *) createServicePropertiesXML:(AZSServiceProperties *)serviceProperties operationContext:(AZSOperationContext *)operationContext error:(NSError **)error;
+    return self;
+}
 
 @end
+
