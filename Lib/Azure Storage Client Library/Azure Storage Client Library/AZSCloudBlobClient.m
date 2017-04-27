@@ -24,6 +24,7 @@
 #import "AZSStorageCommand.h"
 #import "AZSBlobRequestFactory.h"
 #import "AZSBlobResponseParser.h"
+#import "AZSBlobRequestXML.h"
 #import "AZSOperationContext.h"
 #import "AZSExecutor.h"
 #import "AZSContinuationToken.h"
@@ -142,6 +143,81 @@
     {
         _directoryDelimiter = directoryDelimiter;
     }
+}
+
+-(void)uploadServicePropertiesWithServiceProperties:(AZSServiceProperties *)serviceProperties completionHandler:(void (^)(NSError *))completionHandler
+{
+    [self uploadServicePropertiesWithServiceProperties:serviceProperties requestOptions:nil operationContext:nil completionHandler:completionHandler];
+}
+
+- (void)uploadServicePropertiesWithServiceProperties:(AZSServiceProperties *)serviceProperties requestOptions:(AZSBlobRequestOptions *)requestOptions operationContext:(AZSOperationContext *)operationContext completionHandler:(void (^)(NSError *))completionHandler
+{
+    if (!operationContext) {
+        operationContext = [[AZSOperationContext alloc] init];
+    }
+
+    AZSBlobRequestOptions *modifiedOptions = [[AZSBlobRequestOptions copyOptions:requestOptions] applyDefaultsFromOptions:self.defaultRequestOptions];
+    AZSStorageCommand * command = [[AZSStorageCommand alloc] initWithStorageCredentials:self.credentials storageUri:self.storageUri operationContext:operationContext];
+
+    NSError *error = nil;
+    NSData *sourceData = [[AZSBlobRequestXML createServicePropertiesXML:serviceProperties operationContext:operationContext error:&error] dataUsingEncoding:NSUTF8StringEncoding];
+    if (error) {
+        completionHandler(error);
+        return;
+    }
+
+    [command setSource:sourceData];
+    [command setBuildRequest:^ NSMutableURLRequest * (NSURLComponents *urlComponents, NSTimeInterval timeout, AZSOperationContext *operationContext) {
+        return [AZSBlobRequestFactory uploadServicePropertiesWithLength:sourceData.length urlComponents:urlComponents options:requestOptions timeout:timeout operationContext:operationContext];
+    }];
+
+    [command setAuthenticationHandler:self.authenticationHandler];
+
+    [command setPreProcessResponse:^ NSError * (NSHTTPURLResponse *urlResponse, AZSRequestResult *requestResult, AZSOperationContext *operationContext) {
+        return [AZSResponseParser preprocessResponseWithResponse:urlResponse requestResult:requestResult operationContext:operationContext];
+    }];
+
+    [AZSExecutor ExecuteWithStorageCommand:command requestOptions:modifiedOptions operationContext:operationContext completionHandler:^(NSError *error, id result) {
+        completionHandler(error);
+    }];
+}
+
+- (void)downloadServicePropertiesWithCompletionHandler:(void (^)(NSError* __AZSNullable, AZSServiceProperties *))completionHandler
+{
+    [self downloadServicePropertiesWithCompletionHandler:nil operationContext:nil completionHandler:completionHandler];
+}
+
+- (void)downloadServicePropertiesWithCompletionHandler:(AZSNullable AZSBlobRequestOptions *)requestOptions operationContext:(AZSNullable AZSOperationContext *)operationContext completionHandler:(void (^)(NSError* __AZSNullable, AZSServiceProperties *))completionHandler
+{
+    if (!operationContext) {
+        operationContext = [[AZSOperationContext alloc] init];
+    }
+    AZSBlobRequestOptions *modifiedOptions = [[AZSBlobRequestOptions copyOptions:requestOptions] applyDefaultsFromOptions:self.defaultRequestOptions];
+    AZSStorageCommand * command = [[AZSStorageCommand alloc] initWithStorageCredentials:self.credentials storageUri:self.storageUri operationContext:operationContext];
+    command.allowedStorageLocation = AZSAllowedStorageLocationPrimaryOrSecondary;
+    [command setBuildRequest:^ NSMutableURLRequest * (NSURLComponents *urlComponents, NSTimeInterval timeout, AZSOperationContext *operationContext) {
+        return [AZSBlobRequestFactory downloadServicePropertiesWithUrlComponents:urlComponents timeout:timeout operationContext:operationContext];
+    }];
+
+    [command setAuthenticationHandler:self.authenticationHandler];
+
+    [command setPreProcessResponse:^id(NSHTTPURLResponse * urlResponse, AZSRequestResult * requestResult, AZSOperationContext * operationContext) {
+        return [AZSResponseParser preprocessResponseWithResponse:urlResponse requestResult:requestResult operationContext:operationContext];
+    }];
+
+    [command setPostProcessResponse:^id(NSHTTPURLResponse * urlResponse, AZSRequestResult * requestResult, NSOutputStream *outputStream, AZSOperationContext * operationContext, NSError ** error) {
+        AZSServiceProperties *properties = [AZSServicePropertiesResponseParser parseDownloadServicePropertiesResponseWithData:[outputStream propertyForKey:NSStreamDataWrittenToMemoryStreamKey] operationContext:operationContext error:error];
+
+        if (*error) {
+            return nil;
+        }
+
+        return properties;
+    }];
+
+    [AZSExecutor ExecuteWithStorageCommand:command requestOptions:modifiedOptions operationContext:operationContext completionHandler:^(NSError *error, id result) {
+        completionHandler(error, result);
+    }];
 }
 
 @end

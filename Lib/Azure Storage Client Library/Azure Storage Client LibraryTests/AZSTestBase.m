@@ -53,7 +53,7 @@
     [AZSOperationContext setGlobalLogLevel:AZSLogLevelInfo];
 //    [AZSOperationContext setGlobalLogLevel:AZSLogLevelDebug];
     
-    NSString *path = [[NSBundle bundleForClass:[self class]] pathForResource:@"test_configurations" ofType:@"json"];
+    NSString *path = [[NSBundle bundleForClass:[self class]] pathForResource:@"TestResources/test_configurations" ofType:@"json"];
     NSInputStream *fileStream = [[NSInputStream alloc] initWithFileAtPath:path];
     [fileStream open];
     NSError *error;

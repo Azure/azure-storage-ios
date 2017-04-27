@@ -206,6 +206,22 @@ typedef NS_ENUM(NSInteger, AZSLeaseDuration)
     AZSLeaseDurationInfinite
 };
 
+/** The types of operations the service should log. */
+typedef NS_OPTIONS(NSUInteger, AZSLoggingOperation)
+{
+    /** Log No Operations. */
+    AZSLoggingOperationNone = 0x0,
+
+    /** Log Read Operations. */
+    AZSLoggingOperationRead = 0x1 << 0,
+
+    /** Log Write Operations. */
+    AZSLoggingOperationWrite = 0x1 << 1,
+
+    /** Log Delete Operations. */
+    AZSLoggingOperationDelete = 0x1 << 2
+};
+
 /** The type of a Blob. */
 typedef NS_ENUM(NSInteger, AZSBlobType)
 {
@@ -239,6 +255,39 @@ typedef NS_ENUM(NSInteger, AZSCopyStatus)
     
     /** The copy operation encountered an error. */
     AZSCopyStatusFailed
+};
+
+typedef NS_OPTIONS(NSUInteger, AZSCorsHttpMethod)
+{
+    /** Specifies no operations granted. **/
+    AZSCorsHttpMethodNone           = 0x0,
+
+    /** Specifies GET operations granted. **/
+    AZSCorsHttpMethodGet            = 0x1 << 0,
+
+    /** Specifies HEAD operations granted. **/
+    AZSCorsHttpMethodHead           = 0x1 << 1,
+
+    /** Specifies POST operations granted. **/
+    AZSCorsHttpMethodPost           = 0x1 << 2,
+
+    /** Specifies PUT operations granted. **/
+    AZSCorsHttpMethodPut            = 0x1 << 3,
+
+    /** Specifies DELETE operations granted. **/
+    AZSCorsHttpMethodDelete         = 0x1 << 4,
+
+    /** Specifies TRACE operations granted. **/
+    AZSCorsHttpMethodTrace          = 0x1 << 5,
+
+    /** Specifies OPTIONS operations granted. **/
+    AZSCorsHttpMethodOptions        = 0x1 << 6,
+
+    /** Specifies CONNECT operations granted. **/
+    AZSCorsHttpMethodConnect        = 0x1 << 7,
+
+    /** Specifies MERGE operations granted. **/
+    AZSCorsHttpMethodMerge          = 0x1 << 8,
 };
 
 /** Represents the lease action being performed. */
@@ -281,6 +330,20 @@ typedef NS_ENUM(NSInteger, AZSLogLevel)
     /** Log all messages, including debugging messages. */
     AZSLogLevelDebug = 7
 };
+
+/** Specifies the state of metrics collection in a service. */
+typedef NS_ENUM(NSInteger, AZSMetricsLevel)
+{
+    /** Metrics collection is disabled. */
+    AZSMetricsLevelDisabled,
+
+    /** Service-level metrics collection is enabled. */
+    AZSMetricsLevelService,
+
+    /** Service-level and API metrics collection are enabled. */
+    AZSMetricsLevelServiceAndAPI
+};
+
 
 /** Specifies the set of possible permissions for a shared access policy. **/
 typedef NS_OPTIONS(NSUInteger, AZSSharedAccessPermissions)

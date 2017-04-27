@@ -29,6 +29,7 @@ AZS_ASSUME_NONNULL_BEGIN
 @class AZSContinuationToken;
 @class AZSBlobRequestOptions;
 @class AZSOperationContext;
+@class AZSServiceProperties;
 
 
 // TODO: Figure out how to get this typedef to work with Appledocs.
@@ -158,6 +159,57 @@ AZS_ASSUME_NONNULL_BEGIN
  |AZSContainerResultSegment * | The result segment containing the result of the listing operation.|
  */
 - (void)listContainersSegmentedWithContinuationToken:(AZSNullable AZSContinuationToken *)continuationToken prefix:(AZSNullable NSString *)prefix containerListingDetails:(AZSContainerListingDetails)containerListingDetails maxResults:(NSInteger)maxResults requestOptions:(AZSNullable AZSBlobRequestOptions *)requestOptions operationContext:(AZSNullable AZSOperationContext *)operationContext completionHandler:(void (^) (NSError * __AZSNullable, AZSContainerResultSegment * __AZSNullable))completionHandler;
+
+/** Uploads service properties.
+
+ @param serviceProperties The service properties to upload.
+ @param completionHandler The block of code to execute when the Upload Permissions call completes.
+
+ | Parameter name | Description |
+ |----------------|-------------|
+ |NSError *       | Nil if the operation succeeded without error, error with details about the failure otherwise.|
+ */
+- (void)uploadServicePropertiesWithServiceProperties:(AZSServiceProperties *)serviceProperties completionHandler:(void (^)(NSError * __AZSNullable))completionHandler;
+
+/** Uploads service properties.
+
+ @param serviceProperties The service properties to upload.
+ @param accessCondition The access conditions for the container.
+ @param requestOptions Specifies any additional options for the request. Specifying nil will use the default request options from the associated client.
+ @param operationContext Represents the context for the current operation.  Can be used to track requests to the storage service, and to provide additional runtime information about the operation.
+ @param completionHandler The block of code to execute when the Upload Service Properties call completes.
+
+ | Parameter name | Description |
+ |----------------|-------------|
+ |NSError *       | Nil if the operation succeeded without error, error with details about the failure otherwise.|
+ */
+- (void)uploadServicePropertiesWithServiceProperties:(AZSServiceProperties *)serviceProperties requestOptions:(AZSNullable AZSBlobRequestOptions *)requestOptions operationContext:(AZSNullable AZSOperationContext *)operationContext completionHandler:(void (^)(NSError * __AZSNullable))completionHandler;
+
+/** Retrieves the stored service properties.
+
+ @param completionHandler The block of code to execute when the Download Service Properties call completes.
+
+ | Parameter name | Description |
+ |----------------|-------------|
+ |NSError * | Nil if the operation succeeded without error, error with details about the failure otherwise.|
+ |AZSServiceProperties * | The resulting service properties returned from the get service properties operation.|
+ */
+- (void)downloadServicePropertiesWithCompletionHandler:(void (^)(NSError* __AZSNullable, AZSServiceProperties * __AZSNullable))completionHandler;
+
+/** Retrieves the stored service properties.
+
+ @param accessCondition The access condition for the request.
+ @param requestOptions The options to use for the request.
+ @param operationContext The operation context to use for the call.
+ @param completionHandler The block of code to execute when the Download Service Properties call completes.
+
+ | Parameter name | Description |
+ |----------------|-------------|
+ |NSError * | Nil if the operation succeeded without error, error with details about the failure otherwise.|
+ |AZSServiceProperties * | The resulting service properties returned from the get service properties operation.|
+ */
+- (void)downloadServicePropertiesWithCompletionHandler:(AZSNullable AZSBlobRequestOptions *)requestOptions operationContext:(AZSNullable AZSOperationContext *)operationContext completionHandler:(void (^)(NSError* __AZSNullable, AZSServiceProperties * __AZSNullable))completionHandler;
+
 @end
 
 AZS_ASSUME_NONNULL_END

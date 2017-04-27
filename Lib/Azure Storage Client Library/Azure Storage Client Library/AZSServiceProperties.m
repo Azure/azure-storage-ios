@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------------------------
-// <copyright file="AZSBlobRequestXML.h" company="Microsoft">
+// <copyright file="AZSServiceProperties.m" company="Microsoft">
 //    Copyright 2015 Microsoft Corporation
 //
 //    Licensed under the MIT License;
@@ -15,18 +15,17 @@
 // </copyright>
 // -----------------------------------------------------------------------------------------
 
-#import <Foundation/Foundation.h>
+#import "AZSServiceProperties.h"
 
-@class AZSOperationContext;
-@class AZSSharedAccessPolicy;
-@class AZSServiceProperties;
+@implementation AZSServiceProperties
 
-@interface AZSBlobRequestXML : NSObject
 
-+(NSString *) createBlockListXMLFromArray:(NSArray *)blockList operationContext:(AZSOperationContext *)operationContext error:(NSError **)error;
+-(instancetype) init
+{
+    self = [super init];
 
-+(NSString *) createStoredPoliciesXMLFromPermissions:(NSMutableDictionary *)permissions operationContext:(AZSOperationContext *)operationContext error:(NSError **)error;
-
-+(NSString *) createServicePropertiesXML:(AZSServiceProperties *)serviceProperties operationContext:(AZSOperationContext *)operationContext error:(NSError **)error;
+    return self;
+};
 
 @end
+

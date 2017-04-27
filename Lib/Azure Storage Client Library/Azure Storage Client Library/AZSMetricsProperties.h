@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------------------------
-// <copyright file="AZSBlobRequestXML.h" company="Microsoft">
+// <copyright file="AZSMetricsProperties.h" company="Microsoft">
 //    Copyright 2015 Microsoft Corporation
 //
 //    Licensed under the MIT License;
@@ -15,18 +15,24 @@
 // </copyright>
 // -----------------------------------------------------------------------------------------
 
-#import <Foundation/Foundation.h>
+#import "AZSEnums.h"
+#import "AZSMacros.h"
 
-@class AZSOperationContext;
-@class AZSSharedAccessPolicy;
-@class AZSServiceProperties;
+AZS_ASSUME_NONNULL_BEGIN
 
-@interface AZSBlobRequestXML : NSObject
+/** Represents the analytics properties for the service*/
 
-+(NSString *) createBlockListXMLFromArray:(NSArray *)blockList operationContext:(AZSOperationContext *)operationContext error:(NSError **)error;
+@interface AZSMetricsProperties : NSObject
 
-+(NSString *) createStoredPoliciesXMLFromPermissions:(NSMutableDictionary *)permissions operationContext:(AZSOperationContext *)operationContext error:(NSError **)error;
+/** The analytics version to use.*/
+@property (copy) NSString *version;
 
-+(NSString *) createServicePropertiesXML:(AZSServiceProperties *)serviceProperties operationContext:(AZSOperationContext *)operationContext error:(NSError **)error;
+/** Represents which storage operations should be logged.*/
+@property AZSMetricsLevel metricsLevel;
+
+/** Represents the duration of the rention policty for the logging data.*/
+@property (AZSNullable) NSNumber *retentionIntervalInDays;
 
 @end
+
+AZS_ASSUME_NONNULL_END

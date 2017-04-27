@@ -29,6 +29,10 @@
 
 @interface AZSBlobRequestFactory : NSObject
 
+// Service
++(NSMutableURLRequest *) uploadServicePropertiesWithLength:(NSUInteger)length urlComponents:(NSURLComponents *)urlComponents options:(AZSBlobRequestOptions *)options timeout:(NSTimeInterval)timeout operationContext:(AZSOperationContext *)operationContext;
++(NSMutableURLRequest *) downloadServicePropertiesWithUrlComponents:(NSURLComponents *)urlComponents timeout:(NSTimeInterval)timeout operationContext:(AZSOperationContext *)operationContext;
+
 // Container
 +(NSMutableURLRequest *) createContainerWithAccessType:(AZSContainerPublicAccessType)accessType cloudMetadata:(NSMutableDictionary *)cloudMetadata urlComponents:(NSURLComponents *)urlComponents timeout:(NSTimeInterval)timeout operationContext:(AZSOperationContext *)operationContext;
 +(NSMutableURLRequest *) deleteContainerWithAccessCondition:(AZSAccessCondition *)accessCondition urlComponents:(NSURLComponents *)urlComponents timeout:(NSTimeInterval)timeout operationContext:(AZSOperationContext *)operationContext;
