@@ -30,7 +30,7 @@ AZS_ASSUME_NONNULL_BEGIN
 /** Represents which storage operations should be logged.*/
 @property AZSLoggingOperation logOperationTypes;
 
-/** Represents the duration of the rention policty for the logging data.*/
+/** Represents the duration of the retention policty for the logging data.*/
 @property (AZSNullable) NSNumber *retentionIntervalInDays;
 
 @end
