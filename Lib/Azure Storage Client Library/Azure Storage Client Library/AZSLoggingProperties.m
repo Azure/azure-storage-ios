@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------------------------
-// <copyright file="AZSErrors.h" company="Microsoft">
+// <copyright file="AZSLoggingProperties.h" company="Microsoft">
 //    Copyright 2015 Microsoft Corporation
 //
 //    Licensed under the MIT License;
@@ -16,21 +16,21 @@
 // -----------------------------------------------------------------------------------------
 
 #import <Foundation/Foundation.h>
+#import "AZSLoggingProperties.h"
 
-#ifndef __AZS_ERRORS_DEFINED__
-#define __AZS_ERRORS_DEFINED__
-FOUNDATION_EXPORT NSString *const AZSErrorDomain;
-FOUNDATION_EXPORT NSString *const AZSInnerErrorString;
+@implementation AZSLoggingProperties
+
+-(instancetype) init
+{
+    self = [super init];
+    if (self)
+    {
+        _version = @"1.0";
+        _logOperationTypes = AZSLoggingOperationNone;
+    }
+
+    return self;
+}
 
 
-#define AZSEInvalidArgument 1
-#define AZSEURLSessionClientError 2
-#define AZSEServerError 3
-#define AZSEMD5Mismatch 4
-#define AZSEClientTimeout 5
-#define AZSEParseError 6
-#define AZSEXMLCreationError 7
-#define AZSEOutputStreamError 8
-#define AZSEOutputStreamFull 9
-
-#endif //__AZS_ERRORS_DEFINED__
+@end

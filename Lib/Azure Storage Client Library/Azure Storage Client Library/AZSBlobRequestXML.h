@@ -16,12 +16,17 @@
 // -----------------------------------------------------------------------------------------
 
 #import <Foundation/Foundation.h>
+
 @class AZSOperationContext;
 @class AZSSharedAccessPolicy;
+@class AZSServiceProperties;
 
 @interface AZSBlobRequestXML : NSObject
 
 +(NSString *) createBlockListXMLFromArray:(NSArray *)blockList operationContext:(AZSOperationContext *)operationContext error:(NSError **)error;
+
 +(NSString *) createStoredPoliciesXMLFromPermissions:(NSMutableDictionary *)permissions operationContext:(AZSOperationContext *)operationContext error:(NSError **)error;
+
++(NSString *) createServicePropertiesXML:(AZSServiceProperties *)serviceProperties operationContext:(AZSOperationContext *)operationContext error:(NSError **)error;
 
 @end

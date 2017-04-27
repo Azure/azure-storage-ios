@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------------------------
-// <copyright file="AZSErrors.h" company="Microsoft">
+// <copyright file="AZSMetricsProperties.h" company="Microsoft">
 //    Copyright 2015 Microsoft Corporation
 //
 //    Licensed under the MIT License;
@@ -15,22 +15,24 @@
 // </copyright>
 // -----------------------------------------------------------------------------------------
 
-#import <Foundation/Foundation.h>
+#import "AZSEnums.h"
+#import "AZSMacros.h"
 
-#ifndef __AZS_ERRORS_DEFINED__
-#define __AZS_ERRORS_DEFINED__
-FOUNDATION_EXPORT NSString *const AZSErrorDomain;
-FOUNDATION_EXPORT NSString *const AZSInnerErrorString;
+AZS_ASSUME_NONNULL_BEGIN
 
+/** Represents the analytics properties for the service*/
 
-#define AZSEInvalidArgument 1
-#define AZSEURLSessionClientError 2
-#define AZSEServerError 3
-#define AZSEMD5Mismatch 4
-#define AZSEClientTimeout 5
-#define AZSEParseError 6
-#define AZSEXMLCreationError 7
-#define AZSEOutputStreamError 8
-#define AZSEOutputStreamFull 9
+@interface AZSMetricsProperties : NSObject
 
-#endif //__AZS_ERRORS_DEFINED__
+/** The analytics version to use.*/
+@property (copy) NSString *version;
+
+/** Represents which storage operations should be logged.*/
+@property AZSMetricsLevel metricsLevel;
+
+/** Represents the duration of the rention policty for the logging data.*/
+@property (AZSNullable) NSNumber *retentionIntervalInDays;
+
+@end
+
+AZS_ASSUME_NONNULL_END

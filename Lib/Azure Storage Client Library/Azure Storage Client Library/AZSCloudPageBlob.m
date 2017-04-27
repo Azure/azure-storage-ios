@@ -314,8 +314,8 @@
         return nil;
     }];
     
-    [command setPostProcessResponse:^id(NSHTTPURLResponse *urlResponse, AZSRequestResult *requestResult, NSOutputStream *stream, AZSOperationContext *operationContext, NSError **error) {
-        NSArray *pageRangesResponse = [AZSGetPageRangesResponse parseGetPageRangesResponseWithData:[stream propertyForKey:NSStreamDataWrittenToMemoryStreamKey] operationContext:operationContext error:error];
+    [command setPostProcessResponse:^id(NSHTTPURLResponse *urlResponse, AZSRequestResult *requestResult, NSOutputStream *outputStream, AZSOperationContext *operationContext, NSError **error) {
+        NSArray *pageRangesResponse = [AZSGetPageRangesResponse parseGetPageRangesResponseWithData:[outputStream propertyForKey:NSStreamDataWrittenToMemoryStreamKey] operationContext:operationContext error:error];
         
         if (*error)
         {
@@ -485,13 +485,17 @@
 {
     @autoreleasepool {
         NSRunLoop *runLoopForUpload = [NSRunLoop currentRunLoop];
-        __block BOOL blobFinished = NO;
-        __block NSError *error;
+        BOOL __block blobFinished = NO;
         
         // The blob will always already be created here.
-        AZSBlobUploadHelper *blobUploadHelper = [[AZSBlobUploadHelper alloc] initToPageBlob:inputContainer.targetBlob totalBlobSize:nil initialSequenceNumber:nil accessCondition:inputContainer.accessCondition requestOptions:inputContainer.blobRequestOptions operationContext:inputContainer.operationContext completionHandler:^(NSError * err) {
-            error = err;
+        AZSBlobUploadHelper *blobUploadHelper = [[AZSBlobUploadHelper alloc] initToPageBlob:inputContainer.targetBlob totalBlobSize:nil initialSequenceNumber:nil accessCondition:inputContainer.accessCondition requestOptions:inputContainer.blobRequestOptions operationContext:inputContainer.operationContext completionHandler:^(NSError * error) {
+            [inputContainer.sourceStream close];
+            [inputContainer.sourceStream removeFromRunLoop:runLoopForUpload forMode:NSDefaultRunLoopMode];
             blobFinished = YES;
+            if (inputContainer.completionHandler)
+            {
+                inputContainer.completionHandler(error);
+            }
         }];
         
         [inputContainer.sourceStream setDelegate:blobUploadHelper];
@@ -508,13 +512,6 @@
                 NSDate *loopUntil = [NSDate dateWithTimeIntervalSinceNow:0.1];
                 runLoopSuccess = [runLoopForUpload runMode:NSDefaultRunLoopMode beforeDate:loopUntil];
             }
-        }
-        
-        [inputContainer.sourceStream close];
-        [inputContainer.sourceStream removeFromRunLoop:runLoopForUpload forMode:NSDefaultRunLoopMode];
-        if (inputContainer.completionHandler)
-        {
-            inputContainer.completionHandler(error);
         }
     }
 }
