@@ -32,7 +32,7 @@
 
 /** Creates an IP range using the specified single IP address represented by the given string. The address must be IPv4.
  
- @param ip The single IP address.
+ @param ipString The single IP address.
  @param error A pointer to a NSError*, to be set in the event of failure.
  @returns The newly initialized IPRange or nil if the given string is invalid.
  */
@@ -40,8 +40,8 @@
 
 /** Creates an IP range encompassing the specified minimum and maximum IP addresses represented by the given strings. The addresses must be IPv4.
  
- @param minimum The minimum IP address.
- @param maximum The maximum IP address.
+ @param minimumString The minimum IP address.
+ @param maximumString The maximum IP address.
  @param error A pointer to a NSError*, to be set in the event of failure.
  @returns The newly initialized IPRange or nil if the given string is invalid.
  */

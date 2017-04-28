@@ -174,7 +174,6 @@ AZS_ASSUME_NONNULL_BEGIN
 /** Uploads service properties.
 
  @param serviceProperties The service properties to upload.
- @param accessCondition The access conditions for the container.
  @param requestOptions Specifies any additional options for the request. Specifying nil will use the default request options from the associated client.
  @param operationContext Represents the context for the current operation.  Can be used to track requests to the storage service, and to provide additional runtime information about the operation.
  @param completionHandler The block of code to execute when the Upload Service Properties call completes.
@@ -198,7 +197,6 @@ AZS_ASSUME_NONNULL_BEGIN
 
 /** Retrieves the stored service properties.
 
- @param accessCondition The access condition for the request.
  @param requestOptions The options to use for the request.
  @param operationContext The operation context to use for the call.
  @param completionHandler The block of code to execute when the Download Service Properties call completes.

@@ -359,7 +359,6 @@ AZS_ASSUME_NONNULL_BEGIN
 
 /** Increments the sequence number of the page blob on the service.
  
- @param completionHandler The block of code to execute when the increment call completes.
  @param accessCondition The access condition for the request.
  @param requestOptions The options to use for the request.
  @param operationContext The operation context to use for the call.
@@ -374,7 +373,6 @@ AZS_ASSUME_NONNULL_BEGIN
  
  @param newSequenceNumber The sequence number to set the blob to.
  @param useMaximum If YES, this method will set the sequence number to the larger of its existing value, and the input value.  If NO, the blob will get the new value, regardless of existing value.
- @param operationContext The operation context to use for the call.
  @param completionHandler The block of code to execute when the set sequence number call completes.
  | Parameter name | Description |
  |----------------|-------------|
@@ -422,9 +420,6 @@ AZS_ASSUME_NONNULL_BEGIN
  (similar to any other NSOutputStream.)  See AZSBlobOutputStream documentation for details.
  
  @param totalBlobSize The total blob size
- @param accessCondition The access condition for the request.
- @param requestOptions The options to use for the request.
- @param operationContext The operation context to use for the call.
  
  @returns The created AZSBlobOutputStream, capable of writing to this blob.
  */
@@ -436,9 +431,7 @@ AZS_ASSUME_NONNULL_BEGIN
  (similar to any other NSOutputStream.)  See AZSBlobOutputStream documentation for details.
  
  @param totalBlobSize The total blob size
- @param accessCondition The access condition for the request.
- @param requestOptions The options to use for the request.
- @param operationContext The operation context to use for the call.
+ @param sequenceNumber The initial page blob sequence number for the request.
  
  @returns The created AZSBlobOutputStream, capable of writing to this blob.
  */
@@ -507,9 +500,7 @@ AZS_ASSUME_NONNULL_BEGIN
  number of outstanding downloads is also configurable in the AZSBlobRequestOptions.
  
  @param sourceStream The stream containing the data that the blob should contain.
- @param accessCondition The access condition for the request.
- @param requestOptions The options to use for the request.
- @param operationContext The operation context to use for the call.
+ @param totalBlobSize The total blob size
  @param completionHandler The block of code to execute when the upload call completes.
  
  | Parameter name | Description |
@@ -528,9 +519,8 @@ AZS_ASSUME_NONNULL_BEGIN
  number of outstanding downloads is also configurable in the AZSBlobRequestOptions.
  
  @param sourceStream The stream containing the data that the blob should contain.
- @param accessCondition The access condition for the request.
- @param requestOptions The options to use for the request.
- @param operationContext The operation context to use for the call.
+ @param totalBlobSize The total blob size
+ @param initialSequenceNumber The initial page blob sequence number
  @param completionHandler The block of code to execute when the upload call completes.
  
  | Parameter name | Description |
