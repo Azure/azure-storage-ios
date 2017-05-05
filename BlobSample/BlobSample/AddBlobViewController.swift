@@ -39,24 +39,24 @@ class AddBlobViewController: UIViewController, UITextFieldDelegate, UIImagePicke
     }
 
     // MARK: UITextFieldDelegate
-    func textFieldShouldReturn(textField: UITextField) -> Bool {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         // Hide the keyboard
         textField.resignFirstResponder()
         
         return true
     }
     
-    func textFieldDidBeginEditing(textField: UITextField) {
-        saveButton.enabled = false
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        saveButton.isEnabled = false
     }
     
     func checkValidBlobName() {
         // Disable save if text field is empty.
         let text = nameTextField.text ?? ""
-        saveButton.enabled = !text.isEmpty
+        saveButton.isEnabled = !text.isEmpty
     }
     
-    func textFieldDidEndEditing(textField: UITextField) {
+    func textFieldDidEndEditing(_ textField: UITextField) {
         checkValidBlobName()
         if (textField === nameTextField) {
             navigationItem.title = textField.text
@@ -64,24 +64,24 @@ class AddBlobViewController: UIViewController, UITextFieldDelegate, UIImagePicke
     }
     
     // MARK: UIImagePickerControllerDelegate
-    func imagePickerControllerDidCancel(picker: UIImagePickerController) {
-        dismissViewControllerAnimated(true, completion: nil)
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        dismiss(animated: true, completion: nil)
     }
     
     // MARK: Navigation
-    @IBAction func cancel(sender: UIBarButtonItem) {
-        dismissViewControllerAnimated(true, completion: nil)
+    @IBAction func cancel(_ sender: UIBarButtonItem) {
+        dismiss(animated: true, completion: nil)
     }
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        if saveButton === sender {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if saveButton.isEqual(sender) {
             let name = nameTextField.text ?? ""
           
             if (!name.isEmpty)
             {
-                let blob = container!.blockBlobReferenceFromName(name)
+                let blob = container!.blockBlobReference(fromName: name)
                 
-                blob.uploadFromText(textTextField.text ?? "",  completionHandler: { (error: NSError?) -> Void in
+                blob.upload(fromText: textTextField.text ?? "",  completionHandler: { (error: Error?) -> Void in
                     if (self.viewToReloadOnBlobAdd != nil) {
                         self.viewToReloadOnBlobAdd!.reloadBlobList()
                     }

@@ -31,7 +31,7 @@
 // the properties of an AZSRequestResults are annotated, but the initializers are not.
 
 #define AZSNullable nullable
-#define __AZSNullable __nullable
+#define __AZSNullable _Nullable
 #define AZS_ASSUME_NONNULL_BEGIN NS_ASSUME_NONNULL_BEGIN
 #define AZS_ASSUME_NONNULL_END NS_ASSUME_NONNULL_END
 #define AZS_DESIGNATED_INITIALIZER NS_DESIGNATED_INITIALIZER

@@ -36,23 +36,23 @@ class GetBlobViewController: UIViewController, UITextViewDelegate, UITextFieldDe
             TempTextField.text = blob.blobName
             textview.text = "Blob text loading..."
             
-            blob.downloadToTextWithCompletionHandler({ (error : NSError?, blobText : String?) -> Void in
-                self.performSelectorOnMainThread("setBlobText:", withObject: blobText, waitUntilDone: false)
+            blob.downloadToText(completionHandler: { (error : Error?, blobText : String?) -> Void in
+                self.performSelector(onMainThread: #selector(GetBlobViewController.setBlobText(_:)), with: blobText, waitUntilDone: false)
             })
         }
 
         // Do any additional setup after loading the view.
     }
     
-    func setBlobText(blobText : String) {
+    func setBlobText(_ blobText : String) {
         self.textview.text = blobText
     }
 
     // MARK: - Navigation
-    @IBAction func cancel(sender: UIBarButtonItem) {
-        dismissViewControllerAnimated(true, completion: nil)
+    @IBAction func cancel(_ sender: UIBarButtonItem) {
+        dismiss(animated: true, completion: nil)
     }
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
     }
 }
