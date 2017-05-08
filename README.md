@@ -109,6 +109,7 @@ Also coming soon: API docs, a getting-started guide, and a downloadable framewor
   - Read/Write from/to Blobs with an NSStream, NSString, NSData, or local file.
   - Operations for specific blob types (block operations for block blobs, etc.)
 - Container and Blob properties and metadata.
+- Get/Set Service Properties (properties for Storage Analytics and CORS rules).
 - Blob virtual directories.
 - Use Shared Key authentication or SAS authentication.
 - Access conditions, automatic retries and retry policies, and logging.
