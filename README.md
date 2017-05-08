@@ -7,29 +7,49 @@ At the moment, the library is in a preview stage, so thank you for taking a look
 
 The library currently supports almost all blob operations (some exceptions noted below.)  Other services (table, queue, file) are forthcoming, depending on demand.
 
+To use this library, you need the following:
+- iOS 8+
+- Xcode 7+
+
 ### How to get started
 
 The recommended way to use the library is through a Cocoapod, available [here](https://cocoapods.org/pods/AZSClient).
 
+#### Podfile
 ```ruby
 platform :ios, '8.0'
 
-target 'TargetName' do 
-  use_frameworks!
+target 'TargetName' do
   pod 'AZSClient'
 end
 ```
-If you are using Objective-C:
+
+#### Framework
+The other way to use the library is to build the framework manually:
+1. First, download or clone the [azure-storage-ios repo](https://github.com/azure/azure-storage-ios).
+2. Go into *azure-storage-ios* -> *Lib* -> *Azure Storage Client Library*, and open `AZSClient.xcodeproj` in Xcode.
+3. At the top-left of Xcode, change the active scheme from "Azure Storage Client Library" to "Framework".
+4. Build the project (⌘+B). This will create an `AZSClient.framework` file on your Desktop.
+
+You can then import the framework file into your application by doing the following:
+1. Create a new project or open up your existing project in Xcode.
+2. Drag and drop the `AZSClient.framework` into your Xcode project navigator.
+3. Select *Copy items if needed*, and click on *Finish*.
+4. Click on your project in the left-hand navigation and click the *General* tab at the top of the project editor.
+5. Under the *Linked Frameworks and Libraries* section, click the Add button (+).
+6. In the list of libraries already provided, search for `libxml2.2.tbd` and add it to your project.
+
+#### Import statement
 ```objc
 #import <AZSClient/AZSClient.h>
 ```
 
-If you are using Swift:
-```swift
-import AZSClient
-```
-
-Otherwise, you can build the library from soruce.  To do so, clone the repo and open the Xcode project.  Build the library (the 'Azure Storage Client Library' target), and then build the Framework (the 'Framework' target).  This will create the .framework file on your desktop.  Then, in your code, in Build Phases->Link Binary With Libraries, add in the Azure Storage Client Library framework, and the libxml2.2.dylib.  Finally, import <AZSClient/AZSClient.h> in your code file. If you are using Swift, you will need to create a bridging header and import <AZSClient/AZSClient.h> there.
+If you are using Swift, you will need to create a bridging header and import <AZSClient/AZSClient.h> there:
+1. Create a header file `Bridging-Header.h`, and add the above import statement.
+2. Go to the *Build Settings* tab, and search for *Objective-C Bridging Header*.
+3. Double-click on the field of *Objective-C Bridging Header* and add the path to your header file: `ProjectName/Bridging-Header.h`
+4. Build the project (⌘+B) to verify that the bridging header was picked up by Xcode.
+5. Start using the library directly in any Swift file, there is no need for import statements.
 
 Here is a small code sample that creates and deletes a blob:
 
