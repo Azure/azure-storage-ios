@@ -29,7 +29,7 @@ class BlobListTableViewController: UITableViewController {
     // If using Shared Key access, fill in your credentials here and un-comment the "UsingSAS" line:
     var connectionString = "DefaultEndpointsProtocol=https;AccountName=myaccount;AccountKey=myAccountKey=="
     var containerName = "sampleioscontainer"
-    //var usingSAS = false
+    // var usingSAS = false
     
     // MARK: Properties
     
@@ -42,7 +42,7 @@ class BlobListTableViewController: UITableViewController {
     required init?(coder aDecoder: NSCoder) {
         if (usingSAS) {
             var error: NSError?
-            self.container = AZSCloudBlobContainer(url: NSURL(string: containerURL)!, error: &error)
+            self.container = AZSCloudBlobContainer(url: URL(string: containerURL)!, error: &error)
             if ((error) != nil) {
                 print("Error in creating blob container object.  Error code = %ld, error domain = %@, error userinfo = %@", error!.code, error!.domain, error!.userInfo);
             }
@@ -52,12 +52,12 @@ class BlobListTableViewController: UITableViewController {
                 let storageAccount : AZSCloudStorageAccount;
                 try! storageAccount = AZSCloudStorageAccount(fromConnectionString: connectionString)
                 let blobClient = storageAccount.getBlobClient()
-                self.container = blobClient.containerReferenceFromName(containerName)
-                
+                self.container = blobClient.containerReference(fromName: containerName)
+            
                 let condition = NSCondition()
                 var containerCreated = false
                 
-                self.container.createContainerIfNotExistsWithCompletionHandler { (error : NSError?, created) -> Void in
+                self.container.createContainerIfNotExists { (error : Error?, created) -> Void in
                     condition.lock()
                     containerCreated = true
                     condition.signal()
@@ -81,26 +81,26 @@ class BlobListTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationItem.leftBarButtonItem = editButtonItem()
+        navigationItem.leftBarButtonItem = editButtonItem
         reloadBlobList()
     }
 
     // MARK: - Table view data source
 
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
 
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return blobs.count
     }
 
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         // Table view cells are reused and should be dequeued using a cell identifier.
         let cellIdentifier = "BlobListTableViewCell"
         
-        let cell = tableView.dequeueReusableCellWithIdentifier(cellIdentifier, forIndexPath: indexPath) as! BlobListViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! BlobListViewCell
         let blob = blobs[indexPath.row]
         
         cell.nameLabel.text = blob.blobName
@@ -109,50 +109,50 @@ class BlobListTableViewController: UITableViewController {
     }
     
     // Override to support conditional editing of the table view.
-    override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         // Return false if you do not want the specified item to be editable.
         return true
     }
     
     // Override to support editing the table view.
-    override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
-        if editingStyle == .Delete {
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
             // Delete the row from the data source
             
             let blob = blobs[indexPath.row]
             
-            blob.deleteWithCompletionHandler({ (error : NSError?) -> Void in
-                self.blobs.removeAtIndex(indexPath.row)
-                self.performSelectorOnMainThread("deleteRowAtIndexPaths:", withObject:[indexPath], waitUntilDone: false)
+            blob.delete(completionHandler: { (error : Error?) -> Void in
+                self.blobs.remove(at: indexPath.row)
+                self.performSelector(onMainThread: #selector(BlobListTableViewController.deleteRowAtIndexPaths(_:)), with:[indexPath], waitUntilDone: false)
             })
             
-        } else if editingStyle == .Insert {
+        } else if editingStyle == .insert {
             // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
         }    
     }
     
-    func deleteRowAtIndexPaths(indexPaths: [NSIndexPath])
+    func deleteRowAtIndexPaths(_ indexPaths: [IndexPath])
     {
-        self.tableView.deleteRowsAtIndexPaths(indexPaths, withRowAnimation: .Fade)
+        self.tableView.deleteRows(at: indexPaths, with: .fade)
     }
 
     
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "ShowDetail" {
-            let getBlobViewController = (segue.destinationViewController as! UINavigationController).topViewController as! GetBlobViewController
+            let getBlobViewController = (segue.destination as! UINavigationController).topViewController as! GetBlobViewController
             
             if let selectedBlobCell = sender as? BlobListViewCell {
-                let indexPath = tableView.indexPathForCell(selectedBlobCell)!
+                let indexPath = tableView.indexPath(for: selectedBlobCell)!
                 let selectedBlob = blobs[indexPath.row]
                 getBlobViewController.blob = selectedBlob
             }
         }
         else if segue.identifier == "AddItem" {
             
-            let addBlobViewController = (segue.destinationViewController as! UINavigationController).viewControllers[0] as! AddBlobViewController
+            let addBlobViewController = (segue.destination as! UINavigationController).viewControllers[0] as! AddBlobViewController
             
             addBlobViewController.container = container
             addBlobViewController.viewToReloadOnBlobAdd = self;
@@ -160,7 +160,7 @@ class BlobListTableViewController: UITableViewController {
     }
     
     func reloadBlobList() {
-        container.listBlobsSegmentedWithContinuationToken(nil, prefix: nil, useFlatBlobListing: true, blobListingDetails: AZSBlobListingDetails.None, maxResults: 50) { (error : NSError?, results : AZSBlobResultSegment?) -> Void in
+        container.listBlobsSegmented(with: nil, prefix: nil, useFlatBlobListing: true, blobListingDetails: AZSBlobListingDetails(), maxResults: 50) { (error : Error?, results : AZSBlobResultSegment?) -> Void in
             
             self.blobs = [AZSCloudBlob]()
             
@@ -170,11 +170,11 @@ class BlobListTableViewController: UITableViewController {
             }
             
             self.continuationToken = results!.continuationToken
-            self.tableView.performSelectorOnMainThread("reloadData", withObject: nil, waitUntilDone: false)
+            self.tableView.performSelector(onMainThread: #selector(UICollectionView.reloadData), with: nil, waitUntilDone: false)
         }
     }
     
-    @IBAction func unwind(sender: UIStoryboardSegue) {        
+    @IBAction func unwind(_ sender: UIStoryboardSegue) {        
     }
 }
 

@@ -1,0 +1,10 @@
+{
+    "target": "production",
+    "tenants": [
+        {
+            "name": "production",
+            "type": "cloud",
+            "connection_string": "DefaultEndpointsProtocol=https;AccountName=myaccountname;AccountKey=myaccountkey"
+        }
+    ]
+}

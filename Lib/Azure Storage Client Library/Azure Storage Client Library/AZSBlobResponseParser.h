@@ -17,11 +17,13 @@
 
 #import <Foundation/Foundation.h>
 #import "AZSEnums.h"
+@class AZSBlobContainerPermissions;
 @class AZSBlobContainerProperties;
 @class AZSBlobProperties;
 @class AZSCopyState;
 @class AZSOperationContext;
-@class AZSBlobContainerPermissions;
+@class AZSServiceProperties;
+
 
 @interface AZSContainerListItem : NSObject
 @property (copy) NSString *name;
@@ -87,5 +89,11 @@
 +(NSNumber *)getSequenceNumberWithResponse:(NSHTTPURLResponse *)response;
 +(NSNumber *)getAppendCommittedBlockCountWithResponse:(NSHTTPURLResponse *)response;
 +(NSNumber *)getAppendPositionWithResponse:(NSHTTPURLResponse *)response;
+
+@end
+
+@interface AZSServicePropertiesResponseParser : NSObject
+
++(AZSServiceProperties *)parseDownloadServicePropertiesResponseWithData:(NSData *)data operationContext:(AZSOperationContext *)operationContext error:(NSError **)error;
 
 @end

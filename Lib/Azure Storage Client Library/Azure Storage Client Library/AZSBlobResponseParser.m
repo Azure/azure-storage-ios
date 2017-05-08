@@ -23,8 +23,12 @@
 #import "AZSEnums.h"
 #import "AZSBlobProperties.h"
 #import "AZSCopyState.h"
+#import "AZSCorsRule.h"
 #import "AZSResponseParser.h"
 #import "AZSOperationContext.h"
+#import "AZSServiceProperties.h"
+#import "AZSMetricsProperties.h"
+#import "AZSLoggingProperties.h"
 #import "AZSSharedAccessPolicy.h"
 #import "AZSSharedAccessSignatureHelper.h"
 #import "AZSErrors.h"
@@ -1072,6 +1076,291 @@
     }
     
     return appendPosition;
+}
+
+@end
+
+@interface AZSServicePropertiesResponseParser()
+
++(AZSCorsHttpMethod) convertStringToCorsHttpMethod:(NSString*) corsHttpMethod;
+
+@end
+
+@implementation AZSServicePropertiesResponseParser
+
++(AZSServiceProperties*)parseDownloadServicePropertiesResponseWithData:(NSData *)data operationContext:(AZSOperationContext *)operationContext error:(NSError **)error
+{
+    AZSStorageXMLParserDelegate *parserDelegate = [[AZSStorageXMLParserDelegate alloc] init];
+
+    NSXMLParser *parser = [[NSXMLParser alloc] initWithData:data];
+    parser.shouldProcessNamespaces = NO;
+
+    __block AZSServiceProperties *serviceProperties = [[AZSServiceProperties alloc] init];
+    __block NSMutableArray *elementStack = [NSMutableArray arrayWithCapacity:50];
+    __block NSMutableString *currentXmlText = [[NSMutableString alloc] init];
+    __block NSString *retentionPolicyParent = nil;
+    __block NSNumber *retentionIntervalInDays = nil;
+    __block AZSCorsRule *corsRule = nil;
+    __block bool retentionPolicyEnabled = false;
+
+    parserDelegate.parseBeginElement = ^(NSXMLParser *parser, NSString *elementName, NSDictionary *attributeDict)
+    {
+        [operationContext logAtLevel:AZSLogLevelDebug withMessage:@"Beginning to parse element with name = %@", elementName];
+        [elementStack addObject:elementName];
+        if ([currentXmlText length] > 0)
+        {
+            currentXmlText = [[NSMutableString alloc] init];
+        }
+    };
+
+    parserDelegate.parseEndElement = ^(NSXMLParser *parser, NSString *elementName)
+    {
+        [operationContext logAtLevel:AZSLogLevelDebug withMessage:@"Ending to parse element with name = %@", elementName];
+        NSString *currentNode = elementStack.lastObject;
+        [elementStack removeLastObject];
+
+        if (![elementName isEqualToString:currentNode])
+        {
+            // Malformed XML
+            [parser abortParsing];
+        }
+
+        NSString *parentNode = elementStack.lastObject;
+        if (retentionPolicyEnabled && [currentNode isEqualToString:AZSCXmlRetentionPolicy])
+        {
+            if ([retentionPolicyParent isEqualToString:AZSCXmlLogging])
+            {
+                serviceProperties.logging.retentionIntervalInDays = retentionIntervalInDays;
+            }
+            else if ([retentionPolicyParent isEqualToString:AZSCXmlMetricsHourMetrics])
+            {
+                serviceProperties.hourMetrics.retentionIntervalInDays = retentionIntervalInDays;
+            }
+            else if ([retentionPolicyParent isEqualToString:AZSCXmlMetricsMinuteMetrics])
+            {
+                serviceProperties.minuteMetrics.retentionIntervalInDays = retentionIntervalInDays;
+            }
+        }
+        else if ([currentNode isEqualToString:AZSCXmlCorsRule])
+        {
+            if (serviceProperties.corsRules == nil)
+            {
+                serviceProperties.corsRules = [[NSMutableArray alloc] init];
+            }
+
+            [serviceProperties.corsRules addObject:corsRule];
+            corsRule = nil;
+        }
+        else if ([currentNode isEqualToString:AZSCXmlCors])
+        {
+            if (serviceProperties.corsRules == nil)
+            {
+                serviceProperties.corsRules = [[NSMutableArray alloc] init];
+            }
+        }
+        else if ([parentNode isEqualToString:AZSCXmlStorageServiceProperties])
+        {
+            if ([currentNode isEqualToString:AZSCXmlDefaultServiceVersion])
+            {
+                serviceProperties.defaultServiceVersion = currentXmlText;
+            }
+        }
+        else if ([parentNode isEqualToString:AZSCXmlLogging])
+        {
+            retentionPolicyParent = AZSCXmlLogging;
+            retentionPolicyEnabled = false;
+            if (serviceProperties.logging == nil)
+            {
+                serviceProperties.logging = [[AZSLoggingProperties alloc] init];
+            }
+
+            if ([currentNode isEqualToString:AZSCXmlVersion])
+            {
+                serviceProperties.logging.version = currentXmlText;
+            }
+            else if ([currentNode isEqualToString:AZSCXmlLoggingDelete])
+            {
+                if ([currentXmlText isEqualToString:@"true"])
+                {
+                    serviceProperties.logging.logOperationTypes |= AZSLoggingOperationDelete;
+                }
+            }
+            else if ([currentNode isEqualToString:AZSCXmlLoggingRead])
+            {
+                if ([currentXmlText isEqualToString:@"true"])
+                {
+                    serviceProperties.logging.logOperationTypes |= AZSLoggingOperationRead;
+                }
+            }
+            else if ([currentNode isEqualToString:AZSCXmlLoggingWrite])
+            {
+                if ([currentXmlText isEqualToString:@"true"])
+                {
+                    serviceProperties.logging.logOperationTypes |= AZSLoggingOperationWrite;
+                }
+            }
+        }
+        else if ([parentNode isEqualToString:AZSCXmlMetricsHourMetrics])
+        {
+            retentionPolicyParent = AZSCXmlMetricsHourMetrics;
+            retentionPolicyEnabled = false;
+            if (serviceProperties.hourMetrics == nil)
+            {
+                serviceProperties.hourMetrics = [[AZSMetricsProperties alloc] init];
+            }
+
+            if ([currentNode isEqualToString:AZSCXmlVersion])
+            {
+                serviceProperties.logging.version = currentXmlText;
+            }
+            else if ([currentNode isEqualToString:AZSCXmlMetricsIncludeAPIs])
+            {
+                if ([currentXmlText isEqualToString:@"true"])
+                {
+                    serviceProperties.hourMetrics.metricsLevel = AZSMetricsLevelServiceAndAPI;
+                }
+                else if (serviceProperties.hourMetrics.metricsLevel != AZSMetricsLevelServiceAndAPI)
+                {
+                    serviceProperties.hourMetrics.metricsLevel = AZSMetricsLevelService;
+                }
+            }
+        }
+        else if ([parentNode isEqualToString:AZSCXmlMetricsMinuteMetrics])
+        {
+            retentionPolicyParent = AZSCXmlMetricsMinuteMetrics;
+            retentionPolicyEnabled = false;
+            if (serviceProperties.minuteMetrics == nil)
+            {
+                serviceProperties.minuteMetrics = [[AZSMetricsProperties alloc] init];
+            }
+
+            if ([currentNode isEqualToString:AZSCXmlVersion])
+            {
+                serviceProperties.logging.version = currentXmlText;
+            }
+            else if ([currentNode isEqualToString:AZSCXmlMetricsIncludeAPIs])
+            {
+                if ([currentXmlText isEqualToString:@"true"])
+                {
+                    serviceProperties.minuteMetrics.metricsLevel = AZSMetricsLevelServiceAndAPI;
+                }
+                else if (serviceProperties.minuteMetrics.metricsLevel != AZSMetricsLevelServiceAndAPI)
+                {
+                    serviceProperties.minuteMetrics.metricsLevel = AZSMetricsLevelService;
+                }
+            }
+        }
+        else if ([parentNode isEqualToString:AZSCXmlRetentionPolicy])
+        {
+            if ([currentNode isEqualToString:AZSCXmlEnabled])
+            {
+                retentionPolicyEnabled = [currentXmlText isEqualToString:@"true"];
+            }
+            else if ([currentNode isEqualToString:AZSCXmlRetentionPolicyDays])
+            {
+                NSNumberFormatter *f = [[NSNumberFormatter alloc] init];
+                f.numberStyle = NSNumberFormatterDecimalStyle;
+                retentionIntervalInDays = [f numberFromString:currentXmlText];
+            }
+        }
+        else if ([parentNode isEqualToString:AZSCXmlCorsRule])
+        {
+            if (corsRule == nil)
+            {
+                corsRule = [[AZSCorsRule alloc] init];
+            }
+
+            if ([currentNode isEqualToString:AZSCXmlCorsAllowedOrigins] && [currentXmlText length] != 0)
+            {
+                NSArray* allowedOrigins = [currentXmlText componentsSeparatedByString:@","];
+                corsRule.allowedOrigins = [NSMutableArray arrayWithArray:allowedOrigins];
+            }
+            else if ([currentNode isEqualToString:AZSCXmlCorsAllowedMethods] && [currentXmlText length] != 0)
+            {
+                NSArray* allowedMethods = [currentXmlText componentsSeparatedByString:@","];
+                for (NSString *allowedMethod in allowedMethods)
+                {
+                   corsRule.allowedHttpMethods |= [self convertStringToCorsHttpMethod:allowedMethod];
+                }
+            }
+            else if ([currentNode isEqualToString:AZSCXmlCorsExposedHeaders] && [currentXmlText length] != 0)
+            {
+                NSArray* exposedHeaders = [currentXmlText componentsSeparatedByString:@","];
+                corsRule.exposedHeaders = [NSMutableArray arrayWithArray:exposedHeaders];
+            }
+            else if ([currentNode isEqualToString:AZSCXmlCorsAllowedHeaders] && [currentXmlText length] != 0)
+            {
+                NSArray* allowedHeaders = [currentXmlText componentsSeparatedByString:@","];
+                corsRule.allowedHeaders = [NSMutableArray arrayWithArray:allowedHeaders];
+            }
+            else if ([currentNode isEqualToString:AZSCXmlCorsMaxAgeInSeconds])
+            {
+                corsRule.maxAgeInSeconds = [currentXmlText intValue];
+            }
+        }
+    };
+
+    parserDelegate.foundCharacters = ^(NSXMLParser *parser, NSString *characters)
+    {
+        [operationContext logAtLevel:AZSLogLevelDebug withMessage:@"Found characters = %@", characters];
+        [currentXmlText appendString:characters];
+    };
+
+    parser.delegate = parserDelegate;
+
+    if (![parser parse])
+    {
+        *error = [NSError errorWithDomain:AZSErrorDomain code:AZSEParseError userInfo:nil];
+        [operationContext logAtLevel:AZSLogLevelError withMessage:@"Parse unsuccessful for fetch stored policies response."];
+        return nil;
+    }
+
+    return serviceProperties;
+}
+
++(AZSCorsHttpMethod) convertStringToCorsHttpMethod:(NSString*) corsHttpMethodsString {
+    if ([corsHttpMethodsString isEqualToString:@"GET"])
+    {
+        return AZSCorsHttpMethodGet;
+    }
+    else if ([corsHttpMethodsString isEqualToString:@"PUT"])
+    {
+        return AZSCorsHttpMethodPut;
+    }
+    else if ([corsHttpMethodsString isEqualToString:@"HEAD"])
+    {
+        return AZSCorsHttpMethodHead;
+    }
+    else if ([corsHttpMethodsString isEqualToString:@"POST"])
+    {
+        return AZSCorsHttpMethodPost;
+    }
+    else if ([corsHttpMethodsString isEqualToString:@"PUT"])
+    {
+        return AZSCorsHttpMethodPut;
+    }
+    else if ([corsHttpMethodsString isEqualToString:@"MERGE"])
+    {
+        return AZSCorsHttpMethodMerge;
+    }
+    else if ([corsHttpMethodsString isEqualToString:@"TRACE"])
+    {
+        return AZSCorsHttpMethodTrace;
+    }
+    else if ([corsHttpMethodsString isEqualToString:@"DELETE"])
+    {
+        return AZSCorsHttpMethodDelete;
+    }
+    else if ([corsHttpMethodsString isEqualToString:@"CONNECT"])
+    {
+        return AZSCorsHttpMethodConnect;
+    }
+    else if ([corsHttpMethodsString isEqualToString:@"OPTIONS"])
+    {
+        return AZSCorsHttpMethodOptions;
+    }
+    
+    return 0x0;
 }
 
 

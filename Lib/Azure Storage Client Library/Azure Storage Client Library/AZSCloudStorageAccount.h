@@ -23,6 +23,8 @@
 @class AZSStorageCredentials;
 @class AZSStorageUri;
 
+AZS_ASSUME_NONNULL_BEGIN
+
 /** AZSCloudStorageAccount represents a given Storage Account.
  
  Used primarily for creating AZSCloudClient objects.
@@ -42,7 +44,7 @@
  @param error A pointer to a NSError, to be set in case of failure.
  @return The newly created AZSCloudStorageAccount object, or nil in case of failure.
  */
-+(AZSCloudStorageAccount *)accountFromConnectionString:(NSString *)connectionString error:(NSError **)error;
++(AZSNullable AZSCloudStorageAccount *)accountFromConnectionString:(NSString *)connectionString error:(NSError **)error;
 
 /** Initialize a fresh AZSCloudStorageAccount object
  
@@ -54,7 +56,7 @@
  @param error A pointer to a NSError, to be set in case of failure.
  @return The freshly allocated AZSCloudStorageAccount, or nil in case of failure.
  */
--(instancetype) initWithCredentials:(AZSStorageCredentials *)storageCredentials blobEndpoint:(AZSStorageUri *)blobEndpoint tableEndpoint:(AZSStorageUri *)tableEndpoint queueEndpoint:(AZSStorageUri *)queueEndpoint fileEndpoint:(AZSStorageUri *)fileEndpoint error:(NSError **)error AZS_DESIGNATED_INITIALIZER;
+-(AZSNullable instancetype) initWithCredentials:(AZSStorageCredentials *)storageCredentials blobEndpoint:(AZSNullable AZSStorageUri *)blobEndpoint tableEndpoint:(AZSNullable AZSStorageUri *)tableEndpoint queueEndpoint:(AZSNullable AZSStorageUri *)queueEndpoint fileEndpoint:(AZSNullable AZSStorageUri *)fileEndpoint error:(NSError **)error AZS_DESIGNATED_INITIALIZER;
 
 /** Initialize a fresh AZSCloudStorageAccount object
  
@@ -63,7 +65,7 @@
  @param error A pointer to a NSError, to be set in case of failure.
  @return The freshly allocated AZSCloudStorageAccount, or nil in case of failure.
  */
--(instancetype) initWithCredentials:(AZSStorageCredentials *)storageCredentials useHttps:(BOOL) useHttps error:(NSError **)error;
+-(AZSNullable instancetype) initWithCredentials:(AZSStorageCredentials *)storageCredentials useHttps:(BOOL) useHttps error:(NSError **)error;
 
 /** Initialize a fresh AZSCloudStorageAccount object
  
@@ -73,7 +75,7 @@
  @param error A pointer to a NSError, to be set in case of failure.
  @return The freshly allocated AZSCloudStorageAccount, or nil in case of failure.
  */
--(instancetype) initWithCredentials:(AZSStorageCredentials *)storageCredentials useHttps:(BOOL)useHttps endpointSuffix:(NSString *)endpointSuffix error:(NSError **)error AZS_DESIGNATED_INITIALIZER;
+-(AZSNullable instancetype) initWithCredentials:(AZSStorageCredentials *)storageCredentials useHttps:(BOOL)useHttps endpointSuffix:(NSString *)endpointSuffix error:(NSError **)error AZS_DESIGNATED_INITIALIZER;
 
 /** Create an AZSCloudBlobClient object
  
@@ -90,6 +92,8 @@
  @param error A pointer to a NSError*, to be set in the event of failure.
  @returns The newly created SAS token.
  */
-- (NSString *) createSharedAccessSignatureWithParameters:(AZSSharedAccessAccountParameters *)parameters error:(NSError **)error;
+- (AZSNullable NSString *) createSharedAccessSignatureWithParameters:(AZSSharedAccessAccountParameters *)parameters error:(NSError **)error;
 
 @end
+
+AZS_ASSUME_NONNULL_END

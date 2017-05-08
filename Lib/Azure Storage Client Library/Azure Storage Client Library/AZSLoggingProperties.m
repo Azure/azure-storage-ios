@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------------------------
-// <copyright file="AZSBlobRequestXML.h" company="Microsoft">
+// <copyright file="AZSLoggingProperties.h" company="Microsoft">
 //    Copyright 2015 Microsoft Corporation
 //
 //    Licensed under the MIT License;
@@ -16,17 +16,21 @@
 // -----------------------------------------------------------------------------------------
 
 #import <Foundation/Foundation.h>
+#import "AZSLoggingProperties.h"
 
-@class AZSOperationContext;
-@class AZSSharedAccessPolicy;
-@class AZSServiceProperties;
+@implementation AZSLoggingProperties
 
-@interface AZSBlobRequestXML : NSObject
+-(instancetype) init
+{
+    self = [super init];
+    if (self)
+    {
+        _version = @"1.0";
+        _logOperationTypes = AZSLoggingOperationNone;
+    }
 
-+(NSString *) createBlockListXMLFromArray:(NSArray *)blockList operationContext:(AZSOperationContext *)operationContext error:(NSError **)error;
+    return self;
+}
 
-+(NSString *) createStoredPoliciesXMLFromPermissions:(NSMutableDictionary *)permissions operationContext:(AZSOperationContext *)operationContext error:(NSError **)error;
-
-+(NSString *) createServicePropertiesXML:(AZSServiceProperties *)serviceProperties operationContext:(AZSOperationContext *)operationContext error:(NSError **)error;
 
 @end
