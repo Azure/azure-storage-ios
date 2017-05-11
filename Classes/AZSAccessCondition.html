@@ -14,7 +14,7 @@
 		<div class="container" class="hide-in-xcode">
 			
 			<h1 id="library-title">
-				<a href="../index.html">Azure Storage Client Library for iOS 0.2.2 </a>
+				<a href="../index.html">Azure Storage Client Library for iOS 0.2.4 </a>
 			</h1>
 
 			<p id="developer-home">
@@ -186,6 +186,12 @@ Use &ldquo;*&rdquo; to match any ETag, as long as the object already exists on t
 			
 
 			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>The ETag to match.  The service will fail the request if the ETag doesn&rsquo;t match.
+Use &ldquo;*&rdquo; to match any ETag, as long as the object already exists on the service.</p>
+			</div>
+			
 
 			
 
@@ -228,6 +234,12 @@ Use &ldquo;*&rdquo; to match any ETag, as long as the object already exists on t
 			
 
 			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>The ETag to not match.  The service will fail the request if the ETag matches this.
+Use &ldquo;*&rdquo; to match any ETag, as long as the object already exists on the service.</p>
+			</div>
+			
 
 			
 
@@ -268,6 +280,11 @@ Use &ldquo;*&rdquo; to match any ETag, as long as the object already exists on t
 
 			
 
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>The request will fail if the object has not been modified since this date.</p>
+			</div>
 			
 
 			
@@ -310,6 +327,11 @@ Use &ldquo;*&rdquo; to match any ETag, as long as the object already exists on t
 			
 
 			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>The request will fail if the object has been modified since this date.</p>
+			</div>
+			
 
 			
 
@@ -350,6 +372,11 @@ Use &ldquo;*&rdquo; to match any ETag, as long as the object already exists on t
 
 			
 
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>The lease ID for this request.</p>
+			</div>
 			
 
 			
@@ -392,6 +419,11 @@ Use &ldquo;*&rdquo; to match any ETag, as long as the object already exists on t
 			
 
 			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>The sequence number to compare using the <a href="#//api/name/sequenceNumberOperator">sequenceNumberOperator</a>.  The request will fail if the comparison fails.  Page blobs only.</p>
+			</div>
+			
 
 			
 
@@ -432,6 +464,11 @@ Use &ldquo;*&rdquo; to match any ETag, as long as the object already exists on t
 
 			
 
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>The operator to use to compare the sequence number here and the one on the service.  Page blobs only.</p>
+			</div>
 			
 
 			
@@ -474,6 +511,11 @@ Use &ldquo;*&rdquo; to match any ETag, as long as the object already exists on t
 			
 
 			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>The request will fail if the append blob will be greater than this after the append operation.  Append block API only.</p>
+			</div>
+			
 
 			
 
@@ -514,6 +556,11 @@ Use &ldquo;*&rdquo; to match any ETag, as long as the object already exists on t
 
 			
 
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>The request will fail if the append position before appending the current block is not equal to this.  Append block API only.</p>
+			</div>
 			
 
 			
@@ -568,6 +615,11 @@ Use &ldquo;*&rdquo; to match any ETag, as long as the object already exists on t
 			
 
 			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Initialize a new AZSAccessCondition object with a &lsquo;If-Match&rsquo; condition.</p>
+			</div>
+			
 
 			
 
@@ -620,6 +672,11 @@ Use &ldquo;*&rdquo; to match any ETag, as long as the object already exists on t
 
 			
 
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Initialize a new AZSAccessCondition object with a &lsquo;If-None-Match&rsquo; condition.</p>
+			</div>
 			
 
 			
@@ -674,6 +731,11 @@ Use &ldquo;*&rdquo; to match any ETag, as long as the object already exists on t
 			
 
 			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Initialize a new AZSAccessCondition object with a &lsquo;If-Modified-Since&rsquo; condition.</p>
+			</div>
+			
 
 			
 
@@ -727,6 +789,11 @@ Use &ldquo;*&rdquo; to match any ETag, as long as the object already exists on t
 			
 
 			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Initialize a new AZSAccessCondition object with a &lsquo;If-Not-Modified-Since&rsquo; condition.</p>
+			</div>
+			
 
 			
 
@@ -767,6 +834,11 @@ Use &ldquo;*&rdquo; to match any ETag, as long as the object already exists on t
 
 			
 
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Initialize a new AZSAccessCondition object with a &lsquo;If-Sequence-Number-Less-Than-Or-Equal-To&rsquo; condition.</p>
+			</div>
 			
 
 			
@@ -809,6 +881,11 @@ Use &ldquo;*&rdquo; to match any ETag, as long as the object already exists on t
 			
 
 			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Initialize a new AZSAccessCondition object with a &lsquo;If-Sequence-Number-Less-Than&rsquo; condition.</p>
+			</div>
+			
 
 			
 
@@ -849,6 +926,11 @@ Use &ldquo;*&rdquo; to match any ETag, as long as the object already exists on t
 
 			
 
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Initialize a new AZSAccessCondition object with a &lsquo;If-Sequence-Number-Equal-To&rsquo; condition.</p>
+			</div>
 			
 
 			
@@ -891,6 +973,11 @@ Use &ldquo;*&rdquo; to match any ETag, as long as the object already exists on t
 			
 
 			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Initialize a new AZSAccessCondition object with a &lsquo;If-Max-Size-Less-Than-Or-Equal-To&rsquo; condition.</p>
+			</div>
+			
 
 			
 
@@ -931,6 +1018,11 @@ Use &ldquo;*&rdquo; to match any ETag, as long as the object already exists on t
 
 			
 
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Initialize a new AZSAccessCondition object with a &lsquo;If-Append-Position-Equal-To&rsquo; condition.</p>
+			</div>
 			
 
 			
@@ -987,6 +1079,13 @@ one of the other initializers, and then specify the lease ID afterwards.</p>
 			
 
 			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Initialize a new AZSAccessCondition object with a lease ID.
+Note that if you wish to specify both a lease ID and another access condition, you must use
+one of the other initializers, and then specify the lease ID afterwards.</p>
+			</div>
+			
 
 			
 
@@ -1016,7 +1115,7 @@ one of the other initializers, and then specify the lease ID afterwards.</p>
 				<footer>
 					<div class="footer-copyright">
 						
-						<p class="copyright">Copyright &copy; 2016 Microsoft. All rights reserved. Updated: 2016-07-28</p>
+						<p class="copyright">Copyright &copy; 2017 Microsoft. All rights reserved. Updated: 2017-05-11</p>
 						
 						
 						<p class="generator">Generated by <a href="http://appledoc.gentlebytes.com">appledoc 2.2.1 (build 1334)</a>.</p>

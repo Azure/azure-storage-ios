@@ -14,7 +14,7 @@
 		<div class="container" class="hide-in-xcode">
 			
 			<h1 id="library-title">
-				<a href="../index.html">Azure Storage Client Library for iOS 0.2.2 </a>
+				<a href="../index.html">Azure Storage Client Library for iOS 0.2.4 </a>
 			</h1>
 
 			<p id="developer-home">
@@ -70,6 +70,10 @@
 		
 		<option value="//api/name/containerReferenceFromName:">- containerReferenceFromName:</option>
 		
+		<option value="//api/name/downloadServicePropertiesWithCompletionHandler:">- downloadServicePropertiesWithCompletionHandler:</option>
+		
+		<option value="//api/name/downloadServicePropertiesWithCompletionHandler:operationContext:completionHandler:">- downloadServicePropertiesWithCompletionHandler:operationContext:completionHandler:</option>
+		
 		<option value="//api/name/listContainersSegmentedWithContinuationToken:completionHandler:">- listContainersSegmentedWithContinuationToken:completionHandler:</option>
 		
 		<option value="//api/name/listContainersSegmentedWithContinuationToken:prefix:completionHandler:">- listContainersSegmentedWithContinuationToken:prefix:completionHandler:</option>
@@ -77,6 +81,10 @@
 		<option value="//api/name/listContainersSegmentedWithContinuationToken:prefix:containerListingDetails:maxResults:completionHandler:">- listContainersSegmentedWithContinuationToken:prefix:containerListingDetails:maxResults:completionHandler:</option>
 		
 		<option value="//api/name/listContainersSegmentedWithContinuationToken:prefix:containerListingDetails:maxResults:requestOptions:operationContext:completionHandler:">- listContainersSegmentedWithContinuationToken:prefix:containerListingDetails:maxResults:requestOptions:operationContext:completionHandler:</option>
+		
+		<option value="//api/name/uploadServicePropertiesWithServiceProperties:completionHandler:">- uploadServicePropertiesWithServiceProperties:completionHandler:</option>
+		
+		<option value="//api/name/uploadServicePropertiesWithServiceProperties:requestOptions:operationContext:completionHandler:">- uploadServicePropertiesWithServiceProperties:requestOptions:operationContext:completionHandler:</option>
 		
 	</optgroup>
 	
@@ -159,7 +167,9 @@
 			
 			<div class="method-subsection discussion-section">
 				<h4 class="method-subtitle">Discussion</h4>
-				<p>If you make a service call with the library and either do not provide an <a href="../Classes/AZSBlobRequestOptions.html">AZSBlobRequestOptions</a> object, or do
+				<p>The default <a href="../Classes/AZSBlobRequestOptions.html">AZSBlobRequestOptions</a> to use for all service calls made from this client.</p>
+
+<p>If you make a service call with the library and either do not provide an <a href="../Classes/AZSBlobRequestOptions.html">AZSBlobRequestOptions</a> object, or do
 not set some subset of the options, the options set in this object will be used as defaults.  This object is
 used for both calls made on this client object, and calls made with <a href="../Classes/AZSCloudBlobContainer.html">AZSCloudBlobContainer</a> and <a href="../Classes/AZSCloudBlob.html">AZSCloudBlob</a> objects
 created from this AZSCloudBlobClient object.</p>
@@ -205,6 +215,11 @@ created from this AZSCloudBlobClient object.</p>
 
 			
 
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>The delimiter to use to separate out blob directories.</p>
+			</div>
 			
 
 			
@@ -266,7 +281,9 @@ created from this AZSCloudBlobClient object.</p>
 			
 			<div class="method-subsection discussion-section">
 				<h4 class="method-subtitle">Discussion</h4>
-				<p>This creates an <a href="../Classes/AZSCloudBlobContainer.html">AZSCloudBlobContainer</a> object with the input name.</p>
+				<p>Initialize a local <a href="../Classes/AZSCloudBlobContainer.html">AZSCloudBlobContainer</a> object</p>
+
+<p>This creates an <a href="../Classes/AZSCloudBlobContainer.html">AZSCloudBlobContainer</a> object with the input name.</p>
 
 <p>TODO: Consider renaming this &lsquo;containerFromName&rsquo;.  This is better Objective-C style, but may confuse users into
 thinking that this method creates a container on the service, which is does not.</p><div class="warning"><p><strong>Warning:</strong> This method does not make a service call.  If properties, metadata, etc have been set on the service
@@ -353,7 +370,9 @@ for this container, this will not be reflected in the local container object.</p
 			
 			<div class="method-subsection discussion-section">
 				<h4 class="method-subtitle">Discussion</h4>
-				<p>This method lists the containers on the blob service for the associated account.  It will perform exactly one REST
+				<p>Performs one segmented container listing operation.</p>
+
+<p>This method lists the containers on the blob service for the associated account.  It will perform exactly one REST
 call, which will list containers beginning with the container represented in the <a href="../Classes/AZSContinuationToken.html">AZSContinuationToken</a>.  If no token
 is provided, it will list containers from the beginning.</p>
 
@@ -447,7 +466,9 @@ will be listed.</p></td>
 			
 			<div class="method-subsection discussion-section">
 				<h4 class="method-subtitle">Discussion</h4>
-				<p>This method lists the containers on the blob service for the associated account.  It will perform exactly one REST
+				<p>Performs one segmented container listing operation.</p>
+
+<p>This method lists the containers on the blob service for the associated account.  It will perform exactly one REST
 call, which will list containers beginning with the container represented in the <a href="../Classes/AZSContinuationToken.html">AZSContinuationToken</a>.  If no token
 is provided, it will list containers from the beginning.  Only containers that begin with the input prefix will be listed.</p>
 
@@ -551,7 +572,9 @@ will be listed.</p></td>
 			
 			<div class="method-subsection discussion-section">
 				<h4 class="method-subtitle">Discussion</h4>
-				<p>This method lists the containers on the blob service for the associated account.  It will perform exactly one REST
+				<p>Performs one segmented container listing operation.</p>
+
+<p>This method lists the containers on the blob service for the associated account.  It will perform exactly one REST
 call, which will list containers beginning with the container represented in the <a href="../Classes/AZSContinuationToken.html">AZSContinuationToken</a>.  If no token
 is provided, it will list containers from the beginning.  Only containers that begin with the input prefix will be listed.</p>
 
@@ -665,12 +688,348 @@ will be listed.</p></td>
 			
 			<div class="method-subsection discussion-section">
 				<h4 class="method-subtitle">Discussion</h4>
-				<p>This method lists the containers on the blob service for the associated account.  It will perform exactly one REST
+				<p>Performs one segmented container listing operation.</p>
+
+<p>This method lists the containers on the blob service for the associated account.  It will perform exactly one REST
 call, which will list containers beginning with the container represented in the <a href="../Classes/AZSContinuationToken.html">AZSContinuationToken</a>.  If no token
 is provided, it will list containers from the beginning.  Only containers that begin with the input prefix will be listed.</p>
 
 <p>Any number of containers can be listed, from zero up to &lsquo;maxResults&rsquo;.  Even if this method returns zero results, if
 the <a href="../Classes/AZSContinuationToken.html">AZSContinuationToken</a> in the result is not nil, there may be more containers on the service that have not been listed.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudBlobClient.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/uploadServicePropertiesWithServiceProperties:completionHandler:" title="uploadServicePropertiesWithServiceProperties:completionHandler:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/uploadServicePropertiesWithServiceProperties:completionHandler:">&ndash;&nbsp;uploadServicePropertiesWithServiceProperties:completionHandler:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Uploads service properties.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)uploadServicePropertiesWithServiceProperties:(AZSServiceProperties *)<em>serviceProperties</em> completionHandler:(void ( ^ ) ( NSError *__AZSNullable ))<em>completionHandler</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>serviceProperties</code></th>
+						<td><p>The service properties to upload.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>completionHandler</code></th>
+						<td><p>The block of code to execute when the Upload Permissions call completes.</p>
+
+<table>
+<thead>
+<tr>
+<th> Parameter name </th>
+<th> Description </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>NSError *       </td>
+<td> Nil if the operation succeeded without error, error with details about the failure otherwise.</td>
+</tr>
+</tbody>
+</table>
+</td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Uploads service properties.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudBlobClient.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/uploadServicePropertiesWithServiceProperties:requestOptions:operationContext:completionHandler:" title="uploadServicePropertiesWithServiceProperties:requestOptions:operationContext:completionHandler:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/uploadServicePropertiesWithServiceProperties:requestOptions:operationContext:completionHandler:">&ndash;&nbsp;uploadServicePropertiesWithServiceProperties:requestOptions:operationContext:completionHandler:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Uploads service properties.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)uploadServicePropertiesWithServiceProperties:(AZSServiceProperties *)<em>serviceProperties</em> requestOptions:(AZSNullable AZSBlobRequestOptions *)<em>requestOptions</em> operationContext:(AZSNullable AZSOperationContext *)<em>operationContext</em> completionHandler:(void ( ^ ) ( NSError *__AZSNullable ))<em>completionHandler</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>serviceProperties</code></th>
+						<td><p>The service properties to upload.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>requestOptions</code></th>
+						<td><p>Specifies any additional options for the request. Specifying nil will use the default request options from the associated client.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>operationContext</code></th>
+						<td><p>Represents the context for the current operation.  Can be used to track requests to the storage service, and to provide additional runtime information about the operation.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>completionHandler</code></th>
+						<td><p>The block of code to execute when the Upload Service Properties call completes.</p>
+
+<table>
+<thead>
+<tr>
+<th> Parameter name </th>
+<th> Description </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>NSError *       </td>
+<td> Nil if the operation succeeded without error, error with details about the failure otherwise.</td>
+</tr>
+</tbody>
+</table>
+</td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Uploads service properties.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudBlobClient.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/downloadServicePropertiesWithCompletionHandler:" title="downloadServicePropertiesWithCompletionHandler:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/downloadServicePropertiesWithCompletionHandler:">&ndash;&nbsp;downloadServicePropertiesWithCompletionHandler:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Retrieves the stored service properties.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)downloadServicePropertiesWithCompletionHandler:(void ( ^ ) ( NSError *__AZSNullable , AZSServiceProperties *__AZSNullable ))<em>completionHandler</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>completionHandler</code></th>
+						<td><p>The block of code to execute when the Download Service Properties call completes.</p>
+
+<table>
+<thead>
+<tr>
+<th> Parameter name </th>
+<th> Description </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>NSError * </td>
+<td> Nil if the operation succeeded without error, error with details about the failure otherwise.</td>
+</tr>
+<tr>
+<td><a href="../Classes/AZSServiceProperties.html">AZSServiceProperties</a> * </td>
+<td> The resulting service properties returned from the get service properties operation.</td>
+</tr>
+</tbody>
+</table>
+</td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Retrieves the stored service properties.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudBlobClient.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/downloadServicePropertiesWithCompletionHandler:operationContext:completionHandler:" title="downloadServicePropertiesWithCompletionHandler:operationContext:completionHandler:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/downloadServicePropertiesWithCompletionHandler:operationContext:completionHandler:">&ndash;&nbsp;downloadServicePropertiesWithCompletionHandler:operationContext:completionHandler:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Retrieves the stored service properties.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)downloadServicePropertiesWithCompletionHandler:(AZSNullable AZSBlobRequestOptions *)<em>requestOptions</em> operationContext:(AZSNullable AZSOperationContext *)<em>operationContext</em> completionHandler:(void ( ^ ) ( NSError *__AZSNullable , AZSServiceProperties *__AZSNullable ))<em>completionHandler</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>requestOptions</code></th>
+						<td><p>The options to use for the request.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>operationContext</code></th>
+						<td><p>The operation context to use for the call.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>completionHandler</code></th>
+						<td><p>The block of code to execute when the Download Service Properties call completes.</p>
+
+<table>
+<thead>
+<tr>
+<th> Parameter name </th>
+<th> Description </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>NSError * </td>
+<td> Nil if the operation succeeded without error, error with details about the failure otherwise.</td>
+</tr>
+<tr>
+<td><a href="../Classes/AZSServiceProperties.html">AZSServiceProperties</a> * </td>
+<td> The resulting service properties returned from the get service properties operation.</td>
+</tr>
+</tbody>
+</table>
+</td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Retrieves the stored service properties.</p>
 			</div>
 			
 
@@ -702,7 +1061,7 @@ the <a href="../Classes/AZSContinuationToken.html">AZSContinuationToken</a> in t
 				<footer>
 					<div class="footer-copyright">
 						
-						<p class="copyright">Copyright &copy; 2016 Microsoft. All rights reserved. Updated: 2016-07-28</p>
+						<p class="copyright">Copyright &copy; 2017 Microsoft. All rights reserved. Updated: 2017-05-11</p>
 						
 						
 						<p class="generator">Generated by <a href="http://appledoc.gentlebytes.com">appledoc 2.2.1 (build 1334)</a>.</p>

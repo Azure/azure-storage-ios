@@ -14,7 +14,7 @@
 		<div class="container" class="hide-in-xcode">
 			
 			<h1 id="library-title">
-				<a href="../index.html">Azure Storage Client Library for iOS 0.2.2 </a>
+				<a href="../index.html">Azure Storage Client Library for iOS 0.2.4 </a>
 			</h1>
 
 			<p id="developer-home">
@@ -203,6 +203,13 @@ but this may be overridden.</p>
 			
 
 			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>A string representing the client request ID to assign to the request.
+This will automatically be initialized to a GUID when the class is initialized,
+but this may be overridden.</p>
+			</div>
+			
 
 			
 
@@ -245,6 +252,13 @@ Blocking here will block the request.</p>
 
 			
 
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Optional.  If non-nil, it&rsquo;s a block that the library will call shortly before it signs and sends a request.
+The request is included in the call; the block may modify the request as desired.
+Blocking here will block the request.</p>
+			</div>
 			
 
 			
@@ -289,6 +303,13 @@ Blocking here will block the request.</p>
 			
 
 			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Optional.  If non-nil, it&rsquo;s a block that the library will call immediately upon receiving the response headers
+(before data is downloaded.)
+Blocking here will block the request.</p>
+			</div>
+			
 
 			
 
@@ -331,6 +352,12 @@ be added to the request, with the keys being the name of the header and the valu
 			
 
 			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Optional.  An NSDictionary mapping strings to strings.  All objects in this dictionary will be interpreted as additional headers to
+be added to the request, with the keys being the name of the header and the value the header value.  The library will sign these if necessary.</p>
+			</div>
+			
 
 			
 
@@ -371,6 +398,11 @@ be added to the request, with the keys being the name of the header and the valu
 
 			
 
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>The start time for the operation.</p>
+			</div>
 			
 
 			
@@ -413,6 +445,11 @@ be added to the request, with the keys being the name of the header and the valu
 			
 
 			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>The end time for the operation.</p>
+			</div>
+			
 
 			
 
@@ -453,6 +490,11 @@ be added to the request, with the keys being the name of the header and the valu
 
 			
 
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>An array of request results objects.  Populated by the library.</p>
+			</div>
 			
 
 			
@@ -495,6 +537,11 @@ be added to the request, with the keys being the name of the header and the valu
 			
 
 			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>The retry policy for the request.</p>
+			</div>
+			
 
 			
 
@@ -536,6 +583,12 @@ equal to or more severe than this.</p>
 
 			
 
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>The log level for this OperationContext instance.  Messages will only be logged if their severity is
+equal to or more severe than this.</p>
+			</div>
 			
 
 			
@@ -585,7 +638,14 @@ If this function is not set, and the instance <a href="#//api/name/logger">logge
 			
 			<div class="method-subsection discussion-section">
 				<h4 class="method-subtitle">Discussion</h4>
-				<table>
+				<p>Optional.  A function that the caller can set.  If set, this function will be called when the library wants to log a message.
+This function will only be called if the severity of the message is high enough, compared to the <a href="#//api/name/logLevel">logLevel</a>.
+This function is designed if you have a specific <a href="#//api/name/logger">logger</a> or logging framework you would like to use.
+If this function is set, the instance <a href="#//api/name/logger">logger</a> (the <a href="#//api/name/logger">logger</a> property on this OperationContext instance) will be ignored.
+If this function is not set, and the instance <a href="#//api/name/logger">logger</a> is not set, no messages will be logged on this instance.
+(Global logging may still occur.)</p>
+
+<table>
 <thead>
 <tr>
 <th> Parameter name </th>
@@ -647,6 +707,11 @@ If this function is not set, and the instance <a href="#//api/name/logger">logge
 			
 
 			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>The log level for all requests for the static <a href="#//api/name/logger">logger</a>.  A static variable.</p>
+			</div>
+			
 
 			
 
@@ -701,6 +766,11 @@ equal to or more severe than this.</p></td>
 			
 
 			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Sets the log level for all requests for the static <a href="#//api/name/logger">logger</a>.  A static variable.</p>
+			</div>
+			
 
 			
 
@@ -741,6 +811,11 @@ equal to or more severe than this.</p></td>
 
 			
 
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Optional.  Returns the function that the caller can set.  See the setter documentation for details.</p>
+			</div>
 			
 
 			
@@ -819,6 +894,15 @@ If this function is not set, and the <a href="#//api/name/globalLogger">globalLo
 			
 
 			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Optional.  A function that the caller can set.  If set, this function will be called when the library wants to log a message globally.
+This function will only be called if the severity of the message is high enough, compared to the <a href="#//api/name/globalLogLevel">globalLogLevel</a>.
+This function is designed if you have a specific <a href="#//api/name/logger">logger</a> or logging framework you would like to use.
+If this function is set, the global <a href="#//api/name/logger">logger</a> (the <a href="#//api/name/globalLogger">globalLogger</a> property on the OperationContext class) will be ignored.
+If this function is not set, and the <a href="#//api/name/globalLogger">globalLogger</a> is not set, no messages will be logged globally.  (Instance logging may still occur.)</p>
+			</div>
+			
 
 			
 
@@ -859,6 +943,11 @@ If this function is not set, and the <a href="#//api/name/globalLogger">globalLo
 
 			
 
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Optional.  The global (static) <a href="#//api/name/logger">logger</a> that the library will log messages to.  See the setter for more details.</p>
+			</div>
 			
 
 			
@@ -916,6 +1005,14 @@ Note that if the <a href="#//api/name/globalLogFunction">globalLogFunction</a> i
 			
 
 			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Optional.  The global (static) <a href="#//api/name/logger">logger</a> that the library will log messages to.
+Assign an aslclient to this, and the library will log messages to it.
+If this is not set, and the <a href="#//api/name/globalLogFunction">globalLogFunction</a> is not set, no messages will be logged globally.  (Instance logging may still occur.)
+Note that if the <a href="#//api/name/globalLogFunction">globalLogFunction</a> is set, this is ignored.</p>
+			</div>
+			
 
 			
 
@@ -957,6 +1054,11 @@ Note that if the <a href="#//api/name/globalLogFunction">globalLogFunction</a> i
 			
 
 			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Optional.  The global (static) logger that the library will log messages to.  See the setter for more details.</p>
+			</div>
+			
 
 			
 
@@ -997,6 +1099,11 @@ Note that if the <a href="#//api/name/globalLogFunction">globalLogFunction</a> i
 
 			
 
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>The NSCondition object that the OperationContext will use to avoid multiple messages being logged to the <a href="#//api/name/logger">logger</a> simultaneously.</p>
+			</div>
 			
 
 			
@@ -1062,6 +1169,17 @@ same condition object, otherwise behavior will be undefined.</p>
 			
 
 			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Optional.  The global (static) <a href="#//api/name/logger">logger</a> that the library will log messages to.
+Assign an aslclient to this, and the library will log messages to it.
+If this is not set, and the <a href="#//api/name/logFunction">logFunction</a> is not set, no messages will be logged on this instance.(Global logging may still occur.)
+Note that if the <a href="#//api/name/logFunction">logFunction</a> is set, this is ignored.
+The caller must also specify an NSCondition that the library can lock upon.  It is a requirement that aslclient instances are not accessed in parallel,
+this input NSCondition here is used to guard against that.  If you give the same aslclient instance to multiple operations at once, you must also specify the
+same condition object, otherwise behavior will be undefined.</p>
+			</div>
+			
 
 			
 
@@ -1091,7 +1209,7 @@ same condition object, otherwise behavior will be undefined.</p>
 				<footer>
 					<div class="footer-copyright">
 						
-						<p class="copyright">Copyright &copy; 2016 Microsoft. All rights reserved. Updated: 2016-07-28</p>
+						<p class="copyright">Copyright &copy; 2017 Microsoft. All rights reserved. Updated: 2017-05-11</p>
 						
 						
 						<p class="generator">Generated by <a href="http://appledoc.gentlebytes.com">appledoc 2.2.1 (build 1334)</a>.</p>

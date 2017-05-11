@@ -14,7 +14,7 @@
 		<div class="container" class="hide-in-xcode">
 			
 			<h1 id="library-title">
-				<a href="../index.html">Azure Storage Client Library for iOS 0.2.2 </a>
+				<a href="../index.html">Azure Storage Client Library for iOS 0.2.4 </a>
 			</h1>
 
 			<p id="developer-home">
@@ -144,7 +144,7 @@
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>+ (AZSCloudStorageAccount *)accountFromConnectionString:(NSString *)<em>connectionString</em> error:(NSError **)<em>error</em></code></div>
+			<div class="method-subsection method-declaration"><code>+ (AZSNullable AZSCloudStorageAccount *)accountFromConnectionString:(NSString *)<em>connectionString</em> error:(NSError **)<em>error</em></code></div>
 
 		    
 			
@@ -178,7 +178,9 @@
 			
 			<div class="method-subsection discussion-section">
 				<h4 class="method-subtitle">Discussion</h4>
-				<p>Pass in a connection string containing credentials to connect to the Storage service.
+				<p>Parse a CloudStorageAccount from a connection string.</p>
+
+<p>Pass in a connection string containing credentials to connect to the Storage service.
 This method will parse out everything necessary and create the AZSCloudStorageAccount instance,
 as well as the <a href="../Classes/AZSStorageCredentials.html">AZSStorageCredentials</a> instance.</p>
 
@@ -217,7 +219,7 @@ as well as the <a href="../Classes/AZSStorageCredentials.html">AZSStorageCredent
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>- (instancetype)initWithCredentials:(AZSStorageCredentials *)<em>storageCredentials</em> blobEndpoint:(AZSStorageUri *)<em>blobEndpoint</em> tableEndpoint:(AZSStorageUri *)<em>tableEndpoint</em> queueEndpoint:(AZSStorageUri *)<em>queueEndpoint</em> fileEndpoint:(AZSStorageUri *)<em>fileEndpoint</em> error:(NSError **)<em>error</em></code></div>
+			<div class="method-subsection method-declaration"><code>- (AZSNullable instancetype)initWithCredentials:(AZSStorageCredentials *)<em>storageCredentials</em> blobEndpoint:(AZSNullable AZSStorageUri *)<em>blobEndpoint</em> tableEndpoint:(AZSNullable AZSStorageUri *)<em>tableEndpoint</em> queueEndpoint:(AZSNullable AZSStorageUri *)<em>queueEndpoint</em> fileEndpoint:(AZSNullable AZSStorageUri *)<em>fileEndpoint</em> error:(NSError **)<em>error</em></code></div>
 
 		    
 			
@@ -269,6 +271,11 @@ as well as the <a href="../Classes/AZSStorageCredentials.html">AZSStorageCredent
 			
 
 			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Initialize a fresh AZSCloudStorageAccount object</p>
+			</div>
+			
 
 			
 
@@ -300,7 +307,7 @@ as well as the <a href="../Classes/AZSStorageCredentials.html">AZSStorageCredent
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>- (instancetype)initWithCredentials:(AZSStorageCredentials *)<em>storageCredentials</em> useHttps:(BOOL)<em>useHttps</em> error:(NSError **)<em>error</em></code></div>
+			<div class="method-subsection method-declaration"><code>- (AZSNullable instancetype)initWithCredentials:(AZSStorageCredentials *)<em>storageCredentials</em> useHttps:(BOOL)<em>useHttps</em> error:(NSError **)<em>error</em></code></div>
 
 		    
 			
@@ -337,6 +344,11 @@ as well as the <a href="../Classes/AZSStorageCredentials.html">AZSStorageCredent
 			
 
 			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Initialize a fresh AZSCloudStorageAccount object</p>
+			</div>
+			
 
 			
 
@@ -368,7 +380,7 @@ as well as the <a href="../Classes/AZSStorageCredentials.html">AZSStorageCredent
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>- (instancetype)initWithCredentials:(AZSStorageCredentials *)<em>storageCredentials</em> useHttps:(BOOL)<em>useHttps</em> endpointSuffix:(NSString *)<em>endpointSuffix</em> error:(NSError **)<em>error</em></code></div>
+			<div class="method-subsection method-declaration"><code>- (AZSNullable instancetype)initWithCredentials:(AZSStorageCredentials *)<em>storageCredentials</em> useHttps:(BOOL)<em>useHttps</em> endpointSuffix:(NSString *)<em>endpointSuffix</em> error:(NSError **)<em>error</em></code></div>
 
 		    
 			
@@ -409,6 +421,11 @@ as well as the <a href="../Classes/AZSStorageCredentials.html">AZSStorageCredent
 
 			
 
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Initialize a fresh AZSCloudStorageAccount object</p>
+			</div>
 			
 
 			
@@ -456,6 +473,11 @@ as well as the <a href="../Classes/AZSStorageCredentials.html">AZSStorageCredent
 			
 
 			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Create an <a href="../Classes/AZSCloudBlobClient.html">AZSCloudBlobClient</a> object</p>
+			</div>
+			
 
 			
 
@@ -488,7 +510,7 @@ Note that logging in this method uses the global logger configured statically on
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>- (NSString *)createSharedAccessSignatureWithParameters:(AZSSharedAccessAccountParameters *)<em>parameters</em> error:(NSError **)<em>error</em></code></div>
+			<div class="method-subsection method-declaration"><code>- (AZSNullable NSString *)createSharedAccessSignatureWithParameters:(AZSSharedAccessAccountParameters *)<em>parameters</em> error:(NSError **)<em>error</em></code></div>
 
 		    
 			
@@ -520,6 +542,12 @@ Note that logging in this method uses the global logger configured statically on
 			
 
 			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Creates a Shared Access Signature (SAS) token from the given parameters for this Account.
+Note that logging in this method uses the global logger configured statically on the <a href="../Classes/AZSOperationContext.html">AZSOperationContext</a> as there is no operation being performed to provide a local operation context.</p>
+			</div>
+			
 
 			
 
@@ -549,7 +577,7 @@ Note that logging in this method uses the global logger configured statically on
 				<footer>
 					<div class="footer-copyright">
 						
-						<p class="copyright">Copyright &copy; 2016 Microsoft. All rights reserved. Updated: 2016-07-28</p>
+						<p class="copyright">Copyright &copy; 2017 Microsoft. All rights reserved. Updated: 2017-05-11</p>
 						
 						
 						<p class="generator">Generated by <a href="http://appledoc.gentlebytes.com">appledoc 2.2.1 (build 1334)</a>.</p>
