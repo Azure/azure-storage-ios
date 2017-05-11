@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "AZSClient"
-  s.version      = "0.2.3"
+  s.version      = "0.2.4"
   s.summary      = "Azure Storage Client Library for iOS."
   s.description  = <<-DESC "This library is designed to help you build iOS applications that use Microsoft Azure Storage."
                    DESC
