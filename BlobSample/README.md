@@ -20,6 +20,7 @@ This sample runs against the actual service, so it is highly recommended that yo
 	- The SAS token is a token to a blob container, not a blob
 	- The SAS token grants Read, Write, List, and Delete access
     - The container already exists.  (You cannot create containers with a container SAS token.)
+    - The SAS token start time (if present) and expiry time should have a 15 minute window prior to and after the current time respectively due to clock skew
 
     To use this method, replace the "containerURL" variable near the top of the 'BlobListTableViewController.swift' file with the full URL to the blob container, including the SAS token.
 
