@@ -14,7 +14,7 @@
 		<div class="container" class="hide-in-xcode">
 			
 			<h1 id="library-title">
-				<a href="../index.html">Azure Storage Client Library for iOS 0.2.2 </a>
+				<a href="../index.html">Azure Storage Client Library for iOS 0.2.4 </a>
 			</h1>
 
 			<p id="developer-home">
@@ -160,6 +160,11 @@
 			
 
 			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>The container in which this blob directory exists.</p>
+			</div>
+			
 
 			
 
@@ -200,6 +205,11 @@
 
 			
 
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>The full StorageURI to this blob directory.</p>
+			</div>
 			
 
 			
@@ -242,6 +252,11 @@
 			
 
 			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>The blob client representing the blob service for this blob directory.</p>
+			</div>
+			
 
 			
 
@@ -282,6 +297,11 @@
 
 			
 
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>The name of this directory.</p>
+			</div>
 			
 
 			
@@ -352,6 +372,11 @@ dir1/dir2/dir3.</p></td>
 			
 
 			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Initializes a newly allocated AZSCloudBlockDirectory object</p>
+			</div>
+			
 
 			
 
@@ -412,7 +437,9 @@ dir1/dir2/dir3.</p></td>
 			
 			<div class="method-subsection discussion-section">
 				<h4 class="method-subtitle">Discussion</h4>
-				<p>This creates an <a href="../Classes/AZSCloudBlockBlob.html">AZSCloudBlockBlob</a> object with the input <a href="#//api/name/name">name</a>.</p>
+				<p>Initialize a local <a href="../Classes/AZSCloudBlockBlob.html">AZSCloudBlockBlob</a> object</p>
+
+<p>This creates an <a href="../Classes/AZSCloudBlockBlob.html">AZSCloudBlockBlob</a> object with the input <a href="#//api/name/name">name</a>.</p>
 
 <p>TODO: Consider renaming this &lsquo;blockBlobFromName&rsquo;.  This is better Objective-C style, but may confuse users into
 thinking that this method creates a blob on the service, which is does not.</p><div class="warning"><p><strong>Warning:</strong> This method does not make a service call.  If properties, metadata, etc have been set on the service
@@ -484,7 +511,9 @@ for this blob, this will not be reflected in the local container object.</p></di
 			
 			<div class="method-subsection discussion-section">
 				<h4 class="method-subtitle">Discussion</h4>
-				<p>This creates an <a href="../Classes/AZSCloudBlockBlob.html">AZSCloudBlockBlob</a> object with the input <a href="#//api/name/name">name</a>.</p>
+				<p>Initialize a local <a href="../Classes/AZSCloudBlockBlob.html">AZSCloudBlockBlob</a> object</p>
+
+<p>This creates an <a href="../Classes/AZSCloudBlockBlob.html">AZSCloudBlockBlob</a> object with the input <a href="#//api/name/name">name</a>.</p>
 
 <p>TODO: Consider renaming this &lsquo;blockBlobFromName&rsquo;.  This is better Objective-C style, but may confuse users into
 thinking that this method creates a blob on the service, which is does not.</p><div class="warning"><p><strong>Warning:</strong> This method does not make a service call.  If properties, metadata, etc have been set on the service
@@ -551,7 +580,9 @@ for this blob, this will not be reflected in the local container object.</p></di
 			
 			<div class="method-subsection discussion-section">
 				<h4 class="method-subtitle">Discussion</h4>
-				<p>This creates an <a href="../Classes/AZSCloudPageBlob.html">AZSCloudPageBlob</a> object with the input <a href="#//api/name/name">name</a>.</p><div class="warning"><p><strong>Warning:</strong> This method does not make a service call.  If properties, metadata, etc have been set on the service
+				<p>Initialize a local <a href="../Classes/AZSCloudPageBlob.html">AZSCloudPageBlob</a> object</p>
+
+<p>This creates an <a href="../Classes/AZSCloudPageBlob.html">AZSCloudPageBlob</a> object with the input <a href="#//api/name/name">name</a>.</p><div class="warning"><p><strong>Warning:</strong> This method does not make a service call.  If properties, metadata, etc have been set on the service
 for this blob, this will not be reflected in the local container object.</p></div>
 			</div>
 			
@@ -620,7 +651,9 @@ for this blob, this will not be reflected in the local container object.</p></di
 			
 			<div class="method-subsection discussion-section">
 				<h4 class="method-subtitle">Discussion</h4>
-				<p>This creates an <a href="../Classes/AZSCloudPageBlob.html">AZSCloudPageBlob</a> object with the input <a href="#//api/name/name">name</a>.</p><div class="warning"><p><strong>Warning:</strong> This method does not make a service call.  If properties, metadata, etc have been set on the service
+				<p>Initialize a local <a href="../Classes/AZSCloudPageBlob.html">AZSCloudPageBlob</a> object</p>
+
+<p>This creates an <a href="../Classes/AZSCloudPageBlob.html">AZSCloudPageBlob</a> object with the input <a href="#//api/name/name">name</a>.</p><div class="warning"><p><strong>Warning:</strong> This method does not make a service call.  If properties, metadata, etc have been set on the service
 for this blob, this will not be reflected in the local container object.</p></div>
 			</div>
 			
@@ -684,7 +717,9 @@ for this blob, this will not be reflected in the local container object.</p></di
 			
 			<div class="method-subsection discussion-section">
 				<h4 class="method-subtitle">Discussion</h4>
-				<p>This creates an <a href="../Classes/AZSCloudAppendBlob.html">AZSCloudAppendBlob</a> object with the input <a href="#//api/name/name">name</a>.</p><div class="warning"><p><strong>Warning:</strong> This method does not make a service call.  If properties, metadata, etc have been set on the service
+				<p>Initialize a local <a href="../Classes/AZSCloudAppendBlob.html">AZSCloudAppendBlob</a> object</p>
+
+<p>This creates an <a href="../Classes/AZSCloudAppendBlob.html">AZSCloudAppendBlob</a> object with the input <a href="#//api/name/name">name</a>.</p><div class="warning"><p><strong>Warning:</strong> This method does not make a service call.  If properties, metadata, etc have been set on the service
 for this blob, this will not be reflected in the local container object.</p></div>
 			</div>
 			
@@ -753,7 +788,9 @@ for this blob, this will not be reflected in the local container object.</p></di
 			
 			<div class="method-subsection discussion-section">
 				<h4 class="method-subtitle">Discussion</h4>
-				<p>This creates an <a href="../Classes/AZSCloudAppendBlob.html">AZSCloudAppendBlob</a> object with the input <a href="#//api/name/name">name</a>.</p><div class="warning"><p><strong>Warning:</strong> This method does not make a service call.  If properties, metadata, etc have been set on the service
+				<p>Initialize a local <a href="../Classes/AZSCloudAppendBlob.html">AZSCloudAppendBlob</a> object</p>
+
+<p>This creates an <a href="../Classes/AZSCloudAppendBlob.html">AZSCloudAppendBlob</a> object with the input <a href="#//api/name/name">name</a>.</p><div class="warning"><p><strong>Warning:</strong> This method does not make a service call.  If properties, metadata, etc have been set on the service
 for this blob, this will not be reflected in the local container object.</p></div>
 			</div>
 			
@@ -805,7 +842,9 @@ for this blob, this will not be reflected in the local container object.</p></di
 			
 			<div class="method-subsection discussion-section">
 				<h4 class="method-subtitle">Discussion</h4>
-				<p>For example, if the current directory has the name:</p>
+				<p>Initialize a AZSCloudBlobDiretory object that represents the &lsquo;parent&rsquo; directory of the current object.</p>
+
+<p>For example, if the current directory has the name:</p>
 
 <p>&ldquo;sample/a/b/c&rdquo;</p>
 
@@ -876,7 +915,9 @@ for this blob, this will not be reflected in the local container object.</p></di
 			
 			<div class="method-subsection discussion-section">
 				<h4 class="method-subtitle">Discussion</h4>
-				<p>For example, if the current directory has the name:</p>
+				<p>Initialize a AZSCloudBlobDiretory object that represents the &lsquo;child&rsquo; directory of the current object.</p>
+
+<p>For example, if the current directory has the name:</p>
 
 <p>&ldquo;sample/a/b/c&rdquo;</p>
 
@@ -982,7 +1023,9 @@ for this blob, this will not be reflected in the local container object.</p></di
 			
 			<div class="method-subsection discussion-section">
 				<h4 class="method-subtitle">Discussion</h4>
-				<p>This method lists the blobs in the given directory.  It will perform exactly one REST call, which will list blobs
+				<p>Performs one segmented blob listing operation.</p>
+
+<p>This method lists the blobs in the given directory.  It will perform exactly one REST call, which will list blobs
 beginning with the directory represented in the <a href="../Classes/AZSContinuationToken.html">AZSContinuationToken</a>.  If no token is provided, it will list
 blobs from the beginning.  Only blobs that begin with the input prefix will be listed.</p>
 
@@ -1100,7 +1143,9 @@ the <a href="../Classes/AZSContinuationToken.html">AZSContinuationToken</a> in t
 			
 			<div class="method-subsection discussion-section">
 				<h4 class="method-subtitle">Discussion</h4>
-				<p>This method lists the blobs in the given directory.  It will perform exactly one REST call, which will list blobs
+				<p>Performs one segmented blob listing operation.</p>
+
+<p>This method lists the blobs in the given directory.  It will perform exactly one REST call, which will list blobs
 beginning with the directory represented in the <a href="../Classes/AZSContinuationToken.html">AZSContinuationToken</a>.  If no token is provided, it will list
 blobs from the beginning.  Only blobs that begin with the input prefix will be listed.</p>
 
@@ -1137,7 +1182,7 @@ the <a href="../Classes/AZSContinuationToken.html">AZSContinuationToken</a> in t
 				<footer>
 					<div class="footer-copyright">
 						
-						<p class="copyright">Copyright &copy; 2016 Microsoft. All rights reserved. Updated: 2016-07-28</p>
+						<p class="copyright">Copyright &copy; 2017 Microsoft. All rights reserved. Updated: 2017-05-11</p>
 						
 						
 						<p class="generator">Generated by <a href="http://appledoc.gentlebytes.com">appledoc 2.2.1 (build 1334)</a>.</p>

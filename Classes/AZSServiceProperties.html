@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 
-	<title>AZSBlobContainerProperties Class Reference</title>
+	<title>AZSServiceProperties Class Reference</title>
 
 	<link rel="stylesheet" href="../css/style.css">
 	<meta name="viewport" content="initial-scale=1, maximum-scale=1.4">
@@ -56,15 +56,15 @@
 	
 	<optgroup label="Properties">
 		
-		<option value="//api/name/eTag">eTag</option>
+		<option value="//api/name/corsRules">corsRules</option>
 		
-		<option value="//api/name/lastModified">lastModified</option>
+		<option value="//api/name/defaultServiceVersion">defaultServiceVersion</option>
 		
-		<option value="//api/name/leaseDuration">leaseDuration</option>
+		<option value="//api/name/hourMetrics">hourMetrics</option>
 		
-		<option value="//api/name/leaseState">leaseState</option>
+		<option value="//api/name/logging">logging</option>
 		
-		<option value="//api/name/leaseStatus">leaseStatus</option>
+		<option value="//api/name/minuteMetrics">minuteMetrics</option>
 		
 	</optgroup>
 	
@@ -85,7 +85,7 @@
 		<div id="overview_contents" class="container">
 			<div id="content">
 				<main role="main">
-					<h1 class="title">AZSBlobContainerProperties Class Reference</h1>
+					<h1 class="title">AZSServiceProperties Class Reference</h1>
 
 					
 					<div class="section section-specification"><table cellspacing="0"><tbody>
@@ -94,7 +94,7 @@
 	<td>NSObject</td>
 </tr><tr>
 	<th>Declared in</th>
-	<td>AZSBlobContainerProperties.h<br />AZSBlobContainerProperties.m</td>
+	<td>AZSServiceProperties.h<br />AZSServiceProperties.m</td>
 </tr>
 						</tbody></table></div>
 					
@@ -104,7 +104,7 @@
 					<div class="section section-overview">
 						<a title="Overview" name="overview"></a>
 						<h2 class="subtitle subtitle-overview">Overview</h2>
-						<p>A collection of properties for the container.</p>
+						<p>Represents the analytics properties for the service</p>
 					</div>
 					
 					
@@ -120,8 +120,8 @@
 
 						<div class="task-list">
 							<div class="section-method">
-	<a name="//api/name/eTag" title="eTag"></a>
-	<h3 class="method-title"><code><a href="#//api/name/eTag">&nbsp;&nbsp;eTag</a></code>
+	<a name="//api/name/logging" title="logging"></a>
+	<h3 class="method-title"><code><a href="#//api/name/logging">&nbsp;&nbsp;logging</a></code>
 </h3>
 
 	<div class="method-info">
@@ -131,12 +131,12 @@
 			
 			
 			<div class="method-subsection brief-description">
-				<p>The eTag for this container, as far as the library is aware.  Call downloadAttributes to update.</p>
+				<p>The service logging properties.</p>
 			</div>
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>@property (copy, AZSNullable) NSString *eTag</code></div>
+			<div class="method-subsection method-declaration"><code>@property (strong, AZSNullable) AZSLoggingProperties *logging</code></div>
 
 		    
 			
@@ -148,7 +148,7 @@
 			
 			<div class="method-subsection discussion-section">
 				<h4 class="method-subtitle">Discussion</h4>
-				<p>The eTag for this container, as far as the library is aware.  Call downloadAttributes to update.</p>
+				<p>The service logging properties.</p>
 			</div>
 			
 
@@ -159,15 +159,15 @@
 			
 			<div class="method-subsection declared-in-section">
 				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">AZSBlobContainerProperties.h</code></p>
+				<p><code class="declared-in-ref">AZSServiceProperties.h</code></p>
 			</div>
 			
 			
 		</div>
 	</div>
 </div><div class="section-method">
-	<a name="//api/name/lastModified" title="lastModified"></a>
-	<h3 class="method-title"><code><a href="#//api/name/lastModified">&nbsp;&nbsp;lastModified</a></code>
+	<a name="//api/name/hourMetrics" title="hourMetrics"></a>
+	<h3 class="method-title"><code><a href="#//api/name/hourMetrics">&nbsp;&nbsp;hourMetrics</a></code>
 </h3>
 
 	<div class="method-info">
@@ -177,12 +177,12 @@
 			
 			
 			<div class="method-subsection brief-description">
-				<p>The last modified time for the container, as far as the library is aware.  Call downloadAttributes to update.</p>
+				<p>The service hour metrics properties.</p>
 			</div>
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>@property (copy, AZSNullable) NSDate *lastModified</code></div>
+			<div class="method-subsection method-declaration"><code>@property (strong, AZSNullable) AZSMetricsProperties *hourMetrics</code></div>
 
 		    
 			
@@ -194,7 +194,7 @@
 			
 			<div class="method-subsection discussion-section">
 				<h4 class="method-subtitle">Discussion</h4>
-				<p>The last modified time for the container, as far as the library is aware.  Call downloadAttributes to update.</p>
+				<p>The service hour metrics properties.</p>
 			</div>
 			
 
@@ -205,15 +205,15 @@
 			
 			<div class="method-subsection declared-in-section">
 				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">AZSBlobContainerProperties.h</code></p>
+				<p><code class="declared-in-ref">AZSServiceProperties.h</code></p>
 			</div>
 			
 			
 		</div>
 	</div>
 </div><div class="section-method">
-	<a name="//api/name/leaseStatus" title="leaseStatus"></a>
-	<h3 class="method-title"><code><a href="#//api/name/leaseStatus">&nbsp;&nbsp;leaseStatus</a></code>
+	<a name="//api/name/minuteMetrics" title="minuteMetrics"></a>
+	<h3 class="method-title"><code><a href="#//api/name/minuteMetrics">&nbsp;&nbsp;minuteMetrics</a></code>
 </h3>
 
 	<div class="method-info">
@@ -223,12 +223,12 @@
 			
 			
 			<div class="method-subsection brief-description">
-				<p>The lease status for the container, as far as the library is aware.  Call downloadAttributes to update.</p>
+				<p>The service minute metrics properties.</p>
 			</div>
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>@property AZSLeaseStatus leaseStatus</code></div>
+			<div class="method-subsection method-declaration"><code>@property (strong, AZSNullable) AZSMetricsProperties *minuteMetrics</code></div>
 
 		    
 			
@@ -240,7 +240,7 @@
 			
 			<div class="method-subsection discussion-section">
 				<h4 class="method-subtitle">Discussion</h4>
-				<p>The lease status for the container, as far as the library is aware.  Call downloadAttributes to update.</p>
+				<p>The service minute metrics properties.</p>
 			</div>
 			
 
@@ -251,15 +251,15 @@
 			
 			<div class="method-subsection declared-in-section">
 				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">AZSBlobContainerProperties.h</code></p>
+				<p><code class="declared-in-ref">AZSServiceProperties.h</code></p>
 			</div>
 			
 			
 		</div>
 	</div>
 </div><div class="section-method">
-	<a name="//api/name/leaseState" title="leaseState"></a>
-	<h3 class="method-title"><code><a href="#//api/name/leaseState">&nbsp;&nbsp;leaseState</a></code>
+	<a name="//api/name/corsRules" title="corsRules"></a>
+	<h3 class="method-title"><code><a href="#//api/name/corsRules">&nbsp;&nbsp;corsRules</a></code>
 </h3>
 
 	<div class="method-info">
@@ -269,12 +269,12 @@
 			
 			
 			<div class="method-subsection brief-description">
-				<p>The lease state for the container, as far as the library is aware.  Call downloadAttributes to update.</p>
+				<p>The Cross Origin Resource Sharing (CORS) properties.</p>
 			</div>
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>@property AZSLeaseState leaseState</code></div>
+			<div class="method-subsection method-declaration"><code>@property (strong, AZSNullable) NSMutableArray *corsRules</code></div>
 
 		    
 			
@@ -286,7 +286,7 @@
 			
 			<div class="method-subsection discussion-section">
 				<h4 class="method-subtitle">Discussion</h4>
-				<p>The lease state for the container, as far as the library is aware.  Call downloadAttributes to update.</p>
+				<p>The Cross Origin Resource Sharing (CORS) properties.</p>
 			</div>
 			
 
@@ -297,15 +297,15 @@
 			
 			<div class="method-subsection declared-in-section">
 				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">AZSBlobContainerProperties.h</code></p>
+				<p><code class="declared-in-ref">AZSServiceProperties.h</code></p>
 			</div>
 			
 			
 		</div>
 	</div>
 </div><div class="section-method">
-	<a name="//api/name/leaseDuration" title="leaseDuration"></a>
-	<h3 class="method-title"><code><a href="#//api/name/leaseDuration">&nbsp;&nbsp;leaseDuration</a></code>
+	<a name="//api/name/defaultServiceVersion" title="defaultServiceVersion"></a>
+	<h3 class="method-title"><code><a href="#//api/name/defaultServiceVersion">&nbsp;&nbsp;defaultServiceVersion</a></code>
 </h3>
 
 	<div class="method-info">
@@ -315,12 +315,12 @@
 			
 			
 			<div class="method-subsection brief-description">
-				<p>The lease duration for the container, as far as the library is aware.  Call downloadAttributes to update.</p>
+				<p>The default service version, or null if no default is specified.</p>
 			</div>
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>@property AZSLeaseDuration leaseDuration</code></div>
+			<div class="method-subsection method-declaration"><code>@property (copy, AZSNullable) NSString *defaultServiceVersion</code></div>
 
 		    
 			
@@ -332,7 +332,7 @@
 			
 			<div class="method-subsection discussion-section">
 				<h4 class="method-subtitle">Discussion</h4>
-				<p>The lease duration for the container, as far as the library is aware.  Call downloadAttributes to update.</p>
+				<p>The default service version, or null if no default is specified.</p>
 			</div>
 			
 
@@ -343,7 +343,7 @@
 			
 			<div class="method-subsection declared-in-section">
 				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">AZSBlobContainerProperties.h</code></p>
+				<p><code class="declared-in-ref">AZSServiceProperties.h</code></p>
 			</div>
 			
 			

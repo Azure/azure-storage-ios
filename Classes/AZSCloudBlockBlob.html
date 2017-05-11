@@ -14,7 +14,7 @@
 		<div class="container" class="hide-in-xcode">
 			
 			<h1 id="library-title">
-				<a href="../index.html">Azure Storage Client Library for iOS 0.2.2 </a>
+				<a href="../index.html">Azure Storage Client Library for iOS 0.2.4 </a>
 			</h1>
 
 			<p id="developer-home">
@@ -221,7 +221,9 @@
 			
 			<div class="method-subsection discussion-section">
 				<h4 class="method-subtitle">Discussion</h4>
-				<p>This operation will schedule the input sourceStream on a runloop (created in a new thread), and read in all data as long as it is able.  This will
+				<p>Uploades a blob from given source stream.</p>
+
+<p>This operation will schedule the input sourceStream on a runloop (created in a new thread), and read in all data as long as it is able.  This will
 chunk the data into blocks, and upload each of those blocks to the service.  Finally, when the stream is finished, it will upload a block list
 consisting of all read data.</p>
 
@@ -320,7 +322,9 @@ number of outstanding downloads is also configurable in the <a href="../Classes/
 			
 			<div class="method-subsection discussion-section">
 				<h4 class="method-subtitle">Discussion</h4>
-				<p>This operation will schedule the input sourceStream on a runloop (created in a new thread), and read in all data as long as it is able.  This will
+				<p>Uploades a blob from given source stream.</p>
+
+<p>This operation will schedule the input sourceStream on a runloop (created in a new thread), and read in all data as long as it is able.  This will
 chunk the data into blocks, and upload each of those blocks to the service.  Finally, when the stream is finished, it will upload a block list
 consisting of all read data.</p>
 
@@ -390,6 +394,11 @@ number of outstanding downloads is also configurable in the <a href="../Classes/
 
 			
 
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Initializes a newly allocated AZSCloudBlockBlob object</p>
+			</div>
 			
 
 			
@@ -464,6 +473,11 @@ number of outstanding downloads is also configurable in the <a href="../Classes/
 			
 
 			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Initializes a newly allocated AZSCloudBlockBlob object</p>
+			</div>
+			
 
 			
 
@@ -526,6 +540,11 @@ number of outstanding downloads is also configurable in the <a href="../Classes/
 
 			
 
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Initializes a newly allocated AZSCloudBlockBlob object</p>
+			</div>
 			
 
 			
@@ -600,6 +619,11 @@ number of outstanding downloads is also configurable in the <a href="../Classes/
 			
 
 			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Initializes a newly allocated AZSCloudBlockBlob object</p>
+			</div>
+			
 
 			
 
@@ -662,6 +686,11 @@ number of outstanding downloads is also configurable in the <a href="../Classes/
 
 			
 
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Initializes a newly allocated AZSCloudBlockBlob object</p>
+			</div>
 			
 
 			
@@ -730,6 +759,11 @@ number of outstanding downloads is also configurable in the <a href="../Classes/
 
 			
 
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Initializes a newly allocated AZSCloudBlockBlob object</p>
+			</div>
 			
 
 			
@@ -807,7 +841,9 @@ number of outstanding downloads is also configurable in the <a href="../Classes/
 			
 			<div class="method-subsection discussion-section">
 				<h4 class="method-subtitle">Discussion</h4>
-				<p>UploadFromData uploads all data in the input NSData to the blob on the service.  This operation will overwrite any data
+				<p>Uploads a blob from given source data.</p>
+
+<p>UploadFromData uploads all data in the input NSData to the blob on the service.  This operation will overwrite any data
 already in the blob on the service, unless protected with an appropriate <a href="../Classes/AZSAccessCondition.html">AZSAccessCondition</a>.</p>
 			</div>
 			
@@ -902,7 +938,9 @@ already in the blob on the service, unless protected with an appropriate <a href
 			
 			<div class="method-subsection discussion-section">
 				<h4 class="method-subtitle">Discussion</h4>
-				<p>UploadFromData uploads all data in the input NSData to the blob on the service.  This operation will overwrite any data
+				<p>Uploads a blob from given source data.</p>
+
+<p>UploadFromData uploads all data in the input NSData to the blob on the service.  This operation will overwrite any data
 already in the blob on the service, unless protected with an appropriate <a href="../Classes/AZSAccessCondition.html">AZSAccessCondition</a>.</p>
 			</div>
 			
@@ -987,7 +1025,9 @@ already in the blob on the service, unless protected with an appropriate <a href
 			
 			<div class="method-subsection discussion-section">
 				<h4 class="method-subtitle">Discussion</h4>
-				<p>This operation uploads one block of data to the blob in the Storage Service.  The block will remain uncommitted (meaning the data will not
+				<p>Uploads a single block from given source data.</p>
+
+<p>This operation uploads one block of data to the blob in the Storage Service.  The block will remain uncommitted (meaning the data will not
 be considered part of the blob) until a corresponding uploadBlockList call.</p>
 
 <p>Note that all blocks in a given blob must have the same length Block ID.</p>
@@ -1096,7 +1136,9 @@ This value is not stored on the service.</p></td>
 			
 			<div class="method-subsection discussion-section">
 				<h4 class="method-subtitle">Discussion</h4>
-				<p>This operation uploads one block of data to the blob in the Storage Service.  The block will remain uncommitted (meaning the data will not
+				<p>Uploads a single block from given source data.</p>
+
+<p>This operation uploads one block of data to the blob in the Storage Service.  The block will remain uncommitted (meaning the data will not
 be considered part of the blob) until a corresponding uploadBlockList call.</p>
 
 <p>Note that all blocks in a given blob must have the same length Block ID.</p>
@@ -1178,7 +1220,9 @@ be considered part of the blob) until a corresponding uploadBlockList call.</p>
 			
 			<div class="method-subsection discussion-section">
 				<h4 class="method-subtitle">Discussion</h4>
-				<p>This operation commits a block list to the blob, which causes the blob to be committed.  The blocks included in the list will be
+				<p>Uploads a block list, committing the blocks in the list to the blob.</p>
+
+<p>This operation commits a block list to the blob, which causes the blob to be committed.  The blocks included in the list will be
 the data in the blob, in order.</p>
 			</div>
 			
@@ -1273,7 +1317,9 @@ the data in the blob, in order.</p>
 			
 			<div class="method-subsection discussion-section">
 				<h4 class="method-subtitle">Discussion</h4>
-				<p>This operation commits a block list to the blob, which causes the blob to be committed.  The blocks included in the list will be
+				<p>Uploads a block list, committing the blocks in the list to the blob.</p>
+
+<p>This operation commits a block list to the blob, which causes the blob to be committed.  The blocks included in the list will be
 the data in the blob, in order.</p>
 			</div>
 			
@@ -1357,7 +1403,9 @@ the data in the blob, in order.</p>
 			
 			<div class="method-subsection discussion-section">
 				<h4 class="method-subtitle">Discussion</h4>
-				<p>This operation fetches the current block list from the service.</p>
+				<p>Downloads the block list for a blob.</p>
+
+<p>This operation fetches the current block list from the service.</p>
 
 <p>Note that this data is not streamed, all data is in memory at once.  This may use a significant amount of memory for blobs with
 many blocks.</p>
@@ -1458,7 +1506,9 @@ many blocks.</p>
 			
 			<div class="method-subsection discussion-section">
 				<h4 class="method-subtitle">Discussion</h4>
-				<p>This operation fetches the current block list from the service.</p>
+				<p>Downloads the block list for a blob.</p>
+
+<p>This operation fetches the current block list from the service.</p>
 
 <p>Note that this data is not streamed, all data is in memory at once.  This may use a significant amount of memory for blobs with
 many blocks.</p>
@@ -1512,7 +1562,9 @@ many blocks.</p>
 			
 			<div class="method-subsection discussion-section">
 				<h4 class="method-subtitle">Discussion</h4>
-				<p>This method returns an instance of <a href="../Classes/AZSBlobOutputStream.html">AZSBlobOutputStream</a>.  The caller can then assign a delegate and schedule the stream in a runloop
+				<p>Creates an output stream that is capable of writing to the blob.</p>
+
+<p>This method returns an instance of <a href="../Classes/AZSBlobOutputStream.html">AZSBlobOutputStream</a>.  The caller can then assign a delegate and schedule the stream in a runloop
 (similar to any other NSOutputStream.)  See <a href="../Classes/AZSBlobOutputStream.html">AZSBlobOutputStream</a> documentation for details.</p>
 			</div>
 			
@@ -1586,7 +1638,9 @@ many blocks.</p>
 			
 			<div class="method-subsection discussion-section">
 				<h4 class="method-subtitle">Discussion</h4>
-				<p>This method returns an instance of <a href="../Classes/AZSBlobOutputStream.html">AZSBlobOutputStream</a>.  The caller can then assign a delegate and schedule the stream in a runloop
+				<p>Creates an output stream that is capable of writing to the blob.</p>
+
+<p>This method returns an instance of <a href="../Classes/AZSBlobOutputStream.html">AZSBlobOutputStream</a>.  The caller can then assign a delegate and schedule the stream in a runloop
 (similar to any other NSOutputStream.)  See <a href="../Classes/AZSBlobOutputStream.html">AZSBlobOutputStream</a> documentation for details.</p>
 			</div>
 			
@@ -1666,7 +1720,9 @@ many blocks.</p>
 			
 			<div class="method-subsection discussion-section">
 				<h4 class="method-subtitle">Discussion</h4>
-				<p>UploadFromText encodes the input text as UTF-8 and then uploads it to the blob on the service.  This operation will overwrite any data
+				<p>Uploads a blob from given source text.</p>
+
+<p>UploadFromText encodes the input text as UTF-8 and then uploads it to the blob on the service.  This operation will overwrite any data
 already in the blob on the service, unless protected with an appropriate <a href="../Classes/AZSAccessCondition.html">AZSAccessCondition</a>.</p>
 			</div>
 			
@@ -1761,7 +1817,9 @@ already in the blob on the service, unless protected with an appropriate <a href
 			
 			<div class="method-subsection discussion-section">
 				<h4 class="method-subtitle">Discussion</h4>
-				<p>UploadFromText encodes the input text as UTF-8 and then uploads it to the blob on the service.  This operation will overwrite any data
+				<p>Uploads a blob from given source text.</p>
+
+<p>UploadFromText encodes the input text as UTF-8 and then uploads it to the blob on the service.  This operation will overwrite any data
 already in the blob on the service, unless protected with an appropriate <a href="../Classes/AZSAccessCondition.html">AZSAccessCondition</a>.</p>
 			</div>
 			
@@ -1841,7 +1899,9 @@ already in the blob on the service, unless protected with an appropriate <a href
 			
 			<div class="method-subsection discussion-section">
 				<h4 class="method-subtitle">Discussion</h4>
-				<p>UploadFromText loads an the input file and uploads the contents of that file to the service.  Contents will not be
+				<p>Uploads a blob from given source file.</p>
+
+<p>UploadFromText loads an the input file and uploads the contents of that file to the service.  Contents will not be
 read all at once, but instead in a streaming fashion.  This operation will overwrite any data
 already in the blob on the service, unless protected with an appropriate <a href="../Classes/AZSAccessCondition.html">AZSAccessCondition</a>.</p>
 			</div>
@@ -1937,7 +1997,9 @@ already in the blob on the service, unless protected with an appropriate <a href
 			
 			<div class="method-subsection discussion-section">
 				<h4 class="method-subtitle">Discussion</h4>
-				<p>UploadFromText loads an the input file and uploads the contents of that file to the service.  Contents will not be
+				<p>Uploads a blob from given source file.</p>
+
+<p>UploadFromText loads an the input file and uploads the contents of that file to the service.  Contents will not be
 read all at once, but instead in a streaming fashion.  This operation will overwrite any data
 already in the blob on the service, unless protected with an appropriate <a href="../Classes/AZSAccessCondition.html">AZSAccessCondition</a>.</p>
 			</div>
@@ -2018,7 +2080,9 @@ already in the blob on the service, unless protected with an appropriate <a href
 			
 			<div class="method-subsection discussion-section">
 				<h4 class="method-subtitle">Discussion</h4>
-				<p>UploadFromText loads an the input file and uploads the contents of that file to the service.  Contents will not be
+				<p>Uploads a blob from given source file.</p>
+
+<p>UploadFromText loads an the input file and uploads the contents of that file to the service.  Contents will not be
 read all at once, but instead in a streaming fashion.  This operation will overwrite any data
 already in the blob on the service, unless protected with an appropriate <a href="../Classes/AZSAccessCondition.html">AZSAccessCondition</a>.</p>
 			</div>
@@ -2114,7 +2178,9 @@ already in the blob on the service, unless protected with an appropriate <a href
 			
 			<div class="method-subsection discussion-section">
 				<h4 class="method-subtitle">Discussion</h4>
-				<p>UploadFromText loads an the input file and uploads the contents of that file to the service.  Contents will not be
+				<p>Uploads a blob from given source file.</p>
+
+<p>UploadFromText loads an the input file and uploads the contents of that file to the service.  Contents will not be
 read all at once, but instead in a streaming fashion.  This operation will overwrite any data
 already in the blob on the service, unless protected with an appropriate <a href="../Classes/AZSAccessCondition.html">AZSAccessCondition</a>.</p>
 			</div>
@@ -2148,7 +2214,7 @@ already in the blob on the service, unless protected with an appropriate <a href
 				<footer>
 					<div class="footer-copyright">
 						
-						<p class="copyright">Copyright &copy; 2016 Microsoft. All rights reserved. Updated: 2016-07-28</p>
+						<p class="copyright">Copyright &copy; 2017 Microsoft. All rights reserved. Updated: 2017-05-11</p>
 						
 						
 						<p class="generator">Generated by <a href="http://appledoc.gentlebytes.com">appledoc 2.2.1 (build 1334)</a>.</p>

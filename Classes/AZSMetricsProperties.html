@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 
-	<title>AZSRetryPolicyForTestAlwaysRetry Class Reference</title>
+	<title>AZSMetricsProperties Class Reference</title>
 
 	<link rel="stylesheet" href="../css/style.css">
 	<meta name="viewport" content="initial-scale=1, maximum-scale=1.4">
@@ -14,7 +14,7 @@
 		<div class="container" class="hide-in-xcode">
 			
 			<h1 id="library-title">
-				<a href="../index.html">Azure Storage Client Library for iOS 0.2.2 </a>
+				<a href="../index.html">Azure Storage Client Library for iOS 0.2.4 </a>
 			</h1>
 
 			<p id="developer-home">
@@ -54,17 +54,19 @@
 
 	
 	
-
-	
-
-	
-	<optgroup label="Instance Methods">
+	<optgroup label="Properties">
 		
-		<option value="//api/name/clone">- clone</option>
+		<option value="//api/name/metricsLevel">metricsLevel</option>
 		
-		<option value="//api/name/evaluateRetryContext:withOperationContext:">- evaluateRetryContext:withOperationContext:</option>
+		<option value="//api/name/retentionIntervalInDays">retentionIntervalInDays</option>
+		
+		<option value="//api/name/version">version</option>
 		
 	</optgroup>
+	
+
+	
+
 	
 	
 </select>
@@ -79,7 +81,7 @@
 		<div id="overview_contents" class="container">
 			<div id="content">
 				<main role="main">
-					<h1 class="title">AZSRetryPolicyForTestAlwaysRetry Class Reference</h1>
+					<h1 class="title">AZSMetricsProperties Class Reference</h1>
 
 					
 					<div class="section section-specification"><table cellspacing="0"><tbody>
@@ -87,11 +89,8 @@
 	<th>Inherits from</th>
 	<td>NSObject</td>
 </tr><tr>
-	<th>Conforms to</th>
-	<td><a href="../Protocols/AZSRetryPolicy.html">AZSRetryPolicy</a></td>
-</tr><tr>
 	<th>Declared in</th>
-	<td>AZSReadFromSecondaryTest.m</td>
+	<td>AZSMetricsProperties.h<br />AZSMetricsProperties.m</td>
 </tr>
 						</tbody></table></div>
 					
@@ -101,7 +100,7 @@
 					<div class="section section-overview">
 						<a title="Overview" name="overview"></a>
 						<h2 class="subtitle subtitle-overview">Overview</h2>
-						<p>A retry policy, used for testing only.  Reserved for internal use.</p>
+						<p>Represents the analytics properties for the service</p>
 					</div>
 					
 					
@@ -117,8 +116,8 @@
 
 						<div class="task-list">
 							<div class="section-method">
-	<a name="//api/name/evaluateRetryContext:withOperationContext:" title="evaluateRetryContext:withOperationContext:"></a>
-	<h3 class="method-title"><code><a href="#//api/name/evaluateRetryContext:withOperationContext:">&ndash;&nbsp;evaluateRetryContext:withOperationContext:</a></code>
+	<a name="//api/name/version" title="version"></a>
+	<h3 class="method-title"><code><a href="#//api/name/version">&nbsp;&nbsp;version</a></code>
 </h3>
 
 	<div class="method-info">
@@ -128,43 +127,25 @@
 			
 			
 			<div class="method-subsection brief-description">
-				<p>The method that evaluates the RetryContext to determine if the request should be retried or not.</p>
+				<p>The analytics version to use.</p>
 			</div>
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>- (AZSRetryInfo *)evaluateRetryContext:(AZSRetryContext *)<em>retryContext</em> withOperationContext:(AZSOperationContext *)<em>operationContext</em></code></div>
+			<div class="method-subsection method-declaration"><code>@property (copy) NSString *version</code></div>
 
 		    
 			
-			<div class="method-subsection arguments-section parameters">
-				<h4 class="method-subtitle parameter-title">Parameters</h4>
-				<table class="argument-def parameter-def">
-				
-					<tr>
-						<th scope="row" class="argument-name"><code>retryContext</code></th>
-						<td><p>The <a href="../Classes/AZSRetryContext.html">AZSRetryContext</a> containing information about the most recent request.</p></td>
-					</tr>
-				
-					<tr>
-						<th scope="row" class="argument-name"><code>operationContext</code></th>
-						<td><p>The <a href="../Classes/AZSOperationContext.html">AZSOperationContext</a> for the entire operation thus far.</p></td>
-					</tr>
-				
-				</table>
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>The analytics version to use.</p>
 			</div>
-			
-
-			
-			<div class="method-subsection return">
-				<h4 class="method-subtitle parameter-title">Return Value</h4>
-				<p>An <a href="../Classes/AZSRetryInfo.html">AZSRetryInfo</a> object that contains whether or not the request should be retried, and if so, how long to wait until the
-next trial.</p>
-			</div>
-			
-
-			
-
 			
 
 			
@@ -174,15 +155,15 @@ next trial.</p>
 			
 			<div class="method-subsection declared-in-section">
 				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">AZSRetryPolicy.h</code></p>
+				<p><code class="declared-in-ref">AZSMetricsProperties.h</code></p>
 			</div>
 			
 			
 		</div>
 	</div>
 </div><div class="section-method">
-	<a name="//api/name/clone" title="clone"></a>
-	<h3 class="method-title"><code><a href="#//api/name/clone">&ndash;&nbsp;clone</a></code>
+	<a name="//api/name/metricsLevel" title="metricsLevel"></a>
+	<h3 class="method-title"><code><a href="#//api/name/metricsLevel">&nbsp;&nbsp;metricsLevel</a></code>
 </h3>
 
 	<div class="method-info">
@@ -192,25 +173,25 @@ next trial.</p>
 			
 			
 			<div class="method-subsection brief-description">
-				<p>Clone this retry policy.  Required internally in the library.  Must return a fresh instance with the same parameters.</p>
+				<p>Represents which storage operations should be logged.</p>
 			</div>
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>- (id&lt;AZSRetryPolicy&gt;)clone</code></div>
+			<div class="method-subsection method-declaration"><code>@property AZSMetricsLevel metricsLevel</code></div>
 
 		    
 			
 
 			
-			<div class="method-subsection return">
-				<h4 class="method-subtitle parameter-title">Return Value</h4>
-				<p>The cloned retry policy.</p>
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Represents which storage operations should be logged.</p>
 			</div>
-			
-
-			
-
 			
 
 			
@@ -220,7 +201,53 @@ next trial.</p>
 			
 			<div class="method-subsection declared-in-section">
 				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">AZSRetryPolicy.h</code></p>
+				<p><code class="declared-in-ref">AZSMetricsProperties.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/retentionIntervalInDays" title="retentionIntervalInDays"></a>
+	<h3 class="method-title"><code><a href="#//api/name/retentionIntervalInDays">&nbsp;&nbsp;retentionIntervalInDays</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Represents the duration of the rention policty for the logging data.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (AZSNullable) NSNumber *retentionIntervalInDays</code></div>
+
+		    
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Represents the duration of the rention policty for the logging data.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSMetricsProperties.h</code></p>
 			</div>
 			
 			
@@ -241,7 +268,7 @@ next trial.</p>
 				<footer>
 					<div class="footer-copyright">
 						
-						<p class="copyright">Copyright &copy; 2016 Microsoft. All rights reserved. Updated: 2016-07-28</p>
+						<p class="copyright">Copyright &copy; 2017 Microsoft. All rights reserved. Updated: 2017-05-11</p>
 						
 						
 						<p class="generator">Generated by <a href="http://appledoc.gentlebytes.com">appledoc 2.2.1 (build 1334)</a>.</p>

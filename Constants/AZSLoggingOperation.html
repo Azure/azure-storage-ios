@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 
-	<title>AZSLogLevel Constants Reference</title>
+	<title>AZSLoggingOperation Constants Reference</title>
 
 	<link rel="stylesheet" href="../css/style.css">
 	<meta name="viewport" content="initial-scale=1, maximum-scale=1.4">
@@ -59,7 +59,7 @@
 		<div id="overview_contents" class="container">
 			<div id="content">
 				<main role="main">
-					<h1 class="title">AZSLogLevel Constants Reference</h1>
+					<h1 class="title">AZSLoggingOperation Constants Reference</h1>
 
 					
 					<div class="section section-specification"><table cellspacing="0"><tbody>
@@ -75,11 +75,11 @@
 					
 
                     
-                    <h3 class="subsubtitle method-title">AZSLogLevel</h3>
+                    <h3 class="subsubtitle method-title">AZSLoggingOperation</h3>
                     
 					
 					<div class="section section-overview">
-                        <p>The maximum level at which to log. These values correspond to their respective ASL log levels.</p>
+                        <p>The types of operations the service should log.</p>
 					</div>
 					
 					
@@ -87,19 +87,15 @@
                         <!-- display enum values -->
                         
                         <h4 class="method-subtitle">Definition</h4>
-                        <code>typedef NS_ENUM(NSInteger, AZSLogLevel ) {<br>
+                        <code>typedef NS_OPTIONS(NSUInteger, AZSLoggingOperation ) {<br>
                             
-                            &nbsp;&nbsp; <a href="">AZSLogLevelNoLogging</a> = 0,<br>
+                            &nbsp;&nbsp; <a href="">AZSLoggingOperationNone</a> = 0 x0,<br>
                             
-                            &nbsp;&nbsp; <a href="">AZSLogLevelCritical</a> = 2,<br>
+                            &nbsp;&nbsp; <a href="">AZSLoggingOperationRead</a> = 0 x1 &lt; &lt; 0,<br>
                             
-                            &nbsp;&nbsp; <a href="">AZSLogLevelError</a> = 3,<br>
+                            &nbsp;&nbsp; <a href="">AZSLoggingOperationWrite</a> = 0 x1 &lt; &lt; 1,<br>
                             
-                            &nbsp;&nbsp; <a href="">AZSLogLevelWarning</a> = 4,<br>
-                            
-                            &nbsp;&nbsp; <a href="">AZSLogLevelInfo</a> = 6,<br>
-                            
-                            &nbsp;&nbsp; <a href="">AZSLogLevelDebug</a> = 7,<br>
+                            &nbsp;&nbsp; <a href="">AZSLoggingOperationDelete</a> = 0 x1 &lt; &lt; 2,<br>
                             
                             };</code>
                     
@@ -109,11 +105,11 @@
                         <h4 class="method-subtitle">Constants</h4>
                         <dl class="termdef">
                             
-                            <dt><a name="" title="AZSLogLevelNoLogging"></a><code>AZSLogLevelNoLogging</code></dt>
+                            <dt><a name="" title="AZSLoggingOperationNone"></a><code>AZSLoggingOperationNone</code></dt>
 <dd>
 
 
-<p>Don&rsquo;t log anything.</p>
+<p>Log No Operations.</p>
 
 
 
@@ -126,11 +122,11 @@
 	
 </dd>
                             
-                            <dt><a name="" title="AZSLogLevelCritical"></a><code>AZSLogLevelCritical</code></dt>
+                            <dt><a name="" title="AZSLoggingOperationRead"></a><code>AZSLoggingOperationRead</code></dt>
 <dd>
 
 
-<p>Only log critical-level messages.</p>
+<p>Log Read Operations.</p>
 
 
 
@@ -143,11 +139,11 @@
 	
 </dd>
                             
-                            <dt><a name="" title="AZSLogLevelError"></a><code>AZSLogLevelError</code></dt>
+                            <dt><a name="" title="AZSLoggingOperationWrite"></a><code>AZSLoggingOperationWrite</code></dt>
 <dd>
 
 
-<p>Log error-level and critical-level messages.</p>
+<p>Log Write Operations.</p>
 
 
 
@@ -160,45 +156,11 @@
 	
 </dd>
                             
-                            <dt><a name="" title="AZSLogLevelWarning"></a><code>AZSLogLevelWarning</code></dt>
+                            <dt><a name="" title="AZSLoggingOperationDelete"></a><code>AZSLoggingOperationDelete</code></dt>
 <dd>
 
 
-<p>Log warning-, error-, and critical-level messages.</p>
-
-
-
-
-
-    
-	<p>
-		Declared In <code class="declared-in-ref">AZSEnums.h</code>.
-	</p>
-	
-</dd>
-                            
-                            <dt><a name="" title="AZSLogLevelInfo"></a><code>AZSLogLevelInfo</code></dt>
-<dd>
-
-
-<p>Log info-, warning-, error-, and critical-level messages.</p>
-
-
-
-
-
-    
-	<p>
-		Declared In <code class="declared-in-ref">AZSEnums.h</code>.
-	</p>
-	
-</dd>
-                            
-                            <dt><a name="" title="AZSLogLevelDebug"></a><code>AZSLogLevelDebug</code></dt>
-<dd>
-
-
-<p>Log all messages, including debugging messages.</p>
+<p>Log Delete Operations.</p>
 
 
 
