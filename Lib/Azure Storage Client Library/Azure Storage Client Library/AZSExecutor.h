@@ -18,6 +18,7 @@
 #import <Foundation/Foundation.h>
 
 @class AZSStorageCommand;
+@class AZSStreamDownloadBuffer;
 @class AZSRequestOptions;
 @class AZSOperationContext;
 
@@ -25,5 +26,8 @@
 // The executor contains all the business logic of actually making/executing HTTP requests.
 // Funneling all requests through this one class allows us to implement retry policies, error handling, etc.
 @interface AZSExecutor : NSObject <NSURLSessionDelegate, NSURLSessionTaskDelegate, NSURLSessionDataDelegate>
+
 +(void)ExecuteWithStorageCommand:(AZSStorageCommand *)storageCommand requestOptions:(AZSRequestOptions *)requestOptions operationContext:(AZSOperationContext *)operationContext completionHandler:(void (^)(NSError*, id))completionHandler;
++(void)ExecuteWithStorageCommand:(AZSStorageCommand *)storageCommand requestOptions:(AZSRequestOptions *)requestOptions operationContext:(AZSOperationContext *)operationContext downloadBuffer:(AZSStreamDownloadBuffer *)downloadBuffer completionHandler:(void (^)(NSError*, id))completionHandler;
+
 @end

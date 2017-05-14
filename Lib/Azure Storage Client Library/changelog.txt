@@ -1,8 +1,11 @@
+2017.XX.YY Version 0.3.0
+ * Added ability to generate an AZSBlobInputStream for downloading a blob.
+
 2017.05.07 Version 0.2.3
  * Added support for Getting Service Properties for blob service.
  * Added support for Setting Service Properties for blob service.
 
-2015.04.27 Version 0.2.0
+2015.XX.YY Version 0.2.0
  * Added support for the Storage Emulator to Account connection strings.
  * Added support for path-style URIs to the Blob service.
  * Renamed fetchAttributesWith* methods on AZSCloudBlob to downloadAttributesWith*.

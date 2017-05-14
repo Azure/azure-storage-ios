@@ -210,17 +210,13 @@
 {
     @autoreleasepool {
         NSRunLoop *runLoopForUpload = [NSRunLoop currentRunLoop];
-        BOOL __block blobFinished = NO;
+        __block BOOL blobFinished = NO;
+        __block NSError *error;
         
         // The blob will already exist in this case.
-        AZSBlobUploadHelper *blobUploadHelper = [[AZSBlobUploadHelper alloc] initToAppendBlob:inputContainer.targetBlob createNew:NO accessCondition:inputContainer.accessCondition requestOptions:inputContainer.blobRequestOptions operationContext:inputContainer.operationContext completionHandler:^(NSError * error) {
-            [inputContainer.sourceStream close];
-            [inputContainer.sourceStream removeFromRunLoop:runLoopForUpload forMode:NSDefaultRunLoopMode];
+        AZSBlobUploadHelper *blobUploadHelper = [[AZSBlobUploadHelper alloc] initToAppendBlob:inputContainer.targetBlob createNew:NO accessCondition:inputContainer.accessCondition requestOptions:inputContainer.blobRequestOptions operationContext:inputContainer.operationContext completionHandler:^(NSError * err) {
+            error = err;
             blobFinished = YES;
-            if (inputContainer.completionHandler)
-            {
-                inputContainer.completionHandler(error);
-            }
         }];
         
         [inputContainer.sourceStream setDelegate:blobUploadHelper];
@@ -237,6 +233,13 @@
                 NSDate *loopUntil = [NSDate dateWithTimeIntervalSinceNow:0.1];
                 runLoopSuccess = [runLoopForUpload runMode:NSDefaultRunLoopMode beforeDate:loopUntil];
             }
+        }
+        
+        [inputContainer.sourceStream close];
+        [inputContainer.sourceStream removeFromRunLoop:runLoopForUpload forMode:NSDefaultRunLoopMode];
+        if (inputContainer.completionHandler)
+        {
+            inputContainer.completionHandler(error);
         }
     }
 }

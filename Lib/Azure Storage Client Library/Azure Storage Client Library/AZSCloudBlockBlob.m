@@ -15,6 +15,7 @@
 // </copyright>
 // -----------------------------------------------------------------------------------------
 
+#import "AZSBlobProperties.h"
 #import "AZSCloudBlockBlob.h"
 #import "AZSStorageCommand.h"
 #import "AZSBlobRequestFactory.h"
@@ -24,10 +25,12 @@
 #import "AZSBlobRequestOptions.h"
 #import "AZSBlobRequestXML.h"
 #import "AZSBlobResponseParser.h"
+#import "AZSBlobInputStream.h"
 #import "AZSBlobOutputStream.h"
 #import "AZSResponseParser.h"
 #import "AZSBlobUploadHelper.h"
 #import "AZSUtil.h"
+#import "AZSEnums.h"
 #import "AZSErrors.h"
 #import "AZSStorageUri.h"
 #import "AZSBlobProperties.h"
@@ -95,14 +98,10 @@
     @autoreleasepool {
         NSRunLoop *runLoopForUpload = [NSRunLoop currentRunLoop];
         BOOL __block blobFinished = NO;
-        AZSBlobUploadHelper *blobUploadHelper = [[AZSBlobUploadHelper alloc] initToBlockBlob:inputContainer.targetBlob accessCondition:inputContainer.accessCondition requestOptions:inputContainer.blobRequestOptions operationContext:inputContainer.operationContext completionHandler:^(NSError * error) {
-            [inputContainer.sourceStream close];
-            [inputContainer.sourceStream removeFromRunLoop:runLoopForUpload forMode:NSDefaultRunLoopMode];
+        __block NSError *error;
+        AZSBlobUploadHelper *blobUploadHelper = [[AZSBlobUploadHelper alloc] initToBlockBlob:inputContainer.targetBlob accessCondition:inputContainer.accessCondition requestOptions:inputContainer.blobRequestOptions operationContext:inputContainer.operationContext completionHandler:^(NSError * err) {
+            error = err;
             blobFinished = YES;
-            if (inputContainer.completionHandler)
-            {
-                inputContainer.completionHandler(error);
-            }
         }];
         
         [inputContainer.sourceStream setDelegate:blobUploadHelper];
@@ -119,6 +118,13 @@
                 NSDate *loopUntil = [NSDate dateWithTimeIntervalSinceNow:0.1];
                 runLoopSuccess = [runLoopForUpload runMode:NSDefaultRunLoopMode beforeDate:loopUntil];
             }
+        }
+        
+        [inputContainer.sourceStream close];
+        [inputContainer.sourceStream removeFromRunLoop:runLoopForUpload forMode:NSDefaultRunLoopMode];
+        if (inputContainer.completionHandler)
+        {
+            inputContainer.completionHandler(error);
         }
     }
 }
