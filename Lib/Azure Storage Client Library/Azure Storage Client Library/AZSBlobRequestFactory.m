@@ -183,7 +183,7 @@
     return request;
 }
 
-+(NSMutableURLRequest *) putBlockBlobWithLength:(NSUInteger)length blobProperties:(AZSBlobProperties *)blobProperties contentMD5:(NSString *)contentMD5 cloudMetadata:(NSMutableDictionary *)cloudMetadata AccessCondition:(AZSAccessCondition *)accessCondition urlComponents:(NSURLComponents *)urlComponents timeout:(NSTimeInterval)timeout operationContext:(AZSOperationContext *)operationContext
++(NSMutableURLRequest *) putBlockBlobWithLength:(NSUInteger)length blobProperties:(AZSBlobProperties *)blobProperties contentMD5:(NSString *)contentMD5 cloudMetadata:(NSMutableDictionary *)cloudMetadata accessCondition:(AZSAccessCondition *)accessCondition urlComponents:(NSURLComponents *)urlComponents timeout:(NSTimeInterval)timeout operationContext:(AZSOperationContext *)operationContext
 {
     // TODO: IOS 8 - update this to use urlComponents.queryItems
     NSMutableURLRequest *request = [AZSRequestFactory putRequestWithUrlComponents:urlComponents timeout:timeout];
