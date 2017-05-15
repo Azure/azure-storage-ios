@@ -500,7 +500,9 @@
     
     [self createSamplePageDataWithDataArrays:dataArrays offsets:offsets];
     
-    AZSCloudPageBlob *pageBlob = [self.blobContainer pageBlobReferenceFromName:@"pageBlob"];
+    AZSCloudPageBlob *_pageBlob = [self.blobContainer pageBlobReferenceFromName:@"pageBlob"];
+    __weak AZSCloudPageBlob *pageBlob = _pageBlob;
+    
     [pageBlob createWithSize:totalBlobSize completionHandler:^(NSError *error) {
         XCTAssertNil(error, @"Error in blob creation.  Error code = %ld, error domain = %@, error userinfo = %@", (long)error.code, error.domain, error.userInfo);
         
