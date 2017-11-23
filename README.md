@@ -13,7 +13,7 @@ To use this library, you need the following:
 
 ### How to get started
 
-The recommended way to use the library is through a Cocoapod, available [here](https://cocoapods.org/pods/AZSClient).
+The recommended way to use the library is through a Cocoapod, available [here](https://cocoapods.org/pods/AZSClient). Reference documention is available [here](http://azure.github.io/azure-storage-ios/).
 
 #### Podfile
 ```ruby
