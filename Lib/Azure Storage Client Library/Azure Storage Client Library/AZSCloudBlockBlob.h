@@ -136,7 +136,7 @@ AZS_ASSUME_NONNULL_BEGIN
  |----------------|-------------|
  |NSError * | Nil if the operation succeeded without error, error with details about the failure otherwise.|
  */
--(void)uploadFromData:(NSData *)sourceData completionHandler:(void (^)(NSError* AZSNullable))completionHandler;
+-(void)uploadFromData:(NSData *)sourceData completionHandler:(void (^)(NSError* __AZSNullable))completionHandler;
 
 /** Uploads a blob from given source data.
  
