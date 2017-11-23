@@ -1,3 +1,9 @@
+2017.11.22 Version 0.2.5
+ * Fixed nullability issue on UploadFromData of AZSCloudBlockBlob.
+
+2017.05.11 Version 0.2.4
+ * This minor release added the header files related to get/set service properties to the main header AZSClient.h.
+
 2017.05.07 Version 0.2.3
  * Added support for Getting Service Properties for blob service.
  * Added support for Setting Service Properties for blob service.
