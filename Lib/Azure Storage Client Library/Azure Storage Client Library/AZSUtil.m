@@ -27,12 +27,14 @@
 +(NSDateFormatter *) dateFormatterWithFormat:(NSString *)format
 {
     static NSDateFormatter *df = nil;
-    if (!df) {
+
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
         df = [[NSDateFormatter alloc] init];
         [df setLocale:[[NSLocale alloc] initWithLocaleIdentifier:AZSCPosix]];
         [df setCalendar: [[NSCalendar alloc] initWithCalendarIdentifier:AZSGregorianCalendar]];
         [df setTimeZone:[NSTimeZone timeZoneWithName:AZSCUtc]];
-    }
+    });
     
     NSDateFormatter *dateFormat = [df copy];
     [dateFormat setDateFormat:format];
