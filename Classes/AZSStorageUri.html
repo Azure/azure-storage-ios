@@ -14,7 +14,7 @@
 		<div class="container" class="hide-in-xcode">
 			
 			<h1 id="library-title">
-				<a href="../index.html">Azure Storage Client Library for iOS 0.2.5 </a>
+				<a href="../index.html">Azure Storage Client Library for iOS 0.2.6 </a>
 			</h1>
 
 			<p id="developer-home">
@@ -130,102 +130,10 @@ used for read request against RA-GRS accounts if configured properly (functional
 						
 
 						
-						
+						<h2 class="task-title">Other Methods</h2>
 
 						<div class="task-list">
 							<div class="section-method">
-	<a name="//api/name/primaryUri" title="primaryUri"></a>
-	<h3 class="method-title"><code><a href="#//api/name/primaryUri">&nbsp;&nbsp;primaryUri</a></code>
-</h3>
-
-	<div class="method-info">
-		<div class="pointy-thing"></div>
-
-		<div class="method-info-container">
-			
-			
-			<div class="method-subsection brief-description">
-				<p>The primary URL of the Storage Service for this account.</p>
-			</div>
-			
-		    
-
-			<div class="method-subsection method-declaration"><code>@property (copy) NSURL *primaryUri</code></div>
-
-		    
-			
-
-			
-
-			
-
-			
-			<div class="method-subsection discussion-section">
-				<h4 class="method-subtitle">Discussion</h4>
-				<p>The primary URL of the Storage Service for this account.</p>
-			</div>
-			
-
-			
-
-			
-
-			
-			<div class="method-subsection declared-in-section">
-				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">AZSStorageUri.h</code></p>
-			</div>
-			
-			
-		</div>
-	</div>
-</div><div class="section-method">
-	<a name="//api/name/secondaryUri" title="secondaryUri"></a>
-	<h3 class="method-title"><code><a href="#//api/name/secondaryUri">&nbsp;&nbsp;secondaryUri</a></code>
-</h3>
-
-	<div class="method-info">
-		<div class="pointy-thing"></div>
-
-		<div class="method-info-container">
-			
-			
-			<div class="method-subsection brief-description">
-				<p>The secondary URL of the Storage Service for this account.</p>
-			</div>
-			
-		    
-
-			<div class="method-subsection method-declaration"><code>@property (copy, AZSNullable) NSURL *secondaryUri</code></div>
-
-		    
-			
-
-			
-
-			
-
-			
-			<div class="method-subsection discussion-section">
-				<h4 class="method-subtitle">Discussion</h4>
-				<p>The secondary URL of the Storage Service for this account.</p>
-			</div>
-			
-
-			
-
-			
-
-			
-			<div class="method-subsection declared-in-section">
-				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">AZSStorageUri.h</code></p>
-			</div>
-			
-			
-		</div>
-	</div>
-</div><div class="section-method">
 	<a name="//api/name/appendToStorageUri:pathToAppend:" title="appendToStorageUri:pathToAppend:"></a>
 	<h3 class="method-title"><code><a href="#//api/name/appendToStorageUri:pathToAppend:">+&nbsp;appendToStorageUri:pathToAppend:</a></code>
 </h3>
@@ -377,7 +285,7 @@ primary and secondary URLs will be appended to.</p>
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>- (instancetype)initWithPrimaryUri:(NSURL *)<em>primaryUri</em> secondaryUri:(AZSNullable NSURL *)<em>secondaryUri</em></code></div>
+			<div class="method-subsection method-declaration"><code>- (instancetype)initWithPrimaryUri:(NSURL *)<em>primaryUri</em> secondaryUri:(NSURL *)<em>secondaryUri</em></code></div>
 
 		    
 			
@@ -445,7 +353,7 @@ primary and secondary URLs will be appended to.</p>
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>- (AZSNullable NSURL *)urlWithLocation:(AZSStorageLocation)<em>storageLocation</em></code></div>
+			<div class="method-subsection method-declaration"><code>- (NSURL *)urlWithLocation:(AZSStorageLocation)<em>storageLocation</em></code></div>
 
 		    
 			
@@ -494,6 +402,106 @@ primary and secondary URLs will be appended to.</p>
 </div>
 						</div>
 						
+
+						
+						<h2 class="task-title">Other Methods</h2>
+
+						<div class="task-list">
+							<div class="section-method">
+	<a name="//api/name/primaryUri" title="primaryUri"></a>
+	<h3 class="method-title"><code><a href="#//api/name/primaryUri">&nbsp;&nbsp;primaryUri</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>The primary URL of the Storage Service for this account.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (copy) NSURL *primaryUri</code></div>
+
+		    
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>The primary URL of the Storage Service for this account.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSStorageUri.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/secondaryUri" title="secondaryUri"></a>
+	<h3 class="method-title"><code><a href="#//api/name/secondaryUri">&nbsp;&nbsp;secondaryUri</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>The secondary URL of the Storage Service for this account.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (copy, AZSNullable) NSURL *secondaryUri</code></div>
+
+		    
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>The secondary URL of the Storage Service for this account.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSStorageUri.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div>
+						</div>
+						
 					</div>
 					
 					
@@ -506,7 +514,7 @@ primary and secondary URLs will be appended to.</p>
 				<footer>
 					<div class="footer-copyright">
 						
-						<p class="copyright">Copyright &copy; 2017 Microsoft. All rights reserved. Updated: 2017-11-22</p>
+						<p class="copyright">Copyright &copy; 2018 Microsoft. All rights reserved. Updated: 2018-03-07</p>
 						
 						
 						<p class="generator">Generated by <a href="http://appledoc.gentlebytes.com">appledoc 2.2.1 (build 1334)</a>.</p>

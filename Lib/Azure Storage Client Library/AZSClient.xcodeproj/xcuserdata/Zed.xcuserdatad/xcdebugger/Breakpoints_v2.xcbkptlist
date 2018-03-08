@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Bucket
+   type = "1"
+   version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Azure Storage Client LibraryTests/AZSCloudBlobClientTests.m"
+            timestampString = "542178762.954644"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "194"
+            endingLineNumber = "194"
+            landmarkName = "-testListContainersSegmentedPrefixDetailsAll"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__70-[AZSCloudBlobClientTests testListContainersSegmentedPrefixDetailsAll]_block_invoke_3"
+                  moduleName = "AZSClient"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/Zed/Documents/AZS/azure-storage-ios/Lib/Azure%20Storage%20Client%20Library/Azure%20Storage%20Client%20LibraryTests/AZSCloudBlobClientTests.m"
+                  timestampString = "542174129.7994159"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "194"
+                  endingLineNumber = "194"
+                  offsetFromSymbolStart = "1972">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__70-[AZSCloudBlobClientTests testListContainersSegmentedPrefixDetailsAll]_block_invoke_3"
+                  moduleName = "AZSClient"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/Zed/Documents/AZS/azure-storage-ios/Lib/Azure%20Storage%20Client%20Library/Azure%20Storage%20Client%20LibraryTests/AZSCloudBlobClientTests.m"
+                  timestampString = "542174129.802963"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "194"
+                  endingLineNumber = "194"
+                  offsetFromSymbolStart = "3900">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__70-[AZSCloudBlobClientTests testListContainersSegmentedPrefixDetailsAll]_block_invoke_3"
+                  moduleName = "AZSClient"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/Zed/Documents/AZS/azure-storage-ios/Lib/Azure%20Storage%20Client%20Library/Azure%20Storage%20Client%20LibraryTests/AZSCloudBlobClientTests.m"
+                  timestampString = "542174129.806519"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "194"
+                  endingLineNumber = "194"
+                  offsetFromSymbolStart = "4729">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__70-[AZSCloudBlobClientTests testListContainersSegmentedPrefixDetailsAll]_block_invoke_3"
+                  moduleName = "AZSClient"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/Zed/Documents/AZS/azure-storage-ios/Lib/Azure%20Storage%20Client%20Library/Azure%20Storage%20Client%20LibraryTests/AZSCloudBlobClientTests.m"
+                  timestampString = "542174129.810052"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "194"
+                  endingLineNumber = "194"
+                  offsetFromSymbolStart = "4847">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Azure Storage Client LibraryTests/AZSCloudBlobClientTests.m"
+            timestampString = "542178762.95495"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "293"
+            endingLineNumber = "293"
+            landmarkName = "-testListContainersSegmentedMaxResultsAndContinuationToken"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
+</Bucket>

@@ -14,7 +14,7 @@
 		<div class="container" class="hide-in-xcode">
 			
 			<h1 id="library-title">
-				<a href="../index.html">Azure Storage Client Library for iOS 0.2.5 </a>
+				<a href="../index.html">Azure Storage Client Library for iOS 0.2.6 </a>
 			</h1>
 
 			<p id="developer-home">
@@ -160,193 +160,6 @@
 
 						<div class="task-list">
 							<div class="section-method">
-	<a name="//api/name/uploadFromStream:completionHandler:" title="uploadFromStream:completionHandler:"></a>
-	<h3 class="method-title"><code><a href="#//api/name/uploadFromStream:completionHandler:">&ndash;&nbsp;uploadFromStream:completionHandler:</a></code>
-</h3>
-
-	<div class="method-info">
-		<div class="pointy-thing"></div>
-
-		<div class="method-info-container">
-			
-			
-			<div class="method-subsection brief-description">
-				<p>Uploades a blob from given source stream.</p>
-			</div>
-			
-		    
-
-			<div class="method-subsection method-declaration"><code>- (void)uploadFromStream:(NSInputStream *)<em>sourceStream</em> completionHandler:(void ( ^ ) ( NSError *__AZSNullable ))<em>completionHandler</em></code></div>
-
-		    
-			
-			<div class="method-subsection arguments-section parameters">
-				<h4 class="method-subtitle parameter-title">Parameters</h4>
-				<table class="argument-def parameter-def">
-				
-					<tr>
-						<th scope="row" class="argument-name"><code>sourceStream</code></th>
-						<td><p>The stream containing the data that the blob should contain.</p></td>
-					</tr>
-				
-					<tr>
-						<th scope="row" class="argument-name"><code>completionHandler</code></th>
-						<td><p>The block of code to execute when the upload call completes.</p>
-
-<table>
-<thead>
-<tr>
-<th> Parameter name </th>
-<th> Description </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>NSError * </td>
-<td> Nil if the operation succeeded without error, error with details about the failure otherwise.</td>
-</tr>
-</tbody>
-</table>
-</td>
-					</tr>
-				
-				</table>
-			</div>
-			
-
-			
-
-			
-
-			
-			<div class="method-subsection discussion-section">
-				<h4 class="method-subtitle">Discussion</h4>
-				<p>Uploades a blob from given source stream.</p>
-
-<p>This operation will schedule the input sourceStream on a runloop (created in a new thread), and read in all data as long as it is able.  This will
-chunk the data into blocks, and upload each of those blocks to the service.  Finally, when the stream is finished, it will upload a block list
-consisting of all read data.</p>
-
-<p>No more than one block&rsquo;s worth of data will be uploaded at a time.  Block size is configurable in the <a href="../Classes/AZSBlobRequestOptions.html">AZSBlobRequestOptions</a> (see – <a href="#//api/name/uploadFromStream:accessCondition:requestOptions:operationContext:completionHandler:">uploadFromStream:accessCondition:requestOptions:operationContext:completionHandler:</a>).  Maximum
-number of outstanding downloads is also configurable in the <a href="../Classes/AZSBlobRequestOptions.html">AZSBlobRequestOptions</a>.</p>
-			</div>
-			
-
-			
-
-			
-
-			
-			<div class="method-subsection declared-in-section">
-				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">AZSCloudBlockBlob.h</code></p>
-			</div>
-			
-			
-		</div>
-	</div>
-</div><div class="section-method">
-	<a name="//api/name/uploadFromStream:accessCondition:requestOptions:operationContext:completionHandler:" title="uploadFromStream:accessCondition:requestOptions:operationContext:completionHandler:"></a>
-	<h3 class="method-title"><code><a href="#//api/name/uploadFromStream:accessCondition:requestOptions:operationContext:completionHandler:">&ndash;&nbsp;uploadFromStream:accessCondition:requestOptions:operationContext:completionHandler:</a></code>
-</h3>
-
-	<div class="method-info">
-		<div class="pointy-thing"></div>
-
-		<div class="method-info-container">
-			
-			
-			<div class="method-subsection brief-description">
-				<p>Uploades a blob from given source stream.</p>
-			</div>
-			
-		    
-
-			<div class="method-subsection method-declaration"><code>- (void)uploadFromStream:(NSInputStream *)<em>sourceStream</em> accessCondition:(AZSNullable AZSAccessCondition *)<em>accessCondition</em> requestOptions:(AZSNullable AZSBlobRequestOptions *)<em>requestOptions</em> operationContext:(AZSNullable AZSOperationContext *)<em>operationContext</em> completionHandler:(void ( ^ ) ( NSError *__AZSNullable ))<em>completionHandler</em></code></div>
-
-		    
-			
-			<div class="method-subsection arguments-section parameters">
-				<h4 class="method-subtitle parameter-title">Parameters</h4>
-				<table class="argument-def parameter-def">
-				
-					<tr>
-						<th scope="row" class="argument-name"><code>sourceStream</code></th>
-						<td><p>The stream containing the data that the blob should contain.</p></td>
-					</tr>
-				
-					<tr>
-						<th scope="row" class="argument-name"><code>accessCondition</code></th>
-						<td><p>The access condition for the request.</p></td>
-					</tr>
-				
-					<tr>
-						<th scope="row" class="argument-name"><code>requestOptions</code></th>
-						<td><p>The options to use for the request.</p></td>
-					</tr>
-				
-					<tr>
-						<th scope="row" class="argument-name"><code>operationContext</code></th>
-						<td><p>The operation context to use for the call.</p></td>
-					</tr>
-				
-					<tr>
-						<th scope="row" class="argument-name"><code>completionHandler</code></th>
-						<td><p>The block of code to execute when the upload call completes.</p>
-
-<table>
-<thead>
-<tr>
-<th> Parameter name </th>
-<th> Description </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>NSError * </td>
-<td> Nil if the operation succeeded without error, error with details about the failure otherwise.</td>
-</tr>
-</tbody>
-</table>
-</td>
-					</tr>
-				
-				</table>
-			</div>
-			
-
-			
-
-			
-
-			
-			<div class="method-subsection discussion-section">
-				<h4 class="method-subtitle">Discussion</h4>
-				<p>Uploades a blob from given source stream.</p>
-
-<p>This operation will schedule the input sourceStream on a runloop (created in a new thread), and read in all data as long as it is able.  This will
-chunk the data into blocks, and upload each of those blocks to the service.  Finally, when the stream is finished, it will upload a block list
-consisting of all read data.</p>
-
-<p>No more than one block&rsquo;s worth of data will be uploaded at a time.  Block size is configurable in the <a href="../Classes/AZSBlobRequestOptions.html">AZSBlobRequestOptions</a>.  Maximum
-number of outstanding downloads is also configurable in the <a href="../Classes/AZSBlobRequestOptions.html">AZSBlobRequestOptions</a>.</p>
-			</div>
-			
-
-			
-
-			
-
-			
-			<div class="method-subsection declared-in-section">
-				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">AZSCloudBlockBlob.h</code></p>
-			</div>
-			
-			
-		</div>
-	</div>
-</div><div class="section-method">
 	<a name="//api/name/initWithUrl:error:" title="initWithUrl:error:"></a>
 	<h3 class="method-title"><code><a href="#//api/name/initWithUrl:error:">&ndash;&nbsp;initWithUrl:error:</a></code>
 </h3>
@@ -431,7 +244,7 @@ number of outstanding downloads is also configurable in the <a href="../Classes/
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>- (instancetype)initWithUrl:(NSURL *)<em>blobAbsoluteUrl</em> credentials:(AZSNullable AZSStorageCredentials *)<em>credentials</em> snapshotTime:(AZSNullable NSString *)<em>snapshotTime</em> error:(NSError **)<em>error</em></code></div>
+			<div class="method-subsection method-declaration"><code>- (instancetype)initWithUrl:(NSURL *)<em>blobAbsoluteUrl</em> credentials:(AZSStorageCredentials *)<em>credentials</em> snapshotTime:(NSString *)<em>snapshotTime</em> error:(NSError **)<em>error</em></code></div>
 
 		    
 			
@@ -577,7 +390,7 @@ number of outstanding downloads is also configurable in the <a href="../Classes/
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>- (instancetype)initWithStorageUri:(AZSStorageUri *)<em>blobAbsoluteUri</em> credentials:(AZSNullable AZSStorageCredentials *)<em>credentials</em> snapshotTime:(AZSNullable NSString *)<em>snapshotTime</em> error:(NSError **)<em>error</em></code></div>
+			<div class="method-subsection method-declaration"><code>- (instancetype)initWithStorageUri:(AZSStorageUri *)<em>blobAbsoluteUri</em> credentials:(AZSStorageCredentials *)<em>credentials</em> snapshotTime:(NSString *)<em>snapshotTime</em> error:(NSError **)<em>error</em></code></div>
 
 		    
 			
@@ -723,7 +536,7 @@ number of outstanding downloads is also configurable in the <a href="../Classes/
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>- (instancetype)initWithContainer:(AZSCloudBlobContainer *)<em>blobContainer</em> name:(NSString *)<em>blobName</em> snapshotTime:(AZSNullable NSString *)<em>snapshotTime</em></code></div>
+			<div class="method-subsection method-declaration"><code>- (instancetype)initWithContainer:(AZSCloudBlobContainer *)<em>blobContainer</em> name:(NSString *)<em>blobName</em> snapshotTime:(NSString *)<em>snapshotTime</em></code></div>
 
 		    
 			
@@ -780,6 +593,193 @@ number of outstanding downloads is also configurable in the <a href="../Classes/
 		</div>
 	</div>
 </div><div class="section-method">
+	<a name="//api/name/uploadFromStream:completionHandler:" title="uploadFromStream:completionHandler:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/uploadFromStream:completionHandler:">&ndash;&nbsp;uploadFromStream:completionHandler:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Uploades a blob from given source stream.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)uploadFromStream:(NSInputStream *)<em>sourceStream</em> completionHandler:(void ( ^ ) ( NSError *__AZSNullable ))<em>completionHandler</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>sourceStream</code></th>
+						<td><p>The stream containing the data that the blob should contain.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>completionHandler</code></th>
+						<td><p>The block of code to execute when the upload call completes.</p>
+
+<table>
+<thead>
+<tr>
+<th> Parameter name </th>
+<th> Description </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>NSError * </td>
+<td> Nil if the operation succeeded without error, error with details about the failure otherwise.</td>
+</tr>
+</tbody>
+</table>
+</td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Uploades a blob from given source stream.</p>
+
+<p>This operation will schedule the input sourceStream on a runloop (created in a new thread), and read in all data as long as it is able.  This will
+chunk the data into blocks, and upload each of those blocks to the service.  Finally, when the stream is finished, it will upload a block list
+consisting of all read data.</p>
+
+<p>No more than one block&rsquo;s worth of data will be uploaded at a time.  Block size is configurable in the <a href="../Classes/AZSBlobRequestOptions.html">AZSBlobRequestOptions</a> (see – <a href="#//api/name/uploadFromStream:accessCondition:requestOptions:operationContext:completionHandler:">uploadFromStream:accessCondition:requestOptions:operationContext:completionHandler:</a>).  Maximum
+number of outstanding downloads is also configurable in the <a href="../Classes/AZSBlobRequestOptions.html">AZSBlobRequestOptions</a>.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudBlockBlob.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/uploadFromStream:accessCondition:requestOptions:operationContext:completionHandler:" title="uploadFromStream:accessCondition:requestOptions:operationContext:completionHandler:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/uploadFromStream:accessCondition:requestOptions:operationContext:completionHandler:">&ndash;&nbsp;uploadFromStream:accessCondition:requestOptions:operationContext:completionHandler:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Uploades a blob from given source stream.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)uploadFromStream:(NSInputStream *)<em>sourceStream</em> accessCondition:(AZSAccessCondition *)<em>accessCondition</em> requestOptions:(AZSBlobRequestOptions *)<em>requestOptions</em> operationContext:(AZSOperationContext *)<em>operationContext</em> completionHandler:(void ( ^ ) ( NSError *))<em>completionHandler</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>sourceStream</code></th>
+						<td><p>The stream containing the data that the blob should contain.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>accessCondition</code></th>
+						<td><p>The access condition for the request.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>requestOptions</code></th>
+						<td><p>The options to use for the request.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>operationContext</code></th>
+						<td><p>The operation context to use for the call.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>completionHandler</code></th>
+						<td><p>The block of code to execute when the upload call completes.</p>
+
+<table>
+<thead>
+<tr>
+<th> Parameter name </th>
+<th> Description </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>NSError * </td>
+<td> Nil if the operation succeeded without error, error with details about the failure otherwise.</td>
+</tr>
+</tbody>
+</table>
+</td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Uploades a blob from given source stream.</p>
+
+<p>This operation will schedule the input sourceStream on a runloop (created in a new thread), and read in all data as long as it is able.  This will
+chunk the data into blocks, and upload each of those blocks to the service.  Finally, when the stream is finished, it will upload a block list
+consisting of all read data.</p>
+
+<p>No more than one block&rsquo;s worth of data will be uploaded at a time.  Block size is configurable in the <a href="../Classes/AZSBlobRequestOptions.html">AZSBlobRequestOptions</a>.  Maximum
+number of outstanding downloads is also configurable in the <a href="../Classes/AZSBlobRequestOptions.html">AZSBlobRequestOptions</a>.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudBlockBlob.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
 	<a name="//api/name/uploadFromData:completionHandler:" title="uploadFromData:completionHandler:"></a>
 	<h3 class="method-title"><code><a href="#//api/name/uploadFromData:completionHandler:">&ndash;&nbsp;uploadFromData:completionHandler:</a></code>
 </h3>
@@ -796,7 +796,7 @@ number of outstanding downloads is also configurable in the <a href="../Classes/
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>- (void)uploadFromData:(NSData *)<em>sourceData</em> completionHandler:(void ( ^ ) ( NSError *__AZSNullable ))<em>completionHandler</em></code></div>
+			<div class="method-subsection method-declaration"><code>- (void)uploadFromData:(NSData *)<em>sourceData</em> completionHandler:(void ( ^ ) ( NSError *))<em>completionHandler</em></code></div>
 
 		    
 			
@@ -878,7 +878,7 @@ already in the blob on the service, unless protected with an appropriate <a href
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>- (void)uploadFromData:(NSData *)<em>sourceData</em> accessCondition:(AZSNullable AZSAccessCondition *)<em>accessCondition</em> requestOptions:(AZSNullable AZSBlobRequestOptions *)<em>requestOptions</em> operationContext:(AZSNullable AZSOperationContext *)<em>operationContext</em> completionHandler:(void ( ^ ) ( NSError *__AZSNullable ))<em>completionHandler</em></code></div>
+			<div class="method-subsection method-declaration"><code>- (void)uploadFromData:(NSData *)<em>sourceData</em> accessCondition:(AZSAccessCondition *)<em>accessCondition</em> requestOptions:(AZSBlobRequestOptions *)<em>requestOptions</em> operationContext:(AZSOperationContext *)<em>operationContext</em> completionHandler:(void ( ^ ) ( NSError *))<em>completionHandler</em></code></div>
 
 		    
 			
@@ -959,6 +959,547 @@ already in the blob on the service, unless protected with an appropriate <a href
 		</div>
 	</div>
 </div><div class="section-method">
+	<a name="//api/name/uploadFromText:completionHandler:" title="uploadFromText:completionHandler:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/uploadFromText:completionHandler:">&ndash;&nbsp;uploadFromText:completionHandler:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Uploads a blob from given source text.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)uploadFromText:(NSString *)<em>textToUpload</em> completionHandler:(void ( ^ ) ( NSError *))<em>completionHandler</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>textToUpload</code></th>
+						<td><p>The text that the blob should contain.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>completionHandler</code></th>
+						<td><p>The block of code to execute when the upload call completes.</p>
+
+<table>
+<thead>
+<tr>
+<th> Parameter name </th>
+<th> Description </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>NSError * </td>
+<td> Nil if the operation succeeded without error, error with details about the failure otherwise.</td>
+</tr>
+</tbody>
+</table>
+</td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Uploads a blob from given source text.</p>
+
+<p>UploadFromText encodes the input text as UTF-8 and then uploads it to the blob on the service.  This operation will overwrite any data
+already in the blob on the service, unless protected with an appropriate <a href="../Classes/AZSAccessCondition.html">AZSAccessCondition</a>.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudBlockBlob.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/uploadFromText:accessCondition:requestOptions:operationContext:completionHandler:" title="uploadFromText:accessCondition:requestOptions:operationContext:completionHandler:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/uploadFromText:accessCondition:requestOptions:operationContext:completionHandler:">&ndash;&nbsp;uploadFromText:accessCondition:requestOptions:operationContext:completionHandler:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Uploads a blob from given source text.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)uploadFromText:(NSString *)<em>textToUpload</em> accessCondition:(AZSAccessCondition *)<em>accessCondition</em> requestOptions:(AZSBlobRequestOptions *)<em>requestOptions</em> operationContext:(AZSOperationContext *)<em>operationContext</em> completionHandler:(void ( ^ ) ( NSError *))<em>completionHandler</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>textToUpload</code></th>
+						<td><p>The text that the blob should contain.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>accessCondition</code></th>
+						<td><p>The access condition for the request.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>requestOptions</code></th>
+						<td><p>The options to use for the request.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>operationContext</code></th>
+						<td><p>The operation context to use for the call.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>completionHandler</code></th>
+						<td><p>The block of code to execute when the upload call completes.</p>
+
+<table>
+<thead>
+<tr>
+<th> Parameter name </th>
+<th> Description </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>NSError * </td>
+<td> Nil if the operation succeeded without error, error with details about the failure otherwise.</td>
+</tr>
+</tbody>
+</table>
+</td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Uploads a blob from given source text.</p>
+
+<p>UploadFromText encodes the input text as UTF-8 and then uploads it to the blob on the service.  This operation will overwrite any data
+already in the blob on the service, unless protected with an appropriate <a href="../Classes/AZSAccessCondition.html">AZSAccessCondition</a>.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudBlockBlob.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/uploadFromFileWithPath:completionHandler:" title="uploadFromFileWithPath:completionHandler:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/uploadFromFileWithPath:completionHandler:">&ndash;&nbsp;uploadFromFileWithPath:completionHandler:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Uploads a blob from given source file.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)uploadFromFileWithPath:(NSString *)<em>filePath</em> completionHandler:(void ( ^ ) ( NSError *))<em>completionHandler</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>filePath</code></th>
+						<td><p>The path to the file containing the data that the blob should contain.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>completionHandler</code></th>
+						<td><p>The block of code to execute when the upload call completes.</p>
+
+<table>
+<thead>
+<tr>
+<th> Parameter name </th>
+<th> Description </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>NSError * </td>
+<td> Nil if the operation succeeded without error, error with details about the failure otherwise.</td>
+</tr>
+</tbody>
+</table>
+</td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Uploads a blob from given source file.</p>
+
+<p>UploadFromText loads an the input file and uploads the contents of that file to the service.  Contents will not be
+read all at once, but instead in a streaming fashion.  This operation will overwrite any data
+already in the blob on the service, unless protected with an appropriate <a href="../Classes/AZSAccessCondition.html">AZSAccessCondition</a>.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudBlockBlob.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/uploadFromFileWithPath:accessCondition:requestOptions:operationContext:completionHandler:" title="uploadFromFileWithPath:accessCondition:requestOptions:operationContext:completionHandler:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/uploadFromFileWithPath:accessCondition:requestOptions:operationContext:completionHandler:">&ndash;&nbsp;uploadFromFileWithPath:accessCondition:requestOptions:operationContext:completionHandler:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Uploads a blob from given source file.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)uploadFromFileWithPath:(NSString *)<em>filePath</em> accessCondition:(AZSAccessCondition *)<em>accessCondition</em> requestOptions:(AZSBlobRequestOptions *)<em>requestOptions</em> operationContext:(AZSOperationContext *)<em>operationContext</em> completionHandler:(void ( ^ ) ( NSError *))<em>completionHandler</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>filePath</code></th>
+						<td><p>The path to the file containing the data that the blob should contain.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>accessCondition</code></th>
+						<td><p>The access condition for the request.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>requestOptions</code></th>
+						<td><p>The options to use for the request.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>operationContext</code></th>
+						<td><p>The operation context to use for the call.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>completionHandler</code></th>
+						<td><p>The block of code to execute when the upload call completes.</p>
+
+<table>
+<thead>
+<tr>
+<th> Parameter name </th>
+<th> Description </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>NSError * </td>
+<td> Nil if the operation succeeded without error, error with details about the failure otherwise.</td>
+</tr>
+</tbody>
+</table>
+</td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Uploads a blob from given source file.</p>
+
+<p>UploadFromText loads an the input file and uploads the contents of that file to the service.  Contents will not be
+read all at once, but instead in a streaming fashion.  This operation will overwrite any data
+already in the blob on the service, unless protected with an appropriate <a href="../Classes/AZSAccessCondition.html">AZSAccessCondition</a>.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudBlockBlob.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/uploadFromFileWithURL:completionHandler:" title="uploadFromFileWithURL:completionHandler:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/uploadFromFileWithURL:completionHandler:">&ndash;&nbsp;uploadFromFileWithURL:completionHandler:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Uploads a blob from given source file.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)uploadFromFileWithURL:(NSURL *)<em>fileURL</em> completionHandler:(void ( ^ ) ( NSError *))<em>completionHandler</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>fileURL</code></th>
+						<td><p>The URL to the file containing the data that the blob should contain.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>completionHandler</code></th>
+						<td><p>The block of code to execute when the upload call completes.</p>
+
+<table>
+<thead>
+<tr>
+<th> Parameter name </th>
+<th> Description </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>NSError * </td>
+<td> Nil if the operation succeeded without error, error with details about the failure otherwise.</td>
+</tr>
+</tbody>
+</table>
+</td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Uploads a blob from given source file.</p>
+
+<p>UploadFromText loads an the input file and uploads the contents of that file to the service.  Contents will not be
+read all at once, but instead in a streaming fashion.  This operation will overwrite any data
+already in the blob on the service, unless protected with an appropriate <a href="../Classes/AZSAccessCondition.html">AZSAccessCondition</a>.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudBlockBlob.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/uploadFromFileWithURL:accessCondition:requestOptions:operationContext:completionHandler:" title="uploadFromFileWithURL:accessCondition:requestOptions:operationContext:completionHandler:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/uploadFromFileWithURL:accessCondition:requestOptions:operationContext:completionHandler:">&ndash;&nbsp;uploadFromFileWithURL:accessCondition:requestOptions:operationContext:completionHandler:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Uploads a blob from given source file.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)uploadFromFileWithURL:(NSURL *)<em>fileURL</em> accessCondition:(AZSAccessCondition *)<em>accessCondition</em> requestOptions:(AZSBlobRequestOptions *)<em>requestOptions</em> operationContext:(AZSOperationContext *)<em>operationContext</em> completionHandler:(void ( ^ ) ( NSError *))<em>completionHandler</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>fileURL</code></th>
+						<td><p>The URL to the file containing the data that the blob should contain.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>accessCondition</code></th>
+						<td><p>The access condition for the request.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>requestOptions</code></th>
+						<td><p>The options to use for the request.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>operationContext</code></th>
+						<td><p>The operation context to use for the call.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>completionHandler</code></th>
+						<td><p>The block of code to execute when the upload call completes.</p>
+
+<table>
+<thead>
+<tr>
+<th> Parameter name </th>
+<th> Description </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>NSError * </td>
+<td> Nil if the operation succeeded without error, error with details about the failure otherwise.</td>
+</tr>
+</tbody>
+</table>
+</td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Uploads a blob from given source file.</p>
+
+<p>UploadFromText loads an the input file and uploads the contents of that file to the service.  Contents will not be
+read all at once, but instead in a streaming fashion.  This operation will overwrite any data
+already in the blob on the service, unless protected with an appropriate <a href="../Classes/AZSAccessCondition.html">AZSAccessCondition</a>.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSCloudBlockBlob.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
 	<a name="//api/name/uploadBlockFromData:blockID:completionHandler:" title="uploadBlockFromData:blockID:completionHandler:"></a>
 	<h3 class="method-title"><code><a href="#//api/name/uploadBlockFromData:blockID:completionHandler:">&ndash;&nbsp;uploadBlockFromData:blockID:completionHandler:</a></code>
 </h3>
@@ -975,7 +1516,7 @@ already in the blob on the service, unless protected with an appropriate <a href
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>- (void)uploadBlockFromData:(NSData *)<em>sourceData</em> blockID:(NSString *)<em>blockID</em> completionHandler:(void ( ^ ) ( NSError *__AZSNullable ))<em>completionHandler</em></code></div>
+			<div class="method-subsection method-declaration"><code>- (void)uploadBlockFromData:(NSData *)<em>sourceData</em> blockID:(NSString *)<em>blockID</em> completionHandler:(void ( ^ ) ( NSError *))<em>completionHandler</em></code></div>
 
 		    
 			
@@ -1064,7 +1605,7 @@ be considered part of the blob) until a corresponding uploadBlockList call.</p>
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>- (void)uploadBlockFromData:(NSData *)<em>sourceData</em> blockID:(NSString *)<em>blockID</em> contentMD5:(AZSNullable NSString *)<em>contentMD5</em> accessCondition:(AZSNullable AZSAccessCondition *)<em>accessCondition</em> requestOptions:(AZSNullable AZSBlobRequestOptions *)<em>requestOptions</em> operationContext:(AZSNullable AZSOperationContext *)<em>operationContext</em> completionHandler:(void ( ^ ) ( NSError *__AZSNullable ))<em>completionHandler</em></code></div>
+			<div class="method-subsection method-declaration"><code>- (void)uploadBlockFromData:(NSData *)<em>sourceData</em> blockID:(NSString *)<em>blockID</em> contentMD5:(NSString *)<em>contentMD5</em> accessCondition:(AZSAccessCondition *)<em>accessCondition</em> requestOptions:(AZSBlobRequestOptions *)<em>requestOptions</em> operationContext:(AZSOperationContext *)<em>operationContext</em> completionHandler:(void ( ^ ) ( NSError *))<em>completionHandler</em></code></div>
 
 		    
 			
@@ -1175,7 +1716,7 @@ be considered part of the blob) until a corresponding uploadBlockList call.</p>
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>- (void)uploadBlockListFromArray:(NSArray *)<em>blockList</em> completionHandler:(void ( ^ ) ( NSError *__AZSNullable ))<em>completionHandler</em></code></div>
+			<div class="method-subsection method-declaration"><code>- (void)uploadBlockListFromArray:(NSArray *)<em>blockList</em> completionHandler:(void ( ^ ) ( NSError *))<em>completionHandler</em></code></div>
 
 		    
 			
@@ -1257,7 +1798,7 @@ the data in the blob, in order.</p>
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>- (void)uploadBlockListFromArray:(NSArray *)<em>blockList</em> accessCondition:(AZSNullable AZSAccessCondition *)<em>accessCondition</em> requestOptions:(AZSNullable AZSBlobRequestOptions *)<em>requestOptions</em> operationContext:(AZSNullable AZSOperationContext *)<em>operationContext</em> completionHandler:(void ( ^ ) ( NSError *__AZSNullable ))<em>completionHandler</em></code></div>
+			<div class="method-subsection method-declaration"><code>- (void)uploadBlockListFromArray:(NSArray *)<em>blockList</em> accessCondition:(AZSAccessCondition *)<em>accessCondition</em> requestOptions:(AZSBlobRequestOptions *)<em>requestOptions</em> operationContext:(AZSOperationContext *)<em>operationContext</em> completionHandler:(void ( ^ ) ( NSError *))<em>completionHandler</em></code></div>
 
 		    
 			
@@ -1354,7 +1895,7 @@ the data in the blob, in order.</p>
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>- (void)downloadBlockListFromFilter:(AZSBlockListFilter)<em>blockListFilter</em> completionHandler:(void ( ^ ) ( NSError *__AZSNullable , NSArray *__AZSNullable ))<em>completionHandler</em></code></div>
+			<div class="method-subsection method-declaration"><code>- (void)downloadBlockListFromFilter:(AZSBlockListFilter)<em>blockListFilter</em> completionHandler:(void ( ^ ) ( NSError *, NSArray *))<em>completionHandler</em></code></div>
 
 		    
 			
@@ -1442,7 +1983,7 @@ many blocks.</p>
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>- (void)downloadBlockListFromFilter:(AZSBlockListFilter)<em>blockListFilter</em> accessCondition:(AZSNullable AZSAccessCondition *)<em>accessCondition</em> requestOptions:(AZSNullable AZSBlobRequestOptions *)<em>requestOptions</em> operationContext:(AZSNullable AZSOperationContext *)<em>operationContext</em> completionHandler:(void ( ^ ) ( NSError *__AZSNullable , NSArray *__AZSNullable ))<em>completionHandler</em></code></div>
+			<div class="method-subsection method-declaration"><code>- (void)downloadBlockListFromFilter:(AZSBlockListFilter)<em>blockListFilter</em> accessCondition:(AZSAccessCondition *)<em>accessCondition</em> requestOptions:(AZSBlobRequestOptions *)<em>requestOptions</em> operationContext:(AZSOperationContext *)<em>operationContext</em> completionHandler:(void ( ^ ) ( NSError *, NSArray *))<em>completionHandler</em></code></div>
 
 		    
 			
@@ -1599,7 +2140,7 @@ many blocks.</p>
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>- (AZSBlobOutputStream *)createOutputStreamWithAccessCondition:(AZSNullable AZSAccessCondition *)<em>accessCondition</em> requestOptions:(AZSNullable AZSBlobRequestOptions *)<em>requestOptions</em> operationContext:(AZSNullable AZSOperationContext *)<em>operationContext</em></code></div>
+			<div class="method-subsection method-declaration"><code>- (AZSBlobOutputStream *)createOutputStreamWithAccessCondition:(AZSAccessCondition *)<em>accessCondition</em> requestOptions:(AZSBlobRequestOptions *)<em>requestOptions</em> operationContext:(AZSOperationContext *)<em>operationContext</em></code></div>
 
 		    
 			
@@ -1658,547 +2199,6 @@ many blocks.</p>
 			
 		</div>
 	</div>
-</div><div class="section-method">
-	<a name="//api/name/uploadFromText:completionHandler:" title="uploadFromText:completionHandler:"></a>
-	<h3 class="method-title"><code><a href="#//api/name/uploadFromText:completionHandler:">&ndash;&nbsp;uploadFromText:completionHandler:</a></code>
-</h3>
-
-	<div class="method-info">
-		<div class="pointy-thing"></div>
-
-		<div class="method-info-container">
-			
-			
-			<div class="method-subsection brief-description">
-				<p>Uploads a blob from given source text.</p>
-			</div>
-			
-		    
-
-			<div class="method-subsection method-declaration"><code>- (void)uploadFromText:(NSString *)<em>textToUpload</em> completionHandler:(void ( ^ ) ( NSError *__AZSNullable ))<em>completionHandler</em></code></div>
-
-		    
-			
-			<div class="method-subsection arguments-section parameters">
-				<h4 class="method-subtitle parameter-title">Parameters</h4>
-				<table class="argument-def parameter-def">
-				
-					<tr>
-						<th scope="row" class="argument-name"><code>textToUpload</code></th>
-						<td><p>The text that the blob should contain.</p></td>
-					</tr>
-				
-					<tr>
-						<th scope="row" class="argument-name"><code>completionHandler</code></th>
-						<td><p>The block of code to execute when the upload call completes.</p>
-
-<table>
-<thead>
-<tr>
-<th> Parameter name </th>
-<th> Description </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>NSError * </td>
-<td> Nil if the operation succeeded without error, error with details about the failure otherwise.</td>
-</tr>
-</tbody>
-</table>
-</td>
-					</tr>
-				
-				</table>
-			</div>
-			
-
-			
-
-			
-
-			
-			<div class="method-subsection discussion-section">
-				<h4 class="method-subtitle">Discussion</h4>
-				<p>Uploads a blob from given source text.</p>
-
-<p>UploadFromText encodes the input text as UTF-8 and then uploads it to the blob on the service.  This operation will overwrite any data
-already in the blob on the service, unless protected with an appropriate <a href="../Classes/AZSAccessCondition.html">AZSAccessCondition</a>.</p>
-			</div>
-			
-
-			
-
-			
-
-			
-			<div class="method-subsection declared-in-section">
-				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">AZSCloudBlockBlob.h</code></p>
-			</div>
-			
-			
-		</div>
-	</div>
-</div><div class="section-method">
-	<a name="//api/name/uploadFromText:accessCondition:requestOptions:operationContext:completionHandler:" title="uploadFromText:accessCondition:requestOptions:operationContext:completionHandler:"></a>
-	<h3 class="method-title"><code><a href="#//api/name/uploadFromText:accessCondition:requestOptions:operationContext:completionHandler:">&ndash;&nbsp;uploadFromText:accessCondition:requestOptions:operationContext:completionHandler:</a></code>
-</h3>
-
-	<div class="method-info">
-		<div class="pointy-thing"></div>
-
-		<div class="method-info-container">
-			
-			
-			<div class="method-subsection brief-description">
-				<p>Uploads a blob from given source text.</p>
-			</div>
-			
-		    
-
-			<div class="method-subsection method-declaration"><code>- (void)uploadFromText:(NSString *)<em>textToUpload</em> accessCondition:(AZSNullable AZSAccessCondition *)<em>accessCondition</em> requestOptions:(AZSNullable AZSBlobRequestOptions *)<em>requestOptions</em> operationContext:(AZSNullable AZSOperationContext *)<em>operationContext</em> completionHandler:(void ( ^ ) ( NSError *__AZSNullable ))<em>completionHandler</em></code></div>
-
-		    
-			
-			<div class="method-subsection arguments-section parameters">
-				<h4 class="method-subtitle parameter-title">Parameters</h4>
-				<table class="argument-def parameter-def">
-				
-					<tr>
-						<th scope="row" class="argument-name"><code>textToUpload</code></th>
-						<td><p>The text that the blob should contain.</p></td>
-					</tr>
-				
-					<tr>
-						<th scope="row" class="argument-name"><code>accessCondition</code></th>
-						<td><p>The access condition for the request.</p></td>
-					</tr>
-				
-					<tr>
-						<th scope="row" class="argument-name"><code>requestOptions</code></th>
-						<td><p>The options to use for the request.</p></td>
-					</tr>
-				
-					<tr>
-						<th scope="row" class="argument-name"><code>operationContext</code></th>
-						<td><p>The operation context to use for the call.</p></td>
-					</tr>
-				
-					<tr>
-						<th scope="row" class="argument-name"><code>completionHandler</code></th>
-						<td><p>The block of code to execute when the upload call completes.</p>
-
-<table>
-<thead>
-<tr>
-<th> Parameter name </th>
-<th> Description </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>NSError * </td>
-<td> Nil if the operation succeeded without error, error with details about the failure otherwise.</td>
-</tr>
-</tbody>
-</table>
-</td>
-					</tr>
-				
-				</table>
-			</div>
-			
-
-			
-
-			
-
-			
-			<div class="method-subsection discussion-section">
-				<h4 class="method-subtitle">Discussion</h4>
-				<p>Uploads a blob from given source text.</p>
-
-<p>UploadFromText encodes the input text as UTF-8 and then uploads it to the blob on the service.  This operation will overwrite any data
-already in the blob on the service, unless protected with an appropriate <a href="../Classes/AZSAccessCondition.html">AZSAccessCondition</a>.</p>
-			</div>
-			
-
-			
-
-			
-
-			
-			<div class="method-subsection declared-in-section">
-				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">AZSCloudBlockBlob.h</code></p>
-			</div>
-			
-			
-		</div>
-	</div>
-</div><div class="section-method">
-	<a name="//api/name/uploadFromFileWithPath:completionHandler:" title="uploadFromFileWithPath:completionHandler:"></a>
-	<h3 class="method-title"><code><a href="#//api/name/uploadFromFileWithPath:completionHandler:">&ndash;&nbsp;uploadFromFileWithPath:completionHandler:</a></code>
-</h3>
-
-	<div class="method-info">
-		<div class="pointy-thing"></div>
-
-		<div class="method-info-container">
-			
-			
-			<div class="method-subsection brief-description">
-				<p>Uploads a blob from given source file.</p>
-			</div>
-			
-		    
-
-			<div class="method-subsection method-declaration"><code>- (void)uploadFromFileWithPath:(NSString *)<em>filePath</em> completionHandler:(void ( ^ ) ( NSError *__AZSNullable ))<em>completionHandler</em></code></div>
-
-		    
-			
-			<div class="method-subsection arguments-section parameters">
-				<h4 class="method-subtitle parameter-title">Parameters</h4>
-				<table class="argument-def parameter-def">
-				
-					<tr>
-						<th scope="row" class="argument-name"><code>filePath</code></th>
-						<td><p>The path to the file containing the data that the blob should contain.</p></td>
-					</tr>
-				
-					<tr>
-						<th scope="row" class="argument-name"><code>completionHandler</code></th>
-						<td><p>The block of code to execute when the upload call completes.</p>
-
-<table>
-<thead>
-<tr>
-<th> Parameter name </th>
-<th> Description </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>NSError * </td>
-<td> Nil if the operation succeeded without error, error with details about the failure otherwise.</td>
-</tr>
-</tbody>
-</table>
-</td>
-					</tr>
-				
-				</table>
-			</div>
-			
-
-			
-
-			
-
-			
-			<div class="method-subsection discussion-section">
-				<h4 class="method-subtitle">Discussion</h4>
-				<p>Uploads a blob from given source file.</p>
-
-<p>UploadFromText loads an the input file and uploads the contents of that file to the service.  Contents will not be
-read all at once, but instead in a streaming fashion.  This operation will overwrite any data
-already in the blob on the service, unless protected with an appropriate <a href="../Classes/AZSAccessCondition.html">AZSAccessCondition</a>.</p>
-			</div>
-			
-
-			
-
-			
-
-			
-			<div class="method-subsection declared-in-section">
-				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">AZSCloudBlockBlob.h</code></p>
-			</div>
-			
-			
-		</div>
-	</div>
-</div><div class="section-method">
-	<a name="//api/name/uploadFromFileWithPath:accessCondition:requestOptions:operationContext:completionHandler:" title="uploadFromFileWithPath:accessCondition:requestOptions:operationContext:completionHandler:"></a>
-	<h3 class="method-title"><code><a href="#//api/name/uploadFromFileWithPath:accessCondition:requestOptions:operationContext:completionHandler:">&ndash;&nbsp;uploadFromFileWithPath:accessCondition:requestOptions:operationContext:completionHandler:</a></code>
-</h3>
-
-	<div class="method-info">
-		<div class="pointy-thing"></div>
-
-		<div class="method-info-container">
-			
-			
-			<div class="method-subsection brief-description">
-				<p>Uploads a blob from given source file.</p>
-			</div>
-			
-		    
-
-			<div class="method-subsection method-declaration"><code>- (void)uploadFromFileWithPath:(NSString *)<em>filePath</em> accessCondition:(AZSNullable AZSAccessCondition *)<em>accessCondition</em> requestOptions:(AZSNullable AZSBlobRequestOptions *)<em>requestOptions</em> operationContext:(AZSNullable AZSOperationContext *)<em>operationContext</em> completionHandler:(void ( ^ ) ( NSError *__AZSNullable ))<em>completionHandler</em></code></div>
-
-		    
-			
-			<div class="method-subsection arguments-section parameters">
-				<h4 class="method-subtitle parameter-title">Parameters</h4>
-				<table class="argument-def parameter-def">
-				
-					<tr>
-						<th scope="row" class="argument-name"><code>filePath</code></th>
-						<td><p>The path to the file containing the data that the blob should contain.</p></td>
-					</tr>
-				
-					<tr>
-						<th scope="row" class="argument-name"><code>accessCondition</code></th>
-						<td><p>The access condition for the request.</p></td>
-					</tr>
-				
-					<tr>
-						<th scope="row" class="argument-name"><code>requestOptions</code></th>
-						<td><p>The options to use for the request.</p></td>
-					</tr>
-				
-					<tr>
-						<th scope="row" class="argument-name"><code>operationContext</code></th>
-						<td><p>The operation context to use for the call.</p></td>
-					</tr>
-				
-					<tr>
-						<th scope="row" class="argument-name"><code>completionHandler</code></th>
-						<td><p>The block of code to execute when the upload call completes.</p>
-
-<table>
-<thead>
-<tr>
-<th> Parameter name </th>
-<th> Description </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>NSError * </td>
-<td> Nil if the operation succeeded without error, error with details about the failure otherwise.</td>
-</tr>
-</tbody>
-</table>
-</td>
-					</tr>
-				
-				</table>
-			</div>
-			
-
-			
-
-			
-
-			
-			<div class="method-subsection discussion-section">
-				<h4 class="method-subtitle">Discussion</h4>
-				<p>Uploads a blob from given source file.</p>
-
-<p>UploadFromText loads an the input file and uploads the contents of that file to the service.  Contents will not be
-read all at once, but instead in a streaming fashion.  This operation will overwrite any data
-already in the blob on the service, unless protected with an appropriate <a href="../Classes/AZSAccessCondition.html">AZSAccessCondition</a>.</p>
-			</div>
-			
-
-			
-
-			
-
-			
-			<div class="method-subsection declared-in-section">
-				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">AZSCloudBlockBlob.h</code></p>
-			</div>
-			
-			
-		</div>
-	</div>
-</div><div class="section-method">
-	<a name="//api/name/uploadFromFileWithURL:completionHandler:" title="uploadFromFileWithURL:completionHandler:"></a>
-	<h3 class="method-title"><code><a href="#//api/name/uploadFromFileWithURL:completionHandler:">&ndash;&nbsp;uploadFromFileWithURL:completionHandler:</a></code>
-</h3>
-
-	<div class="method-info">
-		<div class="pointy-thing"></div>
-
-		<div class="method-info-container">
-			
-			
-			<div class="method-subsection brief-description">
-				<p>Uploads a blob from given source file.</p>
-			</div>
-			
-		    
-
-			<div class="method-subsection method-declaration"><code>- (void)uploadFromFileWithURL:(NSURL *)<em>fileURL</em> completionHandler:(void ( ^ ) ( NSError *__AZSNullable ))<em>completionHandler</em></code></div>
-
-		    
-			
-			<div class="method-subsection arguments-section parameters">
-				<h4 class="method-subtitle parameter-title">Parameters</h4>
-				<table class="argument-def parameter-def">
-				
-					<tr>
-						<th scope="row" class="argument-name"><code>fileURL</code></th>
-						<td><p>The URL to the file containing the data that the blob should contain.</p></td>
-					</tr>
-				
-					<tr>
-						<th scope="row" class="argument-name"><code>completionHandler</code></th>
-						<td><p>The block of code to execute when the upload call completes.</p>
-
-<table>
-<thead>
-<tr>
-<th> Parameter name </th>
-<th> Description </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>NSError * </td>
-<td> Nil if the operation succeeded without error, error with details about the failure otherwise.</td>
-</tr>
-</tbody>
-</table>
-</td>
-					</tr>
-				
-				</table>
-			</div>
-			
-
-			
-
-			
-
-			
-			<div class="method-subsection discussion-section">
-				<h4 class="method-subtitle">Discussion</h4>
-				<p>Uploads a blob from given source file.</p>
-
-<p>UploadFromText loads an the input file and uploads the contents of that file to the service.  Contents will not be
-read all at once, but instead in a streaming fashion.  This operation will overwrite any data
-already in the blob on the service, unless protected with an appropriate <a href="../Classes/AZSAccessCondition.html">AZSAccessCondition</a>.</p>
-			</div>
-			
-
-			
-
-			
-
-			
-			<div class="method-subsection declared-in-section">
-				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">AZSCloudBlockBlob.h</code></p>
-			</div>
-			
-			
-		</div>
-	</div>
-</div><div class="section-method">
-	<a name="//api/name/uploadFromFileWithURL:accessCondition:requestOptions:operationContext:completionHandler:" title="uploadFromFileWithURL:accessCondition:requestOptions:operationContext:completionHandler:"></a>
-	<h3 class="method-title"><code><a href="#//api/name/uploadFromFileWithURL:accessCondition:requestOptions:operationContext:completionHandler:">&ndash;&nbsp;uploadFromFileWithURL:accessCondition:requestOptions:operationContext:completionHandler:</a></code>
-</h3>
-
-	<div class="method-info">
-		<div class="pointy-thing"></div>
-
-		<div class="method-info-container">
-			
-			
-			<div class="method-subsection brief-description">
-				<p>Uploads a blob from given source file.</p>
-			</div>
-			
-		    
-
-			<div class="method-subsection method-declaration"><code>- (void)uploadFromFileWithURL:(NSURL *)<em>fileURL</em> accessCondition:(AZSNullable AZSAccessCondition *)<em>accessCondition</em> requestOptions:(AZSNullable AZSBlobRequestOptions *)<em>requestOptions</em> operationContext:(AZSNullable AZSOperationContext *)<em>operationContext</em> completionHandler:(void ( ^ ) ( NSError *__AZSNullable ))<em>completionHandler</em></code></div>
-
-		    
-			
-			<div class="method-subsection arguments-section parameters">
-				<h4 class="method-subtitle parameter-title">Parameters</h4>
-				<table class="argument-def parameter-def">
-				
-					<tr>
-						<th scope="row" class="argument-name"><code>fileURL</code></th>
-						<td><p>The URL to the file containing the data that the blob should contain.</p></td>
-					</tr>
-				
-					<tr>
-						<th scope="row" class="argument-name"><code>accessCondition</code></th>
-						<td><p>The access condition for the request.</p></td>
-					</tr>
-				
-					<tr>
-						<th scope="row" class="argument-name"><code>requestOptions</code></th>
-						<td><p>The options to use for the request.</p></td>
-					</tr>
-				
-					<tr>
-						<th scope="row" class="argument-name"><code>operationContext</code></th>
-						<td><p>The operation context to use for the call.</p></td>
-					</tr>
-				
-					<tr>
-						<th scope="row" class="argument-name"><code>completionHandler</code></th>
-						<td><p>The block of code to execute when the upload call completes.</p>
-
-<table>
-<thead>
-<tr>
-<th> Parameter name </th>
-<th> Description </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>NSError * </td>
-<td> Nil if the operation succeeded without error, error with details about the failure otherwise.</td>
-</tr>
-</tbody>
-</table>
-</td>
-					</tr>
-				
-				</table>
-			</div>
-			
-
-			
-
-			
-
-			
-			<div class="method-subsection discussion-section">
-				<h4 class="method-subtitle">Discussion</h4>
-				<p>Uploads a blob from given source file.</p>
-
-<p>UploadFromText loads an the input file and uploads the contents of that file to the service.  Contents will not be
-read all at once, but instead in a streaming fashion.  This operation will overwrite any data
-already in the blob on the service, unless protected with an appropriate <a href="../Classes/AZSAccessCondition.html">AZSAccessCondition</a>.</p>
-			</div>
-			
-
-			
-
-			
-
-			
-			<div class="method-subsection declared-in-section">
-				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">AZSCloudBlockBlob.h</code></p>
-			</div>
-			
-			
-		</div>
-	</div>
 </div>
 						</div>
 						
@@ -2214,7 +2214,7 @@ already in the blob on the service, unless protected with an appropriate <a href
 				<footer>
 					<div class="footer-copyright">
 						
-						<p class="copyright">Copyright &copy; 2017 Microsoft. All rights reserved. Updated: 2017-11-22</p>
+						<p class="copyright">Copyright &copy; 2018 Microsoft. All rights reserved. Updated: 2018-03-07</p>
 						
 						
 						<p class="generator">Generated by <a href="http://appledoc.gentlebytes.com">appledoc 2.2.1 (build 1334)</a>.</p>

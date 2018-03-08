@@ -14,7 +14,7 @@
 		<div class="container" class="hide-in-xcode">
 			
 			<h1 id="library-title">
-				<a href="../index.html">Azure Storage Client Library for iOS 0.2.5 </a>
+				<a href="../index.html">Azure Storage Client Library for iOS 0.2.6 </a>
 			</h1>
 
 			<p id="developer-home">
@@ -54,27 +54,23 @@
 
 	
 	
-	<optgroup label="Properties">
-		
-		<option value="//api/name/absorbConditionalErrorsOnRetry">absorbConditionalErrorsOnRetry</option>
-		
-		<option value="//api/name/disableContentMD5Validation">disableContentMD5Validation</option>
-		
-		<option value="//api/name/parallelismFactor">parallelismFactor</option>
-		
-		<option value="//api/name/storeBlobContentMD5">storeBlobContentMD5</option>
-		
-		<option value="//api/name/useTransactionalMD5">useTransactionalMD5</option>
-		
-	</optgroup>
-	
 
 	
 
 	
 	<optgroup label="Instance Methods">
 		
+		<option value="//api/name/absorbConditionalErrorsOnRetry">- absorbConditionalErrorsOnRetry</option>
+		
+		<option value="//api/name/disableContentMD5Validation">- disableContentMD5Validation</option>
+		
 		<option value="//api/name/init">- init</option>
+		
+		<option value="//api/name/parallelismFactor">- parallelismFactor</option>
+		
+		<option value="//api/name/storeBlobContentMD5">- storeBlobContentMD5</option>
+		
+		<option value="//api/name/useTransactionalMD5">- useTransactionalMD5</option>
 		
 	</optgroup>
 	
@@ -130,246 +126,6 @@ is not provided.</p>
 
 						<div class="task-list">
 							<div class="section-method">
-	<a name="//api/name/useTransactionalMD5" title="useTransactionalMD5"></a>
-	<h3 class="method-title"><code><a href="#//api/name/useTransactionalMD5">&nbsp;&nbsp;useTransactionalMD5</a></code>
-</h3>
-
-	<div class="method-info">
-		<div class="pointy-thing"></div>
-
-		<div class="method-info-container">
-			
-			
-			<div class="method-subsection brief-description">
-				<p>If YES, all operations that support it will calculate the MD5 of the message bodies on both the client
-and the service, to validate that there were no errors in transmission.  This has nothing to do with the content-MD5
-header stored on a blob.</p>
-			</div>
-			
-		    
-
-			<div class="method-subsection method-declaration"><code>@property BOOL useTransactionalMD5</code></div>
-
-		    
-			
-
-			
-
-			
-
-			
-			<div class="method-subsection discussion-section">
-				<h4 class="method-subtitle">Discussion</h4>
-				<p>If YES, all operations that support it will calculate the MD5 of the message bodies on both the client
-and the service, to validate that there were no errors in transmission.  This has nothing to do with the content-MD5
-header stored on a blob.</p>
-			</div>
-			
-
-			
-
-			
-
-			
-			<div class="method-subsection declared-in-section">
-				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">AZSBlobRequestOptions.h</code></p>
-			</div>
-			
-			
-		</div>
-	</div>
-</div><div class="section-method">
-	<a name="//api/name/storeBlobContentMD5" title="storeBlobContentMD5"></a>
-	<h3 class="method-title"><code><a href="#//api/name/storeBlobContentMD5">&nbsp;&nbsp;storeBlobContentMD5</a></code>
-</h3>
-
-	<div class="method-info">
-		<div class="pointy-thing"></div>
-
-		<div class="method-info-container">
-			
-			
-			<div class="method-subsection brief-description">
-				<p>If YES, when uploading a blob, the content-MD5 header will be stored along with the blob.  If one is not supplied,
-the library will calculate one where possible.</p>
-			</div>
-			
-		    
-
-			<div class="method-subsection method-declaration"><code>@property BOOL storeBlobContentMD5</code></div>
-
-		    
-			
-
-			
-
-			
-
-			
-			<div class="method-subsection discussion-section">
-				<h4 class="method-subtitle">Discussion</h4>
-				<p>If YES, when uploading a blob, the content-MD5 header will be stored along with the blob.  If one is not supplied,
-the library will calculate one where possible.</p>
-			</div>
-			
-
-			
-
-			
-
-			
-			<div class="method-subsection declared-in-section">
-				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">AZSBlobRequestOptions.h</code></p>
-			</div>
-			
-			
-		</div>
-	</div>
-</div><div class="section-method">
-	<a name="//api/name/disableContentMD5Validation" title="disableContentMD5Validation"></a>
-	<h3 class="method-title"><code><a href="#//api/name/disableContentMD5Validation">&nbsp;&nbsp;disableContentMD5Validation</a></code>
-</h3>
-
-	<div class="method-info">
-		<div class="pointy-thing"></div>
-
-		<div class="method-info-container">
-			
-			
-			<div class="method-subsection brief-description">
-				<p>If YES, the library will not calculate and validate the MD5 when downloading a blob.</p>
-			</div>
-			
-		    
-
-			<div class="method-subsection method-declaration"><code>@property BOOL disableContentMD5Validation</code></div>
-
-		    
-			
-
-			
-
-			
-
-			
-			<div class="method-subsection discussion-section">
-				<h4 class="method-subtitle">Discussion</h4>
-				<p>If YES, the library will not calculate and validate the MD5 when downloading a blob.</p>
-			</div>
-			
-
-			
-
-			
-
-			
-			<div class="method-subsection declared-in-section">
-				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">AZSBlobRequestOptions.h</code></p>
-			</div>
-			
-			
-		</div>
-	</div>
-</div><div class="section-method">
-	<a name="//api/name/parallelismFactor" title="parallelismFactor"></a>
-	<h3 class="method-title"><code><a href="#//api/name/parallelismFactor">&nbsp;&nbsp;parallelismFactor</a></code>
-</h3>
-
-	<div class="method-info">
-		<div class="pointy-thing"></div>
-
-		<div class="method-info-container">
-			
-			
-			<div class="method-subsection brief-description">
-				<p>The number of simultaneous outstanding block uploads to permit when uploading a blob as a series of blocks.</p>
-			</div>
-			
-		    
-
-			<div class="method-subsection method-declaration"><code>@property NSInteger parallelismFactor</code></div>
-
-		    
-			
-
-			
-
-			
-
-			
-			<div class="method-subsection discussion-section">
-				<h4 class="method-subtitle">Discussion</h4>
-				<p>The number of simultaneous outstanding block uploads to permit when uploading a blob as a series of blocks.</p>
-			</div>
-			
-
-			
-
-			
-
-			
-			<div class="method-subsection declared-in-section">
-				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">AZSBlobRequestOptions.h</code></p>
-			</div>
-			
-			
-		</div>
-	</div>
-</div><div class="section-method">
-	<a name="//api/name/absorbConditionalErrorsOnRetry" title="absorbConditionalErrorsOnRetry"></a>
-	<h3 class="method-title"><code><a href="#//api/name/absorbConditionalErrorsOnRetry">&nbsp;&nbsp;absorbConditionalErrorsOnRetry</a></code>
-</h3>
-
-	<div class="method-info">
-		<div class="pointy-thing"></div>
-
-		<div class="method-info-container">
-			
-			
-			<div class="method-subsection brief-description">
-				<p>If YES, when uploading an append blob in a streaming fashion, conditional errors should be ignored.</p>
-			</div>
-			
-		    
-
-			<div class="method-subsection method-declaration"><code>@property BOOL absorbConditionalErrorsOnRetry</code></div>
-
-		    
-			
-
-			
-
-			
-
-			
-			<div class="method-subsection discussion-section">
-				<h4 class="method-subtitle">Discussion</h4>
-				<p>If YES, when uploading an append blob in a streaming fashion, conditional errors should be ignored.</p>
-
-<p>When uploading append blobs in a streaming fashion, an append-offset conditional header is used to avoid duplicate blocks.
-If this is set to YES, errors from the append-offset header will be ignored when the error is coming from a block already being written to the service.
-Only set this to YES if there is no possiblity of multiple writers writing to the blob simultaneously.  Otherwise, data corruption can occur.</p>
-			</div>
-			
-
-			
-
-			
-
-			
-			<div class="method-subsection declared-in-section">
-				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">AZSBlobRequestOptions.h</code></p>
-			</div>
-			
-			
-		</div>
-	</div>
-</div><div class="section-method">
 	<a name="//api/name/init" title="init"></a>
 	<h3 class="method-title"><code><a href="#//api/name/init">&ndash;&nbsp;init</a></code>
 </h3>
@@ -417,6 +173,246 @@ Once the object is initialized, individual properties can be set.</p>
 			
 		</div>
 	</div>
+</div><div class="section-method">
+	<a name="//api/name/useTransactionalMD5" title="useTransactionalMD5"></a>
+	<h3 class="method-title"><code><a href="#//api/name/useTransactionalMD5">&ndash;&nbsp;useTransactionalMD5</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>If YES, all operations that support it will calculate the MD5 of the message bodies on both the client
+and the service, to validate that there were no errors in transmission.  This has nothing to do with the content-MD5
+header stored on a blob.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (BOOL)useTransactionalMD5</code></div>
+
+		    
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>If YES, all operations that support it will calculate the MD5 of the message bodies on both the client
+and the service, to validate that there were no errors in transmission.  This has nothing to do with the content-MD5
+header stored on a blob.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSBlobRequestOptions.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/storeBlobContentMD5" title="storeBlobContentMD5"></a>
+	<h3 class="method-title"><code><a href="#//api/name/storeBlobContentMD5">&ndash;&nbsp;storeBlobContentMD5</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>If YES, when uploading a blob, the content-MD5 header will be stored along with the blob.  If one is not supplied,
+the library will calculate one where possible.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (BOOL)storeBlobContentMD5</code></div>
+
+		    
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>If YES, when uploading a blob, the content-MD5 header will be stored along with the blob.  If one is not supplied,
+the library will calculate one where possible.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSBlobRequestOptions.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/disableContentMD5Validation" title="disableContentMD5Validation"></a>
+	<h3 class="method-title"><code><a href="#//api/name/disableContentMD5Validation">&ndash;&nbsp;disableContentMD5Validation</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>If YES, the library will not calculate and validate the MD5 when downloading a blob.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (BOOL)disableContentMD5Validation</code></div>
+
+		    
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>If YES, the library will not calculate and validate the MD5 when downloading a blob.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSBlobRequestOptions.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/parallelismFactor" title="parallelismFactor"></a>
+	<h3 class="method-title"><code><a href="#//api/name/parallelismFactor">&ndash;&nbsp;parallelismFactor</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>The number of simultaneous outstanding block uploads to permit when uploading a blob as a series of blocks.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (NSInteger)parallelismFactor</code></div>
+
+		    
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>The number of simultaneous outstanding block uploads to permit when uploading a blob as a series of blocks.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSBlobRequestOptions.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/absorbConditionalErrorsOnRetry" title="absorbConditionalErrorsOnRetry"></a>
+	<h3 class="method-title"><code><a href="#//api/name/absorbConditionalErrorsOnRetry">&ndash;&nbsp;absorbConditionalErrorsOnRetry</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>If YES, when uploading an append blob in a streaming fashion, conditional errors should be ignored.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (BOOL)absorbConditionalErrorsOnRetry</code></div>
+
+		    
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>If YES, when uploading an append blob in a streaming fashion, conditional errors should be ignored.</p>
+
+<p>When uploading append blobs in a streaming fashion, an append-offset conditional header is used to avoid duplicate blocks.
+If this is set to YES, errors from the append-offset header will be ignored when the error is coming from a block already being written to the service.
+Only set this to YES if there is no possiblity of multiple writers writing to the blob simultaneously.  Otherwise, data corruption can occur.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">AZSBlobRequestOptions.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
 </div>
 						</div>
 						
@@ -432,7 +428,7 @@ Once the object is initialized, individual properties can be set.</p>
 				<footer>
 					<div class="footer-copyright">
 						
-						<p class="copyright">Copyright &copy; 2017 Microsoft. All rights reserved. Updated: 2017-11-22</p>
+						<p class="copyright">Copyright &copy; 2018 Microsoft. All rights reserved. Updated: 2018-03-07</p>
 						
 						
 						<p class="generator">Generated by <a href="http://appledoc.gentlebytes.com">appledoc 2.2.1 (build 1334)</a>.</p>
