@@ -1,3 +1,6 @@
+2018.03.07 Version 0.2.6
+ * Fixed thread-safety issue related to NSDateFormatter.
+
 2017.11.22 Version 0.2.5
  * Fixed nullability issue on UploadFromData of AZSCloudBlockBlob.
 
