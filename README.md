@@ -1,5 +1,8 @@
-Azure Storage Client Library for iOS
+Azure Storage Client Library for iOS (Deprecated)
 ===============
+
+## This project is not being actively maintained. Once a replacement is released, the link will be published here.
+
 
 ### Overview
 This library is designed to help you build iOS applications that use Microsoft Azure Storage.
